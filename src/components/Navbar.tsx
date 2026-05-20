@@ -7,6 +7,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About", href: "#about" },
   { label: "Organization", href: "/organization" },
+  { label: "Memos", href: "/memos" },
   { label: "Enrollment", href: "#enrollment" },
   { label: "SHS Offerings", href: "#programs" },
   { label: "Announcements", href: "#announcements" },

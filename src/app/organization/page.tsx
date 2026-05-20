@@ -87,72 +87,82 @@ export default function OrganizationPage() {
       <Navbar />
 
       <main className="min-h-screen bg-slate-950 text-white">
+        
         {/* HERO */}
-        <section className="relative overflow-hidden px-6 pb-24 pt-36">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-950 via-slate-950 to-yellow-900" />
-          <div className="absolute left-10 top-28 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl" />
-          <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-400/20 blur-3xl" />
+          <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-36 text-slate-950">
+            <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
+            <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
-          <div className="relative mx-auto max-w-7xl text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="mb-8 flex items-center justify-center gap-5"
-            >
-              <img
-                src={depedLogo}
-                alt="Department of Education Logo"
-                className="h-14 w-auto rounded-xl bg-white/90 p-2 shadow-lg md:h-16"
-              />
+            <div className="relative mx-auto max-w-7xl text-center">
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7 }}
+                className="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
+              >
+                <img
+                  src={depedLogo}
+                  alt="Department of Education Logo"
+                  className="h-12 w-auto -translate-y-1 object-contain md:h-14"
+                />
 
-              <img
-                src={schoolLogo}
-                alt="Tabunoc National High School Logo"
-                className="h-16 w-16 rounded-full bg-white p-2 shadow-lg md:h-20 md:w-20"
-              />
-            </motion.div>
+                <div className="hidden h-12 w-px bg-slate-300 sm:block" />
 
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-sm font-bold uppercase tracking-widest text-yellow-300"
-            >
-              Tabunoc National High School
-            </motion.p>
+                <img
+                  src={schoolLogo}
+                  alt="Tabunoc National High School Logo"
+                  className="h-16 w-16 object-contain md:h-20 md:w-20"
+                />
 
-            <motion.h1
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.15 }}
-              className="mt-4 text-4xl font-black tracking-tight md:text-6xl"
-            >
-              School Organizational Chart
-            </motion.h1>
+                <div className="text-center sm:text-left">
+                  <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                    Department of Education
+                  </p>
+                  <p className="mt-1 font-bold text-slate-700">
+                    Tabunoc National High School · School ID: 303111
+                  </p>
+                </div>
+              </motion.div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.25 }}
-              className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-200"
-            >
-              A responsive and interactive organizational layout showing one
-              profile per personnel with multiple roles, advisories, subject
-              assignments, and coordinatorships.
-            </motion.p>
-          </div>
-        </section>
+              <motion.p
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]"
+              >
+                School Directory
+              </motion.p>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 32 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.15 }}
+                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-6xl"
+              >
+                School Administration, Faculty, and Staff
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 32 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.25 }}
+                className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700"
+              >
+                Meet the school administration, faculty members, advisers, coordinators,
+                and support personnel of Tabunoc National High School.
+              </motion.p>
+            </div>
+          </section>
 
         {/* SEARCH AND FILTER */}
-        <section className="bg-slate-100 px-6 py-16 text-slate-950">
+        <section className="bg-[#F8FAFC] px-6 py-16 text-slate-950">
           <div className="mx-auto max-w-7xl">
             <div className="mb-8 text-center">
               <p className="text-sm font-bold uppercase tracking-widest text-blue-700">
                 Faculty and Personnel Directory
               </p>
               <h2 className="mt-3 text-3xl font-black md:text-5xl">
-                Search Personnel Profiles
+                Search the School Directory
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
                 Search by name, section, role, subject taught, position, or
@@ -240,7 +250,7 @@ export default function OrganizationPage() {
                 School Leadership
               </p>
               <h2 className="mt-3 text-3xl font-black md:text-5xl">
-                Leadership and Administrative Structure
+                School Leadership and Support Personnel
               </h2>
             </div>
 
@@ -285,11 +295,11 @@ export default function OrganizationPage() {
                 Grade Level Leadership
               </p>
               <h2 className="mt-3 text-3xl font-black md:text-5xl">
-                Grade Leaders and SHS Coordinator
+                Grade Leaders
               </h2>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-5">
+            <div className="grid items-stretch gap-4 md:grid-cols-2 lg:grid-cols-5">
               {gradeLeaders.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -310,7 +320,7 @@ export default function OrganizationPage() {
                 Class Advisers
               </p>
               <h2 className="mt-3 text-3xl font-black md:text-5xl">
-                Grade-Level Adviser Directory
+                Class Advisers
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
                 Select a grade level to view assigned class advisers.
@@ -347,7 +357,7 @@ export default function OrganizationPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.45 }}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 md:p-8"
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4 md:p-6"
                   >
                     <div className="mb-6 flex flex-col justify-between gap-3 md:flex-row md:items-center">
                       <div>
@@ -383,14 +393,14 @@ export default function OrganizationPage() {
         </section>
 
         {/* FUTURE EXPANSION */}
-        <section className="bg-slate-950 px-6 py-20 text-white">
+        <section className="bg-[#0F4C5C] px-6 py-20 text-white">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-bold uppercase tracking-widest text-yellow-300">
                 Expandable Directory
               </p>
               <h2 className="mt-3 text-3xl font-black md:text-5xl">
-                Subject Teachers and Coordinators
+                Subject Teachers, Coordinators, and Support Roles
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">
                 This section is prepared for additional personnel, subject
@@ -418,19 +428,19 @@ export default function OrganizationPage() {
         </section>
 
         {/* FOOTER */}
-        <footer className="bg-slate-900 px-6 py-12 text-slate-300">
+        <footer className="bg-[#0B1F2A] px-6 py-12 text-teal-50">
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 text-center md:flex-row md:text-left">
             <div className="flex items-center gap-4">
               <img
                 src={depedLogo}
                 alt="Department of Education Logo"
-                className="h-12 w-auto rounded-lg bg-white p-2"
+                className="h-10 w-auto object-contain"
               />
 
               <img
                 src={schoolLogo}
                 alt="Tabunoc National High School Logo"
-                className="h-14 w-14 rounded-full bg-white p-1"
+                className="h-12 w-12 object-contain"
               />
             </div>
 

@@ -44,21 +44,21 @@ export default function PersonnelCard({
       whileHover={{ y: -6 }}
       transition={{ duration: 0.35 }}
       onClick={() => onClick?.(person)}
-      className="group cursor-pointer rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-xl"
+      className="group h-full min-h-[128px] cursor-pointer rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-lg"
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-start gap-3">
         {person.photo ? (
           <img
             src={person.photo}
             alt={person.name}
-            className={`aspect-[3/4] rounded-lg object-cover ${
-              compact ? "h-16 w-12" : "h-24 w-[72px]"
+            className={`mt-1 aspect-[3/4] rounded-lg object-cover ${
+              compact ? "h-14 w-[42px]" : "h-20 w-[60px]"
             }`}
           />
         ) : (
           <div
-            className={`flex aspect-[3/4] shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-900 to-yellow-500 font-black text-white ${
-              compact ? "h-16 w-12 text-sm" : "h-24 w-[72px] text-xl"
+            className={`mt-1 flex aspect-[3/4] shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-900 to-yellow-500 font-black text-white ${
+              compact ? "h-14 w-[42px] text-sm" : "h-20 w-[60px] text-xl"
             }`}
           >
             {initials}
@@ -68,22 +68,22 @@ export default function PersonnelCard({
         <div>
           <h3
             className={`font-black leading-tight text-slate-950 ${
-              compact ? "text-base" : "text-xl"
+              compact ? "text-sm" : "text-lg"
             }`}
           >
             {person.name}
           </h3>
 
-          <p className="mt-1 text-sm font-semibold text-blue-800">
+          <p className="mt-1 text-sm font-bold leading-snug text-blue-800">
             {person.position}
           </p>
 
-          <p className="mt-1 text-xs font-bold uppercase tracking-widest text-slate-500">
+          <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-slate-500">
             {person.roles.join(", ")}
           </p>
 
           {advisoryText && (
-            <p className="mt-1 text-xs font-bold uppercase tracking-widest text-yellow-700">
+            <p className="mt-1 text-[11px] font-bold uppercase tracking-wider text-yellow-700">
               {advisoryText}
             </p>
           )}

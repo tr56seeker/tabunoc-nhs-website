@@ -192,7 +192,7 @@ export const personnel: Personnel[] = [
   {
     id: "ruth-briones",
     name: "RUTH BRIONES",
-    position: "Teacher",
+    position: "TCH-03",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -211,7 +211,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 7", section: "7-Hyacinth" }],
     sectionsHandled: ["Grade 7-Hyacinth"],
-    photo: "",
+    photo: "/teachers/elbert-misterio.jpg",
   },
   {
     id: "leslyn-camero",
@@ -223,7 +223,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 7", section: "7-Periwinkle" }],
     sectionsHandled: ["Grade 7-Periwinkle"],
-    photo: "",
+    photo: "/teachers/leslyn-rose-camero.jpg",
   },
   {
     id: "junnelyn-herbito",
@@ -261,7 +261,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 8", section: "8-Canary" }],
     sectionsHandled: ["Grade 8-Canary"],
-    photo: "",
+    photo: "/teachers/joy-mortal.jpg",
   },
   {
     id: "genesa-goc-ong",
@@ -273,7 +273,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 8", section: "8-Dove" }],
     sectionsHandled: ["Grade 8-Dove"],
-    photo: "",
+    photo: "/teachers/genesa-goc-ong.jpg",
   },
   {
     id: "bret-primacio",
@@ -297,7 +297,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 8", section: "8-Falcon" }],
     sectionsHandled: ["Grade 8-Falcon"],
-    photo: "",
+    photo: "/teachers/jeralyn-gerra.jpg",
   },
   {
     id: "eljoy-barroca",
@@ -335,7 +335,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 9", section: "9-Aspen" }],
     sectionsHandled: ["Grade 9-Aspen"],
-    photo: "",
+    photo: "/teachers/jeralyn-maloloy-on.jpg",
   },
   {
     id: "lourence-capa",
@@ -362,7 +362,7 @@ export const personnel: Personnel[] = [
     photo: "",
   },
   {
-    id: "bella-samontanez",
+    id: "bella-arquine-samontanez",
     name: "BELLA ARQUINE T. SAMONTANEZ",
     position: "Teacher",
     designation: ["Class Adviser"],
@@ -371,7 +371,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 9", section: "9-Hazel" }],
     sectionsHandled: ["Grade 9-Hazel"],
-    photo: "",
+    photo: "/teachers/bella-arquine-samontanez.jpg",
   },
   {
     id: "allan-aparicio",
@@ -395,7 +395,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 9", section: "9-Olive" }],
     sectionsHandled: ["Grade 9-Olive"],
-    photo: "",
+    photo: "/teachers/jeffrey-caberte.jpg",
   },
 
   // Grade 10 Advisers
@@ -409,10 +409,10 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 10", section: "10-Amethyst" }],
     sectionsHandled: ["Grade 10-Amethyst"],
-    photo: "",
+    photo: "/teachers/joan-cavite.jpg",
   },
   {
-    id: "roxan-jao",
+    id: "roxan-mae-jao",
     name: "ROXAN MAE T. JAO",
     position: "Teacher",
     designation: ["Class Adviser"],
@@ -421,7 +421,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 10", section: "10-Diamond" }],
     sectionsHandled: ["Grade 10-Diamond"],
-    photo: "",
+    photo: "/teachers/roxan-mae-jao.jpg",
   },
   {
     id: "marilou-cabriana",
@@ -469,7 +469,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 10", section: "10-Sapphire" }],
     sectionsHandled: ["Grade 10-Sapphire"],
-    photo: "",
+    photo: "/teachers/jay-neil-oro.jpg",
   },
 
   // SHS / Grade 11 and 12

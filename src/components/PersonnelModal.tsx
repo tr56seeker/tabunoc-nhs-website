@@ -27,25 +27,35 @@ function getInitials(name: string) {
     .join("");
 }
 
-function getGradeLevels(person: Personnel) {
-  if (!person.advisory || person.advisory.length === 0) return "";
-
-  return Array.from(
-    new Set(person.advisory.map((item) => item.gradeLevel))
-  ).join(", ");
+function displayText(value?: string) {
+  if (!value || value.trim() === "") return "N/A";
+  return value;
 }
 
-function getSections(person: Personnel) {
-  if (!person.advisory || person.advisory.length === 0) return "";
+function displayList(value?: string[]) {
+  if (!value || value.length === 0) return "N/A";
 
-  return person.advisory.map((item) => item.section).join(", ");
+  const cleaned = value.filter((item) => item && item.trim() !== "");
+  if (cleaned.length === 0) return "N/A";
+
+  return cleaned.join(", ");
+}
+
+function getAdvisorySections(person: Personnel) {
+  if (!person.advisory || person.advisory.length === 0) return "N/A";
+
+  return person.advisory
+    .map((item) => `${item.gradeLevel}-${item.section.replace(/^\d+-/, "")}`)
+    .join(", ");
 }
 
 export default function PersonnelModal({
   person,
   onClose,
 }: PersonnelModalProps) {
-  const messengerLink = normalizeMessengerLink(person?.messenger);
+  if (!person) return null;
+
+  const messengerLink = normalizeMessengerLink(person.messenger);
 
   return (
     <AnimatePresence>
@@ -65,9 +75,10 @@ export default function PersonnelModal({
             onClick={(event) => event.stopPropagation()}
             className="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-white text-slate-950 shadow-2xl"
           >
+            {/* HEADER BAR */}
             <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 md:px-8">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.25em] text-blue-800">
+                <p className="text-xs font-black uppercase tracking-[0.25em] text-[#0F4C5C]">
                   Faculty / Personnel Profile
                 </p>
                 <p className="mt-1 text-sm text-slate-500">
@@ -77,13 +88,14 @@ export default function PersonnelModal({
 
               <button
                 onClick={onClose}
-                className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
+                className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-black text-slate-700 transition hover:bg-[#0F4C5C] hover:text-white"
               >
                 Close
               </button>
             </div>
 
             <div className="grid md:grid-cols-[300px_1fr]">
+              {/* LEFT PROFILE COLUMN */}
               <aside className="border-b border-slate-200 bg-slate-50 p-6 md:border-b-0 md:border-r md:p-8">
                 <div className="mx-auto max-w-[230px]">
                   <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-200 shadow-sm">
@@ -106,12 +118,12 @@ export default function PersonnelModal({
                     {person.name}
                   </h2>
 
-                  <p className="mt-2 font-bold text-blue-800">
-                    {person.position}
+                  <p className="mt-2 font-bold text-[#0F4C5C]">
+                    {displayText(person.position)}
                   </p>
 
                   <p className="mt-1 text-sm font-semibold text-slate-500">
-                    {person.roles.join(", ")}
+                    {displayList(person.designation)}
                   </p>
                 </div>
 
@@ -121,84 +133,102 @@ export default function PersonnelModal({
                   </p>
 
                   <div className="mt-4 space-y-3 text-sm">
-                    <MiniInfo label="Department" value={person.department} />
+                    <MiniInfo label="Group" value={displayText(person.group)} />
                     <MiniInfo
-                      label="Grade Level"
-                      value={getGradeLevels(person)}
+                      label="Department"
+                      value={displayText(person.department)}
                     />
-                    <MiniInfo label="Section" value={getSections(person)} />
                     <MiniInfo
-                      label="Consultation"
-                      value={person.consultationSchedule}
+                      label="Position"
+                      value={displayText(person.position)}
+                    />
+                    <MiniInfo
+                      label="Designation"
+                      value={displayList(person.designation)}
                     />
                   </div>
                 </div>
               </aside>
 
+              {/* RIGHT CONTENT COLUMN */}
               <section className="p-6 md:p-8">
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <InfoBox label="Name" value={person.name} />
-                  <InfoBox label="Position" value={person.position} />
-                  <InfoBox label="Role" value={person.roles.join(", ")} />
-                  <InfoBox label="Group" value={person.group} />
+                  <InfoBox label="Name" value={displayText(person.name)} />
+                  <InfoBox
+                    label="Position"
+                    value={displayText(person.position)}
+                  />
+                  <InfoBox
+                    label="Designation"
+                    value={displayList(person.designation)}
+                  />
+                  <InfoBox label="Role" value={displayList(person.roles)} />
+                  <InfoBox label="Group" value={displayText(person.group)} />
+                  <InfoBox
+                    label="Department"
+                    value={displayText(person.department)}
+                  />
+                  <InfoBox
+                    label="Grade Level Taught"
+                    value={displayList(person.gradeLevelTaught)}
+                  />
+                  <InfoBox
+                    label="Section Handled"
+                    value={
+                      person.sectionsHandled && person.sectionsHandled.length > 0
+                        ? displayList(person.sectionsHandled)
+                        : getAdvisorySections(person)
+                    }
+                  />
                 </div>
 
                 <ProfileSection title="Subject Taught">
-                  {person.subjectTaught && person.subjectTaught.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {person.subjectTaught.map((subject) => (
-                        <span
-                          key={subject}
-                          className="rounded-lg bg-blue-950 px-4 py-2 text-sm font-bold text-white"
-                        >
-                          {subject}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <EmptyText />
-                  )}
+                  <TagList
+                    items={person.subjectTaught}
+                    colorClass="bg-[#0F4C5C] text-white"
+                  />
                 </ProfileSection>
 
                 <ProfileSection title="Coordinatorship">
-                  {person.coordinatorship &&
-                  person.coordinatorship.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
-                      {person.coordinatorship.map((item) => (
-                        <span
-                          key={item}
-                          className="rounded-lg bg-yellow-300 px-4 py-2 text-sm font-bold text-slate-950"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  ) : (
-                    <EmptyText />
-                  )}
+                  <TagList
+                    items={person.coordinatorship}
+                    colorClass="bg-yellow-300 text-slate-950"
+                  />
                 </ProfileSection>
 
                 <ProfileSection title="Teaching Philosophy">
-                  <p className="leading-8 text-slate-700">
-                    {person.philosophy ||
-                      "Teaching philosophy will be added soon."}
+                  <p className="leading-7 text-slate-700">
+                    {displayText(person.philosophy)}
                   </p>
                 </ProfileSection>
 
                 <ProfileSection title="Bio">
-                  <p className="leading-8 text-slate-700">
-                    {person.bio ||
-                      person.description ||
-                      "Bio will be added soon."}
+                  <p className="leading-7 text-slate-700">
+                    {displayText(person.bio || person.description)}
                   </p>
                 </ProfileSection>
 
                 <ProfileSection title="Contact Information">
-                  <div className="flex flex-col gap-3 sm:flex-row">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <InfoBox
+                      label="Email Address"
+                      value={displayText(person.email)}
+                    />
+                    <InfoBox
+                      label="Messenger"
+                      value={displayText(person.messenger)}
+                    />
+                    <InfoBox
+                      label="Consultation Schedule"
+                      value={displayText(person.consultationSchedule)}
+                    />
+                  </div>
+
+                  <div className="mt-5 flex flex-col gap-3 sm:flex-row">
                     {person.email && (
                       <a
                         href={`mailto:${person.email}`}
-                        className="rounded-lg bg-blue-950 px-5 py-3 text-center text-sm font-black text-white transition hover:-translate-y-1 hover:bg-blue-800"
+                        className="rounded-lg bg-[#0F4C5C] px-5 py-3 text-center text-sm font-black text-white transition hover:-translate-y-1 hover:bg-[#0B3B48]"
                       >
                         Send Email
                       </a>
@@ -232,28 +262,24 @@ export default function PersonnelModal({
   );
 }
 
-function InfoBox({ label, value }: { label: string; value?: string }) {
+function InfoBox({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
       <p className="text-xs font-black uppercase tracking-widest text-slate-500">
         {label}
       </p>
-      <p className="mt-1 font-bold text-slate-950">
-        {value || "To be updated"}
-      </p>
+      <p className="mt-1 font-bold text-slate-950">{value}</p>
     </div>
   );
 }
 
-function MiniInfo({ label, value }: { label: string; value?: string }) {
+function MiniInfo({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <p className="text-xs font-black uppercase tracking-widest text-slate-400">
         {label}
       </p>
-      <p className="mt-1 font-bold text-slate-800">
-        {value || "To be updated"}
-      </p>
+      <p className="mt-1 font-bold text-slate-800">{value}</p>
     </div>
   );
 }
@@ -273,6 +299,33 @@ function ProfileSection({
   );
 }
 
-function EmptyText() {
-  return <p className="text-slate-600">To be updated.</p>;
+function TagList({
+  items,
+  colorClass,
+}: {
+  items?: string[];
+  colorClass: string;
+}) {
+  if (!items || items.length === 0) {
+    return <p className="text-slate-600">N/A</p>;
+  }
+
+  const cleaned = items.filter((item) => item && item.trim() !== "");
+
+  if (cleaned.length === 0) {
+    return <p className="text-slate-600">N/A</p>;
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {cleaned.map((item) => (
+        <span
+          key={item}
+          className={`rounded-lg px-4 py-2 text-sm font-bold ${colorClass}`}
+        >
+          {item}
+        </span>
+      ))}
+    </div>
+  );
 }

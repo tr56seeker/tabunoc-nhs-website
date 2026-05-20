@@ -18,21 +18,11 @@ function getInitials(name: string) {
     .join("");
 }
 
-function getSubjectText(person: Personnel) {
-  if (!person.subjectTaught || person.subjectTaught.length === 0) {
-    return "";
-  }
-
-  return person.subjectTaught.join(", ");
-}
-
 function getAdvisoryText(person: Personnel) {
-  if (!person.advisory || person.advisory.length === 0) {
-    return "";
-  }
+  if (!person.advisory || person.advisory.length === 0) return "";
 
   return person.advisory
-    .map((item) => `${item.gradeLevel}-${item.section.replace(/^\d+\-/, "")}`)
+    .map((item) => `${item.gradeLevel}-${item.section.replace(/^\d+-/, "")}`)
     .join(", ");
 }
 
@@ -43,21 +33,22 @@ function getPositionDesignation(person: Personnel) {
     parts.push(person.position);
   }
 
-  if (person.roles.includes("Class Adviser")) {
-    const advisoryText = getAdvisoryText(person);
-
-    if (advisoryText) {
-      parts.push(`Class Adviser, ${advisoryText}`);
-    } else {
-      parts.push("Class Adviser");
-    }
+  if (person.designation && person.designation.length > 0) {
+    parts.push(...person.designation);
   }
 
-  if (person.coordinatorship && person.coordinatorship.length > 0) {
-    parts.push(...person.coordinatorship);
+  const advisoryText = getAdvisoryText(person);
+
+  if (advisoryText) {
+    parts.push(advisoryText);
   }
 
   return Array.from(new Set(parts)).join(" / ");
+}
+
+function getSubjectText(person: Personnel) {
+  if (!person.subjectTaught || person.subjectTaught.length === 0) return "";
+  return person.subjectTaught.join(", ");
 }
 
 export default function PersonnelCard({
@@ -66,8 +57,8 @@ export default function PersonnelCard({
   onClick,
 }: PersonnelCardProps) {
   const initials = getInitials(person.name);
-  const subjectText = getSubjectText(person);
   const positionDesignation = getPositionDesignation(person);
+  const subjectText = getSubjectText(person);
 
   return (
     <motion.article
@@ -78,21 +69,23 @@ export default function PersonnelCard({
       whileHover={{ y: -4 }}
       transition={{ duration: 0.3 }}
       onClick={() => onClick?.(person)}
-      className="group relative h-full min-h-[118px] cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-[#0F4C5C]/40 hover:shadow-lg"
+      className="group relative h-full min-h-[132px] cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-[#0F4C5C]/40 hover:shadow-lg"
     >
-      <div className="flex h-full min-h-[118px]">
-        {/* LEFT PHOTO / INITIAL STRIP */}
-        {person.photo ? (
-          <img
-            src={person.photo}
-            alt={person.name}
-            className="w-[88px] shrink-0 object-cover"
-          />
-        ) : (
-          <div className="flex w-[88px] shrink-0 items-center justify-center bg-gradient-to-br from-blue-900 to-yellow-500 text-lg font-black text-white">
-            {initials}
-          </div>
-        )}
+      <div className="flex h-full min-h-[132px]">
+        {/* LEFT FULL PHOTO BLOCK */}
+        <div className="w-[132px] shrink-0 bg-[#0F4C5C]">
+          {person.photo ? (
+            <img
+              src={person.photo}
+              alt={person.name}
+              className="h-full w-full object-cover object-[50%_20%]"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-[#0F4C5C] text-2xl font-black text-white">
+              {initials}
+            </div>
+          )}
+        </div>
 
         {/* RIGHT CONTENT */}
         <div className="flex flex-1 flex-col justify-center px-5 py-4">
@@ -118,6 +111,17 @@ export default function PersonnelCard({
               </p>
               <p className="mt-0.5 text-sm font-bold leading-snug text-[#0F4C5C]">
                 {subjectText}
+              </p>
+            </>
+          )}
+
+          {person.department && (
+            <>
+              <p className="mt-2 text-xs font-black uppercase tracking-widest text-slate-500">
+                Department
+              </p>
+              <p className="mt-0.5 text-sm font-bold leading-snug text-slate-700">
+                {person.department}
               </p>
             </>
           )}

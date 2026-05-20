@@ -37,7 +37,7 @@ const roleFilters: Array<"All" | PersonnelRole> = [
   "SHS Coordinator",
   "Class Adviser",
   "Subject Teacher",
-  "Program Coordinator",
+  "Program Implementer",
 ];
 
 function getSearchableText(person: Personnel) {
@@ -404,7 +404,7 @@ export default function OrganizationPage() {
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">
                 This section is prepared for additional personnel, subject
-                teachers, program coordinators, committee chairpersons, and
+                teachers, Program Implementers, committee chairpersons, and
                 support units.
               </p>
             </div>
@@ -418,7 +418,7 @@ export default function OrganizationPage() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur">
-                <h3 className="text-2xl font-black">Program Coordinators</h3>
+                <h3 className="text-2xl font-black">Program Implementers</h3>
                 <p className="mt-3 text-slate-300">
                   Current entries: {programCoordinators.length}
                 </p>

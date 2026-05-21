@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
 import Navbar from "@/components/Navbar";
@@ -46,9 +46,14 @@ function getSearchableText(person: Personnel) {
     person.position,
     person.group,
     person.department,
+    person.bio,
+    person.description,
     ...(person.roles || []),
+    ...(person.designation || []),
     ...(person.subjectTaught || []),
     ...(person.coordinatorship || []),
+    ...(person.gradeLevelTaught || []),
+    ...(person.sectionsHandled || []),
     ...(person.advisory || []).map((item) => item.gradeLevel),
     ...(person.advisory || []).map((item) => item.section),
   ]
@@ -57,16 +62,57 @@ function getSearchableText(person: Personnel) {
     .toLowerCase();
 }
 
+function getGradeLeaderRank(person: Personnel) {
+  const leadershipText = [
+    person.position,
+    ...(person.designation || []),
+    ...(person.coordinatorship || []),
+  ].join(" ");
+
+  if (
+    leadershipText.includes("Senior High School Coordinator") ||
+    leadershipText.includes("SHS Coordinator")
+  ) {
+    return 0;
+  }
+
+  if (leadershipText.includes("Grade 10 Leader")) return 1;
+  if (leadershipText.includes("Grade 9 Leader")) return 2;
+  if (leadershipText.includes("Grade 8 Leader")) return 3;
+  if (leadershipText.includes("Grade 7 Leader")) return 4;
+
+  return 99;
+}
+
 export default function OrganizationPage() {
   const [selectedGrade, setSelectedGrade] = useState("All");
   const [selectedPerson, setSelectedPerson] = useState<Personnel | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<"All" | PersonnelRole>("All");
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const profileId = params.get("profile");
+
+    if (!profileId) return;
+
+    const matchedPerson = allPersonnel.find((person) => person.id === profileId);
+
+    if (matchedPerson) {
+      setSelectedPerson(matchedPerson);
+    }
+  }, []);
+
   const visibleGradeLevels = useMemo(() => {
     if (selectedGrade === "All") return gradeLevels;
     return gradeLevels.filter((grade) => grade === selectedGrade);
   }, [selectedGrade]);
+
+  const sortedGradeLeaders = useMemo(() => {
+    return [...gradeLeaders].sort(
+      (a, b) => getGradeLeaderRank(a) - getGradeLeaderRank(b)
+    );
+  }, []);
 
   const searchResults = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -86,87 +132,87 @@ export default function OrganizationPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-slate-950 text-white">
-        
+      <main className="min-h-screen bg-white text-slate-950">
         {/* HERO */}
-          <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-36 text-slate-950">
-            <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
-            <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-36 text-slate-950">
+          <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
+          <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
-            <div className="relative mx-auto max-w-7xl text-center">
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7 }}
-                className="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
-              >
-                <img
-                  src={depedLogo}
-                  alt="Department of Education Logo"
-                  className="h-12 w-auto -translate-y-1 object-contain md:h-14"
-                />
+          <div className="relative mx-auto max-w-7xl text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
+            >
+              <img
+                src={depedLogo}
+                alt="Department of Education Logo"
+                className="h-12 w-auto -translate-y-1 object-contain md:h-14"
+              />
 
-                <div className="hidden h-12 w-px bg-slate-300 sm:block" />
+              <div className="hidden h-12 w-px bg-slate-300 sm:block" />
 
-                <img
-                  src={schoolLogo}
-                  alt="Tabunoc National High School Logo"
-                  className="h-16 w-16 object-contain md:h-20 md:w-20"
-                />
+              <img
+                src={schoolLogo}
+                alt="Tabunoc National High School Logo"
+                className="h-16 w-16 object-contain md:h-20 md:w-20"
+              />
 
-                <div className="text-center sm:text-left">
-                  <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
-                    Department of Education
-                  </p>
-                  <p className="mt-1 font-bold text-slate-700">
-                    Tabunoc National High School · School ID: 303111
-                  </p>
-                </div>
-              </motion.div>
+              <div className="text-center sm:text-left">
+                <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                  Department of Education
+                </p>
+                <p className="mt-1 font-bold text-slate-700">
+                  Tabunoc National High School · School ID: 303111
+                </p>
+              </div>
+            </motion.div>
 
-              <motion.p
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.1 }}
-                className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]"
-              >
-                School Directory
-              </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]"
+            >
+              School Directory
+            </motion.p>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 32 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.15 }}
-                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-6xl"
-              >
-                School Administration, Faculty, and Staff
-              </motion.h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 32 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.15 }}
+              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-6xl"
+            >
+              School Administration, Faculty, and Staff
+            </motion.h1>
 
-              <motion.p
-                initial={{ opacity: 0, y: 32 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.25 }}
-                className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700"
-              >
-                Meet the school administration, faculty members, advisers, coordinators,
-                and support personnel of Tabunoc National High School.
-              </motion.p>
-            </div>
-          </section>
+            <motion.p
+              initial={{ opacity: 0, y: 32 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.25 }}
+              className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700"
+            >
+              Meet the school administration, faculty members, advisers,
+              program implementers, and support personnel of Tabunoc National
+              High School.
+            </motion.p>
+          </div>
+        </section>
 
         {/* SEARCH AND FILTER */}
         <section className="bg-[#F8FAFC] px-6 py-16 text-slate-950">
           <div className="mx-auto max-w-7xl">
             <div className="mb-8 text-center">
-              <p className="text-sm font-bold uppercase tracking-widest text-blue-700">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                 Faculty and Personnel Directory
               </p>
-              <h2 className="mt-3 text-3xl font-black md:text-5xl">
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
                 Search the School Directory
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
-                Search by name, section, role, subject taught, position, or
-                coordinatorship.
+                Search by name, section, role, subject taught, position,
+                designation, or program handled.
               </p>
             </div>
 
@@ -176,8 +222,8 @@ export default function OrganizationPage() {
                   type="text"
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
-                  placeholder="Search by name, section, subject, or coordinatorship..."
-                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-700 focus:ring-4 focus:ring-blue-100"
+                  placeholder="Search by name, section, subject, designation, or program..."
+                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100"
                 />
 
                 <select
@@ -185,7 +231,7 @@ export default function OrganizationPage() {
                   onChange={(event) =>
                     setSelectedRole(event.target.value as "All" | PersonnelRole)
                   }
-                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-bold text-slate-900 outline-none transition focus:border-blue-700 focus:ring-4 focus:ring-blue-100"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-bold text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100"
                 >
                   {roleFilters.map((role) => (
                     <option key={role} value={role}>
@@ -208,7 +254,7 @@ export default function OrganizationPage() {
                         setSearchTerm("");
                         setSelectedRole("All");
                       }}
-                      className="w-fit rounded-lg bg-slate-100 px-4 py-2 text-sm font-black text-slate-700 transition hover:bg-slate-950 hover:text-white"
+                      className="w-fit rounded-lg bg-slate-100 px-4 py-2 text-sm font-black text-slate-700 transition hover:bg-[#0F4C5C] hover:text-white"
                     >
                       Clear Search
                     </button>
@@ -232,7 +278,7 @@ export default function OrganizationPage() {
                       </p>
                       <p className="mt-2 text-sm text-slate-500">
                         Try searching by surname, grade level, section, subject,
-                        or role.
+                        designation, or role.
                       </p>
                     </div>
                   )}
@@ -288,8 +334,9 @@ export default function OrganizationPage() {
                 Master Teachers
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
-                Master Teachers provide instructional support, mentoring, and technical
-                assistance for curriculum implementation and teaching practice.
+                Master Teachers provide instructional support, mentoring, and
+                technical assistance for curriculum implementation and teaching
+                practice.
               </p>
             </div>
 
@@ -307,19 +354,19 @@ export default function OrganizationPage() {
         </section>
 
         {/* GRADE LEADERS */}
-        <section className="bg-slate-100 px-6 py-20 text-slate-950">
+        <section className="bg-white px-6 py-20 text-slate-950">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-bold uppercase tracking-widest text-blue-700">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                 Grade Level Leadership
               </p>
-              <h2 className="mt-3 text-3xl font-black md:text-5xl">
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
                 Grade Leaders
               </h2>
             </div>
 
             <div className="mx-auto grid max-w-5xl items-stretch gap-5 md:grid-cols-2">
-              {gradeLeaders.map((person) => (
+              {sortedGradeLeaders.map((person) => (
                 <PersonnelCard
                   key={person.id}
                   person={person}
@@ -332,17 +379,17 @@ export default function OrganizationPage() {
         </section>
 
         {/* CLASS ADVISERS */}
-        <section className="bg-white px-6 py-20 text-slate-950">
+        <section className="bg-[#F8FAFC] px-6 py-20 text-slate-950">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-bold uppercase tracking-widest text-blue-700">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                 Class Advisers
               </p>
-              <h2 className="mt-3 text-3xl font-black md:text-5xl">
-                Class Advisers
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
+                Class Adviser Directory
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
-                Select a grade level to view assigned class advisers.
+                Select a grade level to view assigned class adviser profiles.
               </p>
             </div>
 
@@ -353,8 +400,8 @@ export default function OrganizationPage() {
                   onClick={() => setSelectedGrade(grade)}
                   className={`rounded-full px-5 py-2 text-sm font-bold transition ${
                     selectedGrade === grade
-                      ? "bg-blue-950 text-white"
-                      : "bg-slate-100 text-slate-700 hover:bg-yellow-300 hover:text-slate-950"
+                      ? "bg-[#0F4C5C] text-white"
+                      : "bg-white text-slate-700 hover:bg-yellow-300 hover:text-slate-950"
                   }`}
                 >
                   {grade}
@@ -376,22 +423,17 @@ export default function OrganizationPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.45 }}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4 md:p-6"
+                    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6"
                   >
-                    <div className="mb-6 flex flex-col justify-between gap-3 md:flex-row md:items-center">
-                      <div>
-                        <h3 className="text-3xl font-black text-slate-950">
-                          {grade}
-                        </h3>
-                        <p className="mt-1 text-sm font-semibold text-slate-500">
-                          {advisers.length} adviser profile
-                          {advisers.length > 1 ? "s" : ""}
-                        </p>
-                      </div>
-
-                      <span className="w-fit rounded-lg bg-blue-950 px-4 py-2 text-sm font-bold text-white">
+                    <div className="mb-6">
+                      <h3 className="text-3xl font-black text-slate-950">
                         {grade}
-                      </span>
+                      </h3>
+
+                      <p className="mt-1 text-sm font-semibold text-slate-500">
+                        {advisers.length} adviser profile
+                        {advisers.length > 1 ? "s" : ""}
+                      </p>
                     </div>
 
                     <div className="grid gap-5 lg:grid-cols-2">
@@ -411,38 +453,79 @@ export default function OrganizationPage() {
           </div>
         </section>
 
-        {/* FUTURE EXPANSION */}
+        {/* SUBJECT TEACHERS */}
+        <section className="bg-white px-6 py-20 text-slate-950">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-10 text-center">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                Teaching Personnel
+              </p>
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
+                Subject Teachers
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+                Subject teachers support curriculum delivery, skills
+                development, and learner progress across learning areas and
+                specializations.
+              </p>
+            </div>
+
+            {subjectTeachers.length > 0 ? (
+              <div className="grid gap-5 lg:grid-cols-2">
+                {subjectTeachers.map((person) => (
+                  <PersonnelCard
+                    key={person.id}
+                    person={person}
+                    compact
+                    onClick={setSelectedPerson}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-8 text-center">
+                <p className="font-bold text-slate-600">
+                  Subject teacher profiles will be added soon.
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* PROGRAM IMPLEMENTERS */}
         <section className="bg-[#0F4C5C] px-6 py-20 text-white">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-bold uppercase tracking-widest text-yellow-300">
-                Expandable Directory
+              <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
+                Program Implementation
               </p>
-              <h2 className="mt-3 text-3xl font-black md:text-5xl">
-                Subject Teachers, Coordinators, and Support Roles
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
+                Program Implementers
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-300">
-                This section is prepared for additional personnel, subject
-                teachers, Program Implementers, committee chairpersons, and
-                support units.
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-teal-50">
+                Program implementers support school programs, initiatives,
+                committees, and special assignments aligned with school
+                operations and learner support.
               </p>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-2">
-              <div className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur">
-                <h3 className="text-2xl font-black">Subject Teachers</h3>
-                <p className="mt-3 text-slate-300">
-                  Current entries: {subjectTeachers.length}
+            {programImplementers.length > 0 ? (
+              <div className="grid gap-5 lg:grid-cols-2">
+                {programImplementers.map((person) => (
+                  <PersonnelCard
+                    key={person.id}
+                    person={person}
+                    compact
+                    onClick={setSelectedPerson}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-white/10 bg-white/10 p-8 text-center backdrop-blur">
+                <p className="font-bold text-teal-50">
+                  Program implementer profiles will be added soon.
                 </p>
               </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur">
-                <h3 className="text-2xl font-black">Program Implementers</h3>
-                <p className="mt-3 text-slate-300">
-                  Current entries: {programImplementers.length}
-                </p>
-              </div>
-            </div>
+            )}
           </div>
         </section>
 
@@ -464,7 +547,7 @@ export default function OrganizationPage() {
             </div>
 
             <div>
-              <p className="font-bold text-white">
+              <p className="font-black text-white">
                 Tabunoc National High School
               </p>
               <p className="mt-1 text-sm">

@@ -66,12 +66,12 @@ export default function PersonnelCard({
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      whileHover={{ y: -4 }}
-      transition={{ duration: 0.3 }}
+      whileHover={{ y: -3 }}
+      transition={{ duration: 0.25 }}
       onClick={() => onClick?.(person)}
-      className="group relative h-full min-h-[132px] cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-[#0F4C5C]/40 hover:shadow-lg"
+      className="group relative h-full cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-[#0F4C5C]/60 hover:bg-[#F8FAFC] hover:shadow-md"
     >
-      <div className="flex h-full min-h-[132px]">
+      <div className="flex h-full">
         {/* LEFT FULL PHOTO BLOCK */}
         <div className="w-[132px] shrink-0 bg-[#0F4C5C]">
           {person.photo ? (
@@ -81,14 +81,18 @@ export default function PersonnelCard({
               className="h-full w-full object-cover object-[50%_20%]"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-[#0F4C5C] text-2xl font-black text-white">
+            <div className="flex h-full min-h-[132px] w-full items-center justify-center bg-[#0F4C5C] text-2xl font-black text-white">
               {initials}
             </div>
           )}
         </div>
 
         {/* RIGHT CONTENT */}
-        <div className="flex flex-1 flex-col justify-center px-5 py-4">
+        <div className="relative flex flex-1 flex-col justify-center px-5 py-4 pr-20">
+          <span className="absolute right-4 top-4 rounded-full border border-[#0F4C5C]/15 bg-[#ECFDF5] px-3 py-1 text-xs font-black text-[#0F4C5C] opacity-0 shadow-sm transition duration-300 group-hover:opacity-100">
+            View →
+          </span>
+
           <h3
             className={`font-black leading-tight text-slate-950 ${
               compact ? "text-base" : "text-lg"
@@ -128,12 +132,8 @@ export default function PersonnelCard({
         </div>
       </div>
 
-      {/* HOVER OVERLAY */}
-      <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-[#0F4C5C]/90 opacity-0 transition duration-300 group-hover:opacity-100">
-        <div className="rounded-xl border border-white/30 bg-white/10 px-6 py-3 text-center text-lg font-black text-white backdrop-blur-sm">
-          View Profile →
-        </div>
-      </div>
+      {/* VERY SOFT HOVER TINT */}
+      <div className="pointer-events-none absolute inset-0 bg-[#0F4C5C]/[0.03] opacity-0 transition duration-300 group-hover:opacity-100" />
     </motion.article>
   );
 }

@@ -242,14 +242,14 @@ export default function OrganizationPage() {
           </div>
         </section>
 
-        {/* TOP LEADERSHIP */}
+        {/* SCHOOL LEADERSHIP AND SUPPORT PERSONNEL */}
         <section className="bg-white px-6 py-20 text-slate-950">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-bold uppercase tracking-widest text-blue-700">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                 School Leadership
               </p>
-              <h2 className="mt-3 text-3xl font-black md:text-5xl">
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
                 School Leadership and Support Personnel
               </h2>
             </div>
@@ -274,12 +274,31 @@ export default function OrganizationPage() {
                 />
               ))}
             </div>
+          </div>
+        </section>
 
-            <div className="mt-8 grid gap-5 md:grid-cols-2">
+        {/* MASTER TEACHERS */}
+        <section className="bg-[#F8FAFC] px-6 py-20 text-slate-950">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-10 text-center">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                Instructional Leadership
+              </p>
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
+                Master Teachers
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+                Master Teachers provide instructional support, mentoring, and technical
+                assistance for curriculum implementation and teaching practice.
+              </p>
+            </div>
+
+            <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
               {masterTeachers.map((person) => (
                 <PersonnelCard
                   key={person.id}
                   person={person}
+                  compact
                   onClick={setSelectedPerson}
                 />
               ))}

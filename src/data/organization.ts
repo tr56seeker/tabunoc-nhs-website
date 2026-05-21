@@ -202,7 +202,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 7", section: "7-Daisy" }],
     sectionsHandled: ["Grade 7-Daisy"],
-    photo: "",
+    photo: "/teachers/ruth-briones.jpg",
   },
   {
     id: "elbert-misterio",
@@ -238,7 +238,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 7", section: "7-Rose" }],
     sectionsHandled: ["Grade 7-Rose"],
-    photo: "",
+    photo: "/teachers/junnelyn-herbito.jpg",
   },
   {
     id: "gwendolyn-olo",
@@ -250,7 +250,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 7", section: "7-Stargazer" }],
     sectionsHandled: ["Grade 7-Stargazer"],
-    photo: "",
+    photo: "/teachers/gwendolyn-olo.jpg",
   },
 
   // Grade 8 Advisers
@@ -288,7 +288,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 8", section: "8-Eagle" }],
     sectionsHandled: ["Grade 8-Eagle"],
-    photo: "",
+    photo: "/teachers/bret-kalvin-primacio.jpg",
   },
   {
     id: "jeralyn-gerra",
@@ -300,7 +300,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 8", section: "8-Falcon" }],
     sectionsHandled: ["Grade 8-Falcon"],
-    photo: "",
+    photo: "/teachers/jeralyn-gerra.jpg",
   },
   {
     id: "eljoy-barroca",
@@ -350,7 +350,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 9", section: "9-Cypress" }],
     sectionsHandled: ["Grade 9-Cypress"],
-    photo: "",
+    photo: "/teachers/lourence-capa.jpg",
   },
   {
     id: "angelo-saavedra",
@@ -362,7 +362,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 9", section: "9-Elm" }],
     sectionsHandled: ["Grade 9-Elm"],
-    photo: "",
+    photo: "/teachers/angelo-saavedra.jpg",
   },
   {
     id: "bella-samontanez",
@@ -386,7 +386,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 9", section: "9-Maple" }],
     sectionsHandled: ["Grade 9-Maple"],
-    photo: "",
+    photo: "/teachers/allan-aparicio.jpg",
   },
   {
     id: "jeffrey-caberte",
@@ -436,7 +436,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 10", section: "10-Emerald" }],
     sectionsHandled: ["Grade 10-Emerald"],
-    photo: "",
+    photo: "/teachers/marilou-cabriana.jpg",
   },
   {
     id: "sharon-alsa",
@@ -448,7 +448,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 10", section: "10-Jade" }],
     sectionsHandled: ["Grade 10-Jade"],
-    photo: "",
+    photo: "/teachers/sharon-alsa.jpg",
   },
   {
     id: "jake-barcenas",
@@ -460,7 +460,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 10", section: "10-Ruby" }],
     sectionsHandled: ["Grade 10-Ruby"],
-    photo: "",
+    photo: "/teachers/jake-barcenas.jpg",
   },
   {
     id: "jay-neil-oro",
@@ -497,7 +497,7 @@ export const personnel: Personnel[] = [
       "Grade 12-Saturn",
     ],
     subjectTaught: [],
-    photo: "",
+    photo: "/teachers/joseph-dagaraga.jpg",
     bio:
       "Serves as a Senior High School teacher and class adviser, supporting learner progress and classroom-based guidance.",
     consultationSchedule: "By appointment through official school channels",
@@ -541,11 +541,11 @@ export const personnel: Personnel[] = [
     ],
     sectionsHandled: ["Grade 11-Erebus", "Grade 11-Hera"],
     subjectTaught: [],
-    photo: "",
+    photo: "/teachers/marissa-pintuan.jpg",
   },
   {
-    id: "angel-batugas",
-    name: "ANGEL C. BATUGAS",
+    id: "angel-batuigas",
+    name: "ANGEL C. BATUIGAS",
     position: "Teacher",
     designation: ["Class Adviser"],
     roles: ["Subject Teacher", "Class Adviser"],
@@ -557,7 +557,7 @@ export const personnel: Personnel[] = [
     ],
     sectionsHandled: ["Grade 12-Earth", "Grade 12-Mars"],
     subjectTaught: [],
-    photo: "",
+    photo: "/teachers/angel-batuigas",
   },
   {
     id: "jevy-ann-uy",
@@ -570,20 +570,20 @@ export const personnel: Personnel[] = [
     advisory: [{ gradeLevel: "Grade 12", section: "12-Jupiter" }],
     sectionsHandled: ["Grade 12-Jupiter"],
     subjectTaught: [],
-    photo: "",
+    photo: "/teachers/jevy-ann-uy.jpg",
   },
   {
     id: "glendale-orocay",
     name: "GLENDALE R. OROCAY",
-    position: "Teacher",
+    position: "TCH-01",
     designation: ["Class Adviser"],
     roles: ["Subject Teacher", "Class Adviser"],
     group: "Teaching Personnel",
     department: "Senior High School",
     advisory: [{ gradeLevel: "Grade 12", section: "12-Venus" }],
     sectionsHandled: ["Grade 12-Venus"],
-    subjectTaught: [],
-    photo: "",
+    subjectTaught: ["Hairdressing", "Beauty Care"],
+    photo: "/teachers/glendale-orocay.jpg",
   },
 
   {

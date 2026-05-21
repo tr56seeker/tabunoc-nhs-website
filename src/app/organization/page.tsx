@@ -17,7 +17,7 @@ import {
   gradeLevels,
   leadership,
   masterTeachers,
-  programCoordinators,
+  programImplementers,
   subjectTeachers,
 } from "@/data/organization";
 
@@ -215,7 +215,7 @@ export default function OrganizationPage() {
                   </div>
 
                   {searchResults.length > 0 ? (
-                    <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid gap-5 lg:grid-cols-2">
                       {searchResults.map((person) => (
                         <PersonnelCard
                           key={person.id}
@@ -264,7 +264,7 @@ export default function OrganizationPage() {
               ))}
             </div>
 
-            <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            <div className="mx-auto mt-8 grid max-w-5xl gap-5 md:grid-cols-2">
               {administrativePersonnel.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -299,7 +299,7 @@ export default function OrganizationPage() {
               </h2>
             </div>
 
-            <div className="grid items-stretch gap-4 md:grid-cols-2 lg:grid-cols-5">
+            <div className="mx-auto grid max-w-5xl items-stretch gap-5 md:grid-cols-2">
               {gradeLeaders.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -375,7 +375,7 @@ export default function OrganizationPage() {
                       </span>
                     </div>
 
-                    <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid gap-5 lg:grid-cols-2">
                       {advisers.map((person) => (
                         <PersonnelCard
                           key={`${grade}-${person.id}`}
@@ -420,7 +420,7 @@ export default function OrganizationPage() {
               <div className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur">
                 <h3 className="text-2xl font-black">Program Implementers</h3>
                 <p className="mt-3 text-slate-300">
-                  Current entries: {programCoordinators.length}
+                  Current entries: {programImplementers.length}
                 </p>
               </div>
             </div>

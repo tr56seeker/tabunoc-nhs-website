@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -325,19 +326,19 @@ export default function SHSOfferingsPage() {
               </p>
 
               <div className="mt-6 grid gap-4">
-                <a
+                <Link
                   href="/enrollment"
                   className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
                 >
                   Open Enrollment Guide
-                </a>
+                </Link>
 
-                <a
+                <Link
                   href="/#contact"
                   className="rounded-xl border border-white/30 px-5 py-4 font-black text-white transition hover:-translate-y-1 hover:bg-white hover:text-[#0F4C5C]"
                 >
                   Contact the School
-                </a>
+                </Link>
               </div>
             </motion.div>
           </div>

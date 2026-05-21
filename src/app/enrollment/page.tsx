@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 
@@ -400,18 +401,18 @@ export default function EnrollmentPage() {
             >
               <h3 className="text-2xl font-black">Helpful Links</h3>
               <div className="mt-6 grid gap-4">
-                <a
+                <Link
                   href="/shs-offerings"
                   className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
                 >
                   View SHS Offerings
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/#contact"
                   className="rounded-xl border border-white/30 px-5 py-4 font-black text-white transition hover:-translate-y-1 hover:bg-white hover:text-[#0F4C5C]"
                 >
                   Contact Enrollment Help Desk
-                </a>
+                </Link>
               </div>
             </motion.div>
           </div>
@@ -474,12 +475,12 @@ export default function EnrollmentPage() {
               >
                 Chat on Messenger
               </a>
-              <a
+              <Link
                 href="/#contact"
                 className="rounded-xl border border-[#0F4C5C]/30 bg-white px-6 py-3 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-[#0F4C5C] hover:text-white"
               >
                 View Contact Channels
-              </a>
+              </Link>
             </div>
           </div>
         </section>

@@ -257,8 +257,8 @@ export const personnel: Personnel[] = [
   {
     id: "joy-mortal",
     name: "JOY E. MORTAL",
-    position: "Teacher",
-    designation: ["Class Adviser"],
+    position: "TCH-01",
+    designation: ["Prefect of Descipline", "Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
     department: "Junior High School",
@@ -629,6 +629,24 @@ export const gradeLevels = [
   "Grade 12",
 ];
 
+function getGradeLeaderSortRank(person: Personnel): number {
+  const label =
+    person.coordinatorship?.find((item) => /Grade \d+|Senior High/i.test(item)) ||
+    person.designation?.find((item) => /Grade \d+|Senior High/i.test(item)) ||
+    "";
+
+  const gradeMatch = label.match(/Grade\s*(\d+)/i);
+  if (gradeMatch) {
+    return Number(gradeMatch[1]);
+  }
+
+  if (/Senior\s+High/i.test(label)) {
+    return 12;
+  }
+
+  return 0;
+}
+
 export const leadership = personnel.filter((person) =>
   person.roles.includes("Principal")
 );
@@ -638,15 +656,35 @@ export const administrativePersonnel = personnel.filter(
     person.roles.includes("Administrative") || person.roles.includes("Guidance")
 );
 
-export const masterTeachers = personnel.filter((person) =>
-  person.roles.includes("Master Teacher")
-);
+export const masterTeachers = personnel
+  .filter((person) => person.roles.includes("Master Teacher"))
+  .sort((a, b) => {
+    const rankA = getGradeLeaderSortRank(a);
+    const rankB = getGradeLeaderSortRank(b);
 
-export const gradeLeaders = personnel.filter(
-  (person) =>
-    person.roles.includes("Grade Leader") ||
-    person.roles.includes("SHS Coordinator")
-);
+    if (rankA !== rankB) {
+      return rankB - rankA;
+    }
+
+    return a.name.localeCompare(b.name);
+  });
+
+export const gradeLeaders = personnel
+  .filter(
+    (person) =>
+      person.roles.includes("Grade Leader") ||
+      person.roles.includes("SHS Coordinator")
+  )
+  .sort((a, b) => {
+    const rankA = getGradeLeaderSortRank(a);
+    const rankB = getGradeLeaderSortRank(b);
+
+    if (rankA !== rankB) {
+      return rankB - rankA;
+    }
+
+    return a.name.localeCompare(b.name);
+  });
 
 export const classAdvisers = personnel.filter(
   (person) => person.advisory && person.advisory.length > 0

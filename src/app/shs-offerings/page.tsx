@@ -13,14 +13,14 @@ const depedLogo =
 const offerings = [
   {
     category: "Pure Academic Track",
-    title: "Arts, Social Sciences, and Humanities Electives",
+    title: "Arts, Social Sciences, and Humanities",
     description:
       "Designed for learners interested in humanities, communication, social sciences, governance, philosophy, literature, arts, and related college pathways.",
     items: [
       "Arts 1",
       "Contemporary Literature 1",
       "Creative Composition",
-      "Filipino I",
+      "Filipino 1",
       "Introduction to Philosophy",
       "Philippine Governance",
       "Social Sciences (Theory and Practice)",
@@ -28,33 +28,66 @@ const offerings = [
   },
   {
     category: "Pure Academic Track",
-    title: "Business and Entrepreneurship Electives",
+    title: "Science, Technology, Engineering, and Mathematics",
     description:
-      "Designed for learners interested in business, entrepreneurship, organization, management, and related career or college pathways.",
-    items: ["Business I", "Introduction to Organization and Management"],
-  },
-  {
-    category: "Technical-Vocational Livelihood",
-    title: "Electrical Installation and Maintenance",
-    description:
-      "Designed for learners interested in electrical works, basic installation, technical skills development, and possible preparation for skills certification.",
+      "Designed for learners interested in science, mathematics, engineering, technology, research, health sciences, and other STEM-related college pathways.",
     items: [
-      "Electrical Installation and Maintenance",
-      "Workplace Safety and Tools",
-      "Basic Electrical Circuits",
-      "Electrical Plans and Wiring Installation",
+      "Biology 1",
+      "Earth and Space Science 1",
+      "Empowerment Technologies",
+      "Finite Mathematics 1",
+      "Chemistry 1",
+      "Physics 1",
     ],
   },
   {
-    category: "Technical-Vocational Livelihood",
-    title: "Electronic Products Assembly and Servicing",
+    category: "Pure Academic Track",
+    title: "Business and Entrepreneurship",
     description:
-      "Designed for learners interested in electronics, electronic components, assembly, troubleshooting, and technical servicing skills.",
+      "Designed for learners interested in business, entrepreneurship, organization, management, and related career or college pathways.",
+    items: ["Business 1", "Introduction to Organization and Management"],
+  },
+  {
+    category: "Pure Academic Track",
+    title: "Sports, Health, and Wellness",
+    description:
+      "Designed for learners interested in human movement, physical fitness, wellness, sports, health, and recreation-related fields.",
     items: [
+      "Human Movement 1 (Basic Anatomy in Sports and Exercise)",
+      "Physical Education 1 (Fitness and Recreation)",
+    ],
+  },
+  {
+    category: "Tech Pro Track",
+    title: "Aesthetic, Wellness, and Human Care",
+    description:
+      "Designed for learners interested in beauty care, grooming, hairdressing, wellness services, and human care-related skills.",
+    items: [
+      "Aesthetic Services (Beauty Care)",
+      "Barbering Services",
+      "Hairdressing Services",
+      "Wellness Services (Hilot/Massage)",
+    ],
+  },
+  {
+    category: "Tech Pro Track",
+    title: "ICT Support and Computer Programming Technologies",
+    description:
+      "Designed for learners interested in computer programming, computer systems servicing, broadband installation, ICT support, and technology-related skills.",
+    items: [
+      "Computer Programming (Java)",
+      "Computer Systems Servicing",
+      "Broadband Installation",
+    ],
+  },
+  {
+    category: "Tech Pro Track",
+    title: "Industrial Technologies",
+    description:
+      "Designed for learners interested in hands-on technical skills, electrical works, electronics, installation, servicing, and industrial technology pathways.",
+    items: [
+      "Electrical Installation and Maintenance",
       "Electronic Products Assembly and Servicing",
-      "Electronic Components",
-      "Circuit Assembly",
-      "Basic Servicing and Troubleshooting",
     ],
   },
 ];
@@ -149,9 +182,7 @@ export default function SHSOfferingsPage() {
               transition={{ duration: 0.8, delay: 0.25 }}
               className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700"
             >
-              Explore the available Senior High School tracks, electives, and
-              technical-vocational options offered at Tabunoc National High
-              School.
+              Explore the Pure Academic Track and Tech Pro Track offerings available for Senior High School learners of Tabunoc National High School.
             </motion.p>
           </div>
         </section>

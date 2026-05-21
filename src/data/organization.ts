@@ -55,9 +55,10 @@ export const personnel: Personnel[] = [
   },
 
   {
-    id: "niña-kristine-ayos",
+    id: "nina-kristine-ayos",
     name: "NIÑA KRISTINE A. AYOS",
     position: "Administrative Officer II",
+    designation: [],
     roles: ["Administrative"],
     group: "Administrative Personnel",
     department: "Administrative Office",
@@ -70,6 +71,7 @@ export const personnel: Personnel[] = [
     id: "dawn-camille-caparida",
     name: "DAWN CAMILLE L. CAPARIDA",
     position: "Administrative Assistant I",
+    designation: [],
     roles: ["Administrative"],
     group: "Administrative Personnel",
     department: "Administrative Office",
@@ -82,6 +84,7 @@ export const personnel: Personnel[] = [
     id: "joan-cabalda",
     name: "JOAN A. CABALDA",
     position: "Administrative Assistant I",
+    designation: [],
     roles: ["Administrative"],
     group: "Administrative Personnel",
     department: "Administrative Office",
@@ -214,7 +217,7 @@ export const personnel: Personnel[] = [
     photo: "/teachers/elbert-misterio.jpg",
   },
   {
-    id: "leslyn-camero",
+    id: "leslyn-rose-camero",
     name: "LESLYN ROSE L. CAMERO",
     position: "Teacher",
     designation: ["Class Adviser"],
@@ -276,7 +279,7 @@ export const personnel: Personnel[] = [
     photo: "/teachers/genesa-goc-ong.jpg",
   },
   {
-    id: "bret-primacio",
+    id: "bret-kalvin-primacio",
     name: "BRET KALVIN S. PRIMACIO",
     position: "Teacher",
     designation: ["Class Adviser"],
@@ -297,7 +300,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 8", section: "8-Falcon" }],
     sectionsHandled: ["Grade 8-Falcon"],
-    photo: "/teachers/jeralyn-gerra.jpg",
+    photo: "",
   },
   {
     id: "eljoy-barroca",
@@ -309,7 +312,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 8", section: "8-Raven" }],
     sectionsHandled: ["Grade 8-Raven"],
-    photo: "",
+    photo: "/teachers/eljoy-barroca.jpg",
   },
   {
     id: "marissa-abalo",
@@ -321,7 +324,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 8", section: "8-Swan" }],
     sectionsHandled: ["Grade 8-Swan"],
-    photo: "",
+    photo: "/teachers/marissa-abalo.jpg",
   },
 
   // Grade 9 Advisers
@@ -335,7 +338,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 9", section: "9-Aspen" }],
     sectionsHandled: ["Grade 9-Aspen"],
-    photo: "/teachers/jeralyn-maloloy-on.jpg",
+    photo: "/teachers/jeralen-maloloy-on.jpg",
   },
   {
     id: "lourence-capa",
@@ -362,7 +365,7 @@ export const personnel: Personnel[] = [
     photo: "",
   },
   {
-    id: "bella-arquine-samontanez",
+    id: "bella-samontanez",
     name: "BELLA ARQUINE T. SAMONTANEZ",
     position: "Teacher",
     designation: ["Class Adviser"],
@@ -371,7 +374,7 @@ export const personnel: Personnel[] = [
     department: "Junior High School",
     advisory: [{ gradeLevel: "Grade 9", section: "9-Hazel" }],
     sectionsHandled: ["Grade 9-Hazel"],
-    photo: "/teachers/bella-arquine-samontanez.jpg",
+    photo: "/teachers/bella-samontanez.jpg",
   },
   {
     id: "allan-aparicio",
@@ -502,7 +505,7 @@ export const personnel: Personnel[] = [
   {
     id: "lonier-andrade",
     name: "LONIER C. ANDRADE",
-    position: "TCH-1",
+    position: "Teacher",
     designation: ["Class Adviser"],
     roles: ["Subject Teacher", "Class Adviser"],
     group: "Teaching Personnel",
@@ -514,7 +517,7 @@ export const personnel: Personnel[] = [
     ],
     gradeLevelTaught: ["Grade 11", "Grade 12"],
     sectionsHandled: ["Grade 11-Apollo", "Grade 11-Demeter", "Grade 11-Hades"],
-    subjectTaught: ["Programming"],
+    subjectTaught: ["SHS/TVL Electrical Installation and Maintenance 11 & 12"],
     philosophy:
       "I believe that teaching should empower learners to become skilled, disciplined, and confident individuals who are ready for real-life work and lifelong learning.",
     bio:
@@ -527,7 +530,7 @@ export const personnel: Personnel[] = [
   {
     id: "marissa-pintuan",
     name: "MARISSA J. PINTUAN",
-    position: "TCH-3",
+    position: "Teacher",
     designation: ["Class Adviser"],
     roles: ["Subject Teacher", "Class Adviser"],
     group: "Teaching Personnel",
@@ -538,12 +541,12 @@ export const personnel: Personnel[] = [
     ],
     sectionsHandled: ["Grade 11-Erebus", "Grade 11-Hera"],
     subjectTaught: [],
-    photo: "/teachers/marissa-pintuan.jpg",
+    photo: "",
   },
   {
-    id: "angel-batuigas",
-    name: "ANGEL C. BATUIGAS",
-    position: "TCH-1",
+    id: "angel-batugas",
+    name: "ANGEL C. BATUGAS",
+    position: "Teacher",
     designation: ["Class Adviser"],
     roles: ["Subject Teacher", "Class Adviser"],
     group: "Teaching Personnel",
@@ -554,12 +557,12 @@ export const personnel: Personnel[] = [
     ],
     sectionsHandled: ["Grade 12-Earth", "Grade 12-Mars"],
     subjectTaught: [],
-    photo: "/teachers/angel-batuigas.jpg",
+    photo: "",
   },
   {
     id: "jevy-ann-uy",
     name: "JEVY ANN O. UY",
-    position: "TCH-1",
+    position: "Teacher",
     designation: ["Class Adviser"],
     roles: ["Subject Teacher", "Class Adviser"],
     group: "Teaching Personnel",
@@ -567,12 +570,12 @@ export const personnel: Personnel[] = [
     advisory: [{ gradeLevel: "Grade 12", section: "12-Jupiter" }],
     sectionsHandled: ["Grade 12-Jupiter"],
     subjectTaught: [],
-    photo: "/teachers/jevy-ann-uy.jpg",
+    photo: "",
   },
   {
     id: "glendale-orocay",
     name: "GLENDALE R. OROCAY",
-    position: "TCH-1",
+    position: "Teacher",
     designation: ["Class Adviser"],
     roles: ["Subject Teacher", "Class Adviser"],
     group: "Teaching Personnel",
@@ -580,13 +583,13 @@ export const personnel: Personnel[] = [
     advisory: [{ gradeLevel: "Grade 12", section: "12-Venus" }],
     sectionsHandled: ["Grade 12-Venus"],
     subjectTaught: [],
-    photo: "/teachers/glendale-orocay.jpg",
+    photo: "",
   },
 
   {
     id: "richie-ryan-mabunay",
     name: "RICHIE RYAN C. MABUNAY",
-    position: "TCH-3",
+    position: "T-3",
     designation: ["School DRRM Coordinator"],
     roles: ["Subject Teacher", "Program Implementer"],
     group: "Teaching Personnel",
@@ -607,9 +610,9 @@ export const personnel: Personnel[] = [
   {
     id: "benerando-erediano",
     name: "BENERANDO C. EREDIANO",
-    position: "TCH-1",
-    designation: ["SHS-TVL Coordinator"],
-    roles: ["Subject Teacher", "Program Implementer"],
+    position: "Teacher",
+    designation: ["Subject Teacher"],
+    roles: ["Subject Teacher"],
     group: "Teaching Personnel",
     department: "Senior High School",
     subjectTaught: ["Electronic Products Assembly and Servicing"],
@@ -653,7 +656,7 @@ export const subjectTeachers = personnel.filter((person) =>
   person.roles.includes("Subject Teacher")
 );
 
-export const programCoordinators = personnel.filter((person) =>
+export const programImplementers = personnel.filter((person) =>
   person.roles.includes("Program Implementer")
 );
 

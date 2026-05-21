@@ -104,7 +104,7 @@ export default function Home() {
               className="mt-10 flex flex-col gap-4 sm:flex-row"
             >
               <a
-                href="#enrollment"
+                href="enrollment"
                 className="rounded-xl bg-yellow-300 px-8 py-3 font-black text-slate-950 shadow-lg shadow-yellow-300/30 transition hover:-translate-y-1 hover:bg-yellow-200"
               >
                 Enrollment Guide

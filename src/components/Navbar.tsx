@@ -3,10 +3,20 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
+type NavLink = {
+  label: string;
+  href: string;
+};
+
+type NavGroup = {
+  label: string;
+  links: NavLink[];
+};
+
 const schoolLogo =
   "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
 
-const navGroups = [
+const navGroups: NavGroup[] = [
   {
     label: "School",
     links: [
@@ -17,8 +27,8 @@ const navGroups = [
   {
     label: "Services",
     links: [
-      { label: "Enrollment", href: "/#enrollment" },
-      { label: "SHS Offerings", href: "/#programs" },
+      { label: "Enrollment Guide", href: "/enrollment" },
+      { label: "SHS Offerings", href: "/shs-offerings" },
     ],
   },
   {
@@ -66,6 +76,7 @@ export default function Navbar() {
           </div>
         </a>
 
+        {/* Desktop Menu */}
         <div className="hidden items-center gap-2 lg:flex">
           <a
             href="/"
@@ -81,7 +92,10 @@ export default function Navbar() {
               onMouseEnter={() => setOpenDropdown(group.label)}
               onMouseLeave={() => setOpenDropdown(null)}
             >
-              <button className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:bg-white hover:text-[#0F4C5C]">
+              <button
+                type="button"
+                className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:bg-white hover:text-[#0F4C5C]"
+              >
                 {group.label} ▾
               </button>
 
@@ -96,7 +110,7 @@ export default function Navbar() {
                   >
                     {group.links.map((link) => (
                       <a
-                        key={link.label}
+                        key={link.href}
                         href={link.href}
                         className="block rounded-xl px-4 py-3 text-sm font-bold transition hover:bg-[#ECFDF5] hover:text-[#0F4C5C]"
                       >
@@ -117,7 +131,9 @@ export default function Navbar() {
           </a>
         </div>
 
+        {/* Mobile Button */}
         <button
+          type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
           className="rounded-xl border border-white/30 px-4 py-2 text-sm font-bold lg:hidden"
           aria-label="Toggle navigation menu"
@@ -126,6 +142,7 @@ export default function Navbar() {
         </button>
       </motion.nav>
 
+      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -156,7 +173,7 @@ export default function Navbar() {
                   <div className="grid gap-1">
                     {group.links.map((link) => (
                       <a
-                        key={link.label}
+                        key={link.href}
                         href={link.href}
                         onClick={() => setMobileOpen(false)}
                         className="rounded-lg px-3 py-2 text-sm font-bold transition hover:bg-white hover:text-[#0F4C5C]"

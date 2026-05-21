@@ -37,13 +37,57 @@ const enrollmentSteps = [
   },
 ];
 
-const requirements = [
-  "Accomplished Basic Education Enrollment Form",
-  "Report Card / SF9, if available",
-  "Photocopy of PSA Birth Certificate, if available",
-  "For transferees: available transfer credentials or school records from the previous school",
-  "For incoming Grade 11: Junior High School completion documents and preferred SHS track/elective information",
-  "For returning learners or learners with incomplete documents: coordinate with the enrollment personnel for validation and follow-up instructions",
+const requirementGroups = [
+  {
+    group: "New Students, Transferees, and Balik-Aral",
+    description:
+      "For learners who are new to the school, transferring from another school, or returning to basic education.",
+    items: [
+      "Original Report Card / SF9",
+      "Certificate of Good Moral Character, if available",
+      "Photocopy of PSA Birth Certificate",
+      "2 pcs. 2x2 ID picture with white background",
+      "NCAE Result for SHS, if available",
+    ],
+  },
+  {
+    group: "Incoming Grade 7",
+    description:
+      "For learners entering Junior High School as Grade 7 learners.",
+    items: [
+      "Original Report Card / SF9 from Grade 6",
+      "Photocopy of PSA Birth Certificate",
+      "2 pcs. 2x2 ID picture with white background",
+    ],
+  },
+  {
+    group: "Old Students / Returning Learners",
+    description:
+      "For learners previously enrolled in Tabunoc National High School and continuing their studies.",
+    items: ["Original Report Card / SF9"],
+  },
+  {
+    group: "Senior High School / Grade 11",
+    description:
+      "For incoming Grade 11 learners enrolling under the available Senior High School offerings.",
+    items: [
+      "Original Report Card / SF9 from Grade 10",
+      "Certificate of Good Moral Character",
+      "Photocopy of PSA Birth Certificate",
+      "2 pcs. 2x2 ID picture with white background",
+      "NCAE Result for SHS, if available",
+    ],
+  },
+  {
+    group: "ALS Learners / Passers",
+    description:
+      "For learners who completed the Alternative Learning System and are proceeding to formal basic education.",
+    items: [
+      "AF-5 / Certificate of ALS Program Completion",
+      "ALS Assessment Score Sheet",
+      "Photocopy of PSA Birth Certificate",
+    ],
+  },
 ];
 
 const reminders = [
@@ -256,65 +300,58 @@ export default function EnrollmentPage() {
         </section>
 
         {/* REQUIREMENTS */}
-        <section className="bg-white px-6 py-20">
-          <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-2">
-            <motion.div
-              initial={{ opacity: 0, x: -32 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
-            >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
-                Requirements
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight">
-                Basic Documents and Enrollment Information
-              </h2>
-              <p className="mt-4 leading-7 text-slate-600">
-                Prepare available learner records and required information for
-                validation and proper enrollment processing.
-              </p>
+<section className="bg-white px-6 py-20">
+  <div className="mx-auto max-w-7xl">
+    <div className="mb-12 text-center">
+      <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+        Enrollment Requirements
+      </p>
+      <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
+        Documents to Prepare by Learner Type
+      </h2>
+      <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
+        Prepare the available documents based on the learner’s enrollment
+        situation. If some documents are incomplete, coordinate with the
+        enrollment personnel for checking, validation, and follow-up
+        instructions.
+      </p>
+    </div>
 
-              <ul className="mt-6 space-y-4">
-                {requirements.map((item) => (
-                  <li key={item} className="flex gap-3 leading-7 text-slate-700">
-                    <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-black text-[#0F4C5C]">
-                      ✓
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 32 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="rounded-2xl border border-slate-200 bg-[#ECFDF5] p-8 shadow-sm"
-            >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
-                Proper Attire and Safety
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight">
-                Reminders When Visiting School
-              </h2>
-
-              <ul className="mt-6 space-y-4">
-                {reminders.map((item) => (
-                  <li key={item} className="flex gap-3 leading-7 text-slate-700">
-                    <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-sm font-black text-[#0F4C5C]">
-                      !
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
+    <div className="grid gap-6 lg:grid-cols-2">
+      {requirementGroups.map((group, index) => (
+        <motion.article
+          key={group.group}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.45, delay: index * 0.06 }}
+          className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm"
+        >
+          <div className="rounded-xl bg-yellow-300 px-5 py-3">
+            <h3 className="text-xl font-black uppercase tracking-wide text-slate-950">
+              {group.group}
+            </h3>
           </div>
-        </section>
+
+          <p className="mt-4 leading-7 text-slate-600">
+            {group.description}
+          </p>
+
+          <ul className="mt-6 space-y-4">
+            {group.items.map((item) => (
+              <li key={item} className="flex gap-3 leading-7 text-slate-700">
+                <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-sm font-black text-white">
+                  ✓
+                </span>
+                <span className="font-semibold">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </motion.article>
+      ))}
+    </div>
+  </div>
+</section>
 
         {/* ENROLLMENT POLICY NOTE */}
         <section className="bg-[#F8FAFC] px-6 py-12">

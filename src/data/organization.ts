@@ -596,7 +596,7 @@ export const personnel: Personnel[] = [
     department: "Senior High School",
     gradeLevelTaught: ["Grade 11", "Grade 12"],
     sectionsHandled: ["Grade 11-Apollo", "Grade 12-Jupiter"],
-    subjectTaught: ["SHS/TVL Electrical Installation and Maintenance 11 & 12"],
+    subjectTaught: ["Electrical Installation and Maintenance 11 & 12"],
     coordinatorship: ["School DRRM Coordinator"],
     philosophy:
       "I believe that technical-vocational education should develop learners who are skilled, safety-conscious, disciplined, and ready for real-world work.",

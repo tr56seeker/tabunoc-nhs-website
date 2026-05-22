@@ -2,8 +2,11 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+
 import Navbar from "@/components/Navbar";
+import BrandHeader from "@/components/BrandHeader";
 import PersonnelModal from "@/components/PersonnelModal";
+
 import type { Personnel } from "@/data/organization";
 import { allPersonnel } from "@/data/organization";
 
@@ -23,7 +26,7 @@ const announcements = [
   {
     title: "Senior High School Offerings",
     description:
-      "Explore the available Pure Academic Track and Tech Pro Track offerings for incoming Grade 11 learners.",
+      "Explore the Pure Academic Track and Tech Pro Track offerings for incoming Grade 11 learners.",
     href: "/shs-offerings",
   },
   {
@@ -105,37 +108,7 @@ export default function Home() {
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
           <div className="relative mx-auto flex min-h-[68vh] max-w-7xl flex-col items-center justify-center text-center">
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7 }}
-                className="mb-8 flex flex-col items-center justify-center gap-4"
-              >
-                <div className="flex items-center justify-center gap-4 sm:gap-5">
-                  <img
-                    src={depedLogo}
-                    alt="Department of Education Logo"
-                    className="h-14 w-auto object-contain sm:h-16 md:h-[72px]"
-                  />
-
-                  <div className="h-12 w-px bg-slate-300 sm:h-14" />
-
-                  <img
-                    src={schoolLogo}
-                    alt="Tabunoc National High School Logo"
-                    className="h-16 w-16 object-contain sm:h-20 sm:w-20"
-                  />
-                </div>
-
-                <div className="text-center">
-                  <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
-                    Department of Education
-                  </p>
-                  <p className="mt-1 text-base font-bold text-slate-700 sm:text-lg">
-                    Tabunoc National High School · School ID: 303111
-                  </p>
-                </div>
-              </motion.div>
+            <BrandHeader />
 
             <motion.h1
               initial={{ opacity: 0, y: 34 }}
@@ -218,49 +191,54 @@ export default function Home() {
               </h3>
 
               <div className="mt-6 grid gap-4">
-              <div className="rounded-xl bg-white p-5 shadow-sm">
-                <p className="text-sm font-bold text-slate-500">School ID</p>
-                <p className="text-2xl font-black text-[#0F4C5C]">303111</p>
-              </div>
+                <div className="rounded-xl bg-white p-5 shadow-sm">
+                  <p className="text-sm font-bold text-slate-500">School ID</p>
+                  <p className="text-2xl font-black text-[#0F4C5C]">303111</p>
+                </div>
 
-              <div className="rounded-xl bg-white p-5 shadow-sm">
-                <p className="text-sm font-bold text-slate-500">School Head</p>
+                <div className="rounded-xl bg-white p-5 shadow-sm">
+                  <p className="text-sm font-bold text-slate-500">
+                    School Head
+                  </p>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (schoolHead) {
-                      setSelectedPerson(schoolHead);
-                    }
-                  }}
-                  className="mt-1 text-left text-lg font-black text-slate-950 transition hover:text-[#0F4C5C]"
-                >
-                  Guillermo B. Villavelez
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (schoolHead) {
+                        setSelectedPerson(schoolHead);
+                      }
+                    }}
+                    className="mt-1 text-left text-lg font-black text-slate-950 transition hover:text-[#0F4C5C]"
+                  >
+                    Guillermo B. Villavelez
+                  </button>
+                </div>
 
-              <div className="rounded-xl bg-white p-5 shadow-sm">
-                <p className="text-sm font-bold text-slate-500">Office Hours</p>
-                <p className="text-lg font-black text-slate-950">
-                  Monday to Friday, 8:00 AM – 5:00 PM
-                </p>
-                <p className="mt-1 text-sm text-slate-600">
-                  Except holidays, class suspensions, and official non-working days.
-                </p>
-              </div>
+                <div className="rounded-xl bg-white p-5 shadow-sm">
+                  <p className="text-sm font-bold text-slate-500">
+                    Office Hours
+                  </p>
+                  <p className="text-lg font-black text-slate-950">
+                    Monday to Friday, 8:00 AM – 5:00 PM
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    Except holidays, class suspensions, and official non-working
+                    days.
+                  </p>
+                </div>
 
-              <div className="rounded-xl bg-white p-5 shadow-sm">
-                <p className="text-sm font-bold text-slate-500">Location</p>
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-1 inline-flex text-left text-lg font-black text-slate-950 transition hover:text-[#0F4C5C]"
-                >
-                  Sangi Road, Tabunok, Talisay City, Cebu
-                </a>
+                <div className="rounded-xl bg-white p-5 shadow-sm">
+                  <p className="text-sm font-bold text-slate-500">Location</p>
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-flex text-left text-lg font-black text-slate-950 transition hover:text-[#0F4C5C]"
+                  >
+                    Sangi Road, Tabunok, Talisay City, Cebu
+                  </a>
+                </div>
               </div>
-            </div>
             </motion.div>
           </div>
         </section>
@@ -628,12 +606,12 @@ export default function Home() {
             </div>
           </div>
         </footer>
-            </main>
+      </main>
 
-            <PersonnelModal
-              person={selectedPerson}
-              onClose={() => setSelectedPerson(null)}
-            />
-          </>
-        );
-      }
+      <PersonnelModal
+        person={selectedPerson}
+        onClose={() => setSelectedPerson(null)}
+      />
+    </>
+  );
+}

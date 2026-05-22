@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion } from "framer-motion";
+
 import Navbar from "@/components/Navbar";
+import BrandHeader from "@/components/BrandHeader";
 
 const schoolLogo =
   "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
@@ -16,7 +18,7 @@ const offerings = [
     category: "Pure Academic Track",
     title: "Arts, Social Sciences, and Humanities",
     description:
-      "Designed for learners interested in humanities, communication, social sciences, governance, philosophy, literature, arts, and related college pathways.",
+      "Designed for learners interested in arts, literature, communication, philosophy, governance, humanities, and social sciences-related college pathways.",
     items: [
       "Arts 1",
       "Contemporary Literature 1",
@@ -31,7 +33,7 @@ const offerings = [
     category: "Pure Academic Track",
     title: "Science, Technology, Engineering, and Mathematics",
     description:
-      "Designed for learners interested in science, mathematics, engineering, technology, research, health sciences, and other STEM-related college pathways.",
+      "Designed for learners interested in science, technology, engineering, mathematics, research, health sciences, and other STEM-related pathways.",
     items: [
       "Biology 1",
       "Earth and Space Science 1",
@@ -45,14 +47,14 @@ const offerings = [
     category: "Pure Academic Track",
     title: "Business and Entrepreneurship",
     description:
-      "Designed for learners interested in business, entrepreneurship, organization, management, and related career or college pathways.",
+      "Designed for learners interested in business, entrepreneurship, management, organization, enterprise development, and related college or career pathways.",
     items: ["Business 1", "Introduction to Organization and Management"],
   },
   {
     category: "Pure Academic Track",
     title: "Sports, Health, and Wellness",
     description:
-      "Designed for learners interested in human movement, physical fitness, wellness, sports, health, and recreation-related fields.",
+      "Designed for learners interested in sports, physical fitness, human movement, health, wellness, recreation, and related fields.",
     items: [
       "Human Movement 1 (Basic Anatomy in Sports and Exercise)",
       "Physical Education 1 (Fitness and Recreation)",
@@ -74,7 +76,7 @@ const offerings = [
     category: "Tech Pro Track",
     title: "ICT Support and Computer Programming Technologies",
     description:
-      "Designed for learners interested in computer programming, computer systems servicing, broadband installation, ICT support, and technology-related skills.",
+      "Designed for learners interested in ICT support, computer systems, programming, broadband installation, and technology-related skills.",
     items: [
       "Computer Programming (Java)",
       "Computer Systems Servicing",
@@ -96,22 +98,25 @@ const offerings = [
 const quickGuides = [
   {
     title: "For College-Bound Learners",
-    text: "Learners planning to pursue college programs may consider academic electives aligned with their interests and future courses.",
+    text: "Learners planning to pursue college programs may consider Pure Academic Track offerings aligned with their interests and future courses.",
   },
   {
     title: "For Skills-Based Learners",
-    text: "Learners interested in hands-on technical skills may consider TVL offerings aligned with employment, entrepreneurship, and skills certification pathways.",
+    text: "Learners interested in hands-on skills may consider Tech Pro Track offerings aligned with employment, entrepreneurship, and skills development pathways.",
   },
   {
     title: "For Parents and Guardians",
-    text: "Parents are encouraged to guide learners based on interest, ability, career goals, and the official offerings available in the school.",
+    text: "Parents and guardians are encouraged to guide learners based on interest, ability, career goals, and the official offerings available in the school.",
   },
 ];
 
 export default function SHSOfferingsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const categories = ["All", ...Array.from(new Set(offerings.map((item) => item.category)))];
+  const categories = [
+    "All",
+    ...Array.from(new Set(offerings.map((item) => item.category))),
+  ];
 
   const visibleOfferings =
     selectedCategory === "All"
@@ -129,35 +134,7 @@ export default function SHSOfferingsPage() {
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
           <div className="relative mx-auto max-w-7xl text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
-            >
-              <img
-                src={depedLogo}
-                alt="Department of Education Logo"
-                className="h-12 w-auto -translate-y-1 object-contain md:h-14"
-              />
-
-              <div className="hidden h-12 w-px bg-slate-300 sm:block" />
-
-              <img
-                src={schoolLogo}
-                alt="Tabunoc National High School Logo"
-                className="h-16 w-16 object-contain md:h-20 md:w-20"
-              />
-
-              <div className="text-center sm:text-left">
-                <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
-                  Department of Education
-                </p>
-                <p className="mt-1 font-bold text-slate-700">
-                  Tabunoc National High School · School ID: 303111
-                </p>
-              </div>
-            </motion.div>
+            <BrandHeader />
 
             <motion.p
               initial={{ opacity: 0, y: 24 }}
@@ -183,8 +160,31 @@ export default function SHSOfferingsPage() {
               transition={{ duration: 0.8, delay: 0.25 }}
               className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700"
             >
-              Explore the Pure Academic Track and Tech Pro Track offerings available for Senior High School learners of Tabunoc National High School.
+              Explore the Pure Academic Track and Tech Pro Track offerings
+              available for Senior High School learners of Tabunoc National High
+              School.
             </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 32 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.35 }}
+              className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+            >
+              <Link
+                href="/enrollment"
+                className="rounded-xl bg-yellow-300 px-8 py-3 font-black text-slate-950 shadow-lg shadow-yellow-300/30 transition hover:-translate-y-1 hover:bg-yellow-200"
+              >
+                Open Enrollment Guide
+              </Link>
+
+              <Link
+                href="/#contact"
+                className="rounded-xl border border-[#0F4C5C]/30 bg-white px-8 py-3 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-[#0F4C5C] hover:text-white"
+              >
+                Ask for Assistance
+              </Link>
+            </motion.div>
           </div>
         </section>
 
@@ -217,11 +217,11 @@ export default function SHSOfferingsPage() {
                 Available Offerings
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
-                Choose a Track or Area of Interest
+                Choose a Senior High School Track
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
-                Use the filter below to view academic and technical-vocational
-                offerings currently listed for the school.
+                Use the filter below to view the Pure Academic Track and Tech
+                Pro Track offerings currently listed for the school.
               </p>
             </div>
 
@@ -229,6 +229,7 @@ export default function SHSOfferingsPage() {
               {categories.map((category) => (
                 <button
                   key={category}
+                  type="button"
                   onClick={() => setSelectedCategory(category)}
                   className={`rounded-xl px-5 py-3 text-sm font-black transition ${
                     selectedCategory === category
@@ -269,7 +270,7 @@ export default function SHSOfferingsPage() {
 
                 <div className="mt-6 rounded-2xl bg-[#F8FAFC] p-5">
                   <p className="text-sm font-black uppercase tracking-widest text-slate-500">
-                    Included Subjects / Focus Areas
+                    Subjects / Specializations
                   </p>
 
                   <ul className="mt-4 grid gap-3">
@@ -321,8 +322,9 @@ export default function SHSOfferingsPage() {
             >
               <h3 className="text-2xl font-black">Need Help Choosing?</h3>
               <p className="mt-3 leading-7 text-teal-50">
-                For questions about tracks, electives, and enrollment, please
-                coordinate through the official school communication channels.
+                For questions about tracks, specializations, and enrollment,
+                please coordinate through the official school communication
+                channels.
               </p>
 
               <div className="mt-6 grid gap-4">

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
 import Navbar from "@/components/Navbar";
+import BrandHeader from "@/components/BrandHeader";
 import PersonnelCard from "@/components/PersonnelCard";
 import PersonnelModal from "@/components/PersonnelModal";
 
@@ -139,35 +140,7 @@ export default function OrganizationPage() {
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
           <div className="relative mx-auto max-w-7xl text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="mb-8 flex flex-col items-center justify-center gap-4 sm:flex-row"
-            >
-              <img
-                src={depedLogo}
-                alt="Department of Education Logo"
-                className="h-12 w-auto -translate-y-1 object-contain md:h-14"
-              />
-
-              <div className="hidden h-12 w-px bg-slate-300 sm:block" />
-
-              <img
-                src={schoolLogo}
-                alt="Tabunoc National High School Logo"
-                className="h-16 w-16 object-contain md:h-20 md:w-20"
-              />
-
-              <div className="text-center sm:text-left">
-                <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
-                  Department of Education
-                </p>
-                <p className="mt-1 font-bold text-slate-700">
-                  Tabunoc National High School · School ID: 303111
-                </p>
-              </div>
-            </motion.div>
+            <BrandHeader />
 
             <motion.p
               initial={{ opacity: 0, y: 24 }}

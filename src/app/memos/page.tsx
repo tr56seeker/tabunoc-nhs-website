@@ -185,7 +185,7 @@ export default function MemosPage() {
                 </div>
 
                 <div className="mt-5 flex flex-col justify-between gap-3 md:flex-row md:items-center">
-                  <p className="text-sm font-bold text-slate-600">
+                  <p className="pl-5 text-sm font-bold text-slate-600">
                     Showing {visibleMemos.length} of {publicMemos.length} public memo
                     {publicMemos.length !== 1 ? "s" : ""}
                   </p>
@@ -200,7 +200,7 @@ export default function MemosPage() {
                         setSelectedCategory("All");
                         setSelectedYear("All");
                       }}
-                      className="w-fit rounded-lg bg-slate-100 px-4 py-2 text-sm font-black text-slate-700 transition hover:bg-[#0F4C5C] hover:text-white"
+                      className="w-fit rounded-lg bg-slate-100 py-2 pl-5 pr-4 text-sm font-black text-slate-700 transition hover:bg-[#0F4C5C] hover:text-white md:px-4"
                     >
                       Clear Search
                     </button>

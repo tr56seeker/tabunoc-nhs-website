@@ -1,12 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 
-const schoolLogo =
-  "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
+const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
 
-const depedLogo =
-  "https://depedph.com/wp-content/uploads/2024/01/deped-logo-philippines-1536x783.png";
+const depedLogo = "/images/deped-logo.png";
 
 export default function BrandHeader() {
   return (
@@ -17,17 +16,21 @@ export default function BrandHeader() {
       className="mb-8 flex flex-col items-center justify-center gap-4"
     >
       <div className="flex items-center justify-center gap-4 sm:gap-5">
-        <img
+        <Image
           src={depedLogo}
           alt="Department of Education Logo"
+          width={141}
+          height={72}
           className="h-14 w-auto object-contain sm:h-16 md:h-[72px]"
         />
 
         <div className="h-12 w-px bg-slate-300 sm:h-14" />
 
-        <img
+        <Image
           src={schoolLogo}
           alt="Tabunoc National High School Logo"
+          width={80}
+          height={80}
           className="h-16 w-16 object-contain sm:h-20 sm:w-20"
         />
       </div>

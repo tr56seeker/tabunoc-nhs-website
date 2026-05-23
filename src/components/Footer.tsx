@@ -1,8 +1,8 @@
-const schoolLogo =
-  "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
+import Image from "next/image";
 
-const depedLogo =
-  "https://depedph.com/wp-content/uploads/2024/01/deped-logo-philippines-1536x783.png";
+const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
+
+const depedLogo = "/images/deped-logo.png";
 
 const footerLinks = [
   {
@@ -80,15 +80,19 @@ export default function Footer() {
         <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.2fr_2fr]">
           <div>
             <div className="flex items-center gap-4">
-              <img
+              <Image
                 src={depedLogo}
                 alt="Department of Education Logo"
+                width={78}
+                height={40}
                 className="h-10 w-auto object-contain"
               />
 
-              <img
+              <Image
                 src={schoolLogo}
                 alt="Tabunoc National High School Logo"
+                width={56}
+                height={56}
                 className="h-14 w-14 object-contain"
               />
             </div>

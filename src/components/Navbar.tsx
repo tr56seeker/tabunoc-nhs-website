@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const schoolLogo = "/images/tabunoc-nhs-logo.png";
+const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
 
 type NavLink = {
   label: string;

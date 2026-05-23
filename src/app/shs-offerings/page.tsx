@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
+import Footer from "@/components/Footer";
 
 const schoolLogo =
   "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
@@ -346,39 +347,7 @@ export default function SHSOfferingsPage() {
           </div>
         </section>
 
-        {/* FOOTER */}
-        <footer className="bg-[#0B1F2A] px-6 py-12 text-teal-50">
-          <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 text-center md:flex-row md:text-left">
-            <div className="flex items-center gap-4">
-              <img
-                src={depedLogo}
-                alt="Department of Education Logo"
-                className="h-10 w-auto object-contain"
-              />
-
-              <img
-                src={schoolLogo}
-                alt="Tabunoc National High School Logo"
-                className="h-12 w-12 object-contain"
-              />
-            </div>
-
-            <div>
-              <p className="font-black text-white">
-                Tabunoc National High School
-              </p>
-              <p className="mt-1 text-sm">
-                Sangi Road, Tabunok, Talisay City, Cebu
-              </p>
-              <p className="mt-1 text-sm">School ID: 303111</p>
-            </div>
-
-            <div className="text-sm">
-              <p>© 2026 Tabunoc National High School.</p>
-              <p>All rights reserved.</p>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </main>
     </>
   );

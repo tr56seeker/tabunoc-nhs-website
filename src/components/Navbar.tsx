@@ -1,9 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 const schoolLogo = "/images/tabunoc-nhs-logo.png";
 
@@ -82,7 +82,6 @@ export default function Navbar() {
   const [openDesktopGroup, setOpenDesktopGroup] = useState<string | null>(null);
   const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
   const [showNavbar, setShowNavbar] = useState(true);
-
   const [lastScrollY, setLastScrollY] = useState(0);
 
   useEffect(() => {
@@ -118,12 +117,12 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full text-white transition-transform duration-300 ease-in-out ${
+      className={`sticky top-0 z-50 -mb-20 w-full text-white transition-transform duration-300 ease-in-out sm:-mb-24 lg:-mb-28 ${
         showNavbar ? "translate-y-0" : "-translate-y-full"
       }`}
     >
       {/* NAVBAR PNG BACKGROUND */}
-      <div className="relative overflow-visible bg-[url('/images/nav-torn-edge.png')] bg-cover bg-top bg-center bg-no-repeat pb-14 sm:pb-20 lg:pb-24">
+      <div className="relative overflow-visible bg-[url('/images/nav-torn-edge.png')] bg-cover bg-top bg-center bg-no-repeat pb-20 sm:pb-24 lg:pb-28">
         <nav className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-4 pt-4 pb-3 md:px-6">
           {/* BRAND */}
           <Link
@@ -259,7 +258,7 @@ export default function Navbar() {
 
       {/* MOBILE NAV */}
       {mobileOpen && (
-        <div className="-mt-10 border-t border-white/10 bg-[#0B3B48] px-4 pt-14 pb-4 shadow-xl lg:hidden">
+        <div className="-mt-20 border-t border-white/10 bg-[#0B3B48] px-4 pt-24 pb-4 shadow-xl sm:-mt-24 sm:pt-28 lg:hidden">
           <div className="mx-auto grid max-w-7xl gap-2">
             <Link
               href="/"

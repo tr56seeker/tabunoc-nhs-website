@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Personnel } from "@/data/organization";
 
@@ -59,6 +60,8 @@ export default function PersonnelCard({
   const initials = getInitials(person.name);
   const positionDesignation = getPositionDesignation(person);
   const subjectText = getSubjectText(person);
+  const [failedPhoto, setFailedPhoto] = useState<string | null>(null);
+  const showPhoto = person.photo && failedPhoto !== person.photo;
 
   return (
     <motion.article
@@ -74,10 +77,11 @@ export default function PersonnelCard({
       <div className="flex h-full">
         {/* LEFT PHOTO BLOCK */}
         <div className="w-[132px] shrink-0 bg-[#0F4C5C]">
-          {person.photo ? (
+          {showPhoto ? (
             <img
               src={person.photo}
               alt={person.name}
+              onError={() => setFailedPhoto(person.photo ?? null)}
               className="h-full w-full object-cover object-[50%_20%]"
             />
           ) : (

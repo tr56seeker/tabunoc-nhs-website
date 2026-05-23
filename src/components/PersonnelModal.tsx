@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Personnel } from "@/data/organization";
 
@@ -80,6 +80,8 @@ export default function PersonnelModal({
   person,
   onClose,
 }: PersonnelModalProps) {
+  const [failedPhoto, setFailedPhoto] = useState<string | null>(null);
+
   useEffect(() => {
     if (!person) return;
 
@@ -99,6 +101,7 @@ export default function PersonnelModal({
   }, [person, onClose]);
 
   const messengerLink = person ? normalizeMessengerLink(person.messenger) : "";
+  const showPhoto = person?.photo && failedPhoto !== person.photo;
 
   return (
     <AnimatePresence>
@@ -157,10 +160,11 @@ export default function PersonnelModal({
                 <aside className="border-b border-slate-200 bg-slate-50 p-6 md:border-b-0 md:border-r md:p-8">
                   <div className="mx-auto max-w-[230px]">
                     <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-200 shadow-sm">
-                      {person.photo ? (
+                      {showPhoto ? (
                         <img
                           src={person.photo}
                           alt={person.name}
+                          onError={() => setFailedPhoto(person.photo ?? null)}
                           className="aspect-[3/4] w-full object-cover object-[50%_20%]"
                         />
                       ) : (

@@ -108,7 +108,7 @@ export default function Home() {
 
       <main className="min-h-screen bg-white text-slate-950">
         {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-36">
+        <section className="relative -mt-20 overflow-hidden pt-40 sm:-mt-24 sm:pt-44 lg:-mt-28 lg:pt-48">
           <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 

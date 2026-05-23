@@ -117,9 +117,7 @@ export default function Footer() {
                 Data Privacy Reminder
               </p>
               <p className="mt-2 text-sm leading-6 text-teal-50">
-                Please avoid posting sensitive learner information in public
-                comments. For records, enrollment, and confidential concerns,
-                use official school channels.
+                Please avoid sending sensitive learner information through public comments. For records, enrollment, and confidential concerns, use the official school communication channels.
               </p>
             </div>
           </div>
@@ -162,8 +160,7 @@ export default function Footer() {
           </p>
 
           <p>
-            Maintained for official school information, public assistance, and
-            stakeholder access.
+            Maintained for official school information, public assistance, stakeholder coordination, and access to school services.
           </p>
         </div>
       </div>

@@ -21,7 +21,7 @@ const announcements = [
   {
     title: "Enrollment Information",
     description:
-      "Access enrollment reminders, documentary requirements, schedules, and official school announcements.",
+      "View enrollment schedules, requirements, reminders, and official guidance for incoming and continuing learners.",
     href: "/enrollment",
   },
   {
@@ -33,7 +33,7 @@ const announcements = [
   {
     title: "School Safety and DRRM",
     description:
-      "Stay informed on disaster preparedness, emergency advisories, and school safety initiatives.",
+      "Stay informed on school safety reminders, disaster preparedness activities, emergency advisories, and DRRM initiatives.",
     href: "#drrm",
   },
 ];
@@ -52,7 +52,7 @@ const programs = [
     href: "/shs-offerings",
   },
   {
-    title: "Tech Pro Track",
+    title: "Technical-Professional Track",
     href: "/shs-offerings",
   },
   {
@@ -72,27 +72,52 @@ const programs = [
 const drrmItems = [
   {
     title: "Preparedness",
-    text: "Conducts safety reminders, drills, orientations, and preparedness campaigns.",
+    text: "Conducts safety reminders, preparedness campaigns, orientations, drills, and risk awareness activities.",
   },
   {
     title: "Response",
-    text: "Strengthens coordination for emergency response, evacuation, and incident reporting.",
+    text: "Supports emergency coordination, evacuation procedures, incident reporting, and communication during school emergencies.",
   },
   {
     title: "Recovery",
-    text: "Supports continuity of learning, documentation, and post-incident improvement.",
+    text: "Assists in documentation, post-incident review, learner support, and continuity of school operations.",
   },
 ];
 
 const commonConcerns = [
-  "Enrollment",
-  "Learner Records",
-  "SHS Programs",
-  "Memos",
-  "SDRRM",
-  "Partnerships",
-  "Stakeholder Support",
-  "General Concerns",
+  {
+    title: "Enrollment",
+    description:
+      "For enrollment schedules, requirements, and learner registration concerns.",
+  },
+  {
+    title: "Learner Records",
+    description:
+      "For SF10/Form 137, certifications, and school records inquiries.",
+  },
+  {
+    title: "Senior High School",
+    description: "For SHS tracks, offerings, and Grade 11–12 concerns.",
+  },
+  {
+    title: "School Memos",
+    description:
+      "For official issuances, advisories, and school announcements.",
+  },
+  {
+    title: "SDRRM",
+    description:
+      "For school safety, emergency preparedness, and DRRM coordination.",
+  },
+  {
+    title: "Partnerships",
+    description:
+      "For stakeholder support, donations, Brigada Eskwela, and external coordination.",
+  },
+  {
+    title: "General Concerns",
+    description: "For other school-related inquiries and assistance.",
+  },
 ];
 
 export default function Home() {
@@ -130,8 +155,8 @@ export default function Home() {
               transition={{ duration: 0.85, delay: 0.2 }}
               className="mt-6 max-w-3xl text-lg leading-7 text-slate-700 md:text-xl"
             >
-              A learner-centered public secondary school committed to quality,
-              inclusive, resilient, and future-ready basic education.
+             
+              A public secondary school in Talisay City, Cebu committed to accessible, inclusive, resilient, and future-ready education for Junior High School and Senior High School learners.
             </motion.p>
 
             <motion.div
@@ -176,11 +201,7 @@ export default function Home() {
               </h2>
 
               <p className="mt-5 leading-7 text-slate-600">
-                Tabunoc National High School is a public secondary school in
-                Talisay City, Cebu, serving Junior High School and Senior High
-                School learners. The school continues to strengthen instruction,
-                learner support, safety, stakeholder engagement, and future-ready
-                education programs.
+                Tabunoc National High School is a public secondary school located along Sangi Road, Tabunok, Talisay City, Cebu. The school serves Junior High School and Senior High School learners through academic instruction, technical-vocational learning opportunities, learner support services, school safety initiatives, and active stakeholder partnership. Guided by the mandate of the Department of Education, the school continues to strengthen basic education services that are responsive to learners, parents, personnel, and the wider Tabunoc community.
               </p>
             </motion.div>
 
@@ -270,8 +291,7 @@ export default function Home() {
               </h2>
 
               <p className="mt-4 max-w-2xl leading-7 text-slate-600">
-                Official updates, advisories, enrollment information, and school
-                program highlights will be made accessible through this website.
+                Access official school advisories, enrollment reminders, program updates, learner services information, and important announcements from Tabunoc National High School.
               </p>
             </motion.div>
 
@@ -312,13 +332,11 @@ export default function Home() {
               </p>
 
               <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight md:text-5xl">
-                Clear, simple, and parent-friendly school information.
+                Clear and parent-friendly access to school information.
               </h2>
 
               <p className="mt-5 leading-7 text-slate-600">
-                View enrollment procedures, learner-type requirements, proper
-                attire reminders, school visit instructions, and official
-                support channels in one dedicated guide.
+                This website provides learners, parents, guardians, and stakeholders with easy access to enrollment procedures, school announcements, official forms, program information, and communication channels.
               </p>
 
               <a
@@ -337,15 +355,15 @@ export default function Home() {
               className="rounded-2xl border border-slate-200 bg-[#ECFDF5] p-6 shadow-lg md:p-8"
             >
               <h3 className="text-2xl font-black text-[#0F4C5C]">
-                Website Priorities
+                This website aims to:
               </h3>
 
               <ul className="mt-6 space-y-4 text-slate-700">
-                <li>✓ Mobile-friendly school announcements</li>
-                <li>✓ Enrollment guides and downloadable forms</li>
-                <li>✓ SHS tracks and Tech Pro information</li>
-                <li>✓ School DRRM advisories and safety reminders</li>
-                <li>✓ Official links to school platforms</li>
+                <li>✓ Publish timely and official school announcements</li>
+                <li>✓ Provide clear enrollment and school service information</li>
+                <li>✓ Support access to Junior High School and Senior High School information</li>
+                <li>✓ Share DRRM, safety, and preparedness updates</li>
+                <li>✓ Connect learners, parents, guardians, and stakeholders to official channels</li>
               </ul>
             </motion.div>
           </div>
@@ -366,11 +384,11 @@ export default function Home() {
               </p>
 
               <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight md:text-5xl">
-                Built for learners, parents, and the community.
+                Supporting learners, parents, and the community.
               </h2>
 
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-teal-50">
-                Explore key school programs, services, and learner support
+                Explore the school's key programs, services, and learner support initiatives, and official access points.
                 pathways.
               </p>
             </motion.div>
@@ -408,14 +426,11 @@ export default function Home() {
               </p>
 
               <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight md:text-5xl">
-                Prepared, responsive, and safety-conscious.
+                Prepared, responsive, and resilient.
               </h2>
 
               <p className="mt-5 leading-7 text-slate-600">
-                The School Disaster Risk Reduction and Management program
-                promotes disaster preparedness, emergency response readiness,
-                hazard awareness, and a culture of safety among learners,
-                personnel, parents, and stakeholders.
+                The School Disaster Risk Reduction and Management Program strengthens preparedness, emergency response, risk awareness, and continuity of learning through school-based safety initiatives, drills, coordination, and stakeholder participation.
               </p>
             </motion.div>
 
@@ -453,18 +468,17 @@ export default function Home() {
               className="mx-auto max-w-3xl text-center"
             >
               <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
-                Contact and Official Channels
+                CONTACT AND OFFICIAL CHANNELS
               </p>
 
               <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight md:text-5xl">
-                Reach the school through official channels.
+                Connect with Tabunoc National High School through official channels.
               </h2>
 
               <p className="mt-4 leading-7 text-teal-50">
-                For announcements, enrollment information, records-related
-                inquiries, school issuances, and official concerns, please use
-                the verified communication channels of Tabunoc National High
-                School.
+                For enrollment concerns, learner records inquiries, school services,
+                partnerships, and official coordination, please use the verified
+                communication channels of Tabunoc National High School.
               </p>
             </motion.div>
 
@@ -479,18 +493,23 @@ export default function Home() {
                 <h3 className="text-2xl font-black">How may we assist you?</h3>
 
                 <p className="mt-3 leading-7 text-teal-50">
-                  Choose the proper official channel depending on your concern.
-                  This helps the school route inquiries faster and more
-                  appropriately.
+                  Select the concern that best matches your inquiry so it can be
+                  directed to the proper school office, personnel, or program
+                  implementer.
                 </p>
 
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
                   {commonConcerns.map((item) => (
                     <div
-                      key={item}
-                      className="rounded-xl bg-white px-4 py-3 font-black text-[#0F4C5C]"
+                      key={item.title}
+                      className="rounded-xl border border-white/10 bg-white/[0.08] p-4"
                     >
-                      {item}
+                      <p className="text-sm font-black text-yellow-300">
+                        {item.title}
+                      </p>
+                      <p className="mt-2 text-xs font-medium leading-5 text-teal-50">
+                        {item.description}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -506,8 +525,7 @@ export default function Home() {
                 <h3 className="text-2xl font-black">Official Channels</h3>
 
                 <p className="mt-3 leading-7 text-teal-50">
-                  Use these verified links for school updates, inquiries,
-                  document access, and online services.
+                  Use these verified links for school updates, online services, inquiries, and official school platforms.
                 </p>
 
                 <div className="mt-6 grid gap-4">
@@ -527,6 +545,16 @@ export default function Home() {
                     className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
                   >
                     Chat with Us on Messenger
+                  </a>
+
+                  <a
+                    href="mailto:303111@deped.gov.ph"
+                    className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                  >
+                    <span className="block">Email the School</span>
+                    <span className="mt-1 block text-sm font-semibold text-slate-600">
+                      303111@deped.gov.ph
+                    </span>
                   </a>
 
                   <a

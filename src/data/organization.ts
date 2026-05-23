@@ -151,7 +151,7 @@ export const personnel: Personnel[] = [
   {
     id: "metchie-gay-gastanes",
     name: "METCHIE GAY A. GASTANES",
-    position: "TCH-VI",
+    position: "TEACHER VI",
     designation: ["Grade 8 Leader", "Class Adviser"],
     roles: ["Grade Leader", "Class Adviser"],
     group: "Teaching Personnel",
@@ -167,7 +167,7 @@ export const personnel: Personnel[] = [
   {
     id: "maine-bongas",
     name: "MAINE L. BONGAS",
-    position: "TCH-V",
+    position: "Teacher V",
     designation: ["Senior High School Coordinator"],
     roles: ["SHS Coordinator", "Program Implementer"],
     group: "Grade Level Leadership",
@@ -183,7 +183,7 @@ export const personnel: Personnel[] = [
   {
     id: "endrie-bohol",
     name: "ENDRIE P. BOHOL",
-    position: "TCH-01",
+    position: "TEACHER I",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -195,7 +195,7 @@ export const personnel: Personnel[] = [
   {
     id: "ruth-briones",
     name: "RUTH BRIONES",
-    position: "TCH-03",
+    position: "TEACHER III",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -207,7 +207,7 @@ export const personnel: Personnel[] = [
   {
     id: "elbert-misterio",
     name: "ELBERT L. MISTERIO",
-    position: "Teacher",
+    position: "TEACHER III",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -219,7 +219,7 @@ export const personnel: Personnel[] = [
   {
     id: "leslyn-rose-camero",
     name: "LESLYN ROSE L. CAMERO",
-    position: "Teacher",
+    position: "TEACHER III",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -231,7 +231,7 @@ export const personnel: Personnel[] = [
   {
     id: "junnelyn-herbito",
     name: "JUNNELYN R. HERBITO",
-    position: "T-3",
+    position: "TEACHER III",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -243,7 +243,7 @@ export const personnel: Personnel[] = [
   {
     id: "gwendolyn-olo",
     name: "GWENDOLYN F. OLO",
-    position: "Teacher",
+    position: "TEACHER III",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -257,7 +257,7 @@ export const personnel: Personnel[] = [
   {
     id: "joy-mortal",
     name: "JOY E. MORTAL",
-    position: "TCH-01",
+    position: "TEACHER I",
     designation: ["Prefect of Descipline", "Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -269,7 +269,7 @@ export const personnel: Personnel[] = [
   {
     id: "genesa-goc-ong",
     name: "GENESA D. GOC-ONG",
-    position: "Teacher",
+    position: "TEACHER III",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -281,7 +281,7 @@ export const personnel: Personnel[] = [
   {
     id: "bret-kalvin-primacio",
     name: "BRET KALVIN S. PRIMACIO",
-    position: "Teacher",
+    position: "TEACHER III",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -293,7 +293,7 @@ export const personnel: Personnel[] = [
   {
     id: "jeralyn-gerra",
     name: "JERALYN D. GERRA",
-    position: "Teacher",
+    position: "TEACHER III",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -305,7 +305,7 @@ export const personnel: Personnel[] = [
   {
     id: "eljoy-barroca",
     name: "ELJOY P. BARROCA",
-    position: "Teacher",
+    position: "TEACHER III",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -317,7 +317,7 @@ export const personnel: Personnel[] = [
   {
     id: "marissa-abalo",
     name: "MARISSA G. ABALO",
-    position: "Teacher",
+    position: "TEACHER I",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",
@@ -331,7 +331,7 @@ export const personnel: Personnel[] = [
   {
     id: "jeralen-maloloy-on",
     name: "JERALEN L. MALOLOY-ON",
-    position: "Teacher",
+    position: "TEACHER IV",
     designation: ["Class Adviser"],
     roles: ["Class Adviser"],
     group: "Teaching Personnel",

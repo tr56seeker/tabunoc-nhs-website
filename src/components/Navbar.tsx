@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 
-const schoolLogo =
-  "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
+const schoolLogo = "/images/tabunoc-nhs-logo.png";
 
 type NavLink = {
   label: string;
@@ -118,142 +118,148 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b border-[#0F4C5C]/10 bg-[#0F4C5C] text-white shadow-lg shadow-slate-950/10 transition-transform duration-300 ease-in-out ${
+      className={`sticky top-0 z-50 w-full text-white transition-transform duration-300 ease-in-out ${
         showNavbar ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6">
-        {/* BRAND */}
-        <Link
-          href="/"
-          className="flex min-w-0 items-center gap-3"
-          onClick={() => setMobileOpen(false)}
-        >
-          <img
-            src={schoolLogo}
-            alt="Tabunoc National High School Logo"
-            className="h-12 w-12 shrink-0 object-contain md:h-14 md:w-14"
-          />
-
-          <div className="min-w-0">
-            <p className="truncate text-base font-black leading-tight text-white md:hidden">
-              Tabunoc NHS
-            </p>
-
-            <p className="hidden text-lg font-black leading-tight text-white md:block">
-              Tabunoc National High School
-            </p>
-
-            <p className="mt-0.5 text-xs font-medium text-teal-100">
-              School ID: 303111
-            </p>
-          </div>
-        </Link>
-
-        {/* DESKTOP NAV */}
-        <div className="hidden items-center gap-1 lg:flex">
+      {/* NAVBAR PNG BACKGROUND */}
+      <div className="relative overflow-visible bg-[url('/images/nav-torn-edge.png')] bg-cover bg-top bg-center bg-no-repeat pb-14 sm:pb-20 lg:pb-24">
+        <nav className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-4 pt-4 pb-3 md:px-6">
+          {/* BRAND */}
           <Link
             href="/"
-            className={`rounded-lg px-4 py-2 text-sm font-bold transition ${
-              homeIsActive
-                ? "bg-yellow-300 text-slate-950"
-                : "text-white hover:bg-white/10"
-            }`}
+            className="flex min-w-0 items-center gap-3"
+            onClick={() => setMobileOpen(false)}
           >
-            Home
+            <Image
+              src={schoolLogo}
+              alt="Tabunoc National High School Logo"
+              width={56}
+              height={56}
+              priority
+              className="h-12 w-12 shrink-0 object-contain md:h-14 md:w-14"
+            />
+
+            <div className="min-w-0">
+              <p className="truncate text-base font-black leading-tight text-white md:hidden">
+                Tabunoc NHS
+              </p>
+
+              <p className="hidden text-lg font-black leading-tight text-white md:block">
+                Tabunoc National High School
+              </p>
+
+              <p className="mt-0.5 text-xs font-medium text-teal-100">
+                School ID: 303111
+              </p>
+            </div>
           </Link>
 
-          {navGroups.map((group) => {
-            const active = isGroupActive(pathname, group);
-            const open = openDesktopGroup === group.label;
+          {/* DESKTOP NAV */}
+          <div className="hidden items-center gap-1 lg:flex">
+            <Link
+              href="/"
+              className={`rounded-lg px-4 py-2 text-sm font-bold transition ${
+                homeIsActive
+                  ? "bg-yellow-300 text-slate-950"
+                  : "text-white hover:bg-white/10"
+              }`}
+            >
+              Home
+            </Link>
 
-            return (
-              <div
-                key={group.label}
-                className="relative"
-                onMouseEnter={() => setOpenDesktopGroup(group.label)}
-                onMouseLeave={() => setOpenDesktopGroup(null)}
-              >
-                <button
-                  type="button"
-                  className={`flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-bold transition ${
-                    active
-                      ? "bg-yellow-300 text-slate-950"
-                      : "text-white hover:bg-white/10"
-                  }`}
-                  aria-expanded={open}
+            {navGroups.map((group) => {
+              const active = isGroupActive(pathname, group);
+              const open = openDesktopGroup === group.label;
+
+              return (
+                <div
+                  key={group.label}
+                  className="relative"
+                  onMouseEnter={() => setOpenDesktopGroup(group.label)}
+                  onMouseLeave={() => setOpenDesktopGroup(null)}
                 >
-                  {group.label}
-                  <span className="text-xs">▾</span>
-                </button>
+                  <button
+                    type="button"
+                    className={`flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-bold transition ${
+                      active
+                        ? "bg-yellow-300 text-slate-950"
+                        : "text-white hover:bg-white/10"
+                    }`}
+                    aria-expanded={open}
+                  >
+                    {group.label}
+                    <span className="text-xs">▾</span>
+                  </button>
 
-                {open && (
-                  <div className="absolute left-0 top-full min-w-[230px] pt-2">
-                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white py-2 text-slate-950 shadow-xl">
-                      {group.links.map((link) => {
-                        const linkActive = isActivePath(pathname, link.href);
+                  {open && (
+                    <div className="absolute left-0 top-full z-50 min-w-[230px] pt-2">
+                      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white py-2 text-slate-950 shadow-xl">
+                        {group.links.map((link) => {
+                          const linkActive = isActivePath(pathname, link.href);
 
-                        if (link.external) {
+                          if (link.external) {
+                            return (
+                              <a
+                                key={link.label}
+                                href={link.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-[#ECFDF5] hover:text-[#0F4C5C]"
+                              >
+                                {link.label}
+                              </a>
+                            );
+                          }
+
                           return (
-                            <a
+                            <Link
                               key={link.label}
                               href={link.href}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="block px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-[#ECFDF5] hover:text-[#0F4C5C]"
+                              className={`block px-4 py-3 text-sm font-semibold transition ${
+                                linkActive
+                                  ? "bg-[#ECFDF5] text-[#0F4C5C]"
+                                  : "text-slate-700 hover:bg-[#ECFDF5] hover:text-[#0F4C5C]"
+                              }`}
                             >
                               {link.label}
-                            </a>
+                            </Link>
                           );
-                        }
-
-                        return (
-                          <Link
-                            key={link.label}
-                            href={link.href}
-                            className={`block px-4 py-3 text-sm font-semibold transition ${
-                              linkActive
-                                ? "bg-[#ECFDF5] text-[#0F4C5C]"
-                                : "text-slate-700 hover:bg-[#ECFDF5] hover:text-[#0F4C5C]"
-                            }`}
-                          >
-                            {link.label}
-                          </Link>
-                        );
-                      })}
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  )}
+                </div>
+              );
+            })}
 
-          <Link
-            href="/#contact"
-            className={`ml-2 rounded-xl px-5 py-2 text-sm font-black transition ${
-              contactIsActive
-                ? "bg-white text-[#0F4C5C]"
-                : "bg-yellow-300 text-slate-950 hover:bg-yellow-200"
-            }`}
+            <Link
+              href="/#contact"
+              className={`ml-2 rounded-xl px-5 py-2 text-sm font-black transition ${
+                contactIsActive
+                  ? "bg-white text-[#0F4C5C]"
+                  : "bg-yellow-300 text-slate-950 hover:bg-yellow-200"
+              }`}
+            >
+              Contact
+            </Link>
+          </div>
+
+          {/* MOBILE MENU BUTTON */}
+          <button
+            type="button"
+            onClick={() => setMobileOpen((current) => !current)}
+            className="rounded-xl border border-white/20 px-4 py-2 text-sm font-black text-white transition hover:bg-white/10 lg:hidden"
+            aria-expanded={mobileOpen}
           >
-            Contact
-          </Link>
-        </div>
-
-        {/* MOBILE MENU BUTTON */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen((current) => !current)}
-          className="rounded-xl border border-white/20 px-4 py-2 text-sm font-black text-white transition hover:bg-white/10 lg:hidden"
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? "Close" : "Menu"}
-        </button>
-      </nav>
+            {mobileOpen ? "Close" : "Menu"}
+          </button>
+        </nav>
+      </div>
 
       {/* MOBILE NAV */}
       {mobileOpen && (
-        <div className="border-t border-white/10 bg-[#0B3B48] px-4 py-4 lg:hidden">
+        <div className="-mt-10 border-t border-white/10 bg-[#0B3B48] px-4 pt-14 pb-4 shadow-xl lg:hidden">
           <div className="mx-auto grid max-w-7xl gap-2">
             <Link
               href="/"

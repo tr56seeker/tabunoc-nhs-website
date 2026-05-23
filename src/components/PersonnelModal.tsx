@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Personnel } from "@/data/organization";
 
@@ -49,186 +50,218 @@ function getAdvisorySections(person: Personnel) {
     .join(", ");
 }
 
+function MiniInfo({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-medium leading-snug text-slate-800">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function DetailBlock({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+        {label}
+      </p>
+      <p className="mt-2 text-sm font-medium leading-7 text-slate-800">
+        {value}
+      </p>
+    </div>
+  );
+}
+
 export default function PersonnelModal({
   person,
   onClose,
 }: PersonnelModalProps) {
-  if (!person) return null;
+  useEffect(() => {
+    if (!person) return;
 
-  const messengerLink = normalizeMessengerLink(person.messenger);
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    }
+
+    document.addEventListener("keydown", handleEscape);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "";
+    };
+  }, [person, onClose]);
+
+  const messengerLink = person ? normalizeMessengerLink(person.messenger) : "";
 
   return (
     <AnimatePresence>
       {person && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 px-4 py-6 backdrop-blur-md"
+          className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={onClose}
         >
+          {/* BACKDROP */}
           <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 24, scale: 0.97 }}
-            transition={{ duration: 0.25 }}
+            className="absolute inset-0 bg-slate-950/60"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+          />
+
+          {/* EXPANDING PROFILE CARD */}
+          <motion.div
             onClick={(event) => event.stopPropagation()}
-            className="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-white text-slate-950 shadow-2xl"
+            initial={{ opacity: 0, scale: 0.96, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.97, y: 10 }}
+            transition={{
+              type: "tween",
+              duration: 0.18,
+              ease: "easeOut",
+            }}
+            className="relative max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl bg-white text-slate-950 shadow-xl will-change-transform"
           >
-            {/* HEADER BAR */}
-            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 md:px-8">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.25em] text-[#0F4C5C]">
-                  Faculty / Personnel Profile
-                </p>
-                <p className="mt-1 text-sm text-slate-500">
-                  Tabunoc National High School
-                </p>
+            <div className="max-h-[92vh] overflow-y-auto">
+              {/* HEADER BAR */}
+              <div className="flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 md:px-8">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
+                    Faculty / Personnel Profile
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-slate-500">
+                    Tabunoc National High School
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-[#0F4C5C] hover:text-white"
+                >
+                  Close
+                </button>
               </div>
 
-              <button
-                onClick={onClose}
-                className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-black text-slate-700 transition hover:bg-[#0F4C5C] hover:text-white"
-              >
-                Close
-              </button>
-            </div>
+              <div className="grid md:grid-cols-[300px_1fr]">
+                {/* LEFT PROFILE COLUMN */}
+                <aside className="border-b border-slate-200 bg-slate-50 p-6 md:border-b-0 md:border-r md:p-8">
+                  <div className="mx-auto max-w-[230px]">
+                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-200 shadow-sm">
+                      {person.photo ? (
+                        <img
+                          src={person.photo}
+                          alt={person.name}
+                          className="aspect-[3/4] w-full object-cover object-[50%_20%]"
+                        />
+                      ) : (
+                        <div className="flex aspect-[3/4] w-full items-center justify-center bg-[#0F4C5C] text-5xl font-semibold text-white">
+                          {getInitials(person.name)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
-            <div className="grid md:grid-cols-[300px_1fr]">
-              {/* LEFT PROFILE COLUMN */}
-              <aside className="border-b border-slate-200 bg-slate-50 p-6 md:border-b-0 md:border-r md:p-8">
-                <div className="mx-auto max-w-[230px]">
-                  <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-200 shadow-sm">
-                    {person.photo ? (
-                      <img
-                        src={person.photo}
-                        alt={person.name}
-                        className="aspect-[3/4] w-full object-cover"
+                  <div className="mt-6 text-center md:text-left">
+                    <h2 className="text-2xl font-extrabold leading-tight tracking-tight text-slate-950">
+                      {person.name}
+                    </h2>
+
+                    <p className="mt-2 text-base font-semibold text-[#0F4C5C]">
+                      {displayText(person.position)}
+                    </p>
+
+                    <p className="mt-1 text-sm font-medium leading-6 text-slate-600">
+                      {displayList(person.designation)}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                      Quick Details
+                    </p>
+
+                    <div className="mt-4 space-y-4">
+                      <MiniInfo label="Group" value={displayText(person.group)} />
+                      <MiniInfo
+                        label="Department"
+                        value={displayText(person.department)}
                       />
-                    ) : (
-                      <div className="flex aspect-[3/4] w-full items-center justify-center bg-gradient-to-br from-blue-950 to-yellow-500 text-5xl font-black text-white">
-                        {getInitials(person.name)}
-                      </div>
-                    )}
+                      <MiniInfo
+                        label="Position"
+                        value={displayText(person.position)}
+                      />
+                      <MiniInfo
+                        label="Designation"
+                        value={displayList(person.designation)}
+                      />
+                    </div>
                   </div>
-                </div>
+                </aside>
 
-                <div className="mt-6 text-center md:text-left">
-                  <h2 className="text-2xl font-black leading-tight text-slate-950">
-                    {person.name}
-                  </h2>
-
-                  <p className="mt-2 font-bold text-[#0F4C5C]">
-                    {displayText(person.position)}
-                  </p>
-
-                  <p className="mt-1 text-sm font-semibold text-slate-500">
-                    {displayList(person.designation)}
-                  </p>
-                </div>
-
-                <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
-                  <p className="text-xs font-black uppercase tracking-widest text-slate-500">
-                    Quick Details
-                  </p>
-
-                  <div className="mt-4 space-y-3 text-sm">
-                    <MiniInfo label="Group" value={displayText(person.group)} />
-                    <MiniInfo
-                      label="Department"
-                      value={displayText(person.department)}
+                {/* RIGHT DETAILS COLUMN */}
+                <section className="p-6 md:p-8">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <DetailBlock
+                      label="Subject Taught"
+                      value={displayList(person.subjectTaught)}
                     />
-                    <MiniInfo
-                      label="Position"
-                      value={displayText(person.position)}
+
+                    <DetailBlock
+                      label="Coordinatorship / Program"
+                      value={displayList(person.coordinatorship)}
                     />
-                    <MiniInfo
-                      label="Designation"
-                      value={displayList(person.designation)}
+
+                    <DetailBlock
+                      label="Grade Level Taught"
+                      value={displayList(person.gradeLevelTaught)}
                     />
-                  </div>
-                </div>
-              </aside>
 
-              {/* RIGHT CONTENT COLUMN */}
-              <section className="p-6 md:p-8">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <InfoBox label="Name" value={displayText(person.name)} />
-                  <InfoBox
-                    label="Position"
-                    value={displayText(person.position)}
-                  />
-                  <InfoBox
-                    label="Designation"
-                    value={displayList(person.designation)}
-                  />
-                  <InfoBox label="Role" value={displayList(person.roles)} />
-                  <InfoBox label="Group" value={displayText(person.group)} />
-                  <InfoBox
-                    label="Department"
-                    value={displayText(person.department)}
-                  />
-                  <InfoBox
-                    label="Grade Level Taught"
-                    value={displayList(person.gradeLevelTaught)}
-                  />
-                  <InfoBox
-                    label="Section Handled"
-                    value={
-                      person.sectionsHandled && person.sectionsHandled.length > 0
-                        ? displayList(person.sectionsHandled)
-                        : getAdvisorySections(person)
-                    }
-                  />
-                </div>
-
-                <ProfileSection title="Subject Taught">
-                  <TagList
-                    items={person.subjectTaught}
-                    colorClass="bg-[#0F4C5C] text-white"
-                  />
-                </ProfileSection>
-
-                <ProfileSection title="Coordinatorship">
-                  <TagList
-                    items={person.coordinatorship}
-                    colorClass="bg-yellow-300 text-slate-950"
-                  />
-                </ProfileSection>
-
-                <ProfileSection title="Teaching Philosophy">
-                  <p className="leading-7 text-slate-700">
-                    {displayText(person.philosophy)}
-                  </p>
-                </ProfileSection>
-
-                <ProfileSection title="Bio">
-                  <p className="leading-7 text-slate-700">
-                    {displayText(person.bio || person.description)}
-                  </p>
-                </ProfileSection>
-
-                <ProfileSection title="Contact Information">
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <InfoBox
-                      label="Email Address"
-                      value={displayText(person.email)}
+                    <DetailBlock
+                      label="Section Handled / Advisory"
+                      value={
+                        displayList(person.sectionsHandled) !== "N/A"
+                          ? displayList(person.sectionsHandled)
+                          : getAdvisorySections(person)
+                      }
                     />
-                    <InfoBox
-                      label="Messenger"
-                      value={displayText(person.messenger)}
-                    />
-                    <InfoBox
+
+                    <DetailBlock
                       label="Consultation Schedule"
                       value={displayText(person.consultationSchedule)}
                     />
+
+                    <DetailBlock label="Email" value={displayText(person.email)} />
                   </div>
 
-                  <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                  <div className="mt-4 grid gap-4">
+                    <DetailBlock
+                      label="Teaching Philosophy"
+                      value={displayText(person.philosophy)}
+                    />
+
+                    <DetailBlock label="Profile Bio" value={displayText(person.bio)} />
+
+                    <DetailBlock
+                      label="Description"
+                      value={displayText(person.description)}
+                    />
+                  </div>
+
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                     {person.email && (
                       <a
                         href={`mailto:${person.email}`}
-                        className="rounded-lg bg-[#0F4C5C] px-5 py-3 text-center text-sm font-black text-white transition hover:-translate-y-1 hover:bg-[#0B3B48]"
+                        className="rounded-xl bg-[#0F4C5C] px-5 py-3 text-center text-sm font-semibold text-white transition hover:-translate-y-1 hover:bg-[#0B3B48]"
                       >
                         Send Email
                       </a>
@@ -239,93 +272,18 @@ export default function PersonnelModal({
                         href={messengerLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-lg bg-yellow-400 px-5 py-3 text-center text-sm font-black text-slate-950 transition hover:-translate-y-1 hover:bg-yellow-300"
+                        className="rounded-xl border border-[#0F4C5C]/30 bg-white px-5 py-3 text-center text-sm font-semibold text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-[#ECFDF5]"
                       >
-                        Open Messenger
+                        Message on Messenger
                       </a>
                     )}
-
-                    {!person.email && !messengerLink && (
-                      <p className="rounded-xl bg-slate-100 px-5 py-4 text-sm font-semibold text-slate-600">
-                        Contact details may be requested through official school
-                        channels.
-                      </p>
-                    )}
                   </div>
-                </ProfileSection>
-              </section>
+                </section>
+              </div>
             </div>
           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
-  );
-}
-
-function InfoBox({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <p className="text-xs font-black uppercase tracking-widest text-slate-500">
-        {label}
-      </p>
-      <p className="mt-1 font-bold text-slate-950">{value}</p>
-    </div>
-  );
-}
-
-function MiniInfo({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="text-xs font-black uppercase tracking-widest text-slate-400">
-        {label}
-      </p>
-      <p className="mt-1 font-bold text-slate-800">{value}</p>
-    </div>
-  );
-}
-
-function ProfileSection({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="mt-8 border-t border-slate-200 pt-6">
-      <h4 className="text-xl font-black text-slate-950">{title}</h4>
-      <div className="mt-3">{children}</div>
-    </section>
-  );
-}
-
-function TagList({
-  items,
-  colorClass,
-}: {
-  items?: string[];
-  colorClass: string;
-}) {
-  if (!items || items.length === 0) {
-    return <p className="text-slate-600">N/A</p>;
-  }
-
-  const cleaned = items.filter((item) => item && item.trim() !== "");
-
-  if (cleaned.length === 0) {
-    return <p className="text-slate-600">N/A</p>;
-  }
-
-  return (
-    <div className="flex flex-wrap gap-2">
-      {cleaned.map((item) => (
-        <span
-          key={item}
-          className={`rounded-lg px-4 py-2 text-sm font-bold ${colorClass}`}
-        >
-          {item}
-        </span>
-      ))}
-    </div>
   );
 }

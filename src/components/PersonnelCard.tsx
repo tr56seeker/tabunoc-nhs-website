@@ -66,13 +66,13 @@ export default function PersonnelCard({
       initial={{ opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      whileHover={{ y: -3 }}
+      whileHover={{}}
       transition={{ duration: 0.25 }}
       onClick={() => onClick?.(person)}
-      className="group relative h-full cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-[#0F4C5C]/60 hover:bg-[#F8FAFC] hover:shadow-md"
+      className="group relative h-full cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-[#0F4C5C]/40 hover:bg-[#FAFCFC] hover:shadow-md"
     >
       <div className="flex h-full">
-        {/* LEFT FULL PHOTO BLOCK */}
+        {/* LEFT PHOTO BLOCK */}
         <div className="w-[132px] shrink-0 bg-[#0F4C5C]">
           {person.photo ? (
             <img
@@ -81,59 +81,61 @@ export default function PersonnelCard({
               className="h-full w-full object-cover object-[50%_20%]"
             />
           ) : (
-            <div className="flex h-full min-h-[132px] w-full items-center justify-center bg-[#0F4C5C] text-2xl font-black text-white">
+            <div className="flex h-full min-h-[132px] w-full items-center justify-center bg-[#0F4C5C] text-2xl font-semibold text-white">
               {initials}
             </div>
           )}
         </div>
 
         {/* RIGHT CONTENT */}
-        <div className="relative flex flex-1 flex-col justify-center px-5 py-4 pr-20">
-          <span className="absolute right-4 top-4 rounded-full border border-[#0F4C5C]/15 bg-[#ECFDF5] px-3 py-1 text-xs font-black text-[#0F4C5C] opacity-0 shadow-sm transition duration-300 group-hover:opacity-100">
-            View →
-          </span>
-
+        <div className="relative flex flex-1 flex-col justify-center px-5 py-4">
           <h3
-            className={`font-black leading-tight text-slate-950 ${
-              compact ? "text-base" : "text-lg"
+            className={`leading-tight tracking-tight text-slate-950 ${
+              compact
+                ? "text-base font-bold"
+                : "text-lg font-extrabold"
             }`}
           >
             {person.name}
           </h3>
 
-          <p className="mt-2 text-xs font-black uppercase tracking-widest text-slate-500">
-            Position/Designation
-          </p>
-          <p className="mt-0.5 text-sm font-bold leading-snug text-blue-800">
-            {positionDesignation}
-          </p>
+          {positionDesignation && (
+            <div className="mt-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                Position/Designation
+              </p>
+              <p className="mt-1 text-sm font-medium leading-snug text-[#123C9C]">
+                {positionDesignation}
+              </p>
+            </div>
+          )}
 
           {subjectText && (
-            <>
-              <p className="mt-2 text-xs font-black uppercase tracking-widest text-slate-500">
+            <div className="mt-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Subject Taught
               </p>
-              <p className="mt-0.5 text-sm font-bold leading-snug text-[#0F4C5C]">
+              <p className="mt-1 text-sm font-medium leading-snug text-[#0F4C5C]">
                 {subjectText}
               </p>
-            </>
+            </div>
           )}
 
           {person.department && (
-            <>
-              <p className="mt-2 text-xs font-black uppercase tracking-widest text-slate-500">
+            <div className="mt-3">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                 Department
               </p>
-              <p className="mt-0.5 text-sm font-bold leading-snug text-slate-700">
+              <p className="mt-1 text-sm font-medium leading-snug text-slate-700">
                 {person.department}
               </p>
-            </>
+            </div>
           )}
         </div>
       </div>
 
-      {/* VERY SOFT HOVER TINT */}
-      <div className="pointer-events-none absolute inset-0 bg-[#0F4C5C]/[0.03] opacity-0 transition duration-300 group-hover:opacity-100" />
+      {/* SOFT HOVER TINT */}
+      <div className="pointer-events-none absolute inset-0 bg-[#0F4C5C]/[0.025] opacity-0 transition duration-300 group-hover:opacity-100" />
     </motion.article>
   );
 }

@@ -30,6 +30,7 @@ const navGroups: NavGroup[] = [
     links: [
       { label: "Enrollment Guide", href: "/enrollment" },
       { label: "SHS Offerings", href: "/shs-offerings" },
+      { label: "Citizen’s Charter", href: "/citizen-charter" },
     ],
   },
   {

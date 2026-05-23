@@ -55,6 +55,10 @@ const programs = [
     href: "/shs-offerings",
   },
   {
+  title: "Citizen’s Charter",
+  href: "/citizen-charter",
+  },
+  {
     title: "School DRRM Program",
     href: "#drrm",
   },

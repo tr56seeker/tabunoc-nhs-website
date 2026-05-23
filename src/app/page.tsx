@@ -557,24 +557,6 @@ export default function Home() {
               </motion.div>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="mt-8 rounded-2xl border border-yellow-300/30 bg-yellow-300/10 p-6"
-            >
-              <h3 className="text-xl font-black text-yellow-300">
-                Data Privacy Reminder
-              </h3>
-
-              <p className="mt-3 leading-7 text-teal-50">
-                Please avoid posting or sending sensitive learner information
-                through public comment sections. For records, enrollment, and
-                confidential concerns, coordinate directly with the school
-                office through official channels.
-              </p>
-            </motion.div>
           </div>
         </section>
 

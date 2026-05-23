@@ -1,12 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+
+const schoolLogo =
+  "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
 
 type NavLink = {
   label: string;
   href: string;
+  external?: boolean;
 };
 
 type NavGroup = {
@@ -14,15 +18,12 @@ type NavGroup = {
   links: NavLink[];
 };
 
-const schoolLogo =
-  "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
-
 const navGroups: NavGroup[] = [
   {
     label: "School",
     links: [
-      { label: "About", href: "/#about" },
-      { label: "Admin & Staff", href: "/organization" },
+      { label: "School Directory", href: "/organization" },
+      { label: "Citizen’s Charter", href: "/citizen-charter" },
     ],
   },
   {
@@ -30,174 +31,318 @@ const navGroups: NavGroup[] = [
     links: [
       { label: "Enrollment Guide", href: "/enrollment" },
       { label: "SHS Offerings", href: "/shs-offerings" },
-      { label: "Citizen’s Charter", href: "/citizen-charter" },
+      {
+        label: "School MIS",
+        href: "https://smis.tabunocnatlhs.com",
+        external: true,
+      },
     ],
   },
   {
     label: "Community",
     links: [
       { label: "Alumni", href: "/alumni" },
-      { label: "Stakeholders", href: "/#contact" },
-      { label: "Brigada Eskwela", href: "/#announcements" },
+      {
+        label: "Facebook Page",
+        href: "https://facebook.com/tabunocnatlhs",
+        external: true,
+      },
+      {
+        label: "Messenger",
+        href: "https://m.me/tabunocnatlhs",
+        external: true,
+      },
     ],
   },
   {
     label: "Updates",
-    links: [
-      { label: "Announcements", href: "/#announcements" },
-      { label: "Memos", href: "/memos" },
-      { label: "SDRRM", href: "/#drrm" },
-    ],
+    links: [{ label: "School Memos", href: "/memos" }],
   },
 ];
 
+function isExternalLink(href: string) {
+  return href.startsWith("http");
+}
+
+function isActivePath(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  if (isExternalLink(href)) return false;
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function isGroupActive(pathname: string, group: NavGroup) {
+  return group.links.some((link) => isActivePath(pathname, link.href));
+}
+
 export default function Navbar() {
+  const pathname = usePathname();
+
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [openDesktopGroup, setOpenDesktopGroup] = useState<string | null>(null);
+  const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
+  const [showNavbar, setShowNavbar] = useState(true);
+
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    function handleScroll() {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY < 20) {
+        setShowNavbar(true);
+        setLastScrollY(currentScrollY);
+        return;
+      }
+
+      if (currentScrollY > lastScrollY && currentScrollY > 120) {
+        setShowNavbar(false);
+        setMobileOpen(false);
+        setOpenDesktopGroup(null);
+      } else {
+        setShowNavbar(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
+
+  const homeIsActive = pathname === "/";
+  const contactIsActive = pathname === "/" && false;
 
   return (
-    <header className="fixed left-0 top-0 z-50 w-full px-4 py-4">
-      <motion.nav
-        initial={{ opacity: 0, y: -24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/10 bg-[#0F4C5C]/95 px-5 py-3 text-white shadow-xl backdrop-blur-xl"
-      >
-        <Link href="/" className="flex min-w-fit items-center gap-3">
+    <header
+      className={`sticky top-0 z-50 w-full border-b border-[#0F4C5C]/10 bg-[#0F4C5C] text-white shadow-lg shadow-slate-950/10 transition-transform duration-300 ease-in-out ${
+        showNavbar ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 md:px-6">
+        {/* BRAND */}
+        <Link
+          href="/"
+          className="flex min-w-0 items-center gap-3"
+          onClick={() => setMobileOpen(false)}
+        >
           <img
             src={schoolLogo}
             alt="Tabunoc National High School Logo"
-            className="h-12 w-12 object-contain"
+            className="h-12 w-12 shrink-0 object-contain md:h-14 md:w-14"
           />
 
-          <div className="leading-tight">
-            <p className="text-base font-black">Tabunoc NHS</p>
-            <p className="hidden text-xs text-teal-50/80 sm:block">
+          <div className="min-w-0">
+            <p className="truncate text-base font-black leading-tight text-white md:hidden">
+              Tabunoc NHS
+            </p>
+
+            <p className="hidden text-lg font-black leading-tight text-white md:block">
+              Tabunoc National High School
+            </p>
+
+            <p className="mt-0.5 text-xs font-medium text-teal-100">
               School ID: 303111
             </p>
           </div>
         </Link>
 
-        {/* Desktop Menu */}
-        <div className="hidden items-center gap-2 lg:flex">
+        {/* DESKTOP NAV */}
+        <div className="hidden items-center gap-1 lg:flex">
           <Link
             href="/"
-            className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:bg-white hover:text-[#0F4C5C]"
+            className={`rounded-lg px-4 py-2 text-sm font-bold transition ${
+              homeIsActive
+                ? "bg-yellow-300 text-slate-950"
+                : "text-white hover:bg-white/10"
+            }`}
           >
             Home
           </Link>
 
-          {navGroups.map((group) => (
-            <div
-              key={group.label}
-              className="relative"
-              onMouseEnter={() => setOpenDropdown(group.label)}
-              onMouseLeave={() => setOpenDropdown(null)}
-            >
-              <button
-                type="button"
-                className="rounded-xl px-4 py-2 text-sm font-bold text-white transition hover:bg-white hover:text-[#0F4C5C]"
-              >
-                {group.label} ▾
-              </button>
+          {navGroups.map((group) => {
+            const active = isGroupActive(pathname, group);
+            const open = openDesktopGroup === group.label;
 
-              <AnimatePresence>
-                {openDropdown === group.label && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
-                    transition={{ duration: 0.18 }}
-                    className="absolute left-0 top-full mt-2 w-56 rounded-2xl border border-slate-200 bg-white p-2 text-slate-950 shadow-2xl"
-                  >
-                    {group.links.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="block rounded-xl px-4 py-3 text-sm font-bold transition hover:bg-[#ECFDF5] hover:text-[#0F4C5C]"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </motion.div>
+            return (
+              <div
+                key={group.label}
+                className="relative"
+                onMouseEnter={() => setOpenDesktopGroup(group.label)}
+                onMouseLeave={() => setOpenDesktopGroup(null)}
+              >
+                <button
+                  type="button"
+                  className={`flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-bold transition ${
+                    active
+                      ? "bg-yellow-300 text-slate-950"
+                      : "text-white hover:bg-white/10"
+                  }`}
+                  aria-expanded={open}
+                >
+                  {group.label}
+                  <span className="text-xs">▾</span>
+                </button>
+
+                {open && (
+                  <div className="absolute left-0 top-full min-w-[230px] pt-2">
+                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white py-2 text-slate-950 shadow-xl">
+                      {group.links.map((link) => {
+                        const linkActive = isActivePath(pathname, link.href);
+
+                        if (link.external) {
+                          return (
+                            <a
+                              key={link.label}
+                              href={link.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-[#ECFDF5] hover:text-[#0F4C5C]"
+                            >
+                              {link.label}
+                            </a>
+                          );
+                        }
+
+                        return (
+                          <Link
+                            key={link.label}
+                            href={link.href}
+                            className={`block px-4 py-3 text-sm font-semibold transition ${
+                              linkActive
+                                ? "bg-[#ECFDF5] text-[#0F4C5C]"
+                                : "text-slate-700 hover:bg-[#ECFDF5] hover:text-[#0F4C5C]"
+                            }`}
+                          >
+                            {link.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
                 )}
-              </AnimatePresence>
-            </div>
-          ))}
+              </div>
+            );
+          })}
 
           <Link
             href="/#contact"
-            className="rounded-xl bg-yellow-300 px-4 py-2 text-sm font-black text-slate-950 transition hover:bg-yellow-200"
+            className={`ml-2 rounded-xl px-5 py-2 text-sm font-black transition ${
+              contactIsActive
+                ? "bg-white text-[#0F4C5C]"
+                : "bg-yellow-300 text-slate-950 hover:bg-yellow-200"
+            }`}
           >
             Contact
           </Link>
         </div>
 
-        {/* Mobile Button */}
+        {/* MOBILE MENU BUTTON */}
         <button
           type="button"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="rounded-xl border border-white/30 px-4 py-2 text-sm font-bold lg:hidden"
-          aria-label="Toggle navigation menu"
+          onClick={() => setMobileOpen((current) => !current)}
+          className="rounded-xl border border-white/20 px-4 py-2 text-sm font-black text-white transition hover:bg-white/10 lg:hidden"
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? "Close" : "Menu"}
         </button>
-      </motion.nav>
+      </nav>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -16, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -16, scale: 0.98 }}
-            transition={{ duration: 0.25 }}
-            className="mx-auto mt-3 max-w-7xl rounded-2xl border border-slate-200 bg-white p-4 text-slate-950 shadow-xl lg:hidden"
-          >
-            <div className="grid gap-2">
-              <Link
-                href="/"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-xl px-4 py-3 text-sm font-black transition hover:bg-[#ECFDF5] hover:text-[#0F4C5C]"
-              >
-                Home
-              </Link>
+      {/* MOBILE NAV */}
+      {mobileOpen && (
+        <div className="border-t border-white/10 bg-[#0B3B48] px-4 py-4 lg:hidden">
+          <div className="mx-auto grid max-w-7xl gap-2">
+            <Link
+              href="/"
+              onClick={() => setMobileOpen(false)}
+              className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+                homeIsActive
+                  ? "bg-yellow-300 text-slate-950"
+                  : "text-white hover:bg-white/10"
+              }`}
+            >
+              Home
+            </Link>
 
-              {navGroups.map((group) => (
+            {navGroups.map((group) => {
+              const active = isGroupActive(pathname, group);
+              const open = openMobileGroup === group.label;
+
+              return (
                 <div
                   key={group.label}
-                  className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+                  className="overflow-hidden rounded-xl border border-white/10"
                 >
-                  <p className="mb-2 px-1 text-xs font-black uppercase tracking-widest text-[#0F4C5C]">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setOpenMobileGroup((current) =>
+                        current === group.label ? null : group.label
+                      )
+                    }
+                    className={`flex w-full items-center justify-between px-4 py-3 text-left text-sm font-bold transition ${
+                      active
+                        ? "bg-yellow-300 text-slate-950"
+                        : "bg-white/5 text-white hover:bg-white/10"
+                    }`}
+                  >
                     {group.label}
-                  </p>
+                    <span>{open ? "−" : "+"}</span>
+                  </button>
 
-                  <div className="grid gap-1">
-                    {group.links.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setMobileOpen(false)}
-                        className="rounded-lg px-3 py-2 text-sm font-bold transition hover:bg-white hover:text-[#0F4C5C]"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
+                  {open && (
+                    <div className="grid gap-1 bg-[#071E29] p-2">
+                      {group.links.map((link) => {
+                        const linkActive = isActivePath(pathname, link.href);
+
+                        if (link.external) {
+                          return (
+                            <a
+                              key={link.label}
+                              href={link.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="rounded-lg px-4 py-3 text-sm font-semibold text-teal-50 transition hover:bg-white/10"
+                            >
+                              {link.label}
+                            </a>
+                          );
+                        }
+
+                        return (
+                          <Link
+                            key={link.label}
+                            href={link.href}
+                            onClick={() => setMobileOpen(false)}
+                            className={`rounded-lg px-4 py-3 text-sm font-semibold transition ${
+                              linkActive
+                                ? "bg-[#ECFDF5] text-[#0F4C5C]"
+                                : "text-teal-50 hover:bg-white/10"
+                            }`}
+                          >
+                            {link.label}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
-              ))}
+              );
+            })}
 
-              <Link
-                href="/#contact"
-                onClick={() => setMobileOpen(false)}
-                className="rounded-xl bg-yellow-300 px-4 py-3 text-sm font-black text-slate-950 transition hover:bg-yellow-200"
-              >
-                Contact
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <Link
+              href="/#contact"
+              onClick={() => setMobileOpen(false)}
+              className="mt-2 rounded-xl bg-yellow-300 px-4 py-3 text-center text-sm font-black text-slate-950 transition hover:bg-yellow-200"
+            >
+              Contact
+            </Link>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

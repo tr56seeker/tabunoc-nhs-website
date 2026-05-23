@@ -533,53 +533,175 @@ export default function Home() {
                     href="https://facebook.com/tabunocnatlhs"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                    className="group flex items-start gap-4 rounded-xl bg-white px-5 py-4 text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
                   >
-                    Visit Facebook Page
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#ECFDF5] text-[#0F4C5C] transition group-hover:bg-white/70 group-hover:text-slate-950">
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M2 12h20" />
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                      </svg>
+                    </span>
+                    <span>
+                      <span className="block font-black">Visit Facebook Page</span>
+                      <span className="mt-1 block text-sm font-semibold text-slate-600">
+                        facebook.com/tabunocnatlhs
+                      </span>
+                    </span>
                   </a>
 
                   <a
                     href="https://m.me/tabunocnatlhs"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                    className="group flex items-start gap-4 rounded-xl bg-white px-5 py-4 text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
                   >
-                    Chat with Us on Messenger
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#ECFDF5] text-[#0F4C5C] transition group-hover:bg-white/70 group-hover:text-slate-950">
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                      >
+                        <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6A8.4 8.4 0 0 1 12.5 3H13a8 8 0 0 1 8 8v.5z" />
+                      </svg>
+                    </span>
+                    <span>
+                      <span className="block font-black">
+                        Chat with Us on Messenger
+                      </span>
+                      <span className="mt-1 block text-sm font-semibold text-slate-600">
+                        m.me/tabunocnatlhs
+                      </span>
+                    </span>
                   </a>
 
                   <a
                     href="mailto:303111@deped.gov.ph"
-                    className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                    className="group flex items-start gap-4 rounded-xl bg-white px-5 py-4 text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
                   >
-                    <span className="block">Email the School</span>
-                    <span className="mt-1 block text-sm font-semibold text-slate-600">
-                      303111@deped.gov.ph
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#ECFDF5] text-[#0F4C5C] transition group-hover:bg-white/70 group-hover:text-slate-950">
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                      >
+                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                        <path d="m3 7 9 6 9-6" />
+                      </svg>
+                    </span>
+                    <span>
+                      <span className="block font-black">Email the School</span>
+                      <span className="mt-1 block text-sm font-semibold text-slate-600">
+                        303111@deped.gov.ph
+                      </span>
                     </span>
                   </a>
 
                   <a
                     href="/memos"
-                    className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                    className="group flex items-start gap-4 rounded-xl bg-white px-5 py-4 text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
                   >
-                    View Memo Repository
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#ECFDF5] text-[#0F4C5C] transition group-hover:bg-white/70 group-hover:text-slate-950">
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <path d="M14 2v6h6" />
+                        <path d="M8 13h8" />
+                        <path d="M8 17h6" />
+                      </svg>
+                    </span>
+                    <span>
+                      <span className="block font-black">View Memo Repository</span>
+                      <span className="mt-1 block text-sm font-semibold text-slate-600">
+                        School issuances and posted memoranda
+                      </span>
+                    </span>
                   </a>
 
                   <a
                     href="https://smis.tabunocnatlhs.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                    className="group flex items-start gap-4 rounded-xl bg-white px-5 py-4 text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
                   >
-                    Access School MIS
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#ECFDF5] text-[#0F4C5C] transition group-hover:bg-white/70 group-hover:text-slate-950">
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                      >
+                        <rect x="3" y="4" width="18" height="12" rx="2" />
+                        <path d="M8 20h8" />
+                        <path d="M12 16v4" />
+                      </svg>
+                    </span>
+                    <span>
+                      <span className="block font-black">Access School MIS</span>
+                      <span className="mt-1 block text-sm font-semibold text-slate-600">
+                        smis.tabunocnatlhs.com
+                      </span>
+                    </span>
                   </a>
 
                   <a
                     href="https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl border border-white/30 px-5 py-4 font-black text-white transition hover:-translate-y-1 hover:bg-white hover:text-[#0F4C5C]"
+                    className="group flex items-start gap-4 rounded-xl border border-white/30 px-5 py-4 text-white transition hover:-translate-y-1 hover:bg-white hover:text-[#0F4C5C]"
                   >
-                    Get Directions
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-white/10 text-white transition group-hover:bg-[#ECFDF5] group-hover:text-[#0F4C5C]">
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="h-5 w-5"
+                      >
+                        <path d="M12 21s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11z" />
+                        <circle cx="12" cy="10" r="2.5" />
+                      </svg>
+                    </span>
+                    <span>
+                      <span className="block font-black">Get Directions</span>
+                      <span className="mt-1 block text-sm font-semibold text-teal-50 transition group-hover:text-slate-600">
+                        Sangi Road, Tabunok, Talisay City, Cebu
+                      </span>
+                    </span>
                   </a>
                 </div>
               </motion.div>

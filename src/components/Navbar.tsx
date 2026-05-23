@@ -113,7 +113,6 @@ export default function Navbar() {
   }, [lastScrollY]);
 
   const homeIsActive = pathname === "/";
-  const contactIsActive = pathname === "/" && false;
 
   return (
     <header
@@ -141,7 +140,7 @@ export default function Navbar() {
 
             <div className="min-w-0">
               <p className="truncate text-base font-black leading-tight text-white md:hidden">
-                Tabunoc NHS
+                Tabunoc National High School
               </p>
 
               <p className="hidden text-lg font-black leading-tight text-white md:block">
@@ -234,11 +233,7 @@ export default function Navbar() {
 
             <Link
               href="/#contact"
-              className={`ml-2 rounded-xl px-5 py-2 text-sm font-black transition ${
-                contactIsActive
-                  ? "bg-white text-[#0F4C5C]"
-                  : "bg-yellow-300 text-slate-950 hover:bg-yellow-200"
-              }`}
+              className="ml-2 rounded-xl border border-white/30 bg-white/10 px-5 py-2 text-sm font-black text-white transition hover:bg-yellow-300 hover:text-slate-950"
             >
               Contact
             </Link>
@@ -341,7 +336,7 @@ export default function Navbar() {
             <Link
               href="/#contact"
               onClick={() => setMobileOpen(false)}
-              className="mt-2 rounded-xl bg-yellow-300 px-4 py-3 text-center text-sm font-black text-slate-950 transition hover:bg-yellow-200"
+              className="mt-2 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-center text-sm font-black text-white transition hover:bg-yellow-300 hover:text-slate-950"
             >
               Contact
             </Link>

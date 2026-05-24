@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
@@ -97,9 +97,9 @@ export default function AlumniPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white text-slate-950">
+      <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
         {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-36">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 pb-20 pt-36">
           <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
@@ -108,7 +108,7 @@ export default function AlumniPage() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]"
+              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
             >
               Tabunoc NHS Community
             </motion.p>
@@ -117,7 +117,7 @@ export default function AlumniPage() {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.1 }}
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-6xl"
+              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
             >
               Students and Alumni Community
             </motion.h1>
@@ -126,7 +126,7 @@ export default function AlumniPage() {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700"
+              className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200"
             >
               A community space for Tabunoc National High School learners,
               graduates, and alumni to reconnect, celebrate achievements,
@@ -143,14 +143,14 @@ export default function AlumniPage() {
                 href="https://web.facebook.com/groups/TabunokNatlHSAlumniAndStudentsCommunity"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-xl bg-yellow-300 px-8 py-3 font-black text-slate-950 shadow-lg shadow-yellow-300/30 transition hover:-translate-y-1 hover:bg-yellow-200"
+                className="rounded-xl bg-yellow-300 px-8 py-3 font-black text-slate-950 shadow-lg shadow-yellow-300/30 dark:shadow-black/20 transition hover:-translate-y-1 hover:bg-yellow-200"
               >
                 Join the Alumni Community
               </a>
 
               <a
                 href="#overview"
-                className="rounded-xl border border-[#0F4C5C]/30 bg-white px-8 py-3 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-[#0F4C5C] hover:text-white"
+                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-8 py-3 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
               >
                 Learn More
               </a>
@@ -159,7 +159,7 @@ export default function AlumniPage() {
         </section>
 
         {/* OVERVIEW */}
-        <section id="overview" className="bg-white px-6 py-20">
+        <section id="overview" className="bg-white dark:bg-[#0a0908] px-6 py-20">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
               <motion.div
@@ -168,14 +168,14 @@ export default function AlumniPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.7 }}
               >
-                <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                   Alumni and Student Engagement
                 </p>
                 <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
                   Building connection, legacy, and support for the Tabunoc NHS
                   community.
                 </h2>
-                <p className="mt-5 max-w-3xl leading-7 text-slate-600">
+                <p className="mt-5 max-w-3xl leading-7 text-slate-600 dark:text-stone-300">
                   The Alumni page serves as an organized space for community
                   engagement. It connects learners, graduates, and stakeholders
                   through recognition, school support, mentoring, and meaningful
@@ -188,33 +188,33 @@ export default function AlumniPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7 }}
-                className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-8 shadow-sm"
+                className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20"
               >
-                <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                   Community Snapshot
                 </p>
 
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-xl bg-white p-5 shadow-sm">
-                    <p className="text-sm font-bold text-slate-500">
+                  <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
+                    <p className="text-sm font-bold text-slate-500 dark:text-stone-400">
                       Facebook Group Members
                     </p>
-                    <p className="mt-2 text-3xl font-black text-[#0F4C5C]">
+                    <p className="mt-2 text-3xl font-black text-[#0F4C5C] dark:text-yellow-300">
                       {facebookGroupMembers.toLocaleString()}+
                     </p>
-                    <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-stone-400">
                       Updated when join requests are approved
                     </p>
                   </div>
 
-                  <div className="rounded-xl bg-white p-5 shadow-sm">
-                    <p className="text-sm font-bold text-slate-500">
+                  <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
+                    <p className="text-sm font-bold text-slate-500 dark:text-stone-400">
                       Community Focus
                     </p>
-                    <p className="mt-2 text-3xl font-black text-[#0F4C5C]">
+                    <p className="mt-2 text-3xl font-black text-[#0F4C5C] dark:text-yellow-300">
                       4
                     </p>
-                    <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-stone-400">
                       Reconnect, Recognize, Support, Celebrate
                     </p>
                   </div>
@@ -230,12 +230,12 @@ export default function AlumniPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.08 }}
-                  className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                  className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01]"
                 >
-                  <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                  <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                     {item.title}
                   </p>
-                  <p className="mt-4 leading-7 text-slate-600">
+                  <p className="mt-4 leading-7 text-slate-600 dark:text-stone-300">
                     {item.description}
                   </p>
                 </motion.article>
@@ -245,16 +245,16 @@ export default function AlumniPage() {
         </section>
 
         {/* COMMUNITY LINKS */}
-        <section className="bg-[#F8FAFC] px-6 py-20">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Official Community Links
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
                 Connect through verified channels.
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
                 Use these official links to join the community, follow alumni
                 highlights, and stay updated with school announcements.
               </p>
@@ -271,19 +271,19 @@ export default function AlumniPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.08 }}
-                  className={`rounded-2xl border p-6 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${
+                  className={`rounded-2xl border p-6 text-left shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01] ${
                     link.isPrimary
-                      ? "border-yellow-300 bg-yellow-50"
-                      : "border-slate-200 bg-white"
+                      ? "border-yellow-300 bg-yellow-50 dark:bg-[#171614]"
+                      : "border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614]"
                   }`}
                 >
-                  <p className="text-xs font-black uppercase tracking-widest text-[#0F4C5C]">
+                  <p className="text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                     {link.label}
                   </p>
-                  <h3 className="mt-3 text-xl font-black text-slate-950">
+                  <h3 className="mt-3 text-xl font-black text-slate-950 dark:text-white">
                     {link.title}
                   </h3>
-                  <p className="mt-3 leading-7 text-slate-600">
+                  <p className="mt-3 leading-7 text-slate-600 dark:text-stone-300">
                     {link.description}
                   </p>
                 </motion.a>
@@ -293,16 +293,16 @@ export default function AlumniPage() {
         </section>
 
         {/* GET INVOLVED */}
-        <section id="connect" className="bg-white px-6 py-20">
+        <section id="connect" className="bg-white dark:bg-[#0a0908] px-6 py-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Get Involved
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
                 A clear alumni journey.
               </h2>
-              <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
+              <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600 dark:text-stone-300">
                 Alumni engagement is best when it is organized, respectful, and
                 aligned with the school&apos;s mission. These steps make it
                 easier to participate in community, support, and learning
@@ -318,17 +318,17 @@ export default function AlumniPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.06 }}
-                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-8 shadow-sm"
+                  className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20"
                 >
                   <div className="flex items-center gap-4">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0F4C5C] text-lg font-black text-white">
                       {item.step}
                     </div>
-                    <h3 className="text-2xl font-black text-slate-950">
+                    <h3 className="text-2xl font-black text-slate-950 dark:text-white">
                       {item.title}
                     </h3>
                   </div>
-                  <p className="mt-5 leading-7 text-slate-600">
+                  <p className="mt-5 leading-7 text-slate-600 dark:text-stone-300">
                     {item.description}
                   </p>
                 </motion.article>
@@ -366,7 +366,7 @@ export default function AlumniPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7 }}
-                className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur"
+                className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
               >
                 <h3 className="text-2xl font-black">Community Reminders</h3>
 
@@ -386,15 +386,15 @@ export default function AlumniPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 py-20">
-          <div className="mx-auto max-w-5xl rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-            <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+        <section className="bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 py-20">
+          <div className="mx-auto max-w-5xl rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center shadow-sm dark:shadow-black/20">
+            <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
               Alumni Support
             </p>
             <h2 className="mt-3 text-3xl font-black leading-tight">
               Start your legacy pathway with Tabunoc NHS.
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+            <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
               Whether you are a graduate, teacher, learner, or partner, the
               community provides a structured way to stay involved, share
               knowledge, and support the school&apos;s future.
@@ -412,7 +412,7 @@ export default function AlumniPage() {
 
               <a
                 href="/#contact"
-                className="rounded-xl border border-[#0F4C5C]/30 bg-white px-6 py-3 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-[#0F4C5C] hover:text-white"
+                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-6 py-3 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
               >
                 Contact the School
               </a>
@@ -425,3 +425,6 @@ export default function AlumniPage() {
     </>
   );
 }
+
+
+

@@ -103,9 +103,9 @@ export default function MemosPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white text-slate-950">
+      <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
         {/* HERO */}
-          <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-36 text-slate-950">
+          <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 pb-20 pt-36 text-slate-950 dark:text-white">
             <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
             <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
@@ -116,7 +116,7 @@ export default function MemosPage() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]"
+                className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
               >
                 Official School Repository
               </motion.p>
@@ -125,7 +125,7 @@ export default function MemosPage() {
                 initial={{ opacity: 0, y: 32 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.15 }}
-                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-6xl"
+                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
               >
                 School Memos and Issuances
               </motion.h1>
@@ -134,7 +134,7 @@ export default function MemosPage() {
                 initial={{ opacity: 0, y: 32 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.25 }}
-                className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700"
+                className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200"
               >
                 Search, view, and access public school memoranda, advisories, and
                 issuances of Tabunoc National High School.
@@ -145,7 +145,7 @@ export default function MemosPage() {
                 initial={{ opacity: 0, y: 32 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.35 }}
-                className="mx-auto mt-12 max-w-7xl rounded-2xl border border-slate-200 bg-white/95 p-5 text-left shadow-xl backdrop-blur md:p-6"
+                className="mx-auto mt-12 max-w-7xl rounded-2xl border border-slate-200 dark:border-[#292624] bg-white/95 dark:bg-[#171614]/95 p-5 text-left shadow-xl dark:shadow-black/20 md:p-6"
               >
                 <div className="grid gap-4 lg:grid-cols-[1fr_220px_180px]">
                   <input
@@ -153,7 +153,7 @@ export default function MemosPage() {
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
                     placeholder="Search by memo number, title, category, or issuing office..."
-                    className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100"
+                    className="w-full rounded-xl border border-slate-300 dark:border-[#292624] bg-white dark:bg-[#171614] px-5 py-4 text-sm font-semibold text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/50"
                   />
 
                   <select
@@ -161,7 +161,7 @@ export default function MemosPage() {
                     onChange={(event) =>
                       setSelectedCategory(event.target.value as "All" | MemoCategory)
                     }
-                    className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-bold text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100"
+                    className="w-full rounded-xl border border-slate-300 dark:border-[#292624] bg-white dark:bg-[#171614] px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/50"
                   >
                     <option value="All">All Categories</option>
                     {memoCategories.map((category) => (
@@ -174,7 +174,7 @@ export default function MemosPage() {
                   <select
                     value={selectedYear}
                     onChange={(event) => setSelectedYear(event.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-bold text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100"
+                    className="w-full rounded-xl border border-slate-300 dark:border-[#292624] bg-white dark:bg-[#171614] px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/50"
                   >
                     <option value="All">All Years</option>
                     {availableYears.map((year) => (
@@ -186,7 +186,7 @@ export default function MemosPage() {
                 </div>
 
                 <div className="mt-5 flex flex-col justify-between gap-3 md:flex-row md:items-center">
-                  <p className="pl-5 text-sm font-bold text-slate-600">
+                  <p className="pl-5 text-sm font-bold text-slate-600 dark:text-stone-300">
                     Showing {visibleMemos.length} of {publicMemos.length} public memo
                     {publicMemos.length !== 1 ? "s" : ""}
                   </p>
@@ -201,7 +201,7 @@ export default function MemosPage() {
                         setSelectedCategory("All");
                         setSelectedYear("All");
                       }}
-                      className="w-fit rounded-lg bg-slate-100 py-2 pl-5 pr-4 text-sm font-black text-slate-700 transition hover:bg-[#0F4C5C] hover:text-white md:px-4"
+                      className="w-fit rounded-lg bg-slate-100 dark:bg-[#292624] py-2 pl-5 pr-4 text-sm font-black text-slate-700 dark:text-stone-200 transition hover:text-[#0F4C5C] dark:hover:text-yellow-300 md:px-4"
                     >
                       Clear Search
                     </button>
@@ -213,15 +213,15 @@ export default function MemosPage() {
 
 
         {/* MEMO LIST */}
-        <section className="bg-white px-6 py-20">
+        <section className="bg-white dark:bg-[#0a0908] px-6 py-20">
           <div className="mx-auto max-w-7xl">
             {visibleMemos.length > 0 ? (
-              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <div className="border-b border-slate-200 bg-[#F8FAFC] px-5 py-4">
-                  <h3 className="text-xl font-black text-slate-950">
+              <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] shadow-sm dark:shadow-black/20">
+                <div className="border-b border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] px-5 py-4">
+                  <h3 className="text-xl font-black text-slate-950 dark:text-white">
                     Public Memo List
                   </h3>
-                  <p className="mt-1 text-sm font-semibold text-slate-600">
+                  <p className="mt-1 text-sm font-semibold text-slate-600 dark:text-stone-300">
                     Click “View” or “Download” to access the available memo file.
                   </p>
                 </div>
@@ -251,7 +251,7 @@ export default function MemosPage() {
                       </tr>
                     </thead>
 
-                    <tbody className="divide-y divide-slate-200">
+                    <tbody className="divide-y divide-slate-200 dark:divide-[#292624]">
                       {visibleMemos.map((memo, index) => {
                         const memoLink = getMemoFileLink(memo);
 
@@ -262,37 +262,37 @@ export default function MemosPage() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.3, delay: index * 0.03 }}
-                            className="bg-white transition hover:bg-[#F8FAFC]"
+                            className="bg-white transition hover:text-[#0F4C5C] dark:bg-[#171614] dark:hover:text-yellow-300"
                           >
                             <td className="whitespace-nowrap px-5 py-4 align-top">
-                              <p className="font-black text-[#0F4C5C]">
+                              <p className="font-black text-[#0F4C5C] dark:text-yellow-300">
                                 {memo.memoNumber}
                               </p>
                             </td>
 
                             <td className="px-5 py-4 align-top">
-                              <p className="font-black leading-snug text-slate-950">
+                              <p className="font-black leading-snug text-slate-950 dark:text-white">
                                 {memo.title}
                               </p>
-                              <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600">
+                              <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600 dark:text-stone-300">
                                 {memo.description}
                               </p>
                             </td>
 
                             <td className="whitespace-nowrap px-5 py-4 align-top">
-                              <span className="inline-flex rounded-lg bg-[#ECFDF5] px-3 py-2 text-xs font-black uppercase tracking-widest text-[#0F4C5C]">
+                              <span className="inline-flex rounded-lg bg-[#ECFDF5] dark:bg-[#171614] px-3 py-2 text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                                 {memo.category}
                               </span>
                             </td>
 
                             <td className="whitespace-nowrap px-5 py-4 align-top">
-                              <p className="font-bold text-slate-700">
+                              <p className="font-bold text-slate-700 dark:text-stone-200">
                                 {formatDate(memo.dateIssued)}
                               </p>
                             </td>
 
                             <td className="px-5 py-4 align-top">
-                              <p className="font-bold text-slate-700">
+                              <p className="font-bold text-slate-700 dark:text-stone-200">
                                 {memo.issuingOffice}
                               </p>
                             </td>
@@ -305,7 +305,7 @@ export default function MemosPage() {
                                       href={memoLink}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="rounded-lg bg-[#0F4C5C] px-4 py-2 text-sm font-black text-white transition hover:bg-[#0B3B48]"
+                                      className="rounded-lg bg-[#0F4C5C] px-4 py-2 text-sm font-black text-white transition duration-300 hover:-translate-y-1 hover:scale-[1.01]"
                                     >
                                       View
                                     </a>
@@ -313,13 +313,13 @@ export default function MemosPage() {
                                     <a
                                       href={memoLink}
                                       download
-                                      className="rounded-lg border border-[#0F4C5C]/30 bg-white px-4 py-2 text-sm font-black text-[#0F4C5C] transition hover:bg-[#ECFDF5]"
+                                      className="rounded-lg border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-4 py-2 text-sm font-black text-[#0F4C5C] dark:text-stone-100 transition hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                                     >
                                       Download
                                     </a>
                                   </>
                                 ) : (
-                                  <span className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-bold text-slate-500">
+                                  <span className="rounded-lg bg-slate-100 dark:bg-[#292624] px-4 py-2 text-sm font-bold text-slate-500 dark:text-stone-400">
                                     No file
                                   </span>
                                 )}
@@ -333,11 +333,11 @@ export default function MemosPage() {
                 </div>
               </div>
             ) : (
-              <div className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-10 text-center shadow-sm">
-                <h3 className="text-2xl font-black text-slate-950">
+              <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-10 text-center shadow-sm dark:shadow-black/20">
+                <h3 className="text-2xl font-black text-slate-950 dark:text-white">
                   No public memo found.
                 </h3>
-                <p className="mx-auto mt-3 max-w-2xl leading-7 text-slate-600">
+                <p className="mx-auto mt-3 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
                   Try searching by memo number, title, category, date, or issuing
                   office. You may also clear the filter to view all public memos.
                 </p>
@@ -385,7 +385,7 @@ export default function MemosPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur"
+              className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
             >
               <h3 className="text-2xl font-black">Need Assistance?</h3>
               <p className="mt-3 leading-7 text-teal-50">
@@ -396,7 +396,7 @@ export default function MemosPage() {
               <div className="mt-6 grid gap-4">
                 <a
                   href="/#contact"
-                  className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                  className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                 >
                   Contact the School
                 </a>
@@ -405,7 +405,7 @@ export default function MemosPage() {
                   href="https://m.me/tabunocnatlhs"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-xl border border-white/30 px-5 py-4 font-black text-white transition hover:-translate-y-1 hover:bg-white hover:text-[#0F4C5C]"
+                  className="rounded-xl border border-white/30 px-5 py-4 font-black text-white transition hover:-translate-y-1 hover:text-yellow-300"
                 >
                   Chat on Messenger
                 </a>
@@ -419,3 +419,7 @@ export default function MemosPage() {
     </>
   );
 }
+
+
+
+

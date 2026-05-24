@@ -72,7 +72,7 @@ export default function PersonnelCard({
       whileHover={{}}
       transition={{ duration: 0.25 }}
       onClick={() => onClick?.(person)}
-      className="group relative h-full cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:border-[#0F4C5C]/40 hover:bg-[#FAFCFC] hover:shadow-md"
+      className="group relative h-full cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:scale-[1.01] dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20"
     >
       <div className="flex h-full">
         {/* LEFT PHOTO BLOCK */}
@@ -94,7 +94,7 @@ export default function PersonnelCard({
         {/* RIGHT CONTENT */}
         <div className="relative flex flex-1 flex-col justify-center px-5 py-4">
           <h3
-            className={`leading-tight tracking-tight text-slate-950 ${
+            className={`leading-tight tracking-tight text-slate-950 transition group-hover:text-[#0F4C5C] dark:text-white dark:group-hover:text-yellow-300 ${
               compact
                 ? "text-base font-bold"
                 : "text-lg font-extrabold"
@@ -105,10 +105,10 @@ export default function PersonnelCard({
 
           {positionDesignation && (
             <div className="mt-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
                 Position/Designation
               </p>
-              <p className="mt-1 text-sm font-medium leading-snug text-[#123C9C]">
+              <p className="mt-1 text-sm font-medium leading-snug text-[#123C9C] dark:text-yellow-300">
                 {positionDesignation}
               </p>
             </div>
@@ -116,10 +116,10 @@ export default function PersonnelCard({
 
           {subjectText && (
             <div className="mt-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
                 Subject Taught
               </p>
-              <p className="mt-1 text-sm font-medium leading-snug text-[#0F4C5C]">
+              <p className="mt-1 text-sm font-medium leading-snug text-[#0F4C5C] dark:text-stone-200">
                 {subjectText}
               </p>
             </div>
@@ -127,19 +127,16 @@ export default function PersonnelCard({
 
           {person.department && (
             <div className="mt-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
                 Department
               </p>
-              <p className="mt-1 text-sm font-medium leading-snug text-slate-700">
+              <p className="mt-1 text-sm font-medium leading-snug text-slate-700 dark:text-stone-300">
                 {person.department}
               </p>
             </div>
           )}
         </div>
       </div>
-
-      {/* SOFT HOVER TINT */}
-      <div className="pointer-events-none absolute inset-0 bg-[#0F4C5C]/[0.025] opacity-0 transition duration-300 group-hover:opacity-100" />
     </motion.article>
   );
 }

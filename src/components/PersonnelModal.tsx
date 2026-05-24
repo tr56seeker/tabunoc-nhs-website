@@ -53,10 +53,10 @@ function getAdvisorySections(person: Personnel) {
 function MiniInfo({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
         {label}
       </p>
-      <p className="mt-1 text-sm font-medium leading-snug text-slate-800">
+      <p className="mt-1 text-sm font-medium leading-snug text-slate-800 dark:text-stone-200">
         {value}
       </p>
     </div>
@@ -65,11 +65,11 @@ function MiniInfo({ label, value }: { label: string; value: string }) {
 
 function DetailBlock({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+    <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-[#292624] dark:bg-[#171614]">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
         {label}
       </p>
-      <p className="mt-2 text-sm font-medium leading-7 text-slate-800">
+      <p className="mt-2 text-sm font-medium leading-7 text-slate-800 dark:text-stone-200">
         {value}
       </p>
     </div>
@@ -114,7 +114,7 @@ export default function PersonnelModal({
         >
           {/* BACKDROP */}
           <motion.div
-            className="absolute inset-0 bg-slate-950/60"
+            className="absolute inset-0 bg-black/65"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -132,16 +132,16 @@ export default function PersonnelModal({
               duration: 0.18,
               ease: "easeOut",
             }}
-            className="relative max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl bg-white text-slate-950 shadow-xl will-change-transform"
+            className="relative max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl border border-transparent bg-white text-slate-950 shadow-xl will-change-transform dark:border-[#292624] dark:bg-[#171614] dark:text-white dark:shadow-black/20"
           >
             <div className="max-h-[92vh] overflow-y-auto">
               {/* HEADER BAR */}
-              <div className="flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 md:px-8">
+              <div className="flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 dark:border-[#292624] dark:bg-[#171614] md:px-8">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0F4C5C] dark:text-yellow-300">
                     Faculty / Personnel Profile
                   </p>
-                  <p className="mt-1 text-sm font-medium text-slate-500">
+                  <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">
                     Tabunoc National High School
                   </p>
                 </div>
@@ -149,7 +149,7 @@ export default function PersonnelModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-[#0F4C5C] hover:text-white"
+                  className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:text-[#0F4C5C] dark:bg-[#292624] dark:text-stone-200 dark:hover:text-yellow-300"
                 >
                   Close
                 </button>
@@ -157,9 +157,9 @@ export default function PersonnelModal({
 
               <div className="grid md:grid-cols-[300px_1fr]">
                 {/* LEFT PROFILE COLUMN */}
-                <aside className="border-b border-slate-200 bg-slate-50 p-6 md:border-b-0 md:border-r md:p-8">
+                <aside className="border-b border-slate-200 bg-slate-50 p-6 dark:border-[#292624] dark:bg-[#171614]/90 md:border-b-0 md:border-r md:p-8">
                   <div className="mx-auto max-w-[230px]">
-                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-200 shadow-sm">
+                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-200 shadow-sm dark:border-[#292624] dark:bg-[#292624] dark:shadow-black/20">
                       {showPhoto ? (
                         <img
                           src={person.photo}
@@ -176,21 +176,21 @@ export default function PersonnelModal({
                   </div>
 
                   <div className="mt-6 text-center md:text-left">
-                    <h2 className="text-2xl font-extrabold leading-tight tracking-tight text-slate-950">
+                    <h2 className="text-2xl font-extrabold leading-tight tracking-tight text-slate-950 dark:text-white">
                       {person.name}
                     </h2>
 
-                    <p className="mt-2 text-base font-semibold text-[#0F4C5C]">
+                    <p className="mt-2 text-base font-semibold text-[#0F4C5C] dark:text-yellow-300">
                       {displayText(person.position)}
                     </p>
 
-                    <p className="mt-1 text-sm font-medium leading-6 text-slate-600">
+                    <p className="mt-1 text-sm font-medium leading-6 text-slate-600 dark:text-stone-300">
                       {displayList(person.designation)}
                     </p>
                   </div>
 
-                  <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                  <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 dark:border-[#292624] dark:bg-[#171614]">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
                       Quick Details
                     </p>
 
@@ -265,7 +265,7 @@ export default function PersonnelModal({
                     {person.email && (
                       <a
                         href={`mailto:${person.email}`}
-                        className="rounded-xl bg-[#0F4C5C] px-5 py-3 text-center text-sm font-semibold text-white transition hover:-translate-y-1 hover:bg-[#0B3B48]"
+                        className="rounded-xl bg-[#0F4C5C] px-5 py-3 text-center text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:scale-[1.01]"
                       >
                         Send Email
                       </a>
@@ -276,7 +276,7 @@ export default function PersonnelModal({
                         href={messengerLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-xl border border-[#0F4C5C]/30 bg-white px-5 py-3 text-center text-sm font-semibold text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-[#ECFDF5]"
+                        className="rounded-xl border border-[#0F4C5C]/30 bg-white px-5 py-3 text-center text-sm font-semibold text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:border-[#292624] dark:bg-[#171614] dark:text-stone-100 dark:hover:text-yellow-300"
                       >
                         Message on Messenger
                       </a>
@@ -291,3 +291,4 @@ export default function PersonnelModal({
     </AnimatePresence>
   );
 }
+

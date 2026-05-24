@@ -204,9 +204,9 @@ export default function CitizenCharterPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white text-slate-950">
+      <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
         {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-36 text-slate-950">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 pb-20 pt-36 text-slate-950 dark:text-white">
           <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
@@ -217,7 +217,7 @@ export default function CitizenCharterPage() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]"
+              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
             >
               Transparency and Public Service
             </motion.p>
@@ -226,7 +226,7 @@ export default function CitizenCharterPage() {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.15 }}
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-6xl"
+              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
             >
               Citizen&apos;s Charter
             </motion.h1>
@@ -235,7 +235,7 @@ export default function CitizenCharterPage() {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.25 }}
-              className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700"
+              className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200"
             >
               A public guide to common school services, documentary
               requirements, processing offices, and service reminders for
@@ -252,7 +252,7 @@ export default function CitizenCharterPage() {
                 <a
                   key={item.label}
                   href={item.href}
-                  className="rounded-xl bg-white px-6 py-3 font-black text-[#0F4C5C] shadow-sm transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                  className="rounded-xl bg-white dark:bg-[#171614] px-6 py-3 font-black text-[#0F4C5C] dark:text-yellow-300 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                 >
                   {item.label}
                 </a>
@@ -262,22 +262,22 @@ export default function CitizenCharterPage() {
         </section>
 
         {/* SERVICE NOTE */}
-        <section className="bg-white px-6 py-16">
+        <section className="bg-white dark:bg-[#0a0908] px-6 py-16">
           <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-3">
             <motion.article
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm"
+              className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-6 shadow-sm dark:shadow-black/20"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Purpose
               </p>
               <h2 className="mt-3 text-2xl font-black">
                 Clear school service guide
               </h2>
-              <p className="mt-3 leading-7 text-slate-600">
+              <p className="mt-3 leading-7 text-slate-600 dark:text-stone-300">
                 This page helps clients know where to go, what to prepare, and
                 what to expect when requesting common school services.
               </p>
@@ -288,15 +288,15 @@ export default function CitizenCharterPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.08 }}
-              className="rounded-2xl border border-slate-200 bg-[#ECFDF5] p-6 shadow-sm"
+              className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#ECFDF5] dark:bg-[#171614] p-6 shadow-sm dark:shadow-black/20"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Scope
               </p>
               <h2 className="mt-3 text-2xl font-black">
                 Common public school services
               </h2>
-              <p className="mt-3 leading-7 text-slate-600">
+              <p className="mt-3 leading-7 text-slate-600 dark:text-stone-300">
                 Services listed are generic school-level frontline services
                 commonly applicable to public schools.
               </p>
@@ -307,15 +307,15 @@ export default function CitizenCharterPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.16 }}
-              className="rounded-2xl border border-slate-200 bg-yellow-50 p-6 shadow-sm"
+              className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-yellow-50 dark:bg-[#171614] p-6 shadow-sm dark:shadow-black/20"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Reminder
               </p>
               <h2 className="mt-3 text-2xl font-black">
                 Final validation is required
               </h2>
-              <p className="mt-3 leading-7 text-slate-600">
+              <p className="mt-3 leading-7 text-slate-600 dark:text-stone-300">
                 Actual requirements and timelines may vary depending on official
                 DepEd issuances, school records, and the nature of the request.
               </p>
@@ -324,16 +324,16 @@ export default function CitizenCharterPage() {
         </section>
 
         {/* SERVICES */}
-        <section className="bg-[#F8FAFC] px-6 py-20">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-12 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Frontline Services
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
                 Common School Services and Processes
               </h2>
-              <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600">
+              <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600 dark:text-stone-300">
                 The following services are arranged for easy public reference.
                 Clients are encouraged to coordinate with the school office for
                 specific instructions and updates.
@@ -348,29 +348,29 @@ export default function CitizenCharterPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.45, delay: index * 0.04 }}
-                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+                  className="overflow-hidden rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] shadow-sm dark:shadow-black/20"
                 >
-                  <div className="border-b border-slate-200 bg-white p-6">
+                  <div className="border-b border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-6">
                     <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
                       <div>
-                        <span className="inline-flex rounded-lg bg-[#ECFDF5] px-3 py-2 text-xs font-black uppercase tracking-widest text-[#0F4C5C]">
+                        <span className="inline-flex rounded-lg bg-[#ECFDF5] dark:bg-[#171614] px-3 py-2 text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                           {service.category}
                         </span>
 
-                        <h3 className="mt-4 text-2xl font-black leading-tight text-slate-950 md:text-3xl">
+                        <h3 className="mt-4 text-2xl font-black leading-tight text-slate-950 dark:text-white md:text-3xl">
                           {service.title}
                         </h3>
 
-                        <p className="mt-3 max-w-4xl leading-7 text-slate-600">
+                        <p className="mt-3 max-w-4xl leading-7 text-slate-600 dark:text-stone-300">
                           {service.description}
                         </p>
                       </div>
 
-                      <div className="rounded-2xl bg-yellow-50 p-4 lg:min-w-[260px]">
-                        <p className="text-xs font-black uppercase tracking-widest text-slate-500">
+                      <div className="rounded-2xl bg-yellow-50 dark:bg-[#171614] p-4 lg:min-w-[260px]">
+                        <p className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
                           Fees
                         </p>
-                        <p className="mt-1 text-lg font-black text-slate-950">
+                        <p className="mt-1 text-lg font-black text-slate-950 dark:text-white">
                           {service.fees}
                         </p>
                       </div>
@@ -378,37 +378,37 @@ export default function CitizenCharterPage() {
                   </div>
 
                   <div className="grid gap-0 lg:grid-cols-2">
-                    <div className="border-b border-slate-200 p-6 lg:border-b-0 lg:border-r">
-                      <p className="text-xs font-black uppercase tracking-widest text-slate-500">
+                    <div className="border-b border-slate-200 dark:border-[#292624] p-6 lg:border-b-0 lg:border-r">
+                      <p className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
                         Who May Avail
                       </p>
-                      <p className="mt-3 leading-7 text-slate-700">
+                      <p className="mt-3 leading-7 text-slate-700 dark:text-stone-200">
                         {service.whoMayAvail}
                       </p>
 
-                      <p className="mt-6 text-xs font-black uppercase tracking-widest text-slate-500">
+                      <p className="mt-6 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
                         Processing Office
                       </p>
-                      <p className="mt-3 font-bold leading-7 text-slate-800">
+                      <p className="mt-3 font-bold leading-7 text-slate-800 dark:text-stone-100">
                         {service.office}
                       </p>
 
-                      <p className="mt-6 text-xs font-black uppercase tracking-widest text-slate-500">
+                      <p className="mt-6 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
                         Processing Time
                       </p>
-                      <p className="mt-3 leading-7 text-slate-700">
+                      <p className="mt-3 leading-7 text-slate-700 dark:text-stone-200">
                         {service.processingTime}
                       </p>
                     </div>
 
                     <div className="p-6">
-                      <p className="text-xs font-black uppercase tracking-widest text-slate-500">
+                      <p className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
                         Basic Requirements
                       </p>
 
                       <ul className="mt-4 space-y-3">
                         {service.requirements.map((item) => (
-                          <li key={item} className="flex gap-3 text-slate-700">
+                          <li key={item} className="flex gap-3 text-slate-700 dark:text-stone-200">
                             <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
                               ✓
                             </span>
@@ -417,13 +417,13 @@ export default function CitizenCharterPage() {
                         ))}
                       </ul>
 
-                      <p className="mt-6 text-xs font-black uppercase tracking-widest text-slate-500">
+                      <p className="mt-6 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
                         General Process
                       </p>
 
                       <ol className="mt-4 space-y-3">
                         {service.process.map((step, stepIndex) => (
-                          <li key={step} className="flex gap-3 text-slate-700">
+                          <li key={step} className="flex gap-3 text-slate-700 dark:text-stone-200">
                             <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow-300 text-xs font-black text-slate-950">
                               {stepIndex + 1}
                             </span>
@@ -466,7 +466,7 @@ export default function CitizenCharterPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur"
+              className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
             >
               <h3 className="text-2xl font-black">Important Reminders</h3>
 
@@ -485,15 +485,15 @@ export default function CitizenCharterPage() {
         </section>
 
         {/* FEEDBACK */}
-        <section className="bg-white px-6 py-20">
-          <div className="mx-auto max-w-5xl rounded-2xl border border-slate-200 bg-[#F8FAFC] p-8 text-center shadow-sm">
-            <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+        <section className="bg-white dark:bg-[#0a0908] px-6 py-20">
+          <div className="mx-auto max-w-5xl rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 text-center shadow-sm dark:shadow-black/20">
+            <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
               Feedback and Assistance
             </p>
-            <h2 className="mt-3 text-3xl font-black leading-tight text-slate-950">
+            <h2 className="mt-3 text-3xl font-black leading-tight text-slate-950 dark:text-white">
               Need help with a school service?
             </h2>
-            <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+            <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
               For questions, clarifications, records concerns, or service
               feedback, please coordinate through the official communication
               channels of Tabunoc National High School.
@@ -502,7 +502,7 @@ export default function CitizenCharterPage() {
             <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
               <a
                 href="/#contact"
-                className="rounded-xl bg-[#0F4C5C] px-6 py-3 font-black text-white transition hover:-translate-y-1 hover:bg-[#0B3B48]"
+                className="rounded-xl bg-[#0F4C5C] px-6 py-3 font-black text-white transition hover:-translate-y-1 hover:scale-[1.01]"
               >
                 Contact the School
               </a>
@@ -511,7 +511,7 @@ export default function CitizenCharterPage() {
                 href="https://m.me/tabunocnatlhs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-xl border border-[#0F4C5C]/30 bg-white px-6 py-3 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-[#ECFDF5]"
+                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-6 py-3 font-black text-[#0F4C5C] dark:text-stone-100 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
               >
                 Chat on Messenger
               </a>
@@ -524,3 +524,7 @@ export default function CitizenCharterPage() {
     </>
   );
 }
+
+
+
+

@@ -102,9 +102,9 @@ export default function Home() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white text-slate-950">
+      <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
         {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-36">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 pb-20 pt-36">
           <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
@@ -115,7 +115,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 34 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.85, delay: 0.1 }}
-              className="max-w-5xl text-5xl font-black leading-[1.05] tracking-tight text-slate-950 md:text-7xl"
+              className="max-w-5xl text-5xl font-black leading-[1.05] tracking-tight text-slate-950 dark:text-white md:text-7xl"
             >
               Tabunoc National High School
             </motion.h1>
@@ -124,7 +124,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 34 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.85, delay: 0.2 }}
-              className="mt-6 max-w-3xl text-lg leading-7 text-slate-700 md:text-xl"
+              className="mt-6 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200 md:text-xl"
             >
               A learner-centered public secondary school committed to quality,
               inclusive, resilient, and future-ready basic education.
@@ -138,14 +138,14 @@ export default function Home() {
             >
               <a
                 href="/enrollment"
-                className="rounded-xl bg-yellow-300 px-8 py-3 font-black text-slate-950 shadow-lg shadow-yellow-300/30 transition hover:-translate-y-1 hover:bg-yellow-200"
+                className="rounded-xl bg-yellow-300 px-8 py-3 font-black text-slate-950 shadow-lg shadow-yellow-300/30 dark:shadow-black/20 transition hover:-translate-y-1 hover:bg-yellow-200"
               >
                 Enrollment Guide
               </a>
 
               <a
                 href="#announcements"
-                className="rounded-xl border border-[#0F4C5C]/30 bg-white px-8 py-3 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-[#0F4C5C] hover:text-white"
+                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-8 py-3 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
               >
                 View Announcements
               </a>
@@ -154,7 +154,7 @@ export default function Home() {
         </section>
 
         {/* ABOUT */}
-        <section id="about" className="bg-white px-6 py-20">
+        <section id="about" className="bg-white dark:bg-[#0a0908] px-6 py-20">
           <div className="mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-2">
             <motion.div
               initial={{ opacity: 0, x: -32 }}
@@ -162,16 +162,16 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 About the School
               </p>
 
-              <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-5xl">
+              <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-5xl">
                 Serving learners through accessible and quality public
                 education.
               </h2>
 
-              <p className="mt-5 leading-7 text-slate-600">
+              <p className="mt-5 leading-7 text-slate-600 dark:text-stone-300">
                 Tabunoc National High School is a public secondary school in
                 Talisay City, Cebu, serving Junior High School and Senior High
                 School learners. The school continues to strengthen instruction,
@@ -185,20 +185,20 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-lg md:p-8"
+              className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-6 shadow-lg dark:shadow-black/20 md:p-8"
             >
-              <h3 className="text-2xl font-black text-[#0F4C5C]">
+              <h3 className="text-2xl font-black text-[#0F4C5C] dark:text-yellow-300">
                 School Profile
               </h3>
 
               <div className="mt-6 grid gap-4">
-                <div className="rounded-xl bg-white p-5 shadow-sm">
-                  <p className="text-sm font-bold text-slate-500">School ID</p>
-                  <p className="text-2xl font-black text-[#0F4C5C]">303111</p>
+                <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
+                  <p className="text-sm font-bold text-slate-500 dark:text-stone-400">School ID</p>
+                  <p className="text-2xl font-black text-[#0F4C5C] dark:text-yellow-300">303111</p>
                 </div>
 
-                <div className="rounded-xl bg-white p-5 shadow-sm">
-                  <p className="text-sm font-bold text-slate-500">
+                <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
+                  <p className="text-sm font-bold text-slate-500 dark:text-stone-400">
                     School Head
                   </p>
 
@@ -209,32 +209,32 @@ export default function Home() {
                         setSelectedPerson(schoolHead);
                       }
                     }}
-                    className="mt-1 text-left text-lg font-black text-slate-950 transition hover:text-[#0F4C5C]"
+                    className="mt-1 text-left text-lg font-black text-slate-950 dark:text-white transition hover:text-[#0F4C5C]"
                   >
                     Guillermo B. Villavelez
                   </button>
                 </div>
 
-                <div className="rounded-xl bg-white p-5 shadow-sm">
-                  <p className="text-sm font-bold text-slate-500">
+                <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
+                  <p className="text-sm font-bold text-slate-500 dark:text-stone-400">
                     Office Hours
                   </p>
-                  <p className="text-lg font-black text-slate-950">
+                  <p className="text-lg font-black text-slate-950 dark:text-white">
                     Monday to Friday, 8:00 AM – 5:00 PM
                   </p>
-                  <p className="mt-1 text-sm text-slate-600">
+                  <p className="mt-1 text-sm text-slate-600 dark:text-stone-300">
                     Except holidays, class suspensions, and official non-working
                     days.
                   </p>
                 </div>
 
-                <div className="rounded-xl bg-white p-5 shadow-sm">
-                  <p className="text-sm font-bold text-slate-500">Location</p>
+                <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
+                  <p className="text-sm font-bold text-slate-500 dark:text-stone-400">Location</p>
                   <a
                     href="https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-flex text-left text-lg font-black text-slate-950 transition hover:text-[#0F4C5C]"
+                    className="mt-1 inline-flex text-left text-lg font-black text-slate-950 dark:text-white transition hover:text-[#0F4C5C]"
                   >
                     Sangi Road, Tabunok, Talisay City, Cebu
                   </a>
@@ -247,7 +247,7 @@ export default function Home() {
         {/* ANNOUNCEMENTS */}
         <section
           id="announcements"
-          className="bg-[#F1F5F9] px-6 py-20 text-slate-950"
+          className="bg-[#F1F5F9] dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white"
         >
           <div className="mx-auto max-w-7xl">
             <motion.div
@@ -257,7 +257,7 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               className="mb-10"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 School Updates
               </p>
 
@@ -265,7 +265,7 @@ export default function Home() {
                 Latest Announcements
               </h2>
 
-              <p className="mt-4 max-w-2xl leading-7 text-slate-600">
+              <p className="mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
                 Official updates, advisories, enrollment information, and school
                 program highlights will be made accessible through this website.
               </p>
@@ -280,12 +280,12 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm transition hover:-translate-y-2 hover:shadow-xl"
+                  className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01]"
                 >
-                  <h3 className="text-xl font-black text-slate-950">
+                  <h3 className="text-xl font-black text-slate-950 dark:text-white">
                     {item.title}
                   </h3>
-                  <p className="mt-4 leading-7 text-slate-600">
+                  <p className="mt-4 leading-7 text-slate-600 dark:text-stone-300">
                     {item.description}
                   </p>
                 </motion.a>
@@ -295,7 +295,7 @@ export default function Home() {
         </section>
 
         {/* ENROLLMENT */}
-        <section id="enrollment" className="bg-white px-6 py-20">
+        <section id="enrollment" className="bg-white dark:bg-[#0a0908] px-6 py-20">
           <div className="mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-2">
             <motion.div
               initial={{ opacity: 0, x: -32 }}
@@ -303,7 +303,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Enrollment and Access
               </p>
 
@@ -311,7 +311,7 @@ export default function Home() {
                 Clear, simple, and parent-friendly school information.
               </h2>
 
-              <p className="mt-5 leading-7 text-slate-600">
+              <p className="mt-5 leading-7 text-slate-600 dark:text-stone-300">
                 View enrollment procedures, learner-type requirements, proper
                 attire reminders, school visit instructions, and official
                 support channels in one dedicated guide.
@@ -330,13 +330,13 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="rounded-2xl border border-slate-200 bg-[#ECFDF5] p-6 shadow-lg md:p-8"
+              className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#ECFDF5] dark:bg-[#171614] p-6 shadow-lg dark:shadow-black/20 md:p-8"
             >
-              <h3 className="text-2xl font-black text-[#0F4C5C]">
+              <h3 className="text-2xl font-black text-[#0F4C5C] dark:text-yellow-300">
                 Website Priorities
               </h3>
 
-              <ul className="mt-6 space-y-4 text-slate-700">
+              <ul className="mt-6 space-y-4 text-slate-700 dark:text-stone-200">
                 <li>✓ Mobile-friendly school announcements</li>
                 <li>✓ Enrollment guides and downloadable forms</li>
                 <li>✓ SHS tracks and Tech Pro information</li>
@@ -380,7 +380,7 @@ export default function Home() {
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur transition hover:-translate-y-2 hover:bg-white hover:text-[#0F4C5C]"
+                  className="rounded-2xl border border-[#292624] bg-[#171614] p-6 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-yellow-300"
                 >
                   <h3 className="text-xl font-black">{program.title}</h3>
                 </motion.a>
@@ -390,7 +390,7 @@ export default function Home() {
         </section>
 
         {/* DRRM */}
-        <section id="drrm" className="bg-white px-6 py-20 text-slate-950">
+        <section id="drrm" className="bg-white dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
           <div className="mx-auto max-w-7xl">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -399,7 +399,7 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               className="mx-auto max-w-3xl text-center"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 School DRRM
               </p>
 
@@ -407,7 +407,7 @@ export default function Home() {
                 Prepared, responsive, and safety-conscious.
               </h2>
 
-              <p className="mt-5 leading-7 text-slate-600">
+              <p className="mt-5 leading-7 text-slate-600 dark:text-stone-300">
                 The School Disaster Risk Reduction and Management program
                 promotes disaster preparedness, emergency response readiness,
                 hazard awareness, and a culture of safety among learners,
@@ -423,12 +423,12 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-8 shadow-sm transition hover:-translate-y-2 hover:shadow-xl"
+                  className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01]"
                 >
-                  <h3 className="text-2xl font-black text-[#0F4C5C]">
+                  <h3 className="text-2xl font-black text-[#0F4C5C] dark:text-yellow-300">
                     {item.title}
                   </h3>
-                  <p className="mt-4 leading-7 text-slate-600">{item.text}</p>
+                  <p className="mt-4 leading-7 text-slate-600 dark:text-stone-300">{item.text}</p>
                 </motion.div>
               ))}
             </div>
@@ -470,7 +470,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7 }}
-                className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur-xl"
+                className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
               >
                 <h3 className="text-2xl font-black">How may we assist you?</h3>
 
@@ -484,7 +484,7 @@ export default function Home() {
                   {commonConcerns.map((item) => (
                     <div
                       key={item}
-                      className="rounded-xl bg-white px-4 py-3 font-black text-[#0F4C5C]"
+                      className="rounded-xl bg-white dark:bg-[#171614] px-4 py-3 font-black text-[#0F4C5C] dark:text-yellow-300"
                     >
                       {item}
                     </div>
@@ -497,7 +497,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7 }}
-                className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur-xl"
+                className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
               >
                 <h3 className="text-2xl font-black">Official Channels</h3>
 
@@ -511,7 +511,7 @@ export default function Home() {
                     href="https://facebook.com/tabunocnatlhs"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                    className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                   >
                     Visit Facebook Page
                   </a>
@@ -520,14 +520,14 @@ export default function Home() {
                     href="https://m.me/tabunocnatlhs"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                    className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                   >
                     Chat with Us on Messenger
                   </a>
 
                   <a
                     href="/memos"
-                    className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                    className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                   >
                     View Memo Repository
                   </a>
@@ -536,7 +536,7 @@ export default function Home() {
                     href="https://smis.tabunocnatlhs.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl bg-white px-5 py-4 font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-yellow-300 hover:text-slate-950"
+                    className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                   >
                     Access School MIS
                   </a>
@@ -545,7 +545,7 @@ export default function Home() {
                     href="https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-xl border border-white/30 px-5 py-4 font-black text-white transition hover:-translate-y-1 hover:bg-white hover:text-[#0F4C5C]"
+                    className="rounded-xl border border-white/30 px-5 py-4 font-black text-white transition hover:-translate-y-1 hover:text-yellow-300"
                   >
                     Get Directions
                   </a>
@@ -584,3 +584,6 @@ export default function Home() {
     </>
   );
 }
+
+
+

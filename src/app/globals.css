@@ -8,6 +8,13 @@
     "Helvetica Neue", Arial, sans-serif;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0908;
+    --foreground: #f8fafc;
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }

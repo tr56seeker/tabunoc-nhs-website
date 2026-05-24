@@ -10,7 +10,7 @@ const footerLinks = [
     links: [
       { label: "Home", href: "/" },
       { label: "School Directory", href: "/organization" },
-      { label: "Citizen’s Charter", href: "/citizen-charter" },
+      { label: "Citizen's Charter", href: "/citizen-charter" },
       { label: "School Memos", href: "/memos" },
     ],
   },
@@ -19,6 +19,8 @@ const footerLinks = [
     links: [
       { label: "Enrollment Guide", href: "/enrollment" },
       { label: "SHS Offerings", href: "/shs-offerings" },
+      { label: "School DRRM", href: "/#drrm" },
+      { label: "Contact Section", href: "/#contact" },
       { label: "School MIS", href: "https://smis.tabunocnatlhs.com" },
       { label: "Get Directions", href: "https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu" },
     ],
@@ -39,8 +41,8 @@ function isExternalLink(href: string) {
 
 export default function Footer() {
   return (
-    <footer className="bg-[#071E29] text-teal-50">
-      <div className="border-b border-white/10 bg-[#0B2A36] px-6 py-8">
+    <footer className="bg-[#0a0908] text-stone-100">
+      <div className="border-b border-[#292624] bg-[#171614] px-6 py-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm font-black uppercase tracking-[0.2em] text-yellow-300">
@@ -49,7 +51,7 @@ export default function Footer() {
             <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">
               Tabunoc National High School
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-teal-100">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-300">
               A learner-centered public secondary school serving Junior High
               School and Senior High School learners in Tabunok, Talisay City,
               Cebu.
@@ -59,7 +61,7 @@ export default function Footer() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <a
               href="/enrollment"
-              className="rounded-xl bg-yellow-300 px-5 py-3 text-center text-sm font-black text-slate-950 transition hover:-translate-y-1 hover:bg-yellow-200"
+              className="rounded-xl bg-yellow-300 px-5 py-3 text-center text-sm font-black text-slate-950 transition duration-300 hover:-translate-y-1 hover:scale-[1.01]"
             >
               Enrollment Guide
             </a>
@@ -68,7 +70,7 @@ export default function Footer() {
               href="https://m.me/tabunocnatlhs"
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-xl border border-white/20 px-5 py-3 text-center text-sm font-black text-white transition hover:-translate-y-1 hover:bg-white hover:text-[#0F4C5C]"
+              className="rounded-xl border border-[#292624] px-5 py-3 text-center text-sm font-black text-white transition duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:text-yellow-300"
             >
               Contact the School
             </a>
@@ -101,22 +103,22 @@ export default function Footer() {
               <p className="text-xl font-black text-white">
                 Tabunoc National High School
               </p>
-              <p className="mt-2 text-sm leading-6 text-teal-100">
+              <p className="mt-2 text-sm leading-6 text-stone-300">
                 Sangi Road, Tabunok, Talisay City, Cebu
               </p>
-              <p className="mt-1 text-sm leading-6 text-teal-100">
+              <p className="mt-1 text-sm leading-6 text-stone-300">
                 School ID: 303111
               </p>
-              <p className="mt-1 text-sm leading-6 text-teal-100">
-                Office Hours: Monday to Friday, 8:00 AM – 5:00 PM
+              <p className="mt-1 text-sm leading-6 text-stone-300">
+                Office Hours: Monday to Friday, 8:00 AM - 5:00 PM
               </p>
             </div>
 
-            <div className="mt-6 rounded-2xl border border-yellow-300/20 bg-yellow-300/10 p-4">
+            <div className="mt-6 rounded-2xl border border-[#292624] bg-[#171614] p-4">
               <p className="text-sm font-black text-yellow-300">
                 Data Privacy Reminder
               </p>
-              <p className="mt-2 text-sm leading-6 text-teal-50">
+              <p className="mt-2 text-sm leading-6 text-stone-200">
                 Please avoid sending sensitive learner information through public comments. For records, enrollment, and confidential concerns, use the official school communication channels.
               </p>
             </div>
@@ -140,7 +142,7 @@ export default function Footer() {
                             ? "noopener noreferrer"
                             : undefined
                         }
-                        className="text-sm font-semibold text-teal-100 transition hover:text-yellow-300"
+                        className="text-sm font-semibold text-stone-300 transition hover:text-yellow-300"
                       >
                         {link.label}
                       </a>
@@ -153,10 +155,10 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/10 px-6 py-6">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-teal-100 md:flex-row md:items-center md:justify-between">
+      <div className="border-t border-[#292624] px-6 py-6">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-stone-400 md:flex-row md:items-center md:justify-between">
           <p>
-            © 2026 Tabunoc National High School. All rights reserved.
+            Copyright 2026 Tabunoc National High School. All rights reserved.
           </p>
 
           <p>

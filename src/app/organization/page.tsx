@@ -134,9 +134,9 @@ export default function OrganizationPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white text-slate-950">
+      <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
         {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-36 text-slate-950">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 pb-20 pt-36 text-slate-950 dark:text-white">
           <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
@@ -147,7 +147,7 @@ export default function OrganizationPage() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]"
+              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
             >
               School Directory
             </motion.p>
@@ -156,7 +156,7 @@ export default function OrganizationPage() {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.15 }}
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-6xl"
+              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
             >
               School Administration, Faculty, and Staff
             </motion.h1>
@@ -165,7 +165,7 @@ export default function OrganizationPage() {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.25 }}
-              className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700"
+              className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200"
             >
               Meet the school administration, faculty members, advisers,
               program implementers, and support personnel of Tabunoc National
@@ -175,29 +175,29 @@ export default function OrganizationPage() {
         </section>
 
         {/* SEARCH AND FILTER */}
-        <section className="bg-[#F8FAFC] px-6 py-16 text-slate-950">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-16 text-slate-950 dark:text-white">
           <div className="mx-auto max-w-7xl">
             <div className="mb-8 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Faculty and Personnel Directory
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
                 Search the School Directory
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
                 Search by name, section, role, subject taught, position,
                 designation, or program handled.
               </p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
+            <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20 md:p-6">
               <div className="grid gap-4 lg:grid-cols-[1fr_260px]">
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   placeholder="Search by name, section, subject, designation, or program..."
-                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100"
+                  className="w-full rounded-xl border border-slate-300 dark:border-[#292624] bg-white dark:bg-[#171614] px-5 py-4 text-sm font-semibold text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/50"
                 />
 
                 <select
@@ -205,7 +205,7 @@ export default function OrganizationPage() {
                   onChange={(event) =>
                     setSelectedRole(event.target.value as "All" | PersonnelRole)
                   }
-                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-bold text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100"
+                  className="w-full rounded-xl border border-slate-300 dark:border-[#292624] bg-white dark:bg-[#171614] px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/50"
                 >
                   {roleFilters.map((role) => (
                     <option key={role} value={role}>
@@ -218,7 +218,7 @@ export default function OrganizationPage() {
               {(searchTerm.trim() !== "" || selectedRole !== "All") && (
                 <div className="mt-6">
                   <div className="mb-4 flex flex-col justify-between gap-3 md:flex-row md:items-center">
-                    <p className="text-sm font-bold text-slate-600">
+                    <p className="text-sm font-bold text-slate-600 dark:text-stone-300">
                       {searchResults.length} result
                       {searchResults.length !== 1 ? "s" : ""} found
                     </p>
@@ -228,7 +228,7 @@ export default function OrganizationPage() {
                         setSearchTerm("");
                         setSelectedRole("All");
                       }}
-                      className="w-fit rounded-lg bg-slate-100 px-4 py-2 text-sm font-black text-slate-700 transition hover:bg-[#0F4C5C] hover:text-white"
+                      className="w-fit rounded-lg bg-slate-100 dark:bg-[#292624] px-4 py-2 text-sm font-black text-slate-700 dark:text-stone-200 transition hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                     >
                       Clear Search
                     </button>
@@ -246,11 +246,11 @@ export default function OrganizationPage() {
                       ))}
                     </div>
                   ) : (
-                    <div className="rounded-xl bg-slate-100 p-8 text-center">
-                      <p className="font-bold text-slate-700">
+                    <div className="rounded-xl bg-slate-100 dark:bg-[#292624] p-8 text-center">
+                      <p className="font-bold text-slate-700 dark:text-stone-200">
                         No matching personnel found.
                       </p>
-                      <p className="mt-2 text-sm text-slate-500">
+                      <p className="mt-2 text-sm text-slate-500 dark:text-stone-400">
                         Try searching by surname, grade level, section, subject,
                         designation, or role.
                       </p>
@@ -263,10 +263,10 @@ export default function OrganizationPage() {
         </section>
 
         {/* SCHOOL LEADERSHIP AND SUPPORT PERSONNEL */}
-        <section className="bg-white px-6 py-20 text-slate-950">
+        <section className="bg-white dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 School Leadership
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
@@ -298,16 +298,16 @@ export default function OrganizationPage() {
         </section>
 
         {/* MASTER TEACHERS */}
-        <section className="bg-[#F8FAFC] px-6 py-20 text-slate-950">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Instructional Leadership
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
                 Master Teachers
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
                 Master Teachers provide instructional support, mentoring, and
                 technical assistance for curriculum implementation and teaching
                 practice.
@@ -328,10 +328,10 @@ export default function OrganizationPage() {
         </section>
 
         {/* GRADE LEADERS */}
-        <section className="bg-white px-6 py-20 text-slate-950">
+        <section className="bg-white dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Grade Level Leadership
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
@@ -353,16 +353,16 @@ export default function OrganizationPage() {
         </section>
 
         {/* CLASS ADVISERS */}
-        <section className="bg-[#F8FAFC] px-6 py-20 text-slate-950">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Class Advisers
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
                 Class Adviser Directory
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
                 Select a grade level to view assigned class adviser profiles.
               </p>
             </div>
@@ -375,7 +375,7 @@ export default function OrganizationPage() {
                   className={`rounded-full px-5 py-2 text-sm font-bold transition ${
                     selectedGrade === grade
                       ? "bg-[#0F4C5C] text-white"
-                      : "bg-white text-slate-700 hover:bg-yellow-300 hover:text-slate-950"
+                      : "bg-white dark:bg-[#171614] text-slate-700 dark:text-stone-200 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                   }`}
                 >
                   {grade}
@@ -397,14 +397,14 @@ export default function OrganizationPage() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.45 }}
-                    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6"
+                    className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-4 shadow-sm dark:shadow-black/20 md:p-6"
                   >
                     <div className="mb-6">
-                      <h3 className="text-3xl font-black text-slate-950">
+                      <h3 className="text-3xl font-black text-slate-950 dark:text-white">
                         {grade}
                       </h3>
 
-                      <p className="mt-1 text-sm font-semibold text-slate-500">
+                      <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-stone-400">
                         {advisers.length} adviser profile
                         {advisers.length > 1 ? "s" : ""}
                       </p>
@@ -428,16 +428,16 @@ export default function OrganizationPage() {
         </section>
 
         {/* SUBJECT TEACHERS */}
-        <section className="bg-white px-6 py-20 text-slate-950">
+        <section className="bg-white dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Teaching Personnel
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
                 Subject Teachers
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
                 Subject teachers support curriculum delivery, skills
                 development, and learner progress across learning areas and
                 specializations.
@@ -456,8 +456,8 @@ export default function OrganizationPage() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-8 text-center">
-                <p className="font-bold text-slate-600">
+              <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 text-center">
+                <p className="font-bold text-slate-600 dark:text-stone-300">
                   Subject teacher profiles will be added soon.
                 </p>
               </div>
@@ -494,7 +494,7 @@ export default function OrganizationPage() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-2xl border border-white/10 bg-white/10 p-8 text-center backdrop-blur">
+              <div className="rounded-2xl border border-[#292624] bg-[#171614] p-8 text-center">
                 <p className="font-bold text-teal-50">
                   Program implementer profiles will be added soon.
                 </p>
@@ -513,3 +513,6 @@ export default function OrganizationPage() {
     </>
   );
 }
+
+
+

@@ -24,7 +24,7 @@ export default function BrandHeader() {
           className="h-14 w-auto object-contain sm:h-16 md:h-[72px]"
         />
 
-        <div className="h-12 w-px bg-slate-300 sm:h-14" />
+        <div className="h-12 w-px bg-slate-300 dark:bg-[#292624] sm:h-14" />
 
         <Image
           src={schoolLogo}
@@ -36,11 +36,11 @@ export default function BrandHeader() {
       </div>
 
       <div className="text-center">
-        <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+        <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-stone-100">
           Department of Education
         </p>
-        <p className="mt-1 text-base font-bold text-slate-700 sm:text-lg">
-          Tabunoc National High School · School ID: 303111
+        <p className="mt-1 text-base font-bold text-slate-700 dark:text-stone-200 sm:text-lg">
+          Tabunoc National High School - School ID: 303111
         </p>
       </div>
     </motion.div>

@@ -1,589 +1,707 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
-import PersonnelModal from "@/components/PersonnelModal";
 
-import type { Personnel } from "@/data/organization";
-import { allPersonnel } from "@/data/organization";
+const enrollmentPagePadding = "px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]";
 
-const schoolLogo =
-  "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
+const fadeUp = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.55 },
+};
 
-const depedLogo =
-  "https://depedph.com/wp-content/uploads/2024/01/deped-logo-philippines-1536x783.png";
+const quickInfo = [
+  { label: "School Year", value: "2026–2027" },
+  { label: "Enrollment Period", value: "June 1–5, 2026" },
+  { label: "Opening of Classes", value: "June 8, 2026" },
+  { label: "School ID", value: "303111" },
+];
 
-const announcements = [
+const learnerTypes = [
   {
-    title: "Enrollment Information",
+    title: "Incoming Grade 7",
     description:
-      "Access enrollment reminders, documentary requirements, schedules, and official school announcements.",
-    href: "/enrollment",
+      "For learners who completed Grade 6 and will enter Junior High School.",
   },
   {
-    title: "Senior High School Offerings",
+    title: "Incoming Grade 11",
     description:
-      "Explore the Pure Academic Track and Tech Pro Track offerings for incoming Grade 11 learners.",
-    href: "/shs-offerings",
+      "For Grade 10 completers who will proceed to Senior High School under the Strengthened SHS Curriculum.",
   },
   {
-    title: "School Safety and DRRM",
+    title: "Transferees",
     description:
-      "Stay informed on disaster preparedness, emergency advisories, and school safety initiatives.",
-    href: "#drrm",
+      "For learners from another school who wish to continue their studies at Tabunoc National High School.",
+  },
+  {
+    title: "Returning Learners / Balik-Aral",
+    description:
+      "For learners who stopped schooling and wish to return to formal basic education.",
+  },
+  {
+    title: "Continuing Learners",
+    description:
+      "For currently enrolled Tabunoc NHS learners moving to the next grade level.",
   },
 ];
 
-const programs = [
+const enrollmentSteps = [
   {
-    title: "Junior High School",
-    href: "#about",
+    title: "Prepare the required documents",
+    description:
+      "Secure the learner’s report card, birth certificate if available, LRN, and other documents applicable to the learner’s enrollment status.",
   },
   {
-    title: "Senior High School",
-    href: "/shs-offerings",
+    title: "Proceed to the designated enrollment area",
+    description:
+      "Visit the school during the official enrollment schedule or follow the enrollment procedure announced by the school.",
   },
   {
-    title: "Pure Academic Track",
-    href: "/shs-offerings",
+    title: "Accomplish the enrollment form",
+    description:
+      "Fill out the Basic Education Enrollment Form completely and accurately using the learner’s correct personal information.",
   },
   {
-    title: "Tech Pro Track",
-    href: "/shs-offerings",
+    title: "Submit the documents",
+    description:
+      "Submit the enrollment form and available documents to the assigned enrollment personnel for checking.",
   },
   {
-    title: "School DRRM Program",
-    href: "#drrm",
+    title: "Wait for validation",
+    description:
+      "The school will verify the learner’s LRN, previous school records, grade level, and submitted documents.",
   },
   {
-    title: "Student Support Services",
-    href: "#contact",
+    title: "Confirm SHS pathway, if applicable",
+    description:
+      "Incoming Grade 11 learners should review the available Senior High School offerings before selecting their learning pathway.",
+  },
+  {
+    title: "Receive enrollment confirmation",
+    description:
+      "The enrollment team will provide confirmation, additional instructions, or follow-up requirements when necessary.",
+  },
+  {
+    title: "Attend orientation when scheduled",
+    description:
+      "Parents, guardians, and learners should attend the school orientation once officially announced.",
   },
 ];
 
-const drrmItems = [
+const requirements = [
   {
-    title: "Preparedness",
-    text: "Conducts safety reminders, drills, orientations, and preparedness campaigns.",
+    group: "Incoming Grade 7",
+    items: [
+      "School Form 9 / Report Card",
+      "Photocopy of PSA Birth Certificate, if available",
+      "Learner Reference Number (LRN), if available",
+      "Accomplished Basic Education Enrollment Form",
+      "Parent/Guardian contact information",
+    ],
   },
   {
-    title: "Response",
-    text: "Strengthens coordination for emergency response, evacuation, and incident reporting.",
+    group: "Incoming Grade 11",
+    items: [
+      "School Form 9 / Grade 10 Report Card",
+      "Certificate of Completion or proof of Grade 10 completion, if available",
+      "Photocopy of PSA Birth Certificate, if available",
+      "Learner Reference Number (LRN)",
+      "Accomplished Basic Education Enrollment Form",
+      "Parent/Guardian contact information",
+    ],
   },
   {
-    title: "Recovery",
-    text: "Supports continuity of learning, documentation, and post-incident improvement.",
+    group: "Transferees",
+    items: [
+      "School Form 9 / Report Card",
+      "Learner Reference Number (LRN)",
+      "Photocopy of PSA Birth Certificate, if available",
+      "Accomplished Basic Education Enrollment Form",
+      "Contact details of previous school, if needed for record validation",
+    ],
+  },
+  {
+    group: "Returning Learners / Balik-Aral",
+    items: [
+      "Last available School Form 9 / Report Card or equivalent record",
+      "PSA Birth Certificate or acceptable proof of identity, if available",
+      "Accomplished Basic Education Enrollment Form",
+      "Parent/Guardian contact information",
+      "Additional validation by the enrollment team, if needed",
+    ],
   },
 ];
 
-const commonConcerns = [
-  "Enrollment",
-  "Learner Records",
-  "SHS Programs",
-  "Memos",
-  "SDRRM",
-  "Partnerships",
-  "Stakeholder Support",
-  "General Concerns",
+const reminders = [
+  "Bring complete and accurate documents.",
+  "Use the learner’s correct full name based on official records.",
+  "Provide active and reachable contact numbers.",
+  "Observe school safety and visitor protocols.",
+  "Do not submit false, altered, or misleading documents.",
+  "Follow official announcements from the school website and Facebook page.",
 ];
 
-export default function Home() {
-  const [selectedPerson, setSelectedPerson] = useState<Personnel | null>(null);
+const contactChannels = [
+  {
+    title: "School Email",
+    detail: "303111@deped.gov.ph",
+    href: "mailto:303111@deped.gov.ph",
+  },
+  {
+    title: "Facebook Page",
+    detail: "facebook.com/tabunocnatlhs",
+    href: "https://facebook.com/tabunocnatlhs",
+  },
+  {
+    title: "Messenger",
+    detail: "m.me/tabunocnatlhs",
+    href: "https://m.me/tabunocnatlhs",
+  },
+  {
+    title: "School MIS",
+    detail: "smis.tabunocnatlhs.com",
+    href: "https://smis.tabunocnatlhs.com",
+  },
+];
 
-  const schoolHead = allPersonnel.find(
-    (person) => person.id === "guillermo-villavelez"
+function CheckIcon() {
+  return (
+    <svg
+      className="h-5 w-5 flex-none text-[#0F4C5C]"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M20 6 9 17l-5-5"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
+}
 
+function ArrowIcon() {
+  return (
+    <svg
+      className="h-4 w-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5 12h14m-6-6 6 6-6 6"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function NoticeIcon() {
+  return (
+    <svg
+      className="h-6 w-6 text-[#0F4C5C]"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M12 3 20 7v5c0 5-3.4 8.5-8 9-4.6-.5-8-4-8-9V7l8-4Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 8v5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M12 16h.01"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function SectionIntro({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <motion.div {...fadeUp} className="mx-auto mb-10 max-w-3xl text-center">
+      <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C] dark:text-stone-200">
+        {eyebrow}
+      </p>
+      <h2 className="mt-3 text-3xl font-black tracking-tight text-[#071E29] dark:text-white sm:text-4xl">
+        {title}
+      </h2>
+      <p className="mt-5 text-base leading-8 text-slate-700 dark:text-stone-300">
+        {description}
+      </p>
+    </motion.div>
+  );
+}
+
+export default function EnrollmentPage() {
   return (
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
-        {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 pb-20 pt-36">
-          <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
-          <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
+      <main className="min-h-screen bg-white text-slate-950 dark:bg-[#0a0908] dark:text-white">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-white pb-16 pt-12 dark:from-[#0a0908] dark:via-[#0a0908] dark:to-[#171614] sm:pt-14 lg:pb-20 lg:pt-16">
+          <div
+            className={`mx-auto grid w-full items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start ${enrollmentPagePadding}`}
+          >
+            <div>
+              <BrandHeader />
 
-          <div className="relative mx-auto flex min-h-[68vh] max-w-7xl flex-col items-center justify-center text-center">
-            <BrandHeader />
-
-            <motion.h1
-              initial={{ opacity: 0, y: 34 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.1 }}
-              className="max-w-5xl text-5xl font-black leading-[1.05] tracking-tight text-slate-950 dark:text-white md:text-7xl"
-            >
-              Tabunoc National High School
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 34 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.2 }}
-              className="mt-6 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200 md:text-xl"
-            >
-              A learner-centered public secondary school committed to quality,
-              inclusive, resilient, and future-ready basic education.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 34 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.85, delay: 0.3 }}
-              className="mt-10 flex flex-col gap-4 sm:flex-row"
-            >
-              <a
-                href="/enrollment"
-                className="rounded-xl bg-yellow-300 px-8 py-3 font-black text-slate-950 shadow-lg shadow-yellow-300/30 dark:shadow-black/20 transition hover:-translate-y-1 hover:bg-yellow-200"
+              <motion.div
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.65 }}
+                className="mx-auto max-w-3xl text-center lg:mx-0 lg:text-left"
               >
-                Enrollment Guide
-              </a>
+                <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C] dark:text-stone-100">
+                  Enrollment Guide
+                </p>
 
-              <a
-                href="#announcements"
-                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-8 py-3 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
-              >
-                View Announcements
-              </a>
-            </motion.div>
+                <h1 className="mt-4 text-4xl font-black leading-tight tracking-tight text-[#071E29] dark:text-white sm:text-5xl lg:text-6xl">
+                  School Year 2026–2027 Enrollment
+                </h1>
+
+                <p className="mt-6 text-lg leading-8 text-slate-700 dark:text-stone-200">
+                  A step-by-step guide for learners, parents, and guardians
+                  enrolling at Tabunoc National High School for Junior High
+                  School and Senior High School.
+                </p>
+
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row lg:justify-start">
+                  <a
+                    href="#enrollment-steps"
+                    className="rounded-xl bg-[#0F4C5C] px-6 py-3 text-center text-sm font-black text-white shadow-sm transition hover:-translate-y-1 hover:scale-[1.01] dark:shadow-black/20"
+                  >
+                    View Enrollment Steps
+                  </a>
+
+                  <Link
+                    href="/shs-offerings"
+                    className="rounded-xl border border-[#0F4C5C]/25 bg-white px-6 py-3 text-center text-sm font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:border-[#292624] dark:bg-[#171614] dark:text-stone-100 dark:hover:text-white"
+                  >
+                    View SHS Offerings
+                  </Link>
+                </div>
+              </motion.div>
+            </div>
+
+            <motion.aside
+              initial={{ opacity: 0, y: 28, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.65, delay: 0.1 }}
+              className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-teal-900/10 dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20"
+              aria-label="Enrollment summary"
+            >
+              <div className="rounded-2xl bg-[#0F4C5C] p-5 text-white">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-stone-100">
+                  Quick Information
+                </p>
+                <h2 className="mt-2 text-2xl font-black">
+                  Enrollment at a Glance
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-teal-50">
+                  Important details for parents, guardians, and learners before
+                  visiting the school.
+                </p>
+              </div>
+
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {quickInfo.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl bg-slate-50 p-4 dark:bg-[#0a0908]"
+                  >
+                    <p className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 text-lg font-black text-[#0F4C5C] dark:text-white">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 rounded-2xl border border-[#0F4C5C]/15 bg-[#ECFDF5] p-4 dark:border-[#292624] dark:bg-[#0a0908]">
+                <p className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
+                  School Location
+                </p>
+                <p className="mt-2 font-bold leading-6 text-[#071E29] dark:text-stone-100">
+                  Sangi Rd., Tabunok, Talisay City, Cebu
+                </p>
+              </div>
+            </motion.aside>
           </div>
         </section>
 
-        {/* ABOUT */}
-        <section id="about" className="bg-white dark:bg-[#0a0908] px-6 py-20">
-          <div className="mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-2">
+        <section className="bg-white py-10 dark:bg-[#0a0908]">
+          <div
+            className={`mx-auto grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-4 ${enrollmentPagePadding}`}
+          >
+            {quickInfo.map((item) => (
+              <motion.div
+                key={item.label}
+                {...fadeUp}
+                className="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-center shadow-sm dark:border-[#292624] dark:bg-[#171614]"
+              >
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-500 dark:text-stone-400">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-2xl font-black text-[#0F4C5C] dark:text-white">
+                  {item.value}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        <section className="bg-slate-50 py-14 dark:bg-[#171614]">
+          <div className={`mx-auto w-full ${enrollmentPagePadding}`}>
             <motion.div
-              initial={{ opacity: 0, x: -32 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
+              {...fadeUp}
+              className="rounded-3xl border border-[#0F4C5C]/15 bg-white p-6 shadow-sm dark:border-[#292624] dark:bg-[#0a0908] md:p-8"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                About the School
-              </p>
-
-              <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-5xl">
-                Serving learners through accessible and quality public
-                education.
-              </h2>
-
-              <p className="mt-5 leading-7 text-slate-600 dark:text-stone-300">
-                Tabunoc National High School is a public secondary school in
-                Talisay City, Cebu, serving Junior High School and Senior High
-                School learners. The school continues to strengthen instruction,
-                learner support, safety, stakeholder engagement, and future-ready
-                education programs.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 32 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-6 shadow-lg dark:shadow-black/20 md:p-8"
-            >
-              <h3 className="text-2xl font-black text-[#0F4C5C] dark:text-yellow-300">
-                School Profile
-              </h3>
-
-              <div className="mt-6 grid gap-4">
-                <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
-                  <p className="text-sm font-bold text-slate-500 dark:text-stone-400">School ID</p>
-                  <p className="text-2xl font-black text-[#0F4C5C] dark:text-yellow-300">303111</p>
+              <div className="grid gap-6 lg:grid-cols-[auto_1fr]">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ECFDF5] dark:bg-[#171614]">
+                  <NoticeIcon />
                 </div>
 
-                <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
-                  <p className="text-sm font-bold text-slate-500 dark:text-stone-400">
-                    School Head
+                <div>
+                  <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C] dark:text-stone-200">
+                    Important Notice
                   </p>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (schoolHead) {
-                        setSelectedPerson(schoolHead);
-                      }
-                    }}
-                    className="mt-1 text-left text-lg font-black text-slate-950 dark:text-white transition hover:text-[#0F4C5C]"
-                  >
-                    Guillermo B. Villavelez
-                  </button>
-                </div>
-
-                <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
-                  <p className="text-sm font-bold text-slate-500 dark:text-stone-400">
-                    Office Hours
+                  <h2 className="mt-2 text-2xl font-black text-[#071E29] dark:text-white">
+                    Enrollment is open, accessible, and subject to proper
+                    validation.
+                  </h2>
+                  <p className="mt-4 leading-8 text-slate-700 dark:text-stone-300">
+                    Enrollment shall follow DepEd policies, school capacity,
+                    proper documentation, and validation by designated enrollment
+                    personnel. Public school enrollment shall not require
+                    unauthorized fees. Parents and guardians are advised to bring
+                    available documents early to avoid delays.
                   </p>
-                  <p className="text-lg font-black text-slate-950 dark:text-white">
-                    Monday to Friday, 8:00 AM – 5:00 PM
-                  </p>
-                  <p className="mt-1 text-sm text-slate-600 dark:text-stone-300">
-                    Except holidays, class suspensions, and official non-working
-                    days.
-                  </p>
-                </div>
-
-                <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
-                  <p className="text-sm font-bold text-slate-500 dark:text-stone-400">Location</p>
-                  <a
-                    href="https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-1 inline-flex text-left text-lg font-black text-slate-950 dark:text-white transition hover:text-[#0F4C5C]"
-                  >
-                    Sangi Road, Tabunok, Talisay City, Cebu
-                  </a>
                 </div>
               </div>
             </motion.div>
           </div>
         </section>
 
-        {/* ANNOUNCEMENTS */}
-        <section
-          id="announcements"
-          className="bg-[#F1F5F9] dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white"
-        >
-          <div className="mx-auto max-w-7xl">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="mb-10"
-            >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                School Updates
-              </p>
+        <section className="bg-white py-16 dark:bg-[#0a0908]">
+          <div className={`mx-auto w-full ${enrollmentPagePadding}`}>
+            <SectionIntro
+              eyebrow="Who May Enroll"
+              title="Learners covered by this guide"
+              description="This guide applies to learners who will enroll, transfer, return, or continue their basic education at Tabunoc National High School."
+            />
 
-              <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight md:text-5xl">
-                Latest Announcements
-              </h2>
-
-              <p className="mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Official updates, advisories, enrollment information, and school
-                program highlights will be made accessible through this website.
-              </p>
-            </motion.div>
-
-            <div className="grid gap-6 md:grid-cols-3">
-              {announcements.map((item, index) => (
-                <motion.a
-                  key={item.title}
-                  href={item.href}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01]"
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+              {learnerTypes.map((type) => (
+                <motion.article
+                  key={type.title}
+                  {...fadeUp}
+                  className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm transition hover:-translate-y-1 hover:border-[#0F4C5C]/30 hover:shadow-md dark:border-[#292624] dark:bg-[#171614]"
                 >
-                  <h3 className="text-xl font-black text-slate-950 dark:text-white">
-                    {item.title}
+                  <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#ECFDF5] dark:bg-[#0a0908]">
+                    <CheckIcon />
+                  </div>
+                  <h3 className="text-xl font-black text-[#071E29] dark:text-white">
+                    {type.title}
                   </h3>
-                  <p className="mt-4 leading-7 text-slate-600 dark:text-stone-300">
-                    {item.description}
+                  <p className="mt-3 text-sm leading-7 text-slate-700 dark:text-stone-300">
+                    {type.description}
                   </p>
-                </motion.a>
+                </motion.article>
               ))}
             </div>
           </div>
         </section>
 
-        {/* ENROLLMENT */}
-        <section id="enrollment" className="bg-white dark:bg-[#0a0908] px-6 py-20">
-          <div className="mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-2">
+        <section
+          id="enrollment-steps"
+          className="bg-slate-50 py-16 dark:bg-[#171614]"
+        >
+          <div className={`mx-auto w-full ${enrollmentPagePadding}`}>
+            <SectionIntro
+              eyebrow="Step-by-Step Process"
+              title="How to enroll"
+              description="Follow these steps carefully. Correct information helps the school validate, encode, and organize learner records properly."
+            />
+
+            <div className="grid gap-5 md:grid-cols-2">
+              {enrollmentSteps.map((step, index) => (
+                <motion.article
+                  key={step.title}
+                  {...fadeUp}
+                  className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-[#292624] dark:bg-[#0a0908]"
+                >
+                  <div className="flex gap-5">
+                    <div className="flex h-12 w-12 flex-none items-center justify-center rounded-2xl bg-[#0F4C5C] text-lg font-black text-white">
+                      {index + 1}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black text-[#071E29] dark:text-white">
+                        {step.title}
+                      </h3>
+                      <p className="mt-3 leading-7 text-slate-700 dark:text-stone-300">
+                        {step.description}
+                      </p>
+                    </div>
+                  </div>
+                </motion.article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white py-16 dark:bg-[#0a0908]">
+          <div className={`mx-auto w-full ${enrollmentPagePadding}`}>
+            <SectionIntro
+              eyebrow="Enrollment Requirements"
+              title="Documents to prepare"
+              description="Requirements vary depending on the learner’s enrollment status. Bring available documents for faster checking and validation."
+            />
+
+            <div className="grid gap-6 lg:grid-cols-2">
+              {requirements.map((group) => (
+                <motion.article
+                  key={group.group}
+                  {...fadeUp}
+                  className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm dark:border-[#292624] dark:bg-[#171614]"
+                >
+                  <h3 className="text-xl font-black text-[#0F4C5C] dark:text-white">
+                    {group.group}
+                  </h3>
+
+                  <ul className="mt-5 space-y-4">
+                    {group.items.map((item) => (
+                      <li
+                        key={item}
+                        className="flex gap-3 text-sm leading-7 text-slate-700 dark:text-stone-300"
+                      >
+                        <CheckIcon />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.article>
+              ))}
+            </div>
+
             <motion.div
-              initial={{ opacity: 0, x: -32 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
+              {...fadeUp}
+              className="mt-8 rounded-3xl border border-[#FACC15]/40 bg-[#FFFBEB] p-6 shadow-sm dark:border-[#292624] dark:bg-[#171614]"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Enrollment and Access
-              </p>
-
-              <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight md:text-5xl">
-                Clear, simple, and parent-friendly school information.
-              </h2>
-
-              <p className="mt-5 leading-7 text-slate-600 dark:text-stone-300">
-                View enrollment procedures, learner-type requirements, proper
-                attire reminders, school visit instructions, and official
-                support channels in one dedicated guide.
-              </p>
-
-              <a
-                href="/enrollment"
-                className="mt-8 inline-flex rounded-xl bg-yellow-300 px-6 py-3 font-black text-slate-950 transition hover:-translate-y-1 hover:bg-yellow-200"
-              >
-                Open Enrollment Guide
-              </a>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 32 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#ECFDF5] dark:bg-[#171614] p-6 shadow-lg dark:shadow-black/20 md:p-8"
-            >
-              <h3 className="text-2xl font-black text-[#0F4C5C] dark:text-yellow-300">
-                Website Priorities
+              <h3 className="text-xl font-black text-[#92400E] dark:text-[#FACC15]">
+                Note for parents and guardians
               </h3>
-
-              <ul className="mt-6 space-y-4 text-slate-700 dark:text-stone-200">
-                <li>✓ Mobile-friendly school announcements</li>
-                <li>✓ Enrollment guides and downloadable forms</li>
-                <li>✓ SHS tracks and Tech Pro information</li>
-                <li>✓ School DRRM advisories and safety reminders</li>
-                <li>✓ Official links to school platforms</li>
-              </ul>
+              <p className="mt-3 leading-8 text-[#78350F] dark:text-stone-300">
+                If some documents are not yet available, parents or guardians
+                should still coordinate with the enrollment personnel for proper
+                guidance, validation, and possible temporary enrollment subject
+                to DepEd policy and school records verification.
+              </p>
             </motion.div>
           </div>
         </section>
 
-        {/* PROGRAMS */}
-        <section id="programs" className="bg-[#0F4C5C] px-6 py-20 text-white">
-          <div className="mx-auto max-w-7xl">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="mb-10 text-center"
-            >
-              <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
-                Programs and Services
+        <section className="bg-[#0F4C5C] py-16 text-white">
+          <div
+            className={`mx-auto grid w-full gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center ${enrollmentPagePadding}`}
+          >
+            <motion.div {...fadeUp}>
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-[#ffdf20]">
+                Senior High School
               </p>
-
-              <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight md:text-5xl">
-                Built for learners, parents, and the community.
+              <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
+                Review the SHS offerings before enrollment.
               </h2>
-
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-teal-50">
-                Explore key school programs, services, and learner support
-                pathways.
+              <p className="mt-5 max-w-3xl leading-8 text-teal-50">
+                Incoming Grade 11 learners and parents are encouraged to review
+                the available Senior High School offerings before enrollment.
+                This will help learners choose the appropriate learning pathway
+                aligned with their interests, skills, and career plans.
               </p>
             </motion.div>
+
+            <motion.div {...fadeUp} className="flex lg:justify-end">
+              <Link
+                href="/shs-offerings"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#ffdf20] px-6 py-3 text-sm font-black text-[#071E29] shadow-sm transition hover:-translate-y-1 hover:bg-white"
+              >
+                View SHS Offerings
+                <ArrowIcon />
+              </Link>
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="bg-white py-16 dark:bg-[#0a0908]">
+          <div className={`mx-auto w-full ${enrollmentPagePadding}`}>
+            <SectionIntro
+              eyebrow="Parent and Guardian Reminders"
+              title="Help us make enrollment smooth and orderly"
+              description="Accurate documents and active communication help the school serve learners and families better."
+            />
 
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {programs.map((program, index) => (
-                <motion.a
-                  key={program.title}
-                  href={program.href}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="rounded-2xl border border-[#292624] bg-[#171614] p-6 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-yellow-300"
-                >
-                  <h3 className="text-xl font-black">{program.title}</h3>
-                </motion.a>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* DRRM */}
-        <section id="drrm" className="bg-white dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
-          <div className="mx-auto max-w-7xl">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="mx-auto max-w-3xl text-center"
-            >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                School DRRM
-              </p>
-
-              <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight md:text-5xl">
-                Prepared, responsive, and safety-conscious.
-              </h2>
-
-              <p className="mt-5 leading-7 text-slate-600 dark:text-stone-300">
-                The School Disaster Risk Reduction and Management program
-                promotes disaster preparedness, emergency response readiness,
-                hazard awareness, and a culture of safety among learners,
-                personnel, parents, and stakeholders.
-              </p>
-            </motion.div>
-
-            <div className="mt-10 grid gap-6 md:grid-cols-3">
-              {drrmItems.map((item, index) => (
+              {reminders.map((reminder) => (
                 <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01]"
+                  key={reminder}
+                  {...fadeUp}
+                  className="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm dark:border-[#292624] dark:bg-[#171614]"
                 >
-                  <h3 className="text-2xl font-black text-[#0F4C5C] dark:text-yellow-300">
-                    {item.title}
-                  </h3>
-                  <p className="mt-4 leading-7 text-slate-600 dark:text-stone-300">{item.text}</p>
+                  <div className="flex gap-3">
+                    <CheckIcon />
+                    <p className="font-bold leading-7 text-slate-800 dark:text-stone-200">
+                      {reminder}
+                    </p>
+                  </div>
                 </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* CONTACT */}
-        <section
-          id="contact"
-          className="bg-gradient-to-br from-[#0F4C5C] via-[#0B3B48] to-[#102A43] px-6 py-20 text-white"
-        >
-          <div className="mx-auto max-w-7xl">
+        <section className="bg-slate-50 py-16 dark:bg-[#171614]">
+          <div
+            className={`mx-auto grid w-full gap-8 lg:grid-cols-[0.9fr_1.1fr] ${enrollmentPagePadding}`}
+          >
             <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="mx-auto max-w-3xl text-center"
+              {...fadeUp}
+              className="rounded-3xl border border-[#0F4C5C]/15 bg-white p-7 shadow-sm dark:border-[#292624] dark:bg-[#0a0908]"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
-                Contact and Official Channels
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C] dark:text-stone-200">
+                Data Privacy Notice
               </p>
-
-              <h2 className="mt-3 text-4xl font-black leading-tight tracking-tight md:text-5xl">
-                Reach the school through official channels.
+              <h2 className="mt-3 text-3xl font-black text-[#071E29] dark:text-white">
+                Learner information is handled with care.
               </h2>
-
-              <p className="mt-4 leading-7 text-teal-50">
-                For announcements, enrollment information, records-related
-                inquiries, school issuances, and official concerns, please use
-                the verified communication channels of Tabunoc National High
-                School.
+              <p className="mt-5 leading-8 text-slate-700 dark:text-stone-300">
+                Information collected during enrollment shall be used only for
+                school enrollment, learner profiling, LIS encoding,
+                communication, and other legitimate education-related purposes
+                in accordance with the Data Privacy Act of 2012 and DepEd
+                policies.
               </p>
             </motion.div>
 
-            <div className="mt-12 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-              <motion.div
-                initial={{ opacity: 0, x: -32 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7 }}
-                className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
-              >
-                <h3 className="text-2xl font-black">How may we assist you?</h3>
-
-                <p className="mt-3 leading-7 text-teal-50">
-                  Choose the proper official channel depending on your concern.
-                  This helps the school route inquiries faster and more
-                  appropriately.
-                </p>
-
-                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  {commonConcerns.map((item) => (
-                    <div
-                      key={item}
-                      className="rounded-xl bg-white dark:bg-[#171614] px-4 py-3 font-black text-[#0F4C5C] dark:text-yellow-300"
-                    >
-                      {item}
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 32 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7 }}
-                className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
-              >
-                <h3 className="text-2xl font-black">Official Channels</h3>
-
-                <p className="mt-3 leading-7 text-teal-50">
-                  Use these verified links for school updates, inquiries,
-                  document access, and online services.
-                </p>
-
-                <div className="mt-6 grid gap-4">
-                  <a
-                    href="https://facebook.com/tabunocnatlhs"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
-                  >
-                    Visit Facebook Page
-                  </a>
-
-                  <a
-                    href="https://m.me/tabunocnatlhs"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
-                  >
-                    Chat with Us on Messenger
-                  </a>
-
-                  <a
-                    href="/memos"
-                    className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
-                  >
-                    View Memo Repository
-                  </a>
-
-                  <a
-                    href="https://smis.tabunocnatlhs.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
-                  >
-                    Access School MIS
-                  </a>
-
-                  <a
-                    href="https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-xl border border-white/30 px-5 py-4 font-black text-white transition hover:-translate-y-1 hover:text-yellow-300"
-                  >
-                    Get Directions
-                  </a>
-                </div>
-              </motion.div>
-            </div>
-
             <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-              className="mt-8 rounded-2xl border border-yellow-300/30 bg-yellow-300/10 p-6"
+              {...fadeUp}
+              className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm dark:border-[#292624] dark:bg-[#0a0908]"
             >
-              <h3 className="text-xl font-black text-yellow-300">
-                Data Privacy Reminder
-              </h3>
-
-              <p className="mt-3 leading-7 text-teal-50">
-                Please avoid posting or sending sensitive learner information
-                through public comment sections. For records, enrollment, and
-                confidential concerns, coordinate directly with the school
-                office through official channels.
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C] dark:text-stone-200">
+                Need Help?
               </p>
+              <h2 className="mt-3 text-3xl font-black text-[#071E29] dark:text-white">
+                Contact the school through official channels.
+              </h2>
+              <p className="mt-5 leading-8 text-slate-700 dark:text-stone-300">
+                For enrollment concerns, parents and guardians may coordinate
+                with the school through the official communication channels.
+              </p>
+
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                {contactChannels.map((channel) => (
+                  <a
+                    key={channel.title}
+                    href={channel.href}
+                    target={
+                      channel.href.startsWith("http") ? "_blank" : undefined
+                    }
+                    rel={
+                      channel.href.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm transition hover:-translate-y-1 hover:border-[#0F4C5C]/40 hover:shadow-md dark:border-[#292624] dark:bg-[#171614]"
+                  >
+                    <p className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
+                      {channel.title}
+                    </p>
+                    <p className="mt-2 break-words font-black text-[#0F4C5C] dark:text-white">
+                      {channel.detail}
+                    </p>
+                  </a>
+                ))}
+              </div>
             </motion.div>
           </div>
         </section>
 
-        <Footer />
+        <section className="bg-white py-16 dark:bg-[#0a0908]">
+          <div className={`mx-auto w-full ${enrollmentPagePadding}`}>
+            <motion.div
+              {...fadeUp}
+              className="overflow-hidden rounded-3xl bg-[#0F4C5C] p-8 shadow-xl shadow-teal-900/10 dark:shadow-black/20 sm:p-10"
+            >
+              <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+                <div>
+                  <p className="text-sm font-black uppercase tracking-[0.22em] text-[#ffdf20]">
+                    Ready to Enroll?
+                  </p>
+                  <h2 className="mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">
+                    Prepare your documents early and follow the official
+                    enrollment schedule.
+                  </h2>
+                  <p className="mt-5 max-w-3xl leading-8 text-teal-50">
+                    Tabunoc National High School welcomes learners and families
+                    for School Year 2026–2027. Please follow official
+                    announcements and coordinate with the enrollment team for
+                    proper guidance.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+                  <Link
+                    href="/shs-offerings"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#ffdf20] px-6 py-3 text-sm font-black text-[#071E29] shadow-sm transition hover:-translate-y-1 hover:bg-white"
+                  >
+                    View SHS Offerings
+                    <ArrowIcon />
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-black text-white transition hover:-translate-y-1 hover:bg-white hover:text-[#0F4C5C]"
+                  >
+                    Contact the School
+                    <ArrowIcon />
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
       </main>
 
-      <PersonnelModal
-        person={selectedPerson}
-        onClose={() => setSelectedPerson(null)}
-      />
+      <Footer />
     </>
   );
 }
-
-
-

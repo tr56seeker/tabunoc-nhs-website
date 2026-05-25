@@ -1,208 +1,302 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
-const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
+type NavbarProps = {
+  brandMode?: "always" | "afterScroll";
+};
 
-type NavLink = {
+type DropdownItem = {
   label: string;
   href: string;
+  description?: string;
   external?: boolean;
 };
 
-type NavGroup = {
+type NavItem = {
   label: string;
-  links: NavLink[];
+  href: string;
+  items?: DropdownItem[];
 };
 
-const navGroups: NavGroup[] = [
+const depedLogo =
+  "https://depedph.com/wp-content/uploads/2024/01/deped-logo-philippines-1536x783.png";
+
+const schoolLogo =
+  "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
+
+const navItems: NavItem[] = [
+  {
+    label: "Home",
+    href: "/",
+  },
   {
     label: "School",
-    links: [
-      { label: "School Directory", href: "/organization" },
-      { label: "Citizen's Charter", href: "/citizen-charter" },
+    href: "/organization",
+    items: [
+      {
+        label: "School Profile",
+        href: "/organization",
+        description: "Administration, personnel, and school organization",
+      },
+      {
+        label: "Citizen's Charter",
+        href: "/citizen-charter",
+        description: "Public service standards and frontline services",
+      },
     ],
   },
   {
     label: "Services",
-    links: [
-      { label: "Enrollment Guide", href: "/enrollment" },
-      { label: "SHS Offerings", href: "/shs-offerings" },
+    href: "/#services",
+    items: [
+      {
+        label: "Enrollment Guide",
+        href: "/enrollment",
+        description: "Requirements and step-by-step enrollment process",
+      },
+      {
+        label: "SHS Offerings",
+        href: "/shs-offerings",
+        description: "Senior High School programs and learning pathways",
+      },
       {
         label: "School MIS",
         href: "https://smis.tabunocnatlhs.com",
+        description: "Authorized school management information system",
         external: true,
       },
     ],
   },
   {
     label: "Community",
-    links: [
-      { label: "Alumni", href: "/alumni" },
+    href: "/alumni",
+    items: [
       {
-        label: "Facebook Page",
-        href: "https://facebook.com/tabunocnatlhs",
-        external: true,
+        label: "Alumni Community",
+        href: "/alumni",
+        description: "Alumni information and school community updates",
       },
       {
-        label: "Messenger",
-        href: "https://m.me/tabunocnatlhs",
+        label: "Official Facebook Page",
+        href: "https://facebook.com/tabunocnatlhs",
+        description: "Follow official school announcements",
         external: true,
       },
     ],
   },
   {
     label: "Updates",
-    links: [{ label: "School Memos", href: "/memos" }],
+    href: "/memos",
+    items: [
+      {
+        label: "School Memos",
+        href: "/memos",
+        description: "Public memoranda, advisories, and issuances",
+      },
+      {
+        label: "Enrollment Updates",
+        href: "/enrollment",
+        description: "Enrollment reminders and school-year information",
+      },
+    ],
   },
 ];
 
-function isExternalLink(href: string) {
-  return href.startsWith("http");
-}
-
-function isActivePath(pathname: string, href: string) {
+function isInternalActive(pathname: string, href: string) {
+  if (href.startsWith("http")) return false;
   if (href === "/") return pathname === "/";
-  if (isExternalLink(href)) return false;
-
-  return pathname === href || pathname.startsWith(`${href}/`);
+  if (href.includes("#")) return false;
+  return pathname.startsWith(href);
 }
 
-function isGroupActive(pathname: string, group: NavGroup) {
-  return group.links.some((link) => isActivePath(pathname, link.href));
+function isItemActive(pathname: string, item: NavItem) {
+  const parentActive = isInternalActive(pathname, item.href);
+  const childActive = item.items?.some((child) =>
+    isInternalActive(pathname, child.href)
+  );
+
+  return parentActive || childActive;
 }
 
-function getActiveNavItem(pathname: string) {
-  if (pathname === "/") return "Home";
-
-  const activeGroup = navGroups.find((group) => isGroupActive(pathname, group));
-  return activeGroup?.label ?? null;
+function ChevronDownIcon() {
+  return (
+    <svg
+      className="h-4 w-4 transition-transform duration-200 group-hover/navitem:rotate-180"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="m6 9 6 6 6-6"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
-export default function Navbar() {
-  const pathname = usePathname();
+function ExternalIcon() {
+  return (
+    <svg
+      className="h-3.5 w-3.5"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M14 5h5v5M10 14 19 5M19 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h4"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [openDesktopGroup, setOpenDesktopGroup] = useState<string | null>(null);
-  const [openMobileGroup, setOpenMobileGroup] = useState<string | null>(null);
-  const [hoveredNavItem, setHoveredNavItem] = useState<string | null>(null);
+function DropdownLink({ item }: { item: DropdownItem }) {
+  const className =
+    "group/dropitem block rounded-2xl px-4 py-3 text-left transition hover:bg-[#ffdf20] hover:text-[#071E29]";
 
-  const homeIsActive = pathname === "/";
-  const activeNavItem = getActiveNavItem(pathname);
-  const visuallyActiveItem = hoveredNavItem ?? activeNavItem;
+  const content = (
+    <>
+      <span className="flex items-center justify-between gap-3 text-sm font-black">
+        {item.label}
+        {item.external && <ExternalIcon />}
+      </span>
+
+      {item.description && (
+        <span className="mt-1 block text-xs font-semibold leading-5 text-white/60 group-hover/dropitem:text-[#071E29]/75">
+          {item.description}
+        </span>
+      )}
+    </>
+  );
+
+  if (item.external) {
+    return (
+      <a
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+      >
+        {content}
+      </a>
+    );
+  }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/70 bg-white/70 shadow-sm backdrop-blur-xl dark:border-[#292624] dark:bg-[#171614]/75">
-      <nav className="flex w-full items-center justify-between px-6 py-3 text-slate-900 dark:text-white md:px-10 xl:px-[120px] 2xl:px-[190px]">
-        {/* BRAND */}
+    <Link href={item.href} className={className}>
+      {content}
+    </Link>
+  );
+}
+
+export default function Navbar({ brandMode = "always" }: NavbarProps) {
+  const pathname = usePathname();
+  const [hasScrolled, setHasScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [hoveredHref, setHoveredHref] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setHasScrolled(window.scrollY > 130);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const showBrand = brandMode === "always" || hasScrolled;
+  const centerMenu = brandMode === "afterScroll" && !hasScrolled;
+
+  return (
+    <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-[#0a0d0c]/80 text-white shadow-sm backdrop-blur-xl">
+      <nav className="relative mx-auto flex h-20 w-full items-center px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]">
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-3"
-          onClick={() => setMobileOpen(false)}
+          aria-label="Tabunoc National High School Homepage"
+          className={`absolute left-6 top-1/2 flex -translate-y-1/2 items-center gap-3 transition-all duration-500 md:left-10 xl:left-[120px] 2xl:left-[190px] ${
+            showBrand
+              ? "pointer-events-auto translate-x-0 opacity-100"
+              : "pointer-events-none -translate-x-5 opacity-0"
+          }`}
         >
-          <Image
-            src={schoolLogo}
-            alt="Tabunoc National High School Logo"
-            width={56}
-            height={56}
-            priority
-            className="h-11 w-11 shrink-0 object-contain md:h-12 md:w-12"
-          />
+          <div className="flex items-center gap-2">
+            <img
+              src={depedLogo}
+              alt="Department of Education logo"
+              className="h-10 w-auto object-contain"
+            />
 
-          <div className="min-w-0">
-            <p className="truncate text-base font-black leading-tight text-slate-950 dark:text-white md:hidden">
-              Tabunoc NHS
-            </p>
+            <div className="h-9 w-px bg-white/25" />
 
-            <p className="hidden text-lg font-black leading-tight text-slate-950 dark:text-white md:block">
+            <img
+              src={schoolLogo}
+              alt="Tabunoc National High School logo"
+              className="h-11 w-11 rounded-full object-contain"
+            />
+          </div>
+
+          <div className="hidden leading-tight sm:block">
+            <p className="text-lg font-black tracking-tight">
               Tabunoc National High School
             </p>
-
-            <p className="mt-0.5 text-xs font-semibold text-slate-600 dark:text-stone-100">
+            <p className="text-xs font-bold text-white/75">
               School ID: 303111
             </p>
           </div>
         </Link>
 
-        {/* DESKTOP NAV */}
         <div
-          className="hidden items-center gap-1 lg:flex"
-          onMouseLeave={() => setHoveredNavItem(null)}
+          className={`absolute top-1/2 hidden -translate-y-1/2 items-center gap-2 transition-all duration-500 ease-out lg:flex ${
+            centerMenu
+              ? "left-1/2 -translate-x-1/2"
+              : "right-6 translate-x-0 md:right-10 xl:right-[120px] 2xl:right-[190px]"
+          }`}
         >
-          <Link
-            href="/"
-            onMouseEnter={() => setHoveredNavItem("Home")}
-            className={`rounded-lg px-4 py-2 text-sm font-bold transition ${
-              visuallyActiveItem === "Home"
-                ? "bg-[#ffdf20] text-slate-950"
-                : "text-slate-700 hover:text-slate-950 dark:text-stone-200 dark:hover:text-white"
-            }`}
-          >
-            Home
-          </Link>
-
-          {navGroups.map((group) => {
-            const open = openDesktopGroup === group.label;
+          {navItems.map((item) => {
+            const active = isItemActive(pathname, item);
+            const highlighted =
+              hoveredHref === item.href || (!hoveredHref && active);
+            const hasDropdown = Boolean(item.items?.length);
 
             return (
               <div
-                key={group.label}
-                className="relative"
-                onMouseEnter={() => {
-                  setHoveredNavItem(group.label);
-                  setOpenDesktopGroup(group.label);
-                }}
-                onMouseLeave={() => setOpenDesktopGroup(null)}
+                key={item.label}
+                className="group/navitem relative"
+                onMouseEnter={() => setHoveredHref(item.href)}
+                onMouseLeave={() => setHoveredHref(null)}
               >
-                <button
-                  type="button"
-                  className={`flex items-center gap-1 rounded-lg px-4 py-2 text-sm font-bold transition ${
-                    visuallyActiveItem === group.label
-                      ? "bg-[#ffdf20] text-slate-950"
-                      : "text-slate-700 hover:text-slate-950 dark:text-stone-200 dark:hover:text-white"
+                <Link
+                  href={item.href}
+                  className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-black transition-all duration-200 ${
+                    highlighted
+                      ? "bg-[#ffdf20] text-[#071E29]"
+                      : "text-white/85 hover:bg-[#ffdf20] hover:text-[#071E29]"
                   }`}
-                  aria-expanded={open}
                 >
-                  {group.label}
-                </button>
+                  {item.label}
+                  {hasDropdown && <ChevronDownIcon />}
+                </Link>
 
-                {open && (
-                  <div className="absolute left-0 top-full z-50 min-w-[230px] pt-2">
-                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white py-2 text-slate-900 shadow-xl dark:border-[#292624] dark:bg-[#171614] dark:text-white dark:shadow-black/20">
-                      {group.links.map((link) => {
-                        const linkActive = isActivePath(pathname, link.href);
-
-                        if (link.external) {
-                          return (
-                            <a
-                              key={link.label}
-                              href={link.href}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="block px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-[#ffdf20] hover:text-slate-950 dark:text-stone-200"
-                            >
-                              {link.label}
-                            </a>
-                          );
-                        }
-
-                        return (
-                          <Link
-                            key={link.label}
-                            href={link.href}
-                            className={`block px-4 py-3 text-sm font-semibold transition ${
-                              linkActive
-                                ? "bg-[#ffdf20] text-slate-950"
-                                : "text-slate-700 hover:bg-[#ffdf20] hover:text-slate-950 dark:text-stone-200"
-                            }`}
-                          >
-                            {link.label}
-                          </Link>
-                        );
-                      })}
+                {hasDropdown && (
+                  <div className="pointer-events-none absolute left-1/2 top-full z-50 w-[310px] -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover/navitem:pointer-events-auto group-hover/navitem:translate-y-0 group-hover/navitem:opacity-100">
+                    <div className="overflow-hidden rounded-3xl border border-white/10 bg-[#0a0d0c]/95 p-2 text-white shadow-2xl shadow-black/30 backdrop-blur-xl">
+                      {item.items?.map((dropdownItem) => (
+                        <DropdownLink
+                          key={`${item.label}-${dropdownItem.label}`}
+                          item={dropdownItem}
+                        />
+                      ))}
                     </div>
                   </div>
                 )}
@@ -211,99 +305,90 @@ export default function Navbar() {
           })}
 
           <Link
-            href="/#contact"
-            className="ml-2 rounded-lg bg-[#0F4C5C] px-5 py-2 text-sm font-black text-white shadow-sm transition hover:bg-[#0B3B48] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4C5C] dark:bg-[#0F4C5C] dark:hover:bg-[#0B3B48]"
+            href="/contact"
+            className="ml-3 rounded-xl bg-[#0F4C5C] px-7 py-3 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#146577]"
           >
             Contact
           </Link>
         </div>
 
-        {/* MOBILE MENU BUTTON */}
         <button
           type="button"
-          onClick={() => setMobileOpen((current) => !current)}
-          className="rounded-xl border border-slate-200/80 px-4 py-2 text-sm font-black text-slate-800 transition hover:text-[#0F4C5C] dark:border-[#292624] dark:text-white dark:hover:text-white lg:hidden"
-          aria-expanded={mobileOpen}
+          aria-label="Open navigation menu"
+          onClick={() => setMenuOpen((current) => !current)}
+          className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 text-white lg:hidden"
         >
-          {mobileOpen ? "Close" : "Menu"}
+          <span className="sr-only">Menu</span>
+          <svg
+            className="h-6 w-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            {menuOpen ? (
+              <path
+                d="M6 6l12 12M18 6 6 18"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+              />
+            ) : (
+              <path
+                d="M4 7h16M4 12h16M4 17h16"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+              />
+            )}
+          </svg>
         </button>
       </nav>
 
-      {/* MOBILE NAV */}
-      {mobileOpen && (
-        <div className="mx-6 mb-3 rounded-2xl border border-slate-200 bg-white/95 p-3 text-slate-900 shadow-xl shadow-slate-900/10 backdrop-blur-xl dark:border-[#292624] dark:bg-[#171614]/95 dark:text-white dark:shadow-black/20 md:mx-10 xl:mx-[120px] 2xl:mx-[190px] lg:hidden">
+      {menuOpen && (
+        <div className="border-t border-white/10 bg-[#0a0d0c]/95 px-6 pb-5 pt-3 backdrop-blur-xl lg:hidden">
           <div className="grid gap-2">
-            <Link
-              href="/"
-              onClick={() => setMobileOpen(false)}
-              className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
-                homeIsActive
-                  ? "bg-[#ffdf20] text-slate-950"
-                  : "text-slate-700 hover:bg-[#ffdf20] hover:text-slate-950 dark:text-stone-100"
-              }`}
-            >
-              Home
-            </Link>
-
-            {navGroups.map((group) => {
-              const active = isGroupActive(pathname, group);
-              const open = openMobileGroup === group.label;
+            {navItems.map((item) => {
+              const active = isItemActive(pathname, item);
 
               return (
-                <div
-                  key={group.label}
-                  className="overflow-hidden rounded-xl border border-slate-200 dark:border-[#292624]"
-                >
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setOpenMobileGroup((current) =>
-                        current === group.label ? null : group.label
-                      )
-                    }
-                    className={`flex w-full items-center px-4 py-3 text-left text-sm font-bold transition ${
+                <div key={item.label} className="rounded-xl">
+                  <Link
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={`block rounded-xl px-4 py-3 text-sm font-black transition ${
                       active
-                        ? "bg-[#ffdf20] text-slate-950"
-                        : "bg-white/50 text-slate-700 hover:bg-[#ffdf20] hover:text-slate-950 dark:bg-[#171614] dark:text-stone-100"
+                        ? "bg-[#ffdf20] text-[#071E29]"
+                        : "text-white/85 hover:bg-white/10"
                     }`}
                   >
-                    {group.label}
-                  </button>
+                    {item.label}
+                  </Link>
 
-                  {open && (
-                    <div className="grid gap-1 bg-white/80 p-2 dark:bg-[#171614]">
-                      {group.links.map((link) => {
-                        const linkActive = isActivePath(pathname, link.href);
-
-                        if (link.external) {
-                          return (
-                            <a
-                              key={link.label}
-                              href={link.href}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="rounded-lg px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-[#ffdf20] hover:text-slate-950 dark:text-stone-200"
-                            >
-                              {link.label}
-                            </a>
-                          );
-                        }
-
-                        return (
-                          <Link
-                            key={link.label}
-                            href={link.href}
-                            onClick={() => setMobileOpen(false)}
-                            className={`rounded-lg px-4 py-3 text-sm font-semibold transition ${
-                              linkActive
-                                ? "bg-[#ffdf20] text-slate-950"
-                                : "text-slate-700 hover:bg-[#ffdf20] hover:text-slate-950 dark:text-stone-200"
-                            }`}
+                  {item.items && (
+                    <div className="mt-1 grid gap-1 pl-3">
+                      {item.items.map((dropdownItem) =>
+                        dropdownItem.external ? (
+                          <a
+                            key={`${item.label}-${dropdownItem.label}`}
+                            href={dropdownItem.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => setMenuOpen(false)}
+                            className="rounded-xl px-4 py-2 text-sm font-bold text-white/70 hover:bg-white/10 hover:text-white"
                           >
-                            {link.label}
+                            {dropdownItem.label}
+                          </a>
+                        ) : (
+                          <Link
+                            key={`${item.label}-${dropdownItem.label}`}
+                            href={dropdownItem.href}
+                            onClick={() => setMenuOpen(false)}
+                            className="rounded-xl px-4 py-2 text-sm font-bold text-white/70 hover:bg-white/10 hover:text-white"
+                          >
+                            {dropdownItem.label}
                           </Link>
-                        );
-                      })}
+                        )
+                      )}
                     </div>
                   )}
                 </div>
@@ -311,9 +396,9 @@ export default function Navbar() {
             })}
 
             <Link
-              href="/#contact"
-              onClick={() => setMobileOpen(false)}
-              className="mt-2 rounded-xl bg-[#0F4C5C] px-4 py-3 text-center text-sm font-black text-white transition hover:bg-[#0B3B48] dark:bg-[#0F4C5C] dark:hover:bg-[#0B3B48]"
+              href="/contact"
+              onClick={() => setMenuOpen(false)}
+              className="rounded-xl bg-[#0F4C5C] px-4 py-3 text-sm font-black text-white"
             >
               Contact
             </Link>

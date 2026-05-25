@@ -183,7 +183,7 @@ export default function Home() {
 
   return (
     <>
-      <Navbar />
+      <Navbar brandMode="afterScroll" />
 
       <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
         <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-white pt-12 pb-16 dark:from-[#0a0908] dark:via-[#0a0908] dark:to-[#171614] sm:pt-14 lg:pt-16 lg:pb-20">

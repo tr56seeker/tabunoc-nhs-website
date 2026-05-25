@@ -28,9 +28,9 @@ export default function RootLayout({
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} light h-full bg-white text-slate-950 antialiased`}
     >
-      <body className="min-h-full flex flex-col overflow-x-hidden">
+      <body className="min-h-full flex flex-col overflow-x-hidden bg-white text-slate-950">
         <ClientParallaxBackground />
         {children}
       </body>

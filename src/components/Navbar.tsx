@@ -44,7 +44,7 @@ const navItems: NavItem[] = [
       {
         label: "Citizen's Charter",
         href: "/citizen-charter",
-        description: "Public service standards and frontline services",
+        description: "Frontline service standards and public assistance",
       },
     ],
   },
@@ -109,6 +109,7 @@ function isInternalActive(pathname: string, href: string) {
   if (href.startsWith("http")) return false;
   if (href === "/") return pathname === "/";
   if (href.includes("#")) return false;
+
   return pathname.startsWith(href);
 }
 
@@ -121,10 +122,12 @@ function isItemActive(pathname: string, item: NavItem) {
   return parentActive || childActive;
 }
 
-function ChevronDownIcon() {
+function ChevronDownIcon({ open = false }: { open?: boolean }) {
   return (
     <svg
-      className="h-4 w-4 transition-transform duration-200 group-hover/navitem:rotate-180"
+      className={`h-4 w-4 transition-transform duration-200 ${
+        open ? "rotate-180" : ""
+      }`}
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"
@@ -159,7 +162,13 @@ function ExternalIcon() {
   );
 }
 
-function DropdownLink({ item }: { item: DropdownItem }) {
+function DropdownLink({
+  item,
+  onClick,
+}: {
+  item: DropdownItem;
+  onClick?: () => void;
+}) {
   const className =
     "group/dropitem block rounded-2xl px-4 py-3 text-left transition hover:bg-[#ffdf20] hover:text-[#071E29]";
 
@@ -184,6 +193,7 @@ function DropdownLink({ item }: { item: DropdownItem }) {
         href={item.href}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={onClick}
         className={className}
       >
         {content}
@@ -192,7 +202,7 @@ function DropdownLink({ item }: { item: DropdownItem }) {
   }
 
   return (
-    <Link href={item.href} className={className}>
+    <Link href={item.href} onClick={onClick} className={className}>
       {content}
     </Link>
   );
@@ -200,8 +210,10 @@ function DropdownLink({ item }: { item: DropdownItem }) {
 
 export default function Navbar({ brandMode = "always" }: NavbarProps) {
   const pathname = usePathname();
+
   const [hasScrolled, setHasScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileOpenGroup, setMobileOpenGroup] = useState<string | null>(null);
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
 
   useEffect(() => {
@@ -215,11 +227,16 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    setMenuOpen(false);
+    setMobileOpenGroup(null);
+  }, [pathname]);
+
   const showBrand = brandMode === "always" || hasScrolled;
   const centerMenu = brandMode === "afterScroll" && !hasScrolled;
 
   return (
-    <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-[#0a0d0c]/80 text-white shadow-sm backdrop-blur-xl">
+    <header className="fixed left-0 top-0 z-[999] w-full border-b border-white/10 bg-[#2f3935]/90 text-white shadow-sm backdrop-blur-xl">
       <nav className="relative mx-auto flex h-20 w-full items-center px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]">
         <Link
           href="/"
@@ -257,7 +274,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
         </Link>
 
         <div
-          className={`absolute top-1/2 hidden -translate-y-1/2 items-center gap-2 transition-all duration-500 ease-out lg:flex ${
+          className={`absolute top-1/2 hidden -translate-y-1/2 items-center gap-2 transition-all duration-500 ease-out xl:flex ${
             centerMenu
               ? "left-1/2 -translate-x-1/2"
               : "right-6 translate-x-0 md:right-10 xl:right-[120px] 2xl:right-[190px]"
@@ -281,15 +298,19 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
                   className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-black transition-all duration-200 ${
                     highlighted
                       ? "bg-[#ffdf20] text-[#071E29]"
-                      : "text-white/85 hover:bg-[#ffdf20] hover:text-[#071E29]"
+                      : "text-white/90 hover:bg-[#ffdf20] hover:text-[#071E29]"
                   }`}
                 >
                   {item.label}
-                  {hasDropdown && <ChevronDownIcon />}
+                  {hasDropdown && (
+                    <span className="transition-transform duration-200 group-hover/navitem:rotate-180">
+                      <ChevronDownIcon />
+                    </span>
+                  )}
                 </Link>
 
                 {hasDropdown && (
-                  <div className="pointer-events-none absolute left-1/2 top-full z-50 w-[310px] -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover/navitem:pointer-events-auto group-hover/navitem:translate-y-0 group-hover/navitem:opacity-100">
+                  <div className="pointer-events-none absolute left-1/2 top-full z-[1001] w-[320px] -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover/navitem:pointer-events-auto group-hover/navitem:opacity-100">
                     <div className="overflow-hidden rounded-3xl border border-white/10 bg-[#0a0d0c]/95 p-2 text-white shadow-2xl shadow-black/30 backdrop-blur-xl">
                       {item.items?.map((dropdownItem) => (
                         <DropdownLink
@@ -314,9 +335,10 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
 
         <button
           type="button"
-          aria-label="Open navigation menu"
+          aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+          aria-expanded={menuOpen}
           onClick={() => setMenuOpen((current) => !current)}
-          className="ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 text-white lg:hidden"
+          className="relative z-[1001] ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white transition hover:bg-white/10 xl:hidden"
         >
           <span className="sr-only">Menu</span>
           <svg
@@ -345,50 +367,58 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
       </nav>
 
       {menuOpen && (
-        <div className="border-t border-white/10 bg-[#0a0d0c]/95 px-6 pb-5 pt-3 backdrop-blur-xl lg:hidden">
-          <div className="grid gap-2">
+        <div className="fixed left-0 top-20 z-[1000] max-h-[calc(100vh-5rem)] w-full overflow-y-auto border-t border-white/10 bg-[#0a0d0c]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl xl:hidden">
+          <div className="mx-auto grid max-w-3xl gap-2">
             {navItems.map((item) => {
               const active = isItemActive(pathname, item);
+              const hasDropdown = Boolean(item.items?.length);
+              const openGroup = mobileOpenGroup === item.label;
 
               return (
-                <div key={item.label} className="rounded-xl">
-                  <Link
-                    href={item.href}
-                    onClick={() => setMenuOpen(false)}
-                    className={`block rounded-xl px-4 py-3 text-sm font-black transition ${
-                      active
-                        ? "bg-[#ffdf20] text-[#071E29]"
-                        : "text-white/85 hover:bg-white/10"
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
+                <div key={item.label} className="rounded-2xl">
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={item.href}
+                      onClick={() => {
+                        setMenuOpen(false);
+                        setMobileOpenGroup(null);
+                      }}
+                      className={`flex-1 rounded-xl px-4 py-3 text-sm font-black transition ${
+                        active
+                          ? "bg-[#ffdf20] text-[#071E29]"
+                          : "text-white/90 hover:bg-white/10"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
 
-                  {item.items && (
-                    <div className="mt-1 grid gap-1 pl-3">
-                      {item.items.map((dropdownItem) =>
-                        dropdownItem.external ? (
-                          <a
-                            key={`${item.label}-${dropdownItem.label}`}
-                            href={dropdownItem.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => setMenuOpen(false)}
-                            className="rounded-xl px-4 py-2 text-sm font-bold text-white/70 hover:bg-white/10 hover:text-white"
-                          >
-                            {dropdownItem.label}
-                          </a>
-                        ) : (
-                          <Link
-                            key={`${item.label}-${dropdownItem.label}`}
-                            href={dropdownItem.href}
-                            onClick={() => setMenuOpen(false)}
-                            className="rounded-xl px-4 py-2 text-sm font-bold text-white/70 hover:bg-white/10 hover:text-white"
-                          >
-                            {dropdownItem.label}
-                          </Link>
-                        )
-                      )}
+                    {hasDropdown && (
+                      <button
+                        type="button"
+                        aria-label={`Toggle ${item.label} submenu`}
+                        aria-expanded={openGroup}
+                        onClick={() =>
+                          setMobileOpenGroup(openGroup ? null : item.label)
+                        }
+                        className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white transition hover:bg-white/10"
+                      >
+                        <ChevronDownIcon open={openGroup} />
+                      </button>
+                    )}
+                  </div>
+
+                  {hasDropdown && openGroup && (
+                    <div className="mt-2 grid gap-1 rounded-2xl border border-white/10 bg-black/20 p-2">
+                      {item.items?.map((dropdownItem) => (
+                        <DropdownLink
+                          key={`${item.label}-${dropdownItem.label}`}
+                          item={dropdownItem}
+                          onClick={() => {
+                            setMenuOpen(false);
+                            setMobileOpenGroup(null);
+                          }}
+                        />
+                      ))}
                     </div>
                   )}
                 </div>
@@ -397,8 +427,11 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
 
             <Link
               href="/contact"
-              onClick={() => setMenuOpen(false)}
-              className="rounded-xl bg-[#0F4C5C] px-4 py-3 text-sm font-black text-white"
+              onClick={() => {
+                setMenuOpen(false);
+                setMobileOpenGroup(null);
+              }}
+              className="mt-2 rounded-xl bg-[#0F4C5C] px-4 py-3 text-center text-sm font-black text-white transition hover:bg-[#146577]"
             >
               Contact
             </Link>

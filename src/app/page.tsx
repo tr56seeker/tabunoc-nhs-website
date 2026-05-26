@@ -186,7 +186,7 @@ export default function Home() {
       <Navbar brandMode="afterScroll" />
 
       <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-white pt-12 pb-16 dark:from-[#0a0908] dark:via-[#0a0908] dark:to-[#171614] sm:pt-14 lg:pt-16 lg:pb-20">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-white pb-16 pt-32 sm:pt-36 lg:pb-20 lg:pt-40">
           <div className={`mx-auto grid w-full items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-start ${homeSectionPadding}`}>
             <div>
               <BrandHeader />

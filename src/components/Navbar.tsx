@@ -268,7 +268,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
               Tabunoc National High School
             </p>
             <p className="text-xs font-bold text-white/75">
-              School ID: 303111
+              Division of Talisay City, Cebu
             </p>
           </div>
         </Link>

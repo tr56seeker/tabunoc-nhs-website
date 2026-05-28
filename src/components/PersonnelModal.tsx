@@ -42,12 +42,57 @@ function displayList(value?: string[]) {
   return cleaned.join(", ");
 }
 
-function getAdvisorySections(person: Personnel) {
-  if (!person.advisory || person.advisory.length === 0) return "N/A";
+function formatAdvisorySection(gradeLevel?: string, section?: string) {
+  const cleanGradeLevel = displayText(gradeLevel);
+  const cleanSection = section?.replace(/^\d+-/, "").trim() || "";
+
+  if (cleanGradeLevel === "N/A" && !cleanSection) return "";
+  if (!cleanSection) return cleanGradeLevel;
+
+  return `${cleanGradeLevel}-${cleanSection}`;
+}
+
+function getAdvisorySectionsArray(person: Personnel) {
+  if (!person.advisory || person.advisory.length === 0) return [];
 
   return person.advisory
-    .map((item) => `${item.gradeLevel}-${item.section.replace(/^\d+-/, "")}`)
-    .join(", ");
+    .map((item) => formatAdvisorySection(item.gradeLevel, item.section))
+    .filter(Boolean);
+}
+
+function getAdvisorySections(person: Personnel) {
+  const advisorySections = getAdvisorySectionsArray(person);
+  if (advisorySections.length === 0) return "N/A";
+
+  return advisorySections.join(", ");
+}
+
+function getFormattedDesignation(person: Personnel) {
+  const designations = person.designation || [];
+  const advisorySections = getAdvisorySectionsArray(person);
+
+  const hasClassAdviser =
+    designations.some(
+      (designation) => designation.trim().toLowerCase() === "class adviser"
+    ) || advisorySections.length > 0;
+
+  const cleanedDesignations = designations.filter(
+    (designation) => designation.trim().toLowerCase() !== "class adviser"
+  );
+
+  const classAdviserText =
+    hasClassAdviser && advisorySections.length > 0
+      ? `Class Adviser, ${advisorySections.join(", ")}`
+      : hasClassAdviser
+        ? "Class Adviser"
+        : "";
+
+  const finalDesignations = [
+    ...cleanedDesignations,
+    classAdviserText,
+  ].filter(Boolean);
+
+  return displayList(finalDesignations);
 }
 
 function MiniInfo({ label, value }: { label: string; value: string }) {
@@ -102,6 +147,9 @@ export default function PersonnelModal({
 
   const messengerLink = person ? normalizeMessengerLink(person.messenger) : "";
   const showPhoto = person?.photo && failedPhoto !== person.photo;
+  const formattedDesignation = person
+    ? getFormattedDesignation(person)
+    : "N/A";
 
   return (
     <AnimatePresence>
@@ -185,7 +233,7 @@ export default function PersonnelModal({
                     </p>
 
                     <p className="mt-1 text-sm font-medium leading-6 text-slate-600 dark:text-stone-300">
-                      {displayList(person.designation)}
+                      {formattedDesignation}
                     </p>
                   </div>
 
@@ -206,7 +254,7 @@ export default function PersonnelModal({
                       />
                       <MiniInfo
                         label="Designation"
-                        value={displayList(person.designation)}
+                        value={formattedDesignation}
                       />
                     </div>
                   </div>
@@ -291,4 +339,3 @@ export default function PersonnelModal({
     </AnimatePresence>
   );
 }
-

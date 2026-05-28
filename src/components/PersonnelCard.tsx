@@ -34,14 +34,26 @@ function getPositionDesignation(person: Personnel) {
     parts.push(person.position);
   }
 
-  if (person.designation && person.designation.length > 0) {
-    parts.push(...person.designation);
-  }
-
+  const designations = person.designation || [];
   const advisoryText = getAdvisoryText(person);
 
-  if (advisoryText) {
-    parts.push(advisoryText);
+  const hasClassAdviser =
+    designations.some(
+      (designation) => designation.trim().toLowerCase() === "class adviser"
+    ) || advisoryText !== "";
+
+  const cleanedDesignations = designations.filter(
+    (designation) => designation.trim().toLowerCase() !== "class adviser"
+  );
+
+  if (cleanedDesignations.length > 0) {
+    parts.push(...cleanedDesignations);
+  }
+
+  if (hasClassAdviser) {
+    parts.push(
+      advisoryText ? `Class Adviser, ${advisoryText}` : "Class Adviser"
+    );
   }
 
   return Array.from(new Set(parts)).join(" / ");
@@ -95,9 +107,7 @@ export default function PersonnelCard({
         <div className="relative flex flex-1 flex-col justify-center px-5 py-4">
           <h3
             className={`leading-tight tracking-tight text-slate-950 transition group-hover:text-[#0F4C5C] dark:text-white dark:group-hover:text-yellow-300 ${
-              compact
-                ? "text-base font-bold"
-                : "text-lg font-extrabold"
+              compact ? "text-base font-bold" : "text-lg font-extrabold"
             }`}
           >
             {person.name}

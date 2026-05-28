@@ -85,11 +85,7 @@ function splitList(value?: string | null) {
 
 function uniqueList(items: Array<string | undefined | null>) {
   return Array.from(
-    new Set(
-      items
-        .map((item) => safeText(item))
-        .filter(Boolean)
-    )
+    new Set(items.map((item) => safeText(item)).filter(Boolean))
   );
 }
 
@@ -180,6 +176,8 @@ function inferRoles(record: Record<string, string>): PersonnelRole[] {
   const displayGroup = safeText(record.displayGroup).toLowerCase();
   const subGroup = safeText(record.subGroup).toLowerCase();
   const subjectArea = safeText(record.subjectArea).toLowerCase();
+
+  const designation1Text = safeText(record.designation1).toLowerCase();
 
   const designationText = getAllDesignationsFromRecord(record)
     .join(" ")
@@ -282,8 +280,12 @@ function inferRoles(record: Record<string, string>): PersonnelRole[] {
     roles.push("Subject Teacher");
   }
 
+  const hasCoordinatorDesignation =
+    designation1Text.includes("coordinator") ||
+    designationText.includes("coordinator");
+
   const isProgramImplementer =
-    designationText.includes("coordinator") ||
+    hasCoordinatorDesignation ||
     designationText.includes("focal") ||
     designationText.includes("pio") ||
     designationText.includes("manager") ||
@@ -389,9 +391,7 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
     ]);
 
     const profileId = safeText(record.id) || slugify(name);
-
-    const photoUrl =
-      safeText(record.photoUrl) || "/personnel/placeholder.jpg";
+    const photoUrl = safeText(record.photoUrl) || "/personnel/placeholder.jpg";
 
     const personnel = {
       id: profileId,
@@ -427,8 +427,8 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
     };
 
     return personnel as unknown as Personnel;
-      });
-    }
+  });
+}
 
 function getSearchableText(person: Personnel) {
   return [
@@ -455,29 +455,80 @@ function getSearchableText(person: Personnel) {
 
 function getGradeLeaderRank(person: Personnel) {
   const leadershipText = [
+    person.name,
     person.position,
+    person.group,
+    person.department,
+    person.description,
     ...(person.designation || []),
     ...(person.coordinatorship || []),
+    ...(person.gradeLevelTaught || []),
+    ...(person.sectionsHandled || []),
+    ...(person.advisory || []).map((item) => item?.gradeLevel || ""),
+    ...(person.advisory || []).map((item) => item?.section || ""),
   ]
     .join(" ")
     .toLowerCase();
 
   if (
+    leadershipText.includes("shs coordinator") ||
     leadershipText.includes("senior high school coordinator") ||
-    leadershipText.includes("shs coordinator")
+    leadershipText.includes("senior high school focal") ||
+    leadershipText.includes("shs focal")
   ) {
     return 0;
   }
 
-  const numberFirst = leadershipText.match(
-    /\b(7|8|9|10|11|12)(st|nd|rd|th)?\s*grade/
-  );
-  if (numberFirst) return getGradeRank(`Grade ${numberFirst[1]}`);
+  const gradeOrder: Record<string, number> = {
+    "12": 1,
+    "11": 2,
+    "10": 3,
+    "9": 4,
+    "8": 5,
+    "7": 6,
+  };
 
-  const gradeFirst = leadershipText.match(/grade\s*(7|8|9|10|11|12)/);
-  if (gradeFirst) return getGradeRank(`Grade ${gradeFirst[1]}`);
+  const gradeFirst = leadershipText.match(/grade\s*(7|8|9|10|11|12)/i);
+  if (gradeFirst) {
+    return gradeOrder[gradeFirst[1]] ?? 99;
+  }
+
+  const numberFirst = leadershipText.match(
+    /\b(7|8|9|10|11|12)(st|nd|rd|th)?\s*grade/i
+  );
+  if (numberFirst) {
+    return gradeOrder[numberFirst[1]] ?? 99;
+  }
 
   return 99;
+}
+
+function getTeacherPositionRank(position: string) {
+  const normalizedPosition = safeText(position)
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const rankOrder = [
+    "master teacher v",
+    "master teacher iv",
+    "master teacher iii",
+    "master teacher ii",
+    "master teacher i",
+    "teacher vii",
+    "teacher vi",
+    "teacher v",
+    "teacher iv",
+    "teacher iii",
+    "teacher ii",
+    "teacher i",
+  ];
+
+  const rankIndex = rankOrder.findIndex((rank) =>
+    normalizedPosition.includes(rank)
+  );
+
+  return rankIndex === -1 ? 999 : rankIndex + 1;
 }
 
 export default function OrganizationPage() {
@@ -503,8 +554,9 @@ export default function OrganizationPage() {
 
         const activePersonnel = parsePersonnelCsv(csvText)
           .filter((person) => {
-            const status = safeText((person as Personnel & { status?: string }).status)
-              .toLowerCase();
+            const status = safeText(
+              (person as Personnel & { status?: string }).status
+            ).toLowerCase();
 
             const hasRealName =
               person.name &&
@@ -521,8 +573,12 @@ export default function OrganizationPage() {
             return hasRealName && isVisible;
           })
           .sort((a, b) => {
-            const aOrder = Number((a as Personnel & { personOrder?: number }).personOrder || 999);
-            const bOrder = Number((b as Personnel & { personOrder?: number }).personOrder || 999);
+            const aOrder = Number(
+              (a as Personnel & { personOrder?: number }).personOrder || 999
+            );
+            const bOrder = Number(
+              (b as Personnel & { personOrder?: number }).personOrder || 999
+            );
 
             if (aOrder !== bOrder) return aOrder - bOrder;
 
@@ -624,6 +680,19 @@ export default function OrganizationPage() {
     );
   }, [gradeLeaders]);
 
+  const sortedProgramImplementers = useMemo(() => {
+    return [...programImplementers].sort((a, b) => {
+      const positionRankA = getTeacherPositionRank(a.position);
+      const positionRankB = getTeacherPositionRank(b.position);
+
+      if (positionRankA !== positionRankB) {
+        return positionRankA - positionRankB;
+      }
+
+      return a.name.localeCompare(b.name);
+    });
+  }, [programImplementers]);
+
   const searchResults = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
@@ -675,7 +744,7 @@ export default function OrganizationPage() {
               className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200"
             >
               Meet the school administration, faculty members, advisers,
-              program implementers, and support personnel of Tabunoc National
+              program coordinators, and support personnel of Tabunoc National
               High School.
             </motion.p>
           </div>
@@ -715,7 +784,11 @@ export default function OrganizationPage() {
                 >
                   {roleFilters.map((role) => (
                     <option key={role} value={role}>
-                      {role === "All" ? "All Roles" : role}
+                      {role === "All"
+                        ? "All Roles"
+                        : role === "Program Implementer"
+                          ? "Program Coordinator"
+                          : role}
                     </option>
                   ))}
                 </select>
@@ -815,6 +888,43 @@ export default function OrganizationPage() {
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+                Program Coordination
+              </p>
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
+                Program Coordinators
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
+                Program coordinators support school programs, committees,
+                initiatives, and special assignments aligned with school
+                operations, learner support, and DepEd priority programs.
+              </p>
+            </div>
+
+            {sortedProgramImplementers.length > 0 ? (
+              <div className="grid gap-5 lg:grid-cols-2">
+                {sortedProgramImplementers.map((person) => (
+                  <PersonnelCard
+                    key={person.id}
+                    person={person}
+                    compact
+                    onClick={setSelectedPerson}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center">
+                <p className="font-bold text-slate-600 dark:text-stone-300">
+                  Program coordinator profiles will be added soon.
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="bg-white dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-10 text-center">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Instructional Leadership
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
@@ -840,7 +950,7 @@ export default function OrganizationPage() {
           </div>
         </section>
 
-        <section className="bg-white dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
@@ -969,43 +1079,6 @@ export default function OrganizationPage() {
               <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 text-center">
                 <p className="font-bold text-slate-600 dark:text-stone-300">
                   Subject teacher profiles will be added soon.
-                </p>
-              </div>
-            )}
-          </div>
-        </section>
-
-        <section className="bg-[#0F4C5C] px-6 py-20 text-white">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
-                Program Implementation
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                Program Implementers
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-teal-50">
-                Program implementers support school programs, initiatives,
-                committees, and special assignments aligned with school
-                operations and learner support.
-              </p>
-            </div>
-
-            {programImplementers.length > 0 ? (
-              <div className="grid gap-5 lg:grid-cols-2">
-                {programImplementers.map((person) => (
-                  <PersonnelCard
-                    key={person.id}
-                    person={person}
-                    compact
-                    onClick={setSelectedPerson}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-2xl border border-[#292624] bg-[#171614] p-8 text-center">
-                <p className="font-bold text-teal-50">
-                  Program implementer profiles will be added soon.
                 </p>
               </div>
             )}

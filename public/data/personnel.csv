@@ -1,71 +1,71 @@
 ﻿order,lastName,firstName,middleName,middleInitial,suffix,displayName,position,designation1,designation2,designation3,designation4,otherDesignations,category,department,subjectArea,displayGroup,subGroup,groupOrder,subGroupOrder,personOrder,photoUrl,status
 1,Abad,Paz,Villegas,V.,,Paz V. Abad,Master Teacher I,10th Grade Level Chairperson,,,,,Teaching Personnel,Instructional Leadership,English,,,,,,/personnel/paz-abad.jpg,Active
-2,Abalo,Marissa,Gabasa,G.,,Marissa G. Abalo,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/marissa-abalo.jpg,Active
-3,Allosada,Joseph,Cardosa,C.,,Joseph C. Allosada,Teacher I,,,,,,Teaching Personnel,Junior High School,,,,,,,/personnel/joseph-allosada.jpg,Active
-4,Alsa,Sharon Gay,Bacallan,B.,,Sharon Gay B. Alsa,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/sharon-gay-alsa.jpg,Active
-5,Andrade,Lonier,Cecilio,C.,,Lonier C. Andrade,Teacher I,,,,,,Teaching Personnel,Senior High School,,Class Advisers,,,,,/personnel/lonier-andrade.jpg,Active
-6,Aparicio,Allan Raul,Reales,R.,,Allan Raul R. Aparicio,Teacher III,,,,,,Teaching Personnel,Senior High School,,Class Advisers,,,,,/personnel/allan-raul-aparicio.jpg,Active
-7,Ayos,Niña Kristine,Alinsonorin,A.,,Niña Kristine A. Ayos,Administrative Officer II,Property Custodian,,,,,Administration,Administration,,,,,,,/personnel/niña-kristine-ayos.jpg,Active
-8,Barangan,Glenn,Tabora,T.,,Glenn T. Barangan,Teacher VI,,,,,,Teaching Personnel,Junior High School,,,,,,,/personnel/glenn-barangan.jpg,Active
-9,Barcenas,Jake,Tañeca,T.,,Jake T. Barcenas,Teacher I,,,,,,Teaching Personnel,Senior High School,,Class Advisers,,,,,/personnel/jake-barcenas.jpg,Active
-10,Barroca,Eljoy,Potoy,P.,,Eljoy P. Barroca,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/eljoy-barroca.jpg,Active
-11,Batuigas,Angel,Cañete,C.,,Angel C. Batuigas,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/angel-batuigas.jpg,Active
-12,Bawiga,Mary Josephine,Labajo,L.,,Mary Josephine L. Bawiga,Teacher I,,,,,,Teaching Personnel,Junior High School,,,,,,,/personnel/mary-josephine-bawiga.jpg,Active
-13,Bohol,Endrie,Prajes,P.,,Endrie P. Bohol,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/endrie-bohol.jpg,Active
-14,Bongas,Maine,Legaspo,L.,,Maine L. Bongas,Teacher V,,,,,,Teaching Personnel,Senior High School,,Coordinators,,,,,/personnel/maine-bongas.jpg,Active
-15,Briones,Ruth,,,,Ruth Briones,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/ruth-briones.jpg,Active
+2,Abalo,Marissa,Gabasa,G.,,Marissa G. Abalo,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,MAPEH,Class Advisers,,,,,/personnel/marissa-abalo.jpg,Active
+3,Allosada,Joseph,Cardosa,C.,,Joseph C. Allosada,Teacher I,,,,,,Teaching Personnel,Junior High School,Math,,,,,,/personnel/joseph-allosada.jpg,Active
+4,Alsa,Sharon Gay,Bacallan,B.,,Sharon Gay B. Alsa,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,MAPEH,Class Advisers,,,,,/personnel/sharon-gay-alsa.jpg,Active
+5,Andrade,Lonier,Cecilio,C.,,Lonier C. Andrade,Teacher I,Class Advisers,,,,,Teaching Personnel,Senior High School,ICT/Progamming,Class Advisers,,,,,/personnel/lonier-andrade.jpg,Active
+6,Aparicio,Allan Raul,Reales,R.,,Allan Raul R. Aparicio,Teacher III,Class Advisers,,,,,Teaching Personnel,Senior High School,TLE,Class Advisers,,,,,/personnel/allan-raul-aparicio.jpg,Active
+7,Ayos,Niña Kristine,Alinsonorin,A.,,Niña Kristine A. Ayos,Administrative Officer II,,,,,,Administration,Administration,N/A,,,,,,/personnel/niña-kristine-ayos.jpg,Active
+8,Barangan,Glenn,Tabora,T.,,Glenn T. Barangan,Teacher VI,,,,,,Teaching Personnel,Junior High School,TLE,,,,,,/personnel/glenn-barangan.jpg,Active
+9,Barcenas,Jake,Tañeca,T.,,Jake T. Barcenas,Teacher I,Class Advisers,,,,,Teaching Personnel,Senior High School,EPP,Class Advisers,,,,,/personnel/jake-barcenas.jpg,Active
+10,Barroca,Eljoy,Potoy,P.,,Eljoy P. Barroca,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/eljoy-barroca.jpg,Active
+11,Batuigas,Angel,Cañete,C.,,Angel C. Batuigas,Teacher I,Class Advisers,BSP Coordinator,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/angel-batuigas.jpg,Active
+12,Bawiga,Mary Josephine,Labajo,L.,,Mary Josephine L. Bawiga,Teacher I,,,,,,Teaching Personnel,Junior High School,MAPEH,,,,,,/personnel/mary-josephine-bawiga.jpg,Active
+13,Bohol,Endrie,Prajes,P.,,Endrie P. Bohol,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,Math,Class Advisers,,,,,/personnel/endrie-bohol.jpg,Active
+14,Bongas,Maine,Legaspo,L.,,Maine L. Bongas,SHS-Teacher V,Senior High School Coordinator,,,,,Teaching Personnel,Senior High School,Math,Coordinators,,,,,/personnel/maine-bongas.jpg,Active
+15,Briones,Ruth,,,,Ruth Briones,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/ruth-briones.jpg,Active
 16,Broñola,Sharon,Gaabon,G.,,Sharon G. Broñola,Teacher I,,,,,,Teaching Personnel,Junior High School,,,,,,,/personnel/sharon-broñola.jpg,Active
-17,Cabalda,Joan,Abellana,A.,,Joan A. Cabalda,Administrative Assistant II,,,,,,Administration,Senior High School,,,,,,,/personnel/joan-cabalda.jpg,Active
-18,Cabunag,Gracelyn,Miñoza,M.,,Gracelyn M. Cabunag,Teacher I,,,,,,Teaching Personnel,Senior High School,,Coordinators,,,,,/personnel/gracelyn-cabunag.jpg,Active
-19,Cabanca,Hector,Relatores,R.,,Hector R. Cabanca,Master Teacher I,9th Grade Level Chairperson,,,,,Teaching Personnel,Instructional Leadership,,,,,,,/personnel/hector-cabanca.jpg,Active
-20,Caberte,Jeffrey,Abacajan,A.,,Jeffrey A. Caberte,Teacher III,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/jeffrey-caberte.jpg,Active
-21,Cabriana,Marilou,Lavisores,L.,,Marilou L. Cabriana,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/marilou-cabriana.jpg,Active
-22,Cabuenas,Jasmin,Bentic,B.,,Jasmin B. Cabuenas,Guidance Counselor I,,,,,,Administration,Administration,,Administrative Staff,,,,,/personnel/jasmin-cabuenas.jpg,Active
-23,Calunod,Elsa,Canoy,C.,,Elsa C. Calunod,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/elsa-calunod.jpg,Active
-24,Camero,Leslyn Rose,Labiaga,L.,,Leslyn Rose L. Camero,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/leslyn-rose-camero.jpg,Active
-25,Caparida,Dawn Camille,Labajo,L.,,Dawn Camille L. Caparida,Administrative Assistant II,,,,,,Administration,Junior High School,,Administrative Staff,,,,,/personnel/dawn-camille-caparida.jpg,Active
-26,Capa,Lourence,,,,Lourence Capa,Teacher III,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/lourence-capa.jpg,Active
-27,Cavite,Joan,Go,G.,,Joan G. Cavite,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/joan-cavite.jpg,Active
-28,Dagaraga,Joseph,Comcom,C.,Jr.,Joseph C. Dagaraga Jr.,Teacher I,,,,,,Teaching Personnel,Senior High School,,Class Advisers,,,,,/personnel/joseph-dagaraga.jpg,Active
-29,Delos Reyes,Carolyn,Lasquite,L.,,Carolyn L. Delos Reyes,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/carolyn-delos-reyes.jpg,Active
-30,Echavez,Lucille,Rosales,R.,,Lucille R. Echavez,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/lucille-echavez.jpg,Active
-31,Erediano,Benerando,Contorno,C.,,Benerando C. Erediano,Teacher I,,,,,,Teaching Personnel,Senior High School,,Coordinators,,,,,/personnel/benerando-erediano.jpg,Active
-32,Gastanes,Metchie Gay,Azucenas,A.,,Metchie Gay A. Gastanes,Teacher VI,,,,,,Teaching Personnel,Junior High School,,Grade Level Chairpersons,,,,,/personnel/metchie-gay-gastanes.jpg,Active
-33,Gerodias,Jasmin,Bacarisas,B.,,Jasmin B. Gerodias,Teacher I,,,,,,Teaching Personnel,Junior High School,,Coordinators,,,,,/personnel/jasmin-gerodias.jpg,Active
-34,Gerra,Jeralyn,Dulcero,D.,,Jeralyn D. Gerra,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/jeralyn-gerra.jpg,Active
-35,Goc-ong,Genesa,Dulcero,D.,,Genesa D. Goc-ong,Teacher II,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/genesa-goc-ong.jpg,Active
-36,Gomez,Janelou,Dondoyano,D.,,Janelou D. Gomez,Teacher II,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/janelou-gomez.jpg,Active
-37,Herbito,Junnelyn,Rosales,R.,,Junnelyn R. Herbito,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/junnelyn-herbito.jpg,Active
-38,Jao,Roxan Mae,Tenebro,T.,,Roxan Mae T. Jao,Teacher II,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/roxan-mae-jao.jpg,Active
-39,Laspiñas,Fernando,Hermosa,H.,,Fernando H. Laspiñas,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/fernando-laspiñas.jpg,Active
-40,Lim,Nerisa,Bungay,B.,,Nerisa B. Lim,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/nerisa-lim.jpg,Active
-41,Loreto,Carl,,,,Carl Loreto,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/carl-loreto.jpg,Active
-42,Mabanag,Lyka,Mier,M.,,Lyka M. Mabanag,Teacher I,,,,,,Teaching Personnel,Senior High School,,Coordinators,,,,,/personnel/lyka-mabanag.jpg,Active
-43,Mabunay,Richie Ryan,Cabalquinto,C.,,Richie Ryan C. Mabunay,SHS-Teacher III,School DRRM Coordinator,Faculty Public Information Officer,,,Website and Social Media Manager,Teaching Personnel,Senior High School,Electrical Installation and Maintenance,Coordinators,,,,,/personnel/richie-ryan-mabunay.jpg,Active
-44,Macanin,Maria Jeziel,Hernandez,H.,,Maria Jeziel H. Macanin,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/maria-jeziel-macanin.jpg,Active
-45,Maloloy-on,Jeralen,Lawas,L.,,Jeralen L. Maloloy-on,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/jeralen-maloloy-on.jpg,Active
-46,Misterio,Elbert,Lumapas,L.,,Elbert L. Misterio,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/elbert-misterio.jpg,Active
-47,Mortal,Joy,Enaya,E.,,Joy E. Mortal,Teacher II,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/joy-mortal.jpg,Active
-48,Medillo,Claire,B,B.,,Claire B. Medillo,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/claire-medillo.jpg,Active
-49,Olo,Gwendolyn,Fabrica,F.,,Gwendolyn F. Olo,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/gwendolyn-olo.jpg,Active
-50,Oro,Jay Neil,Barcelonia,B.,,Jay Neil B. Oro,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/jay-neil-oro.jpg,Active
-51,Orocay,Glendale,Regidor,R.,,Glendale R. Orocay,Teacher I,,,,,,Teaching Personnel,Senior High School,,Class Advisers,,,,,/personnel/glendale-orocay.jpg,Active
-52,Pintuan,Marissa,Juario,J.,,Marissa J. Pintuan,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/marissa-pintuan.jpg,Active
-53,Prajes,Ma. Lourdes,Bacus,B.,,Ma. Lourdes B. Prajes,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/ma.-lourdes-prajes.jpg,Active
-54,Primacio,Bret Kalvin,Sabañico,S.,,Bret Kalvin S. Primacio,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/bret-kalvin-primacio.jpg,Active
-55,Quiling,Jhea,Navarro,N.,,Jhea N. Quiling,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/jhea-quiling.jpg,Active
-56,Racaza,Joyce,Cabañero,C.,,Joyce C. Racaza,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/joyce-racaza.jpg,Active
-57,Retuya,Cromwell,Padilla,P.,,Cromwell P. Retuya,Teacher I,,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/cromwell-retuya.jpg,Active
-58,Reyes,Nancy,Labora,L.,,Nancy L. Reyes,Teacher I,,,,,,Teaching Personnel,Junior High School,,Grade Level Chairpersons,,,,,/personnel/nancy-reyes.jpg,Active
-59,Saavedra,Angelo,Pulido,P.,,Angelo P. Saavedra,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/angelo-saavedra.jpg,Active
-60,Sacaris,Brendel,Bastida,B.,,Brendel B. Sacaris,Teacher I,,,,,,Teaching Personnel,Junior High School,,Coordinators,,,,,/personnel/brendel-sacaris.jpg,Active
-61,Samontañez,Bella Arquine,Traje,T.,,Bella Arquine T. Samontañez,Teacher I,,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/bella-arquine-samontañez.jpg,Active
-62,Uy,Jevy Ann,Orbeta,O.,,Jevy Ann O. Uy,Teacher I,,,,,,Teaching Personnel,Senior High School,,Class Advisers,,,,,/personnel/jevy-ann-uy.jpg,Active
-63,Vergara,Grace,Hermosa,H.,,Grace H. Vergara,Teacher I,,,,,,Teaching Personnel,Junior High School,,Coordinators,,,,,/personnel/grace-vergara.jpg,Active
-64,Villavelez,Guillermo,Briones,B.,,Guillermo B. Villavelez,School Principal I,School Head,,,,,Administration,Administration,,School Head,,,,,/personnel/guillermo-villavelez.jpg,Active
-65,Villaver,Marilou,Agang,A.,,Marilou A. Villaver,Teacher I,,,,,,Teaching Personnel,Senior High School,,Subject Teachers,,,,,/personnel/marilou-villaver.jpg,Active
-66,Bacaltos,Markjil,Z,Z.,,Markjil Z. Bacaltos,Job Order Personnel,,,,,,Job Order/Support Personnel,Support Staff,,School Support Personnel,,,,,/personnel/markjil-bacaltos.jpg,Active
-67,Celocia,Diocel,B,B.,,Diocel B. Celocia,Job Order Personnel,,,,,,Job Order/Support Personnel,Support Staff,,School Support Personnel,,,,,/personnel/diocel-celocia.jpg,Active
-68,Lastname,Firstname,MiddleName,M.,,Firstname M. Lastname,Security Guard,,,,,,Security,Support Staff,,School Support Personnel,,,,,/personnel/firstname-lastname.jpg,Active
-69,Lastname,Firstname,MiddleName,M.,,Firstname M. Lastname,Security Guard,,,,,,Security,Support Staff,,School Support Personnel,,,,,/personnel/firstname-lastname.jpg,Active
+17,Cabalda,Joan,Abellana,A.,,Joan A. Cabalda,Administrative Assistant II,Senior High School In-Charge,,,,,Administration,Senior High School,N/A,,,,,,/personnel/joan-cabalda.jpg,Active
+18,Cabunag,Gracelyn,Miñoza,M.,,Gracelyn M. Cabunag,SHS-Teacher II,Health Aid Coordinator,,,,,Teaching Personnel,Senior High School,Filipino,Coordinators,,,,,/personnel/gracelyn-cabunag.jpg,Active
+19,Cabanca,Hector,Relatores,R.,,Hector R. Cabanca,Master Teacher I,9th Grade Level Chairperson,,,,,Teaching Personnel,Instructional Leadership,MAPEH,,,,,,/personnel/hector-cabanca.jpg,Active
+20,Caberte,Jeffrey,Abacajan,A.,,Jeffrey A. Caberte,Teacher III,Class Advisers,,,,,Teaching Personnel,Junior High School,MAPEH,Class Advisers,,,,,/personnel/jeffrey-caberte.jpg,Active
+21,Cabriana,Marilou,Lavisores,L.,,Marilou L. Cabriana,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/marilou-cabriana.jpg,Active
+22,Cabuenas,Jasmin,Bentic,B.,,Jasmin B. Cabuenas,Guidance Counselor I,Administrative Staff,,,,,Administration,Administration,N/A,Administrative Staff,,,,,/personnel/jasmin-cabuenas.jpg,Active
+23,Calunod,Elsa,Canoy,C.,,Elsa C. Calunod,Teacher I,Subject Teachers,,,,,Teaching Personnel,Junior High School,English,Subject Teachers,,,,,/personnel/elsa-calunod.jpg,Active
+24,Camero,Leslyn Rose,Labiaga,L.,,Leslyn Rose L. Camero,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,Filipino,Class Advisers,,,,,/personnel/leslyn-rose-camero.jpg,Active
+25,Caparida,Dawn Camille,Labajo,L.,,Dawn Camille L. Caparida,Administrative Assistant II,Junior High School In-Charge,,,,,Administration,Junior High School,N/A,Administrative Staff,,,,,/personnel/dawn-camille-caparida.jpg,Active
+26,Capa,Lourence,,,,Lourence Capa,Teacher III,Class Advisers,,,,,Teaching Personnel,Junior High School,Math,Class Advisers,,,,,/personnel/lourence-capa.jpg,Active
+27,Cavite,Joan,Go,G.,,Joan G. Cavite,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,Science,Class Advisers,,,,,/personnel/joan-cavite.jpg,Active
+28,Dagaraga,Joseph,Comcom,C.,Jr.,Joseph C. Dagaraga Jr.,SHS-Teacher I,Class Advisers,,,,,Teaching Personnel,Senior High School,Math,Class Advisers,,,,,/personnel/joseph-dagaraga.jpg,Active
+29,Delos Reyes,Carolyn,Lasquite,L.,,Carolyn L. Delos Reyes,Teacher I,Subject Teachers,,,,,Teaching Personnel,Junior High School,Araling Panlipunan,Subject Teachers,,,,,/personnel/carolyn-delos-reyes.jpg,Active
+30,Echavez,Lucille,Rosales,R.,,Lucille R. Echavez,Teacher III,Subject Teachers,,,,,Teaching Personnel,Junior High School,MAPEH,Subject Teachers,,,,,/personnel/lucille-echavez.jpg,Active
+31,Erediano,Benerando,Contorno,C.,,Benerando C. Erediano,SHS-Teacher I,TVL Coordinator,,,,,Teaching Personnel,Senior High School,Electronic Product Assembly and Servicing,Coordinators,,,,,/personnel/benerando-erediano.jpg,Active
+32,Gastanes,Metchie Gay,Azucenas,A.,,Metchie Gay A. Gastanes,Teacher VI,Grade Level Chairpersons,,,,,Teaching Personnel,Junior High School,Science,Grade Level Chairpersons,,,,,/personnel/metchie-gay-gastanes.jpg,Active
+33,Gerodias,Jasmin,Bacarisas,B.,,Jasmin B. Gerodias,Teacher I,Canteen Coordinator,,,,,Teaching Personnel,Junior High School,TLE,Coordinators,,,,,/personnel/jasmin-gerodias.jpg,Active
+34,Gerra,Jeralyn,Dulcero,D.,,Jeralyn D. Gerra,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,English,Class Advisers,,,,,/personnel/jeralyn-gerra.jpg,Active
+35,Goc-ong,Genesa,Dulcero,D.,,Genesa D. Goc-ong,Teacher II,Class Advisers,,,,,Teaching Personnel,Junior High School,Araling Panlipunan,Class Advisers,,,,,/personnel/genesa-goc-ong.jpg,Active
+36,Gomez,Janelou,Dondoyano,D.,,Janelou D. Gomez,Teacher II,Subject Teachers,,,,,Teaching Personnel,Junior High School,Filipino,Subject Teachers,,,,,/personnel/janelou-gomez.jpg,Active
+37,Herbito,Junnelyn,Rosales,R.,,Junnelyn R. Herbito,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,English,Class Advisers,,,,,/personnel/junnelyn-herbito.jpg,Active
+38,Jao,Roxan Mae,Tenebro,T.,,Roxan Mae T. Jao,Teacher II,Class Advisers,,,,,Teaching Personnel,Junior High School,English,Class Advisers,,,,,/personnel/roxan-mae-jao.jpg,Active
+39,Laspiñas,Fernando,Hermosa,H.,,Fernando H. Laspiñas,Teacher I,Subject Teachers,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/fernando-laspiñas.jpg,Active
+40,Lim,Nerisa,Bungay,B.,,Nerisa B. Lim,Teacher I,Subject Teachers,,,,,Teaching Personnel,Junior High School,Filipino,Subject Teachers,,,,,/personnel/nerisa-lim.jpg,Active
+41,Loreto,Carl,,,,Carl Loreto,Teacher I,Subject Teachers,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/carl-loreto.jpg,Active
+42,Mabanag,Lyka,Mier,M.,,Lyka M. Mabanag,SHS-Teacher I,GSP oordinator,,,,,Teaching Personnel,Senior High School,,Coordinators,,,,,/personnel/lyka-mabanag.jpg,Active
+43,Mabunay,Richie Ryan,Cabalquinto,C.,,Richie Ryan C. Mabunay,SHS-Teacher III,SDRRM Coordinator,Faculty Public Information Officer,,,Website and Social Media Manager,Teaching Personnel,Senior High School,Electrical Installation and Maintenance,Coordinators,,,,,/personnel/richie-ryan-mabunay.jpg,Active
+44,Macanin,Maria Jeziel,Hernandez,H.,,Maria Jeziel H. Macanin,Teacher III,Subject Teachers,,,,,Teaching Personnel,Junior High School,Araling Panlipunan,Subject Teachers,,,,,/personnel/maria-jeziel-macanin.jpg,Active
+45,Maloloy-on,Jeralen,Lawas,L.,,Jeralen L. Maloloy-on,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,Science,Class Advisers,,,,,/personnel/jeralen-maloloy-on.jpg,Active
+46,Misterio,Elbert,Lumapas,L.,,Elbert L. Misterio,Teacher I,Subject Teachers,,,,,Teaching Personnel,Junior High School,MAPEH,Subject Teachers,,,,,/personnel/elbert-misterio.jpg,Active
+47,Mortal,Joy,Enaya,E.,,Joy E. Mortal,Teacher II,Class Advisers,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/joy-mortal.jpg,Active
+48,Medillo,Claire,B,B.,,Claire B. Medillo,Teacher I,Subject Teachers,,,,,Teaching Personnel,Junior High School,,Subject Teachers,,,,,/personnel/claire-medillo.jpg,Active
+49,Olo,Gwendolyn,Fabrica,F.,,Gwendolyn F. Olo,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,Science,Class Advisers,,,,,/personnel/gwendolyn-olo.jpg,Active
+50,Oro,Jay Neil,Barcelonia,B.,,Jay Neil B. Oro,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/jay-neil-oro.jpg,Active
+51,Orocay,Glendale,Regidor,R.,,Glendale R. Orocay,Teacher I,Class Advisers,,,,,Teaching Personnel,Senior High School,Hairdressing/Beauty Care,Class Advisers,,,,,/personnel/glendale-orocay.jpg,Active
+52,Pintuan,Marissa,Juario,J.,,Marissa J. Pintuan,Teacher III,Class Advisers,,,,,Teaching Personnel,Junior High School,Math,Class Advisers,,,,,/personnel/marissa-pintuan.jpg,Active
+53,Prajes,Ma. Lourdes,Bacus,B.,,Ma. Lourdes B. Prajes,Teacher I,Subject Teachers,,,,,Teaching Personnel,Junior High School,EPP,Subject Teachers,,,,,/personnel/ma.-lourdes-prajes.jpg,Active
+54,Primacio,Bret Kalvin,Sabañico,S.,,Bret Kalvin S. Primacio,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/bret-kalvin-primacio.jpg,Active
+55,Quiling,Jhea,Navarro,N.,,Jhea N. Quiling,Teacher III,Subject Teachers,,,,,Teaching Personnel,Junior High School,English,Subject Teachers,,,,,/personnel/jhea-quiling.jpg,Active
+56,Racaza,Joyce,Cabañero,C.,,Joyce C. Racaza,Teacher I,Subject Teachers,,,,,Teaching Personnel,Junior High School,Araling Panlipunan,Subject Teachers,,,,,/personnel/joyce-racaza.jpg,Active
+57,Retuya,Cromwell,Padilla,P.,,Cromwell P. Retuya,Teacher I,Subject Teachers,,,,,Teaching Personnel,Junior High School,TLE,Subject Teachers,,,,,/personnel/cromwell-retuya.jpg,Active
+58,Reyes,Nancy,Labora,L.,,Nancy L. Reyes,Teacher I,Grade Level Chairpersons,,,,,Teaching Personnel,Junior High School,Math,Grade Level Chairpersons,,,,,/personnel/nancy-reyes.jpg,Active
+59,Saavedra,Angelo,Pulido,P.,,Angelo P. Saavedra,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/angelo-saavedra.jpg,Active
+60,Sacaris,Brendel,Bastida,B.,,Brendel B. Sacaris,Teacher VI,LIS/ICT/EBEIS Coordinator,,,,,Teaching Personnel,Junior High School,Computer Systems Servicing / Filipino,Coordinators,,,,,/personnel/brendel-sacaris.jpg,Active
+61,Samontañez,Bella Arquine,Traje,T.,,Bella Arquine T. Samontañez,Teacher I,Class Advisers,,,,,Teaching Personnel,Junior High School,,Class Advisers,,,,,/personnel/bella-arquine-samontañez.jpg,Active
+62,Uy,Jevy Ann,Orbeta,O.,,Jevy Ann O. Uy,SHS-Teacher II,Class Advisers,,,,,Teaching Personnel,Senior High School,English,Class Advisers,,,,,/personnel/jevy-ann-uy.jpg,Active
+63,Vergara,Grace,Hermosa,H.,,Grace H. Vergara,Teacher I,SSLG Coordinator,,,,,Teaching Personnel,Junior High School,Araling Panlipunan,Coordinators,,,,,/personnel/grace-vergara.jpg,Active
+64,Villavelez,Guillermo,Briones,B.,,Guillermo B. Villavelez,School Principal I,School Head,,,,,Administration,Administration,N/A,School Head,,,,,/personnel/guillermo-villavelez.jpg,Active
+65,Villaver,Marilou,Agang,A.,,Marilou A. Villaver,Teacher I,Subject Teachers,,,,,Teaching Personnel,Senior High School,Filipino,Subject Teachers,,,,,/personnel/marilou-villaver.jpg,Active
+66,Bacaltos,Markjil,Z,Z.,,Markjil Z. Bacaltos,Job Order Personnel,School Support Personnel,,,,,Job Order/Support Personnel,Support Staff,N/A,School Support Personnel,,,,,/personnel/markjil-bacaltos.jpg,Active
+67,Celocia,Diocel,B,B.,,Diocel B. Celocia,Job Order Personnel,School Support Personnel,,,,,Job Order/Support Personnel,Support Staff,N/A,School Support Personnel,,,,,/personnel/diocel-celocia.jpg,Active
+68,Cabs,Luie,B,B.,,Luie B. Cabs,Security Guard,School Support Personnel,,,,,Security,Support Staff,N/A,School Support Personnel,,,,,/personnel/luie-cabs.jpg,Active
+69,Mans,Luis,B,B.,,Luis B. Mans,Security Guard,School Support Personnel,,,,,Security,Support Staff,N/A,School Support Personnel,,,,,/personnel/luis-mans.jpg,Active
 70,,,,,,,,,,,,,,,,,,,,,,

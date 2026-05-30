@@ -360,11 +360,23 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
     const roles = inferRoles(record);
     const advisory = buildAdvisory(record);
 
-    const subjectTaught = uniqueList([
-      ...splitList(record.subjectArea),
+    const primarySubjectDepartment =
+  safeText(record.primarySubjectDepartment) || safeText(record.subjectArea);
+
+    const explicitSubjects = uniqueList([
+      ...splitList(record.subject1),
+      ...splitList(record.subject2),
+      ...splitList(record.subject3),
+      ...splitList(record.subject4),
+      ...splitList(record.subject5),
       ...splitList(record.subjectTaught),
       ...splitList(record.subjectsTaught),
     ]);
+
+    const subjectTaught =
+      explicitSubjects.length > 0
+        ? explicitSubjects
+        : uniqueList([...splitList(record.subjectArea)]);
 
     const coordinatorship = designation.filter((item) => {
       const text = item.toLowerCase();
@@ -407,6 +419,8 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
         safeText(record.department),
       roles,
       designation,
+      subjectArea: safeText(record.subjectArea),
+      primarySubjectDepartment, 
       subjectTaught,
       coordinatorship,
       gradeLevelTaught,

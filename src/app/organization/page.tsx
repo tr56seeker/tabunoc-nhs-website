@@ -531,8 +531,55 @@ function getTeacherPositionRank(position: string) {
   return rankIndex === -1 ? 999 : rankIndex + 1;
 }
 
+function getSubjectDepartment(person: Personnel) {
+  const subjectTaught = person.subjectTaught || [];
+
+  if (subjectTaught.length > 0) {
+    return subjectTaught[0];
+  }
+
+  if (person.department) {
+    return person.department;
+  }
+
+  return "Unassigned";
+}
+
+function getSubjectDepartmentRank(department: string) {
+  const normalizedDepartment = safeText(department).toLowerCase();
+
+  const departmentOrder = [
+    "english",
+    "filipino",
+    "mathematics",
+    "math",
+    "science",
+    "araling panlipunan",
+    "ap",
+    "mapeh",
+    "tle",
+    "tvl",
+    "electrical installation and maintenance",
+    "eim",
+    "computer systems servicing",
+    "css",
+    "electronic products assembly and servicing",
+    "epas",
+    "senior high school",
+    "junior high school",
+    "unassigned",
+  ];
+
+  const rankIndex = departmentOrder.findIndex((departmentName) =>
+    normalizedDepartment.includes(departmentName)
+  );
+
+  return rankIndex === -1 ? 999 : rankIndex + 1;
+}
+
 export default function OrganizationPage() {
   const [selectedGrade, setSelectedGrade] = useState("All");
+  const [selectedSubjectDepartment, setSelectedSubjectDepartment] = useState("All");
   const [selectedPerson, setSelectedPerson] = useState<Personnel | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<"All" | PersonnelRole>("All");
@@ -652,6 +699,27 @@ export default function OrganizationPage() {
       person.roles.includes("Subject Teacher")
     );
   }, [allPersonnel]);
+
+  const subjectDepartments = useMemo(() => {
+  return uniqueList(
+    subjectTeachers.map((person) => getSubjectDepartment(person))
+  ).sort((a, b) => {
+    const rankA = getSubjectDepartmentRank(a);
+    const rankB = getSubjectDepartmentRank(b);
+
+    if (rankA !== rankB) return rankA - rankB;
+
+    return a.localeCompare(b);
+  });
+}, [subjectTeachers]);
+
+const visibleSubjectDepartments = useMemo(() => {
+  if (selectedSubjectDepartment === "All") return subjectDepartments;
+
+  return subjectDepartments.filter(
+    (department) => department === selectedSubjectDepartment
+  );
+}, [selectedSubjectDepartment, subjectDepartments]);
 
   const programImplementers = useMemo(() => {
     return allPersonnel.filter((person) =>
@@ -1055,26 +1123,84 @@ export default function OrganizationPage() {
                 Teaching Personnel
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                Subject Teachers
+                Subject Teachers Directory
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Subject teachers support curriculum delivery, skills
-                development, and learner progress across learning areas and
-                specializations.
+                Select a subject department to view assigned subject teacher profiles.
               </p>
             </div>
 
             {subjectTeachers.length > 0 ? (
-              <div className="grid gap-5 lg:grid-cols-2">
-                {subjectTeachers.map((person) => (
-                  <PersonnelCard
-                    key={person.id}
-                    person={person}
-                    compact
-                    onClick={setSelectedPerson}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="mb-10 flex flex-wrap justify-center gap-3">
+                  {["All", ...subjectDepartments].map((department) => (
+                    <button
+                      key={department}
+                      onClick={() => setSelectedSubjectDepartment(department)}
+                      className={`rounded-full px-5 py-2 text-sm font-bold transition ${
+                        selectedSubjectDepartment === department
+                          ? "bg-[#0F4C5C] text-white"
+                          : "bg-[#F8FAFC] dark:bg-[#171614] text-slate-700 dark:text-stone-200 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                      }`}
+                    >
+                      {department}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="grid gap-8">
+                  {visibleSubjectDepartments.map((department) => {
+                    const teachers = subjectTeachers
+                      .filter(
+                        (person) => getSubjectDepartment(person) === department
+                      )
+                      .sort((a, b) => {
+                        const positionRankA = getTeacherPositionRank(a.position);
+                        const positionRankB = getTeacherPositionRank(b.position);
+
+                        if (positionRankA !== positionRankB) {
+                          return positionRankA - positionRankB;
+                        }
+
+                        return a.name.localeCompare(b.name);
+                      });
+
+                    return (
+                      <motion.div
+                        key={department}
+                        layout
+                        initial={{ opacity: 0, y: 24 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.45 }}
+                        className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-4 shadow-sm dark:shadow-black/20 md:p-6"
+                      >
+                        <div className="mb-6">
+                          <h3 className="text-3xl font-black text-slate-950 dark:text-white">
+                            {department}
+                          </h3>
+
+                          <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-stone-400">
+                            {teachers.length} teacher profile
+                            {teachers.length > 1 ? "s" : ""}
+                          </p>
+                        </div>
+
+                        <div className="grid gap-5 lg:grid-cols-2">
+                          {teachers.map((person) => (
+                            <PersonnelCard
+                              key={`${department}-${person.id}`}
+                              person={person}
+                              compact
+                              onClick={setSelectedPerson}
+                            />
+                          ))}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </>
             ) : (
               <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 text-center">
                 <p className="font-bold text-slate-600 dark:text-stone-300">

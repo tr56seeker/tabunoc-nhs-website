@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * FILE_ID: TABUNOC_ORGANIZATION_PAGE_CSV_ROSTER
+ * PATH: src/app/organization/page.tsx
+ * DATA_SOURCE: public/data/personnel.csv
+ * PURPOSE: School organization page using CSV-powered personnel roster.
+ */
+
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
@@ -360,23 +367,32 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
     const roles = inferRoles(record);
     const advisory = buildAdvisory(record);
 
-    const primarySubjectDepartment =
-  safeText(record.primarySubjectDepartment) || safeText(record.subjectArea);
-
     const explicitSubjects = uniqueList([
-      ...splitList(record.subject1),
-      ...splitList(record.subject2),
-      ...splitList(record.subject3),
-      ...splitList(record.subject4),
-      ...splitList(record.subject5),
-      ...splitList(record.subjectTaught),
-      ...splitList(record.subjectsTaught),
-    ]);
+  ...splitList(record.subject1),
+  ...splitList(record.subject2),
+  ...splitList(record.subject3),
+  ...splitList(record.subject4),
+  ...splitList(record.subject5),
+  ...splitList(record.subjectTaught),
+  ...splitList(record.subjectsTaught),
+]);
 
     const subjectTaught =
       explicitSubjects.length > 0
         ? explicitSubjects
         : uniqueList([...splitList(record.subjectArea)]);
+
+    const rawPrimarySubjectDepartment =
+      safeText(record.primarySubjectDepartment) ||
+      safeText(record.subjectArea) ||
+      safeText(record.subject1) ||
+      safeText(record.subjectTaught) ||
+      safeText(record.subjectsTaught) ||
+      subjectTaught[0] ||
+      "";
+
+    const primarySubjectDepartment =
+      normalizeSubjectDepartment(rawPrimarySubjectDepartment);
 
     const coordinatorship = designation.filter((item) => {
       const text = item.toLowerCase();
@@ -545,15 +561,79 @@ function getTeacherPositionRank(position: string) {
   return rankIndex === -1 ? 999 : rankIndex + 1;
 }
 
+function normalizeSubjectDepartment(value: string) {
+  const rawValue = safeText(value);
+
+  if (!rawValue) return "Unassigned";
+
+  const normalizedValue = rawValue.toLowerCase();
+
+  const subjectMap: Array<{ pattern: RegExp; label: string }> = [
+    { pattern: /\bmapeh\b/i, label: "MAPEH" },
+    { pattern: /\benglish\b/i, label: "English" },
+    { pattern: /\bfilipino\b/i, label: "Filipino" },
+    { pattern: /\bmathematics\b|\bmath\b/i, label: "Mathematics" },
+    { pattern: /\bscience\b/i, label: "Science" },
+    {
+      pattern: /\baraling\s+panlipunan\b|\bsocial\s+studies\b|\bap\b/i,
+      label: "Araling Panlipunan",
+    },
+    { pattern: /\btle\b/i, label: "TLE" },
+    {
+      pattern: /\beim\b|\belectrical\s+installation\b/i,
+      label: "EIM",
+    },
+    {
+      pattern: /\bcss\b|\bcomputer\s+systems\s+servicing\b/i,
+      label: "CSS",
+    },
+    {
+      pattern: /\bepas\b|\belectronic\s+products\b|\belectronics\b/i,
+      label: "EPAS",
+    },
+  ];
+
+  const matchedSubject = subjectMap.find((item) =>
+    item.pattern.test(normalizedValue)
+  );
+
+  if (matchedSubject) {
+    return matchedSubject.label;
+  }
+
+  const cleanedValue = rawValue
+    .replace(/\bgrade\s*(7|8|9|10|11|12)\b/gi, "")
+    .replace(/\bg(7|8|9|10|11|12)\b/gi, "")
+    .replace(/\b(7|8|9|10|11|12)\b/g, "")
+    .replace(/\s*(&|and|to|-|\/)\s*$/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  return cleanedValue || "Unassigned";
+}
+
 function getSubjectDepartment(person: Personnel) {
+  const extendedPerson = person as Personnel & {
+    primarySubjectDepartment?: string;
+    subjectArea?: string;
+  };
+
+  const directDepartment =
+    safeText(extendedPerson.primarySubjectDepartment) ||
+    safeText(extendedPerson.subjectArea);
+
+  if (directDepartment) {
+    return normalizeSubjectDepartment(directDepartment);
+  }
+
   const subjectTaught = person.subjectTaught || [];
 
   if (subjectTaught.length > 0) {
-    return subjectTaught[0];
+    return normalizeSubjectDepartment(subjectTaught[0]);
   }
 
   if (person.department) {
-    return person.department;
+    return normalizeSubjectDepartment(person.department);
   }
 
   return "Unassigned";

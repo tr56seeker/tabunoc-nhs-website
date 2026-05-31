@@ -18,6 +18,12 @@ import PersonnelModal from "@/components/PersonnelModal";
 
 import type { Personnel, PersonnelRole } from "@/data/organization";
 
+type SubjectDepartmentEntry = {
+  person: Personnel;
+  department: string;
+  isPrimaryDepartment: boolean;
+};
+
 const roleFilters: Array<"All" | PersonnelRole> = [
   "All",
   "Principal",
@@ -341,6 +347,56 @@ function buildAdvisory(record: Record<string, string>) {
   ];
 }
 
+function normalizeSubjectDepartment(value: string) {
+  const rawValue = safeText(value);
+
+  if (!rawValue) return "Unassigned";
+
+  const normalizedValue = rawValue.toLowerCase();
+
+  const subjectMap: Array<{ pattern: RegExp; label: string }> = [
+    { pattern: /\bmapeh\b/i, label: "MAPEH" },
+    { pattern: /\benglish\b/i, label: "English" },
+    { pattern: /\bfilipino\b/i, label: "Filipino" },
+    { pattern: /\bvalues?\s*education\b|\bve\b/i, label: "Values Education" },
+    {
+      pattern: /\bedukasyon\s+sa\s+pagpapakatao\b|\besp\b/i,
+      label: "Values Education",
+    },
+    { pattern: /\bmathematics\b|\bmath\b/i, label: "Mathematics" },
+    { pattern: /\bscience\b/i, label: "Science" },
+    {
+      pattern: /\baraling\s+panlipunan\b|\bsocial\s+studies\b|\bap\b/i,
+      label: "Araling Panlipunan",
+    },
+    { pattern: /\btle\b/i, label: "TLE" },
+    { pattern: /\beim\b|\belectrical\s+installation\b/i, label: "EIM" },
+    { pattern: /\bcss\b|\bcomputer\s+systems\s+servicing\b/i, label: "CSS" },
+    {
+      pattern: /\bepas\b|\belectronic\s+products\b|\belectronics\b/i,
+      label: "EPAS",
+    },
+  ];
+
+  const matchedSubject = subjectMap.find((item) =>
+    item.pattern.test(normalizedValue)
+  );
+
+  if (matchedSubject) {
+    return matchedSubject.label;
+  }
+
+  const cleanedValue = rawValue
+    .replace(/\bgrade\s*(7|8|9|10|11|12)\b/gi, "")
+    .replace(/\bg(7|8|9|10|11|12)\b/gi, "")
+    .replace(/\b(7|8|9|10|11|12)\b/g, "")
+    .replace(/\s*(&|and|to|-|\/)\s*$/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  return cleanedValue || "Unassigned";
+}
+
 function parsePersonnelCsv(csvText: string): Personnel[] {
   const lines = csvText
     .split(/\r?\n/)
@@ -368,14 +424,14 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
     const advisory = buildAdvisory(record);
 
     const explicitSubjects = uniqueList([
-  ...splitList(record.subject1),
-  ...splitList(record.subject2),
-  ...splitList(record.subject3),
-  ...splitList(record.subject4),
-  ...splitList(record.subject5),
-  ...splitList(record.subjectTaught),
-  ...splitList(record.subjectsTaught),
-]);
+      ...splitList(record.subject1),
+      ...splitList(record.subject2),
+      ...splitList(record.subject3),
+      ...splitList(record.subject4),
+      ...splitList(record.subject5),
+      ...splitList(record.subjectTaught),
+      ...splitList(record.subjectsTaught),
+    ]);
 
     const subjectTaught =
       explicitSubjects.length > 0
@@ -384,6 +440,7 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
 
     const rawPrimarySubjectDepartment =
       safeText(record.primarySubjectDepartment) ||
+      safeText(record.subjectDepartment1) ||
       safeText(record.subjectArea) ||
       safeText(record.subject1) ||
       safeText(record.subjectTaught) ||
@@ -393,6 +450,26 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
 
     const primarySubjectDepartment =
       normalizeSubjectDepartment(rawPrimarySubjectDepartment);
+
+    const subjectDepartment1 = safeText(record.subjectDepartment1)
+      ? normalizeSubjectDepartment(record.subjectDepartment1)
+      : primarySubjectDepartment;
+
+    const subjectDepartment2 = safeText(record.subjectDepartment2)
+      ? normalizeSubjectDepartment(record.subjectDepartment2)
+      : "";
+
+    const subjectDepartment3 = safeText(record.subjectDepartment3)
+      ? normalizeSubjectDepartment(record.subjectDepartment3)
+      : "";
+
+    const subjectDepartment4 = safeText(record.subjectDepartment4)
+      ? normalizeSubjectDepartment(record.subjectDepartment4)
+      : "";
+
+    const subjectDepartment5 = safeText(record.subjectDepartment5)
+      ? normalizeSubjectDepartment(record.subjectDepartment5)
+      : "";
 
     const coordinatorship = designation.filter((item) => {
       const text = item.toLowerCase();
@@ -436,7 +513,12 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       roles,
       designation,
       subjectArea: safeText(record.subjectArea),
-      primarySubjectDepartment, 
+      primarySubjectDepartment,
+      subjectDepartment1,
+      subjectDepartment2,
+      subjectDepartment3,
+      subjectDepartment4,
+      subjectDepartment5,
       subjectTaught,
       coordinatorship,
       gradeLevelTaught,
@@ -461,6 +543,16 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
 }
 
 function getSearchableText(person: Personnel) {
+  const extendedPerson = person as Personnel & {
+    primarySubjectDepartment?: string;
+    subjectArea?: string;
+    subjectDepartment1?: string;
+    subjectDepartment2?: string;
+    subjectDepartment3?: string;
+    subjectDepartment4?: string;
+    subjectDepartment5?: string;
+  };
+
   return [
     person.name,
     person.position,
@@ -468,6 +560,13 @@ function getSearchableText(person: Personnel) {
     person.department,
     person.bio,
     person.description,
+    extendedPerson.subjectArea,
+    extendedPerson.primarySubjectDepartment,
+    extendedPerson.subjectDepartment1,
+    extendedPerson.subjectDepartment2,
+    extendedPerson.subjectDepartment3,
+    extendedPerson.subjectDepartment4,
+    extendedPerson.subjectDepartment5,
     ...(person.roles || []),
     ...(person.designation || []),
     ...(person.subjectTaught || []),
@@ -561,82 +660,53 @@ function getTeacherPositionRank(position: string) {
   return rankIndex === -1 ? 999 : rankIndex + 1;
 }
 
-function normalizeSubjectDepartment(value: string) {
-  const rawValue = safeText(value);
-
-  if (!rawValue) return "Unassigned";
-
-  const normalizedValue = rawValue.toLowerCase();
-
-  const subjectMap: Array<{ pattern: RegExp; label: string }> = [
-    { pattern: /\bmapeh\b/i, label: "MAPEH" },
-    { pattern: /\benglish\b/i, label: "English" },
-    { pattern: /\bfilipino\b/i, label: "Filipino" },
-    { pattern: /\bmathematics\b|\bmath\b/i, label: "Mathematics" },
-    { pattern: /\bscience\b/i, label: "Science" },
-    {
-      pattern: /\baraling\s+panlipunan\b|\bsocial\s+studies\b|\bap\b/i,
-      label: "Araling Panlipunan",
-    },
-    { pattern: /\btle\b/i, label: "TLE" },
-    {
-      pattern: /\beim\b|\belectrical\s+installation\b/i,
-      label: "EIM",
-    },
-    {
-      pattern: /\bcss\b|\bcomputer\s+systems\s+servicing\b/i,
-      label: "CSS",
-    },
-    {
-      pattern: /\bepas\b|\belectronic\s+products\b|\belectronics\b/i,
-      label: "EPAS",
-    },
-  ];
-
-  const matchedSubject = subjectMap.find((item) =>
-    item.pattern.test(normalizedValue)
-  );
-
-  if (matchedSubject) {
-    return matchedSubject.label;
-  }
-
-  const cleanedValue = rawValue
-    .replace(/\bgrade\s*(7|8|9|10|11|12)\b/gi, "")
-    .replace(/\bg(7|8|9|10|11|12)\b/gi, "")
-    .replace(/\b(7|8|9|10|11|12)\b/g, "")
-    .replace(/\s*(&|and|to|-|\/)\s*$/gi, "")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-
-  return cleanedValue || "Unassigned";
-}
-
-function getSubjectDepartment(person: Personnel) {
+function getSubjectDepartmentsForPerson(person: Personnel) {
   const extendedPerson = person as Personnel & {
     primarySubjectDepartment?: string;
     subjectArea?: string;
+    subjectDepartment1?: string;
+    subjectDepartment2?: string;
+    subjectDepartment3?: string;
+    subjectDepartment4?: string;
+    subjectDepartment5?: string;
   };
 
-  const directDepartment =
+  const rawPrimaryDepartment =
     safeText(extendedPerson.primarySubjectDepartment) ||
-    safeText(extendedPerson.subjectArea);
+    safeText(extendedPerson.subjectDepartment1) ||
+    safeText(extendedPerson.subjectArea) ||
+    safeText((person.subjectTaught || [])[0]) ||
+    "Unassigned";
 
-  if (directDepartment) {
-    return normalizeSubjectDepartment(directDepartment);
-  }
+  const primaryDepartment = normalizeSubjectDepartment(rawPrimaryDepartment);
 
-  const subjectTaught = person.subjectTaught || [];
+  const additionalDepartments = uniqueList([
+    extendedPerson.subjectDepartment1,
+    extendedPerson.subjectDepartment2,
+    extendedPerson.subjectDepartment3,
+    extendedPerson.subjectDepartment4,
+    extendedPerson.subjectDepartment5,
+  ])
+    .map((department) => normalizeSubjectDepartment(department))
+    .filter(
+      (department) =>
+        department !== "Unassigned" && department !== primaryDepartment
+    );
 
-  if (subjectTaught.length > 0) {
-    return normalizeSubjectDepartment(subjectTaught[0]);
-  }
+  return uniqueList([primaryDepartment, ...additionalDepartments]);
+}
 
-  if (person.department) {
-    return normalizeSubjectDepartment(person.department);
-  }
+function getSubjectDepartmentEntriesForPerson(
+  person: Personnel
+): SubjectDepartmentEntry[] {
+  const departments = getSubjectDepartmentsForPerson(person);
+  const primaryDepartment = departments[0] || "Unassigned";
 
-  return "Unassigned";
+  return departments.map((department) => ({
+    person,
+    department,
+    isPrimaryDepartment: department === primaryDepartment,
+  }));
 }
 
 function getSubjectDepartmentRank(department: string) {
@@ -645,22 +715,15 @@ function getSubjectDepartmentRank(department: string) {
   const departmentOrder = [
     "english",
     "filipino",
+    "values education",
     "mathematics",
-    "math",
     "science",
     "araling panlipunan",
-    "ap",
     "mapeh",
     "tle",
-    "tvl",
-    "electrical installation and maintenance",
     "eim",
-    "computer systems servicing",
     "css",
-    "electronic products assembly and servicing",
     "epas",
-    "senior high school",
-    "junior high school",
     "unassigned",
   ];
 
@@ -673,7 +736,8 @@ function getSubjectDepartmentRank(department: string) {
 
 export default function OrganizationPage() {
   const [selectedGrade, setSelectedGrade] = useState("All");
-  const [selectedSubjectDepartment, setSelectedSubjectDepartment] = useState("All");
+  const [selectedSubjectDepartment, setSelectedSubjectDepartment] =
+    useState("All");
   const [selectedPerson, setSelectedPerson] = useState<Personnel | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<"All" | PersonnelRole>("All");
@@ -794,26 +858,32 @@ export default function OrganizationPage() {
     );
   }, [allPersonnel]);
 
+  const subjectDepartmentEntries = useMemo(() => {
+    return subjectTeachers.flatMap((person) =>
+      getSubjectDepartmentEntriesForPerson(person)
+    );
+  }, [subjectTeachers]);
+
   const subjectDepartments = useMemo(() => {
-  return uniqueList(
-    subjectTeachers.map((person) => getSubjectDepartment(person))
-  ).sort((a, b) => {
-    const rankA = getSubjectDepartmentRank(a);
-    const rankB = getSubjectDepartmentRank(b);
+    return uniqueList(
+      subjectDepartmentEntries.map((entry) => entry.department)
+    ).sort((a, b) => {
+      const rankA = getSubjectDepartmentRank(a);
+      const rankB = getSubjectDepartmentRank(b);
 
-    if (rankA !== rankB) return rankA - rankB;
+      if (rankA !== rankB) return rankA - rankB;
 
-    return a.localeCompare(b);
-  });
-}, [subjectTeachers]);
+      return a.localeCompare(b);
+    });
+  }, [subjectDepartmentEntries]);
 
-const visibleSubjectDepartments = useMemo(() => {
-  if (selectedSubjectDepartment === "All") return subjectDepartments;
+  const visibleSubjectDepartments = useMemo(() => {
+    if (selectedSubjectDepartment === "All") return subjectDepartments;
 
-  return subjectDepartments.filter(
-    (department) => department === selectedSubjectDepartment
-  );
-}, [selectedSubjectDepartment, subjectDepartments]);
+    return subjectDepartments.filter(
+      (department) => department === selectedSubjectDepartment
+    );
+  }, [selectedSubjectDepartment, subjectDepartments]);
 
   const programImplementers = useMemo(() => {
     return allPersonnel.filter((person) =>
@@ -1063,7 +1133,7 @@ const visibleSubjectDepartments = useMemo(() => {
             </div>
 
             {sortedProgramImplementers.length > 0 ? (
-              <div className="grid gap-5 lg:grid-cols-2">
+              <div className="grid gap-5 md:grid-cols-2">
                 {sortedProgramImplementers.map((person) => (
                   <PersonnelCard
                     key={person.id}
@@ -1193,7 +1263,7 @@ const visibleSubjectDepartments = useMemo(() => {
                       </p>
                     </div>
 
-                    <div className="grid gap-5 lg:grid-cols-2">
+                    <div className="grid gap-5 md:grid-cols-2">
                       {advisers.map((person) => (
                         <PersonnelCard
                           key={`${grade}-${person.id}`}
@@ -1220,7 +1290,8 @@ const visibleSubjectDepartments = useMemo(() => {
                 Subject Teachers Directory
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Select a subject department to view assigned subject teacher profiles.
+                Select a subject department to view assigned subject teacher
+                profiles.
               </p>
             </div>
 
@@ -1244,19 +1315,27 @@ const visibleSubjectDepartments = useMemo(() => {
 
                 <div className="grid gap-8">
                   {visibleSubjectDepartments.map((department) => {
-                    const teachers = subjectTeachers
-                      .filter(
-                        (person) => getSubjectDepartment(person) === department
-                      )
+                    const teacherEntries = subjectDepartmentEntries
+                      .filter((entry) => entry.department === department)
                       .sort((a, b) => {
-                        const positionRankA = getTeacherPositionRank(a.position);
-                        const positionRankB = getTeacherPositionRank(b.position);
+                        if (
+                          a.isPrimaryDepartment !== b.isPrimaryDepartment
+                        ) {
+                          return a.isPrimaryDepartment ? -1 : 1;
+                        }
+
+                        const positionRankA = getTeacherPositionRank(
+                          a.person.position
+                        );
+                        const positionRankB = getTeacherPositionRank(
+                          b.person.position
+                        );
 
                         if (positionRankA !== positionRankB) {
                           return positionRankA - positionRankB;
                         }
 
-                        return a.name.localeCompare(b.name);
+                        return a.person.name.localeCompare(b.person.name);
                       });
 
                     return (
@@ -1275,16 +1354,20 @@ const visibleSubjectDepartments = useMemo(() => {
                           </h3>
 
                           <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-stone-400">
-                            {teachers.length} teacher profile
-                            {teachers.length > 1 ? "s" : ""}
+                            {teacherEntries.length} teacher profile
+                            {teacherEntries.length > 1 ? "s" : ""}
                           </p>
                         </div>
 
-                        <div className="grid gap-5 lg:grid-cols-2">
-                          {teachers.map((person) => (
+                        <div className="grid gap-5 md:grid-cols-2">
+                          {teacherEntries.map((entry) => (
                             <PersonnelCard
-                              key={`${department}-${person.id}`}
-                              person={person}
+                              key={`${department}-${entry.person.id}-${
+                                entry.isPrimaryDepartment
+                                  ? "primary"
+                                  : "additional"
+                              }`}
+                              person={entry.person}
                               compact
                               onClick={setSelectedPerson}
                             />

@@ -1,5 +1,15 @@
 "use client";
 
+/**
+ * FILE_ID: TABUNOC_NAVBAR_COMPONENT
+ * PATH: src/components/Navbar.tsx
+ * PURPOSE: Main responsive navigation bar for Tabunoc National High School website.
+ * NOTES:
+ * - Controls desktop/tablet navbar spacing.
+ * - Controls dropdown menus.
+ * - Controls mobile menu behavior.
+ */
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -237,11 +247,11 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
 
   return (
     <header className="fixed left-0 top-0 z-[999] w-full border-b border-white/10 bg-[#2f3935]/90 text-white shadow-sm backdrop-blur-xl">
-      <nav className="relative mx-auto flex h-20 w-full items-center px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]">
+      <nav className="relative mx-auto flex h-20 w-full items-center px-5 md:px-8 xl:px-[90px] 2xl:px-[170px]">
         <Link
           href="/"
           aria-label="Tabunoc National High School Homepage"
-          className={`absolute left-6 top-1/2 flex -translate-y-1/2 items-center gap-3 transition-all duration-500 md:left-10 xl:left-[120px] 2xl:left-[190px] ${
+          className={`absolute left-5 top-1/2 flex -translate-y-1/2 items-center gap-3 transition-all duration-500 md:left-8 xl:left-[90px] 2xl:left-[170px] ${
             showBrand
               ? "pointer-events-auto translate-x-0 opacity-100"
               : "pointer-events-none -translate-x-5 opacity-0"
@@ -251,7 +261,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
             <img
               src={depedLogo}
               alt="Department of Education logo"
-              className="h-10 w-auto object-contain"
+              className="h-9 w-auto object-contain 2xl:h-10"
             />
 
             <div className="h-9 w-px bg-white/25" />
@@ -259,25 +269,25 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
             <img
               src={schoolLogo}
               alt="Tabunoc National High School logo"
-              className="h-11 w-11 rounded-full object-contain"
+              className="h-10 w-10 rounded-full object-contain 2xl:h-11 2xl:w-11"
             />
           </div>
 
-          <div className="hidden leading-tight sm:block">
-            <p className="text-lg font-black tracking-tight">
+          <div className="hidden max-w-[250px] leading-tight sm:block xl:max-w-[300px]">
+            <p className="truncate text-base font-black tracking-tight 2xl:text-lg">
               Tabunoc National High School
             </p>
-            <p className="text-xs font-bold text-white/75">
+            <p className="truncate text-xs font-bold text-white/75">
               Division of Talisay City, Cebu
             </p>
           </div>
         </Link>
 
         <div
-          className={`absolute top-1/2 hidden -translate-y-1/2 items-center gap-2 transition-all duration-500 ease-out xl:flex ${
+          className={`absolute top-1/2 hidden -translate-y-1/2 items-center gap-1 transition-all duration-500 ease-out xl:flex 2xl:gap-2 ${
             centerMenu
               ? "left-1/2 -translate-x-1/2"
-              : "right-6 translate-x-0 md:right-10 xl:right-[120px] 2xl:right-[190px]"
+              : "right-5 translate-x-0 xl:right-[90px] 2xl:right-[170px]"
           }`}
         >
           {navItems.map((item) => {
@@ -295,7 +305,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
               >
                 <Link
                   href={item.href}
-                  className={`inline-flex items-center gap-2 rounded-xl px-6 py-3 text-sm font-black transition-all duration-200 ${
+                  className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-3 text-sm font-black transition-all duration-200 2xl:gap-2 2xl:px-6 ${
                     highlighted
                       ? "bg-[#ffdf20] text-[#071E29]"
                       : "text-white/90 hover:bg-[#ffdf20] hover:text-[#071E29]"
@@ -327,7 +337,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
 
           <Link
             href="/contact"
-            className="ml-3 rounded-xl bg-[#0F4C5C] px-7 py-3 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#146577]"
+            className="ml-1 rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#146577] 2xl:ml-3 2xl:px-7"
           >
             Contact
           </Link>

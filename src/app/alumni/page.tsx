@@ -1,242 +1,274 @@
 "use client";
 
+/**
+ * FILE_ID: TABUNOC_ALUMNI_PAGE
+ * PATH: src/app/alumni/page.tsx
+ * PURPOSE: Clean alumni and community engagement page for Tabunoc National High School.
+ */
+
+import Link from "next/link";
 import { motion } from "framer-motion";
+
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
 
-const schoolLogo =
-  "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
+const pagePadding = "px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]";
 
-const depedLogo =
-  "https://depedph.com/wp-content/uploads/2024/01/deped-logo-philippines-1536x783.png";
+const facebookGroupUrl =
+  "https://web.facebook.com/groups/TabunokNatlHSAlumniAndStudentsCommunity";
 
-const facebookGroupMembers = 1250;
+const alumniPageUrl = "https://web.facebook.com/tabunocnatlhsAlumni/";
+const schoolFacebookUrl = "https://web.facebook.com/tabunocnatlhs";
 
-const purposeCards = [
+const engagementCards = [
   {
     title: "Reconnect",
     description:
-      "Provide a welcoming space for graduates, former learners, and current students to reconnect with the Tabunoc NHS community.",
+      "Reconnect with fellow graduates, former classmates, teachers, and the wider Tabunoc NHS community.",
   },
   {
-    title: "Recognize",
+    title: "Celebrate",
     description:
-      "Celebrate alumni achievements, milestones, stories, and contributions that inspire learners and stakeholders.",
+      "Share milestones, achievements, memories, and stories that promote school pride and positive community identity.",
   },
   {
     title: "Support",
     description:
-      "Encourage alumni participation in school programs, mentoring, career talks, Brigada Eskwela, and stakeholder initiatives.",
+      "Coordinate alumni support for school programs, learner assistance, Brigada Eskwela, mentoring, and stakeholder initiatives.",
   },
 ];
 
-const communityLinks = [
+const officialLinks = [
   {
-    label: "Join the Network",
+    label: "Join the Community",
     title: "Students and Alumni Facebook Group",
     description:
-      "Request to join the official community space for students and alumni.",
-    href: "https://web.facebook.com/groups/TabunokNatlHSAlumniAndStudentsCommunity",
-    isPrimary: true,
+      "A community space for graduates, former learners, and current learners of Tabunoc NHS.",
+    href: facebookGroupUrl,
+    primary: true,
   },
   {
-    label: "Like and Support",
+    label: "Follow Alumni Updates",
     title: "Alumni Facebook Page",
     description:
-      "Follow alumni highlights, community updates, and recognition posts.",
-    href: "https://web.facebook.com/tabunocnatlhsAlumni/",
-    isPrimary: false,
+      "A page for alumni highlights, recognition posts, and community-related updates.",
+    href: alumniPageUrl,
+    primary: false,
   },
   {
-    label: "Follow School News",
+    label: "Follow Official School News",
     title: "Tabunoc NHS Facebook Page",
     description:
-      "Stay updated on official school announcements, events, and programs.",
-    href: "https://web.facebook.com/tabunocnatlhs",
-    isPrimary: false,
+      "The official school page for announcements, advisories, activities, and public information.",
+    href: schoolFacebookUrl,
+    primary: false,
   },
 ];
 
-const involvementSteps = [
+const supportPathways = [
   {
-    step: "01",
-    title: "Reconnect",
+    title: "Career Talks and Mentoring",
     description:
-      "Join the official community, update your batch information, and reconnect with fellow graduates and learners.",
+      "Alumni may share career experiences, workplace insights, or learning pathway guidance for learners.",
   },
   {
-    step: "02",
-    title: "Collaborate",
+    title: "Brigada Eskwela and School Support",
     description:
-      "Participate in school activities, career talks, learning support, and stakeholder engagement initiatives.",
+      "Alumni may coordinate volunteer support, donations, or services through official school channels.",
   },
   {
-    step: "03",
-    title: "Contribute",
+    title: "Learner Assistance",
     description:
-      "Support learners through mentoring, resource sharing, volunteerism, and school improvement efforts.",
+      "Support may include school-approved initiatives for learner welfare, recognition, or learning resources.",
   },
   {
-    step: "04",
-    title: "Celebrate",
+    title: "Community Partnership",
     description:
-      "Share alumni stories, achievements, memories, and milestones that strengthen school pride.",
+      "Alumni groups may coordinate partnerships that align with school priorities and DepEd guidelines.",
   },
 ];
 
 const reminders = [
   "Alumni participation is voluntary and should remain respectful, inclusive, and non-political.",
-  "Personal information, photos, and alumni stories should only be posted with proper consent.",
-  "For donations, partnerships, or school support, coordinate through official school channels.",
+  "Photos, stories, achievements, and personal information should only be shared with proper consent.",
+  "Donations, partnerships, and school support must be coordinated through official school channels.",
   "Avoid posting sensitive learner, personnel, or private school records in public comment sections.",
 ];
+
+function ArrowIcon() {
+  return (
+    <svg
+      className="h-4 w-4"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5 12h14m-6-6 6 6-6 6"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg
+      className="mt-0.5 h-5 w-5 flex-none text-[#0F4C5C]"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M20 6 9 17l-5-5"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function SectionHeading({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string;
+  title: string;
+  description?: string;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.5 }}
+      className="mx-auto mb-10 max-w-3xl text-center"
+    >
+      <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+        {eyebrow}
+      </p>
+
+      <h2 className="mt-3 text-3xl font-black tracking-tight text-[#071E29] sm:text-4xl md:text-5xl">
+        {title}
+      </h2>
+
+      {description && (
+        <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+          {description}
+        </p>
+      )}
+    </motion.div>
+  );
+}
 
 export default function AlumniPage() {
   return (
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
+      <main className="min-h-screen bg-white text-slate-950">
         {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 pb-20 pt-36">
-          <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 pb-20 pt-36">
+          <div className="absolute left-10 top-28 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
-          <div className="relative mx-auto max-w-7xl text-center">
+          <div className={`relative mx-auto w-full text-center ${pagePadding}`}>
+            <BrandHeader />
+
             <motion.p
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
+              transition={{ duration: 0.6 }}
+              className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]"
             >
-              Tabunoc NHS Community
+              Alumni Community
             </motion.p>
 
             <motion.h1
-              initial={{ opacity: 0, y: 32 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
+              transition={{ duration: 0.7, delay: 0.1 }}
+              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-[#071E29] sm:text-5xl lg:text-6xl"
             >
-              Students and Alumni Community
+              Tabunoc NHS Alumni and Community
             </motion.h1>
 
             <motion.p
-              initial={{ opacity: 0, y: 32 }}
+              initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200"
+              transition={{ duration: 0.7, delay: 0.2 }}
+              className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-700"
             >
-              A community space for Tabunoc National High School learners,
-              graduates, and alumni to reconnect, celebrate achievements,
-              support school programs, and strengthen lifelong school pride.
+              A space for graduates, former learners, and partners to
+              reconnect, celebrate milestones, and support meaningful
+              school-community initiatives.
             </motion.p>
 
             <motion.div
-              initial={{ opacity: 0, y: 32 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"
             >
               <a
-                href="https://web.facebook.com/groups/TabunokNatlHSAlumniAndStudentsCommunity"
+                href={facebookGroupUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-xl bg-yellow-300 px-8 py-3 font-black text-slate-950 shadow-lg shadow-yellow-300/30 dark:shadow-black/20 transition hover:-translate-y-1 hover:bg-yellow-200"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-black text-white transition duration-300 hover:-translate-y-1 hover:bg-[#146577]"
               >
-                Join the Alumni Community
+                Join the Community
+                <ArrowIcon />
               </a>
 
               <a
-                href="#overview"
-                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-8 py-3 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                href="#support"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#ffdf20] px-5 py-3 text-sm font-black text-[#071E29] transition duration-300 hover:-translate-y-1 hover:bg-yellow-300"
               >
-                Learn More
+                Ways to Support
+                <ArrowIcon />
               </a>
+
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0F4C5C]/20 bg-white px-5 py-3 text-sm font-black text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
+              >
+                Contact the School
+              </Link>
             </motion.div>
           </div>
         </section>
 
-        {/* OVERVIEW */}
-        <section id="overview" className="bg-white dark:bg-[#0a0908] px-6 py-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
-              <motion.div
-                initial={{ opacity: 0, x: -32 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7 }}
-              >
-                <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                  Alumni and Student Engagement
-                </p>
-                <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
-                  Building connection, legacy, and support for the Tabunoc NHS
-                  community.
-                </h2>
-                <p className="mt-5 max-w-3xl leading-7 text-slate-600 dark:text-stone-300">
-                  The Alumni page serves as an organized space for community
-                  engagement. It connects learners, graduates, and stakeholders
-                  through recognition, school support, mentoring, and meaningful
-                  participation.
-                </p>
-              </motion.div>
+        {/* PURPOSE */}
+        <section className="bg-white py-20">
+          <div className={`mx-auto w-full ${pagePadding}`}>
+            <SectionHeading
+              eyebrow="Purpose"
+              title="A respectful and organized alumni connection"
+              description="The Alumni page helps keep school-community engagement clear, official, and aligned with the values of a public school."
+            />
 
-              <motion.div
-                initial={{ opacity: 0, x: 32 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7 }}
-                className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20"
-              >
-                <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                  Community Snapshot
-                </p>
-
-                <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                  <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
-                    <p className="text-sm font-bold text-slate-500 dark:text-stone-400">
-                      Facebook Group Members
-                    </p>
-                    <p className="mt-2 text-3xl font-black text-[#0F4C5C] dark:text-yellow-300">
-                      {facebookGroupMembers.toLocaleString()}+
-                    </p>
-                    <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-stone-400">
-                      Updated when join requests are approved
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20">
-                    <p className="text-sm font-bold text-slate-500 dark:text-stone-400">
-                      Community Focus
-                    </p>
-                    <p className="mt-2 text-3xl font-black text-[#0F4C5C] dark:text-yellow-300">
-                      4
-                    </p>
-                    <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-stone-400">
-                      Reconnect, Recognize, Support, Celebrate
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            <div className="mt-14 grid gap-6 md:grid-cols-3">
-              {purposeCards.map((item, index) => (
+            <div className="grid gap-5 md:grid-cols-3">
+              {engagementCards.map((card, index) => (
                 <motion.article
-                  key={item.title}
+                  key={card.title}
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.08 }}
-                  className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01]"
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5, delay: index * 0.06 }}
+                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg"
                 >
-                  <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                    {item.title}
-                  </p>
-                  <p className="mt-4 leading-7 text-slate-600 dark:text-stone-300">
-                    {item.description}
+                  <h3 className="text-xl font-black text-[#071E29]">
+                    {card.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    {card.description}
                   </p>
                 </motion.article>
               ))}
@@ -244,24 +276,17 @@ export default function AlumniPage() {
           </div>
         </section>
 
-        {/* COMMUNITY LINKS */}
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Official Community Links
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
-                Connect through verified channels.
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Use these official links to join the community, follow alumni
-                highlights, and stay updated with school announcements.
-              </p>
-            </div>
+        {/* OFFICIAL LINKS */}
+        <section className="bg-[#F8FAFC] py-20">
+          <div className={`mx-auto w-full ${pagePadding}`}>
+            <SectionHeading
+              eyebrow="Official Links"
+              title="Connect through verified channels"
+              description="Use these official links for community engagement, alumni updates, and school announcements."
+            />
 
-            <div className="grid gap-6 md:grid-cols-3">
-              {communityLinks.map((link, index) => (
+            <div className="grid gap-5 md:grid-cols-3">
+              {officialLinks.map((link, index) => (
                 <motion.a
                   key={link.title}
                   href={link.href}
@@ -269,22 +294,27 @@ export default function AlumniPage() {
                   rel="noopener noreferrer"
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.08 }}
-                  className={`rounded-2xl border p-6 text-left shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01] ${
-                    link.isPrimary
-                      ? "border-yellow-300 bg-yellow-50 dark:bg-[#171614]"
-                      : "border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614]"
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5, delay: index * 0.06 }}
+                  className={`group rounded-2xl border p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg ${
+                    link.primary
+                      ? "border-yellow-300 bg-yellow-50"
+                      : "border-slate-200 bg-white"
                   }`}
                 >
-                  <p className="text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
                     {link.label}
                   </p>
-                  <h3 className="mt-3 text-xl font-black text-slate-950 dark:text-white">
+                  <h3 className="mt-3 text-xl font-black text-[#071E29]">
                     {link.title}
                   </h3>
-                  <p className="mt-3 leading-7 text-slate-600 dark:text-stone-300">
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
                     {link.description}
+                  </p>
+
+                  <p className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#0F4C5C]">
+                    Open Link
+                    <ArrowIcon />
                   </p>
                 </motion.a>
               ))}
@@ -292,45 +322,39 @@ export default function AlumniPage() {
           </div>
         </section>
 
-        {/* GET INVOLVED */}
-        <section id="connect" className="bg-white dark:bg-[#0a0908] px-6 py-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Get Involved
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
-                A clear alumni journey.
-              </h2>
-              <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600 dark:text-stone-300">
-                Alumni engagement is best when it is organized, respectful, and
-                aligned with the school&apos;s mission. These steps make it
-                easier to participate in community, support, and learning
-                initiatives.
-              </p>
-            </div>
+        {/* SUPPORT PATHWAYS */}
+        <section id="support" className="bg-white py-20">
+          <div className={`mx-auto w-full ${pagePadding}`}>
+            <SectionHeading
+              eyebrow="Ways to Support"
+              title="Alumni support should be coordinated and purposeful"
+              description="Support initiatives are best implemented when aligned with school priorities and coordinated through authorized school channels."
+            />
 
-            <div className="grid gap-6 lg:grid-cols-2">
-              {involvementSteps.map((item, index) => (
+            <div className="grid gap-5 md:grid-cols-2">
+              {supportPathways.map((item, index) => (
                 <motion.article
-                  key={item.step}
+                  key={item.title}
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.06 }}
-                  className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20"
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0F4C5C] text-lg font-black text-white">
-                      {item.step}
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-[#0F4C5C] text-sm font-black text-white">
+                      {index + 1}
                     </div>
-                    <h3 className="text-2xl font-black text-slate-950 dark:text-white">
-                      {item.title}
-                    </h3>
+
+                    <div>
+                      <h3 className="text-xl font-black text-[#071E29]">
+                        {item.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {item.description}
+                      </p>
+                    </div>
                   </div>
-                  <p className="mt-5 leading-7 text-slate-600 dark:text-stone-300">
-                    {item.description}
-                  </p>
                 </motion.article>
               ))}
             </div>
@@ -338,85 +362,91 @@ export default function AlumniPage() {
         </section>
 
         {/* REMINDERS */}
-        <section className="bg-[#0F4C5C] px-6 py-20 text-white">
-          <div className="mx-auto max-w-7xl">
-            <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-              <motion.div
-                initial={{ opacity: 0, x: -32 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7 }}
-              >
-                <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
-                  Responsible Community Engagement
-                </p>
-                <h2 className="mt-3 text-3xl font-black leading-tight md:text-5xl">
-                  Support the school with care, respect, and proper
-                  coordination.
-                </h2>
-                <p className="mt-5 max-w-3xl leading-7 text-teal-50">
-                  The alumni community is encouraged to promote positive
-                  engagement, protect privacy, and coordinate school-related
-                  support through official channels.
-                </p>
-              </motion.div>
+        <section className="bg-[#0F4C5C] py-20 text-white">
+          <div
+            className={`mx-auto grid w-full gap-8 lg:grid-cols-[0.9fr_1.1fr] ${pagePadding}`}
+          >
+            <motion.div
+              initial={{ opacity: 0, x: -24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6 }}
+            >
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-yellow-300">
+                Community Reminders
+              </p>
+              <h2 className="mt-3 text-3xl font-black tracking-tight md:text-5xl">
+                Protect privacy. Coordinate properly. Keep engagement positive.
+              </h2>
+              <p className="mt-5 leading-7 text-teal-50">
+                Alumni participation is welcome, but school-related support,
+                posts, and partnerships must follow proper coordination, data
+                privacy, and child-protection standards.
+              </p>
+            </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, x: 32 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7 }}
-                className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
-              >
-                <h3 className="text-2xl font-black">Community Reminders</h3>
-
-                <ul className="mt-6 space-y-4">
-                  {reminders.map((item) => (
-                    <li key={item} className="flex gap-3 leading-7 text-teal-50">
-                      <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yellow-300 text-sm font-black text-slate-950">
-                        !
-                      </span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, x: 24 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6 }}
+              className="rounded-3xl border border-white/10 bg-white p-6 text-slate-950 shadow-sm md:p-8"
+            >
+              <div className="grid gap-4">
+                {reminders.map((reminder) => (
+                  <div key={reminder} className="flex gap-3">
+                    <CheckIcon />
+                    <p className="text-sm leading-6 text-slate-700">
+                      {reminder}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </section>
 
         {/* CTA */}
-        <section className="bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 py-20">
-          <div className="mx-auto max-w-5xl rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center shadow-sm dark:shadow-black/20">
-            <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-              Alumni Support
-            </p>
-            <h2 className="mt-3 text-3xl font-black leading-tight">
-              Start your legacy pathway with Tabunoc NHS.
-            </h2>
-            <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-              Whether you are a graduate, teacher, learner, or partner, the
-              community provides a structured way to stay involved, share
-              knowledge, and support the school&apos;s future.
-            </p>
+        <section className="bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 py-20">
+          <div className={`mx-auto w-full ${pagePadding}`}>
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.55 }}
+              className="mx-auto max-w-5xl rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm md:p-10"
+            >
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+                Alumni and Stakeholder Support
+              </p>
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-[#071E29] md:text-5xl">
+                Be part of a positive school-community legacy.
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
+                Whether you are a graduate, former learner, partner, or
+                supporter, your involvement can help strengthen learner support
+                and school-community engagement.
+              </p>
 
-            <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-              <a
-                href="https://web.facebook.com/groups/TabunokNatlHSAlumniAndStudentsCommunity"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-xl bg-yellow-300 px-6 py-3 font-black text-slate-950 transition hover:-translate-y-1 hover:bg-yellow-200"
-              >
-                Join the Facebook Group
-              </a>
+              <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+                <a
+                  href={facebookGroupUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-black text-white transition duration-300 hover:-translate-y-1 hover:bg-[#146577]"
+                >
+                  Join the Facebook Group
+                  <ArrowIcon />
+                </a>
 
-              <a
-                href="/#contact"
-                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-6 py-3 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
-              >
-                Contact the School
-              </a>
-            </div>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0F4C5C]/20 bg-white px-5 py-3 text-sm font-black text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
+                >
+                  Coordinate with the School
+                </Link>
+              </div>
+            </motion.div>
           </div>
         </section>
 
@@ -425,6 +455,3 @@ export default function AlumniPage() {
     </>
   );
 }
-
-
-

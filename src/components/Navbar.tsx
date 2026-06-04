@@ -111,6 +111,11 @@ const navItems: NavItem[] = [
         href: "/enrollment",
         description: "Enrollment reminders and school-year information",
       },
+      {
+        label: "Frequently Asked Questions",
+        href: "/faq",
+        description: "Common questions about enrollment, services, and school information",
+      },
     ],
   },
 ];

@@ -491,6 +491,25 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       sectionsHandled,
       advisory,
 
+      subjectDepartment: safeText(record.subjectDepartment),
+      subjectDepartment1: safeText(record.subjectDepartment1),
+      subjectDepartment2: safeText(record.subjectDepartment2),
+      subjectDepartment3: safeText(record.subjectDepartment3),
+      subjectDepartment4: safeText(record.subjectDepartment4),
+      subjectDepartment5: safeText(record.subjectDepartment5),
+
+      email: safeText(record.email),
+      consultationSchedule: safeText(record.consultationSchedule),
+      contactNote: safeText(record.contactNote),
+
+      facebook: safeText(record.facebook),
+      facebookUrl: safeText(record.facebookUrl),
+      messenger: safeText(record.messenger),
+      linkedin: safeText(record.linkedin),
+      linkedinUrl: safeText(record.linkedinUrl),
+      website: safeText(record.website),
+      portfolioUrl: safeText(record.portfolioUrl),
+
       photoUrl,
       image: photoUrl,
       avatar: photoUrl,

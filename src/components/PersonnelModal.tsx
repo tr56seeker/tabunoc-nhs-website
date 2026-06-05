@@ -1,16 +1,17 @@
 "use client";
 
 /**
- * FILE_ID: TABUNOC_PERSONNEL_MODAL_SPLIT_CARD_FIXED_SIZE
+ * FILE_ID: TABUNOC_PERSONNEL_MODAL_PUBLIC_PROFILE
  * PATH: src/components/PersonnelModal.tsx
- * PURPOSE: Fixed-size split-card personnel modal using CSV/Excel roster data.
+ * PURPOSE: Public-facing personnel profile modal using CSV/Excel roster data.
  * DESIGN:
- * - Fixed modal size across personnel profiles
- * - Left photo keeps 3:4 ratio and stays steady
- * - Right white information panel uses real draggable scrollbar
- * - Scrollbar rail uses #eff3f7
- * - Sharp 90-degree modal edges
- * - Red edge close button
+ * - Fixed-size modal
+ * - Left profile identity panel
+ * - 3:4 fixed photo ratio
+ * - Right scrollable information panel
+ * - No redundant information
+ * - Native draggable scrollbar
+ * - Contact and social media sections
  * - Hides N/A/blank fields
  * - Retains teachingPhilosophy from Excel/CSV source
  */
@@ -32,9 +33,28 @@ type ExtendedPersonnel = Personnel & {
   imageUrl?: string;
   profileImage?: string;
   profilePhoto?: string;
+
+  subjectArea?: string;
+  primarySubjectDepartment?: string;
+  subjectDepartment?: string;
+  subjectDepartment1?: string;
+  subjectDepartment2?: string;
+  subjectDepartment3?: string;
+  subjectDepartment4?: string;
+  subjectDepartment5?: string;
+
   email?: string;
-  messenger?: string;
   consultationSchedule?: string;
+  contactNote?: string;
+
+  facebook?: string;
+  facebookUrl?: string;
+  messenger?: string;
+  linkedin?: string;
+  linkedinUrl?: string;
+  website?: string;
+  portfolioUrl?: string;
+
   teachingPhilosophy?: string;
   philosophy?: string;
 };
@@ -43,6 +63,12 @@ type DetailField = {
   label: string;
   value: string;
   wide?: boolean;
+};
+
+type SocialLink = {
+  label: string;
+  href: string;
+  icon: "facebook" | "messenger" | "linkedin" | "website";
 };
 
 function safeText(value: unknown) {
@@ -82,6 +108,28 @@ function normalizeMessengerLink(link?: string) {
   if (cleanLink.startsWith("m.me/")) return `https://${cleanLink}`;
 
   return `https://m.me/${cleanLink}`;
+}
+
+function normalizeWebsiteLink(link?: string) {
+  const cleanLink = safeText(link);
+  if (!cleanLink) return "";
+
+  if (cleanLink.startsWith("https://")) return cleanLink;
+  if (cleanLink.startsWith("http://")) return cleanLink;
+
+  return `https://${cleanLink}`;
+}
+
+function normalizeFacebookLink(link?: string) {
+  const cleanLink = safeText(link);
+  if (!cleanLink) return "";
+
+  if (cleanLink.startsWith("https://")) return cleanLink;
+  if (cleanLink.startsWith("http://")) return cleanLink;
+  if (cleanLink.startsWith("facebook.com/")) return `https://${cleanLink}`;
+  if (cleanLink.startsWith("web.facebook.com/")) return `https://${cleanLink}`;
+
+  return `https://facebook.com/${cleanLink}`;
 }
 
 function getInitials(name: string) {
@@ -126,9 +174,17 @@ function getAdvisorySections(person: Personnel) {
     .join(", ");
 }
 
-function getFormattedPositionDesignation(person: Personnel) {
+function getPositionText(person: Personnel) {
+  return safeText(person.position);
+}
+
+function getDesignationText(person: Personnel) {
   const advisoryText = getAdvisorySections(person);
-  const designations = uniqueList(person.designation || []);
+  const position = getPositionText(person).toLowerCase();
+
+  const designations = uniqueList(person.designation || []).filter(
+    (designation) => designation.toLowerCase() !== position
+  );
 
   const hasClassAdviser =
     advisoryText !== "" ||
@@ -147,53 +203,182 @@ function getFormattedPositionDesignation(person: Personnel) {
         ? "Class Adviser"
         : "";
 
-  return uniqueList([
-    person.position,
-    ...cleanedDesignations,
-    classAdviserText,
-  ]).join(" / ");
+  return uniqueList([...cleanedDesignations, classAdviserText]).join(" / ");
 }
 
-function getProfileNote(person: Personnel) {
-  const possibleNotes = [person.bio, person.description]
-    .map((item) => safeText(item))
-    .filter(isMeaningfulText);
+function getRoleBadge(person: Personnel) {
+  return safeText(person.group) || safeText(person.department) || "Personnel";
+}
 
-  if (possibleNotes.length === 0) return "";
+function getTeachingDepartment(person: Personnel) {
+  const department = safeText(person.department);
+  const normalized = department.toLowerCase();
 
-  const positionDesignation =
-    getFormattedPositionDesignation(person).toLowerCase();
-  const department = safeText(person.department).toLowerCase();
-  const group = safeText(person.group).toLowerCase();
-  const subjects = displayList(person.subjectTaught).toLowerCase();
+  if (
+    normalized.includes("junior high school") ||
+    normalized.includes("senior high school")
+  ) {
+    return department;
+  }
 
-  const cleanNotes = possibleNotes.filter((note) => {
-    const normalizedNote = note.toLowerCase();
+  return "";
+}
 
+function getSubjectDepartments(person: Personnel) {
+  const extended = person as ExtendedPersonnel;
+
+  return uniqueList([
+    extended.primarySubjectDepartment,
+    extended.subjectDepartment,
+    extended.subjectDepartment1,
+    extended.subjectDepartment2,
+    extended.subjectDepartment3,
+    extended.subjectDepartment4,
+    extended.subjectDepartment5,
+  ]).join(", ");
+}
+
+function getTeachingPhilosophy(person: Personnel) {
+  const extended = person as ExtendedPersonnel;
+  return safeText(extended.teachingPhilosophy) || safeText(extended.philosophy);
+}
+
+function getContactFields(person: Personnel): DetailField[] {
+  const extended = person as ExtendedPersonnel;
+
+  return [
+    {
+      label: "Email",
+      value: safeText(extended.email),
+    },
+    {
+      label: "Consultation Schedule",
+      value: safeText(extended.consultationSchedule),
+    },
+    {
+      label: "Contact Note",
+      value: safeText(extended.contactNote),
+      wide: true,
+    },
+  ].filter((field) => isMeaningfulText(field.value));
+}
+
+function getSocialLinks(person: Personnel): SocialLink[] {
+  const extended = person as ExtendedPersonnel;
+
+  const facebook = normalizeFacebookLink(
+    safeText(extended.facebookUrl) || safeText(extended.facebook)
+  );
+
+  const messenger = normalizeMessengerLink(extended.messenger);
+
+  const linkedin = normalizeWebsiteLink(
+    safeText(extended.linkedinUrl) || safeText(extended.linkedin)
+  );
+
+  const website = normalizeWebsiteLink(
+    safeText(extended.website) || safeText(extended.portfolioUrl)
+  );
+
+  return [
+    {
+      label: "Facebook",
+      href: facebook,
+      icon: "facebook" as const,
+    },
+    {
+      label: "Messenger",
+      href: messenger,
+      icon: "messenger" as const,
+    },
+    {
+      label: "LinkedIn",
+      href: linkedin,
+      icon: "linkedin" as const,
+    },
+    {
+      label: "Website",
+      href: website,
+      icon: "website" as const,
+    },
+  ].filter((link) => isMeaningfulText(link.href));
+}
+
+function SocialIcon({ icon }: { icon: SocialLink["icon"] }) {
+  if (icon === "facebook") {
     return (
-      normalizedNote !== positionDesignation &&
-      normalizedNote !== department &&
-      normalizedNote !== group &&
-      normalizedNote !== subjects
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+        <path d="M13.5 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.3-1.5 1.6-1.5h1.7V4.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3V14h2.8v8h3.4Z" />
+      </svg>
     );
-  });
+  }
 
-  return cleanNotes[0] || "";
+  if (icon === "messenger") {
+    return (
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+        <path d="M12 2C6.5 2 2.2 6 2.2 11.4c0 3.1 1.5 5.8 3.8 7.5V22l3.5-1.9c.8.2 1.6.3 2.5.3 5.5 0 9.8-4 9.8-9.4S17.5 2 12 2Zm1 12.6-2.5-2.7-4.9 2.7 5.4-5.8 2.5 2.7 4.9-2.7-5.4 5.8Z" />
+      </svg>
+    );
+  }
+
+  if (icon === "linkedin") {
+    return (
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+        <path d="M6.8 8.8H3.6V21h3.2V8.8ZM5.2 3C4.1 3 3.4 3.7 3.4 4.7c0 1 .8 1.7 1.8 1.7s1.8-.7 1.8-1.7C7 3.7 6.2 3 5.2 3ZM21 14c0-3.3-1.8-5.4-4.5-5.4-1.7 0-2.7.9-3.2 1.8V8.8h-3.2V21h3.2v-6.8c0-1.8.9-2.8 2.3-2.8 1.3 0 2.1.9 2.1 2.8V21H21v-7Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM3.6 9h16.8M3.6 15h16.8M12 3c2.2 2.4 3.4 5.4 3.4 9S14.2 18.6 12 21M12 3C9.8 5.4 8.6 8.4 8.6 12s1.2 6.6 3.4 9"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 function DetailFieldCard({ label, value, wide }: DetailField) {
   return (
     <div
-      className={`bg-slate-200/70 px-5 py-4 ${
-        wide ? "md:col-span-2" : ""
+      className={`bg-white px-6 py-5 shadow-sm ring-1 ring-slate-200/70 transition duration-300 hover:-translate-y-0.5 hover:shadow-md ${
+        wide ? "xl:col-span-2" : ""
       }`}
     >
-      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">
+      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
         {label}
       </p>
-      <p className="mt-2 text-sm font-semibold leading-6 text-slate-800">
+      <p className="mt-3 text-sm font-semibold leading-7 text-slate-800">
         {value}
       </p>
+    </div>
+  );
+}
+
+function SectionTitle({
+  eyebrow,
+  title,
+}: {
+  eyebrow: string;
+  title: string;
+}) {
+  return (
+    <div className="mb-5">
+      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+        {eyebrow}
+      </p>
+      <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950">
+        {title}
+      </h3>
     </div>
   );
 }
@@ -231,94 +416,45 @@ export default function PersonnelModal({
   const photoUrl = person ? getPhotoUrl(person) : "";
   const showPhoto = Boolean(person && photoUrl && failedPhoto !== photoUrl);
 
-  const messengerLink = extendedPerson
-    ? normalizeMessengerLink(extendedPerson.messenger)
-    : "";
+  const positionText = person ? getPositionText(person) : "";
+  const designationText = person ? getDesignationText(person) : "";
+  const roleBadge = person ? getRoleBadge(person) : "";
+  const teachingPhilosophy = person ? getTeachingPhilosophy(person) : "";
 
-  const positionDesignation = person
-    ? getFormattedPositionDesignation(person)
-    : "";
-
-  const detailFields = useMemo<DetailField[]>(() => {
+  const profileDetails = useMemo<DetailField[]>(() => {
     if (!person) return [];
 
     const extended = person as ExtendedPersonnel;
 
-    const subjectTaught = displayList(person.subjectTaught);
-    const coordinatorship = displayList(person.coordinatorship);
-    const advisoryText = getAdvisorySections(person);
-    const gradeLevelTaught = displayList(person.gradeLevelTaught);
-    const sectionsHandled = displayList(person.sectionsHandled);
-    const profileNote = getProfileNote(person);
-
-    const teachingPhilosophy =
-      safeText(extended.teachingPhilosophy) || safeText(extended.philosophy);
-
-    const group =
-      safeText(person.group).toLowerCase() !==
-      safeText(person.department).toLowerCase()
-        ? safeText(person.group)
-        : "";
-
     return [
       {
-        label: "Full Name",
-        value: person.name,
-      },
-      {
-        label: "Department",
-        value: safeText(person.department),
-      },
-      {
-        label: "Position / Designation",
-        value: positionDesignation,
-        wide: true,
-      },
-      {
-        label: "Personnel Group",
-        value: group,
+        label: "Subject Area",
+        value: safeText(extended.subjectArea),
       },
       {
         label: "Subject Taught",
-        value: subjectTaught,
+        value: displayList(person.subjectTaught),
       },
       {
-        label: "Program / Coordinatorship",
-        value: coordinatorship,
-        wide: true,
+        label: "Subject Department",
+        value: getSubjectDepartments(person),
       },
       {
-        label: "Class Advisory",
-        value: advisoryText,
-      },
-      {
-        label: "Grade Level Taught",
-        value: advisoryText ? "" : gradeLevelTaught,
-      },
-      {
-        label: "Sections Handled",
-        value: advisoryText ? "" : sectionsHandled,
-      },
-      {
-        label: "Teaching Philosophy",
-        value: teachingPhilosophy,
-        wide: true,
-      },
-      {
-        label: "Consultation Schedule",
-        value: safeText(extended.consultationSchedule),
-      },
-      {
-        label: "Email",
-        value: safeText(extended.email),
-      },
-      {
-        label: "Profile Note",
-        value: profileNote,
-        wide: true,
+        label: "Teaching Department",
+        value: getTeachingDepartment(person),
       },
     ].filter((field) => isMeaningfulText(field.value));
-  }, [person, positionDesignation]);
+  }, [person]);
+
+  const contactFields = useMemo<DetailField[]>(() => {
+    if (!person) return [];
+    return getContactFields(person);
+  }, [person]);
+
+  const socialLinks = useMemo<SocialLink[]>(() => {
+    if (!person) return [];
+    return getSocialLinks(person);
+  }, [person]);
 
   return (
     <AnimatePresence>
@@ -331,13 +467,13 @@ export default function PersonnelModal({
         >
           <style jsx global>{`
             .personnel-modal-scroll {
-              scrollbar-width: auto;
-              scrollbar-color: #9aa6b2 #eff3f7;
+              scrollbar-width: thin;
+              scrollbar-color: #aeb4ba #eff3f7;
               scrollbar-gutter: stable;
             }
 
             .personnel-modal-scroll::-webkit-scrollbar {
-              width: 48px;
+              width: 14px;
             }
 
             .personnel-modal-scroll::-webkit-scrollbar-track {
@@ -345,13 +481,13 @@ export default function PersonnelModal({
             }
 
             .personnel-modal-scroll::-webkit-scrollbar-thumb {
-              background: #9aa6b2;
-              border: 16px solid #eff3f7;
+              background: #aeb4ba;
+              border: 4px solid #eff3f7;
               border-radius: 999px;
             }
 
             .personnel-modal-scroll::-webkit-scrollbar-thumb:hover {
-              background: #74808d;
+              background: #858d96;
             }
 
             .personnel-modal-scroll::-webkit-scrollbar-button {
@@ -359,9 +495,28 @@ export default function PersonnelModal({
               width: 0;
               height: 0;
             }
+
+            @media (min-width: 768px) {
+              .personnel-modal-scroll::-webkit-scrollbar {
+                width: 36px;
+              }
+
+              .personnel-modal-scroll::-webkit-scrollbar-thumb {
+                border: 11px solid #eff3f7;
+              }
+            }
+
+            @media (min-width: 1024px) {
+              .personnel-modal-scroll::-webkit-scrollbar {
+                width: 52px;
+              }
+
+              .personnel-modal-scroll::-webkit-scrollbar-thumb {
+                border: 17px solid #eff3f7;
+              }
+            }
           `}</style>
 
-          {/* Backdrop */}
           <motion.div
             className="absolute inset-0 bg-black/55 backdrop-blur-sm"
             initial={{ opacity: 0 }}
@@ -370,24 +525,22 @@ export default function PersonnelModal({
             onClick={onClose}
           />
 
-          {/* Modal */}
           <motion.div
             onClick={(event) => event.stopPropagation()}
             initial={{ opacity: 0, scale: 0.96, y: 18 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 12 }}
             transition={{ type: "tween", duration: 0.18, ease: "easeOut" }}
-            className="relative h-[400px] max-h-[82vh] w-full max-w-[980px] overflow-hidden bg-white text-slate-950 shadow-2xl"
+            className="relative h-[92vh] max-h-[92vh] w-[94vw] max-w-[1320px] overflow-hidden bg-white text-slate-950 shadow-2xl md:h-[620px] md:max-h-[86vh] lg:h-[640px]"
           >
-            {/* Edge Close Button */}
             <button
               type="button"
               onClick={onClose}
               aria-label="Close personnel profile"
-              className="absolute right-0 top-0 z-40 flex h-12 w-12 items-center justify-center bg-red-600 text-white shadow-md transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-200"
+              className="absolute right-0 top-0 z-40 flex h-11 w-11 items-center justify-center bg-red-600 text-white shadow-md transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 md:h-12 md:w-12 lg:h-[58px] lg:w-[58px]"
             >
               <svg
-                className="h-7 w-7"
+                className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8"
                 viewBox="0 0 24 24"
                 fill="none"
                 aria-hidden="true"
@@ -402,76 +555,161 @@ export default function PersonnelModal({
             </button>
 
             <div className="flex h-full w-full flex-col md:flex-row">
-              {/* Fixed 3:4 Photo Panel */}
-              <aside className="shrink-0 bg-[#0F4C5C] md:h-full md:w-[300px]">
-                <div className="aspect-[3/4] h-full w-full overflow-hidden bg-[#0F4C5C]">
-                  {showPhoto ? (
-                    <img
-                      src={photoUrl}
-                      alt={person.name}
-                      onError={() => setFailedPhoto(photoUrl)}
-                      className="h-full w-full object-cover object-[50%_20%]"
-                    />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-[#0F4C5C] text-5xl font-black text-white">
-                      {getInitials(person.name)}
-                    </div>
-                  )}
+              {/* Fixed Profile Identity Panel */}
+              <aside className="relative shrink-0 overflow-hidden bg-white px-5 py-4 md:flex md:h-full md:w-[340px] md:flex-col md:justify-center md:px-8 md:py-8 lg:w-[380px] lg:px-10 lg:py-10">
+                <div className="absolute left-0 top-0 h-full w-1.5 bg-[#0F4C5C] md:w-2" />
+                <div className="absolute left-1.5 top-0 h-full w-1 bg-[#ffdf20] md:left-2" />
+
+                <div className="relative z-10 flex items-center gap-4 md:block">
+                  <div className="aspect-[3/4] w-[92px] flex-none overflow-hidden bg-[#0F4C5C] shadow-lg ring-1 ring-slate-200 sm:w-[110px] md:mx-auto md:w-[240px] lg:w-[270px]">
+                    {showPhoto ? (
+                      <img
+                        src={photoUrl}
+                        alt={person.name}
+                        onError={() => setFailedPhoto(photoUrl)}
+                        className="h-full w-full object-cover object-[50%_20%]"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-[#0F4C5C] text-3xl font-black text-white md:text-5xl">
+                        {getInitials(person.name)}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="min-w-0 md:mt-8">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0F4C5C] md:text-[11px] md:tracking-[0.24em]">
+                      Personnel Profile
+                    </p>
+
+                    <h2 className="mt-2 text-xl font-black leading-tight tracking-tight text-slate-950 sm:text-2xl md:mt-4 md:text-3xl">
+                      {person.name}
+                    </h2>
+
+                    {positionText && (
+                      <p className="mt-2 text-xs font-black leading-5 text-[#0F4C5C] md:mt-3 md:text-sm md:leading-6">
+                        {positionText}
+                      </p>
+                    )}
+
+                    {designationText && (
+                      <p className="mt-1 line-clamp-2 text-xs font-semibold leading-5 text-slate-700 md:line-clamp-none md:text-sm md:leading-6">
+                        {designationText}
+                      </p>
+                    )}
+
+                    {isMeaningfulText(roleBadge) && (
+                      <div className="mt-3 inline-flex bg-[#0F4C5C] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white md:mt-5 md:px-4 md:py-2 md:text-xs md:tracking-[0.16em]">
+                        {roleBadge}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </aside>
 
-              {/* Scrollable White Information Panel */}
-              <section className="personnel-modal-scroll min-h-0 flex-1 overflow-y-auto px-5 py-6 pr-2 md:px-8 md:py-8 md:pr-4">
-                <div className="mb-6">
-                  <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#0F4C5C]">
-                    Personnel Profile
+              {/* Scrollable Information Panel */}
+              <section className="personnel-modal-scroll min-h-0 flex-1 overflow-y-auto bg-[#f8fafc] px-5 py-6 pr-3 sm:px-6 md:px-8 md:py-8 md:pr-4 lg:px-10 lg:py-12 lg:pr-5">
+                <div className="mb-6 max-w-3xl md:mb-8">
+                  <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+                    Profile Information
                   </p>
-
-                  <h2 className="mt-3 text-2xl font-black leading-tight tracking-tight text-slate-950 md:text-3xl">
-                    {person.name}
-                  </h2>
-
-                  {positionDesignation && (
-                    <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-[#0F4C5C]">
-                      {positionDesignation}
-                    </p>
-                  )}
+                  <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950 md:mt-3 md:text-3xl">
+                    Official personnel details
+                  </h3>
+                  <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">
+                    Information is based on the official school roster encoded
+                    for the Tabunoc National High School website.
+                  </p>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  {detailFields.map((field) => (
-                    <DetailFieldCard
-                      key={`${field.label}-${field.value}`}
-                      label={field.label}
-                      value={field.value}
-                      wide={field.wide}
+                {profileDetails.length > 0 && (
+                  <section className="mb-10">
+                    <SectionTitle
+                      eyebrow="Teaching Profile"
+                      title="Teaching and subject assignment"
                     />
-                  ))}
-                </div>
 
-                {(extendedPerson?.email || messengerLink) && (
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
-                    {extendedPerson?.email && (
-                      <a
-                        href={`mailto:${extendedPerson.email}`}
-                        className="bg-[#0F4C5C] px-5 py-3 text-center text-sm font-black text-white transition hover:-translate-y-1 hover:bg-[#146577]"
-                      >
-                        Send Email
-                      </a>
-                    )}
-
-                    {messengerLink && (
-                      <a
-                        href={messengerLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-slate-200 px-5 py-3 text-center text-sm font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-slate-300"
-                      >
-                        Message on Messenger
-                      </a>
-                    )}
-                  </div>
+                    <div className="grid gap-4 md:gap-5 xl:grid-cols-2">
+                      {profileDetails.map((field) => (
+                        <DetailFieldCard
+                          key={`${field.label}-${field.value}`}
+                          label={field.label}
+                          value={field.value}
+                          wide={field.wide}
+                        />
+                      ))}
+                    </div>
+                  </section>
                 )}
+
+                {isMeaningfulText(teachingPhilosophy) && (
+                  <section className="mb-10">
+                    <SectionTitle
+                      eyebrow="Teaching Philosophy"
+                      title="Professional belief in teaching"
+                    />
+
+                    <div className="border-l-[6px] border-[#ffdf20] bg-yellow-50 px-6 py-5 shadow-sm">
+                      <p className="text-sm font-semibold italic leading-8 text-slate-800">
+                        “{teachingPhilosophy}”
+                      </p>
+                    </div>
+                  </section>
+                )}
+
+                {contactFields.length > 0 && (
+                  <section className="mb-10">
+                    <SectionTitle
+                      eyebrow="Contact Information"
+                      title="Official contact details"
+                    />
+
+                    <div className="grid gap-6 xl:grid-cols-2">
+                      {contactFields.map((field) => (
+                        <DetailFieldCard
+                          key={`${field.label}-${field.value}`}
+                          label={field.label}
+                          value={field.value}
+                          wide={field.wide}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {socialLinks.length > 0 && (
+                  <section>
+                    <SectionTitle
+                      eyebrow="Social Media"
+                      title="Public profile links"
+                    />
+
+                    <div className="grid gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap">
+                      {socialLinks.map((link) => (
+                        <a
+                          key={`${link.label}-${link.href}`}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-3 bg-white px-5 py-3 text-sm font-black text-[#0F4C5C] shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-[#0F4C5C] hover:text-white"
+                        >
+                          <SocialIcon icon={link.icon} />
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {profileDetails.length === 0 &&
+                  !isMeaningfulText(teachingPhilosophy) &&
+                  contactFields.length === 0 &&
+                  socialLinks.length === 0 && (
+                    <div className="bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
+                      <p className="font-bold text-slate-600">
+                        Additional public profile details will be added soon.
+                      </p>
+                    </div>
+                  )}
               </section>
             </div>
           </motion.div>

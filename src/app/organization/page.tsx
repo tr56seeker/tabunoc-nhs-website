@@ -477,6 +477,10 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
         safeText(record.designation1) ||
         safeText(record.subjectArea) ||
         safeText(record.department),
+      teachingPhilosophy:
+        safeText(record.teachingPhilosophy) || safeText(record.philosophy),
+      philosophy:
+        safeText(record.teachingPhilosophy) || safeText(record.philosophy),
       roles,
       designation,
       subjectArea: safeText(record.subjectArea),

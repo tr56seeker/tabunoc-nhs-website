@@ -1,6 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+/**
+ * FILE_ID: TABUNOC_PERSONNEL_MODAL_SPLIT_CARD_FIXED_SIZE
+ * PATH: src/components/PersonnelModal.tsx
+ * PURPOSE: Fixed-size split-card personnel modal using CSV/Excel roster data.
+ * DESIGN:
+ * - Fixed modal size across personnel profiles
+ * - Left photo keeps 3:4 ratio and stays steady
+ * - Right white information panel uses real draggable scrollbar
+ * - Scrollbar rail uses #eff3f7
+ * - Sharp 90-degree modal edges
+ * - Red edge close button
+ * - Hides N/A/blank fields
+ * - Retains teachingPhilosophy from Excel/CSV source
+ */
+
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { Personnel } from "@/data/organization";
 
@@ -9,14 +24,64 @@ type PersonnelModalProps = {
   onClose: () => void;
 };
 
+type ExtendedPersonnel = Personnel & {
+  photoUrl?: string;
+  image?: string;
+  avatar?: string;
+  photo?: string;
+  imageUrl?: string;
+  profileImage?: string;
+  profilePhoto?: string;
+  email?: string;
+  messenger?: string;
+  consultationSchedule?: string;
+  teachingPhilosophy?: string;
+  philosophy?: string;
+};
+
+type DetailField = {
+  label: string;
+  value: string;
+  wide?: boolean;
+};
+
+function safeText(value: unknown) {
+  return String(value ?? "").trim();
+}
+
+function isMeaningfulText(value: unknown) {
+  const text = safeText(value).toLowerCase();
+
+  return (
+    text !== "" &&
+    text !== "n/a" &&
+    text !== "na" &&
+    text !== "none" &&
+    text !== "null" &&
+    text !== "-"
+  );
+}
+
+function uniqueList(items: Array<string | undefined | null>) {
+  return Array.from(
+    new Set(items.map((item) => safeText(item)).filter(isMeaningfulText))
+  );
+}
+
+function displayList(value?: string[]) {
+  if (!value || value.length === 0) return "";
+  return uniqueList(value).join(", ");
+}
+
 function normalizeMessengerLink(link?: string) {
-  if (!link) return "";
+  const cleanLink = safeText(link);
+  if (!cleanLink) return "";
 
-  if (link.startsWith("https://")) return link;
-  if (link.startsWith("http://")) return link;
-  if (link.startsWith("m.me/")) return `https://${link}`;
+  if (cleanLink.startsWith("https://")) return cleanLink;
+  if (cleanLink.startsWith("http://")) return cleanLink;
+  if (cleanLink.startsWith("m.me/")) return `https://${cleanLink}`;
 
-  return `https://m.me/${link}`;
+  return `https://m.me/${cleanLink}`;
 }
 
 function getInitials(name: string) {
@@ -25,96 +90,108 @@ function getInitials(name: string) {
     .filter(Boolean)
     .slice(0, 2)
     .map((word) => word[0])
-    .join("");
+    .join("")
+    .toUpperCase();
 }
 
-function displayText(value?: string) {
-  if (!value || value.trim() === "") return "N/A";
-  return value;
-}
+function getPhotoUrl(person: Personnel) {
+  const extendedPerson = person as ExtendedPersonnel;
 
-function displayList(value?: string[]) {
-  if (!value || value.length === 0) return "N/A";
-
-  const cleaned = value.filter((item) => item && item.trim() !== "");
-  if (cleaned.length === 0) return "N/A";
-
-  return cleaned.join(", ");
-}
-
-function formatAdvisorySection(gradeLevel?: string, section?: string) {
-  const cleanGradeLevel = displayText(gradeLevel);
-  const cleanSection = section?.replace(/^\d+-/, "").trim() || "";
-
-  if (cleanGradeLevel === "N/A" && !cleanSection) return "";
-  if (!cleanSection) return cleanGradeLevel;
-
-  return `${cleanGradeLevel}-${cleanSection}`;
-}
-
-function getAdvisorySectionsArray(person: Personnel) {
-  if (!person.advisory || person.advisory.length === 0) return [];
-
-  return person.advisory
-    .map((item) => formatAdvisorySection(item.gradeLevel, item.section))
-    .filter(Boolean);
+  return (
+    safeText(extendedPerson.photo) ||
+    safeText(extendedPerson.photoUrl) ||
+    safeText(extendedPerson.image) ||
+    safeText(extendedPerson.avatar) ||
+    safeText(extendedPerson.imageUrl) ||
+    safeText(extendedPerson.profileImage) ||
+    safeText(extendedPerson.profilePhoto)
+  );
 }
 
 function getAdvisorySections(person: Personnel) {
-  const advisorySections = getAdvisorySectionsArray(person);
-  if (advisorySections.length === 0) return "N/A";
+  if (!person.advisory || person.advisory.length === 0) return "";
 
-  return advisorySections.join(", ");
+  return person.advisory
+    .map((item) => {
+      const gradeLevel = safeText(item.gradeLevel);
+      const section = safeText(item.section).replace(/^\d+-/, "");
+
+      if (!gradeLevel && !section) return "";
+      if (!section) return gradeLevel;
+      if (!gradeLevel) return section;
+
+      return `${gradeLevel}-${section}`;
+    })
+    .filter(isMeaningfulText)
+    .join(", ");
 }
 
-function getFormattedDesignation(person: Personnel) {
-  const designations = person.designation || [];
-  const advisorySections = getAdvisorySectionsArray(person);
+function getFormattedPositionDesignation(person: Personnel) {
+  const advisoryText = getAdvisorySections(person);
+  const designations = uniqueList(person.designation || []);
 
   const hasClassAdviser =
+    advisoryText !== "" ||
     designations.some(
-      (designation) => designation.trim().toLowerCase() === "class adviser"
-    ) || advisorySections.length > 0;
+      (designation) => designation.toLowerCase() === "class adviser"
+    );
 
   const cleanedDesignations = designations.filter(
-    (designation) => designation.trim().toLowerCase() !== "class adviser"
+    (designation) => designation.toLowerCase() !== "class adviser"
   );
 
   const classAdviserText =
-    hasClassAdviser && advisorySections.length > 0
-      ? `Class Adviser, ${advisorySections.join(", ")}`
+    hasClassAdviser && advisoryText
+      ? `Class Adviser, ${advisoryText}`
       : hasClassAdviser
         ? "Class Adviser"
         : "";
 
-  const finalDesignations = [
+  return uniqueList([
+    person.position,
     ...cleanedDesignations,
     classAdviserText,
-  ].filter(Boolean);
-
-  return displayList(finalDesignations);
+  ]).join(" / ");
 }
 
-function MiniInfo({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-        {label}
-      </p>
-      <p className="mt-1 text-sm font-medium leading-snug text-slate-800 dark:text-stone-200">
-        {value}
-      </p>
-    </div>
-  );
+function getProfileNote(person: Personnel) {
+  const possibleNotes = [person.bio, person.description]
+    .map((item) => safeText(item))
+    .filter(isMeaningfulText);
+
+  if (possibleNotes.length === 0) return "";
+
+  const positionDesignation =
+    getFormattedPositionDesignation(person).toLowerCase();
+  const department = safeText(person.department).toLowerCase();
+  const group = safeText(person.group).toLowerCase();
+  const subjects = displayList(person.subjectTaught).toLowerCase();
+
+  const cleanNotes = possibleNotes.filter((note) => {
+    const normalizedNote = note.toLowerCase();
+
+    return (
+      normalizedNote !== positionDesignation &&
+      normalizedNote !== department &&
+      normalizedNote !== group &&
+      normalizedNote !== subjects
+    );
+  });
+
+  return cleanNotes[0] || "";
 }
 
-function DetailBlock({ label, value }: { label: string; value: string }) {
+function DetailFieldCard({ label, value, wide }: DetailField) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-[#292624] dark:bg-[#171614]">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+    <div
+      className={`bg-slate-200/70 px-5 py-4 ${
+        wide ? "md:col-span-2" : ""
+      }`}
+    >
+      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-500">
         {label}
       </p>
-      <p className="mt-2 text-sm font-medium leading-7 text-slate-800 dark:text-stone-200">
+      <p className="mt-2 text-sm font-semibold leading-6 text-slate-800">
         {value}
       </p>
     </div>
@@ -126,6 +203,10 @@ export default function PersonnelModal({
   onClose,
 }: PersonnelModalProps) {
   const [failedPhoto, setFailedPhoto] = useState<string | null>(null);
+
+  useEffect(() => {
+    setFailedPhoto(null);
+  }, [person?.id]);
 
   useEffect(() => {
     if (!person) return;
@@ -145,175 +226,235 @@ export default function PersonnelModal({
     };
   }, [person, onClose]);
 
-  const messengerLink = person ? normalizeMessengerLink(person.messenger) : "";
-  const showPhoto = person?.photo && failedPhoto !== person.photo;
-  const formattedDesignation = person
-    ? getFormattedDesignation(person)
-    : "N/A";
+  const extendedPerson = person as ExtendedPersonnel | null;
+
+  const photoUrl = person ? getPhotoUrl(person) : "";
+  const showPhoto = Boolean(person && photoUrl && failedPhoto !== photoUrl);
+
+  const messengerLink = extendedPerson
+    ? normalizeMessengerLink(extendedPerson.messenger)
+    : "";
+
+  const positionDesignation = person
+    ? getFormattedPositionDesignation(person)
+    : "";
+
+  const detailFields = useMemo<DetailField[]>(() => {
+    if (!person) return [];
+
+    const extended = person as ExtendedPersonnel;
+
+    const subjectTaught = displayList(person.subjectTaught);
+    const coordinatorship = displayList(person.coordinatorship);
+    const advisoryText = getAdvisorySections(person);
+    const gradeLevelTaught = displayList(person.gradeLevelTaught);
+    const sectionsHandled = displayList(person.sectionsHandled);
+    const profileNote = getProfileNote(person);
+
+    const teachingPhilosophy =
+      safeText(extended.teachingPhilosophy) || safeText(extended.philosophy);
+
+    const group =
+      safeText(person.group).toLowerCase() !==
+      safeText(person.department).toLowerCase()
+        ? safeText(person.group)
+        : "";
+
+    return [
+      {
+        label: "Full Name",
+        value: person.name,
+      },
+      {
+        label: "Department",
+        value: safeText(person.department),
+      },
+      {
+        label: "Position / Designation",
+        value: positionDesignation,
+        wide: true,
+      },
+      {
+        label: "Personnel Group",
+        value: group,
+      },
+      {
+        label: "Subject Taught",
+        value: subjectTaught,
+      },
+      {
+        label: "Program / Coordinatorship",
+        value: coordinatorship,
+        wide: true,
+      },
+      {
+        label: "Class Advisory",
+        value: advisoryText,
+      },
+      {
+        label: "Grade Level Taught",
+        value: advisoryText ? "" : gradeLevelTaught,
+      },
+      {
+        label: "Sections Handled",
+        value: advisoryText ? "" : sectionsHandled,
+      },
+      {
+        label: "Teaching Philosophy",
+        value: teachingPhilosophy,
+        wide: true,
+      },
+      {
+        label: "Consultation Schedule",
+        value: safeText(extended.consultationSchedule),
+      },
+      {
+        label: "Email",
+        value: safeText(extended.email),
+      },
+      {
+        label: "Profile Note",
+        value: profileNote,
+        wide: true,
+      },
+    ].filter((field) => isMeaningfulText(field.value));
+  }, [person, positionDesignation]);
 
   return (
     <AnimatePresence>
       {person && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6"
+          className="fixed inset-0 z-[2000] flex items-center justify-center px-4 py-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          {/* BACKDROP */}
+          <style jsx global>{`
+            .personnel-modal-scroll {
+              scrollbar-width: auto;
+              scrollbar-color: #9aa6b2 #eff3f7;
+              scrollbar-gutter: stable;
+            }
+
+            .personnel-modal-scroll::-webkit-scrollbar {
+              width: 48px;
+            }
+
+            .personnel-modal-scroll::-webkit-scrollbar-track {
+              background: #eff3f7;
+            }
+
+            .personnel-modal-scroll::-webkit-scrollbar-thumb {
+              background: #9aa6b2;
+              border: 16px solid #eff3f7;
+              border-radius: 999px;
+            }
+
+            .personnel-modal-scroll::-webkit-scrollbar-thumb:hover {
+              background: #74808d;
+            }
+
+            .personnel-modal-scroll::-webkit-scrollbar-button {
+              display: none;
+              width: 0;
+              height: 0;
+            }
+          `}</style>
+
+          {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/65"
+            className="absolute inset-0 bg-black/55 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
           />
 
-          {/* EXPANDING PROFILE CARD */}
+          {/* Modal */}
           <motion.div
             onClick={(event) => event.stopPropagation()}
-            initial={{ opacity: 0, scale: 0.96, y: 16 }}
+            initial={{ opacity: 0, scale: 0.96, y: 18 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 10 }}
-            transition={{
-              type: "tween",
-              duration: 0.18,
-              ease: "easeOut",
-            }}
-            className="relative max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl border border-transparent bg-white text-slate-950 shadow-xl will-change-transform dark:border-[#292624] dark:bg-[#171614] dark:text-white dark:shadow-black/20"
+            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+            transition={{ type: "tween", duration: 0.18, ease: "easeOut" }}
+            className="relative h-[400px] max-h-[82vh] w-full max-w-[980px] overflow-hidden bg-white text-slate-950 shadow-2xl"
           >
-            <div className="max-h-[92vh] overflow-y-auto">
-              {/* HEADER BAR */}
-              <div className="flex items-center justify-between gap-4 border-b border-slate-200 bg-white px-5 py-4 dark:border-[#292624] dark:bg-[#171614] md:px-8">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#0F4C5C] dark:text-yellow-300">
-                    Faculty / Personnel Profile
+            {/* Edge Close Button */}
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close personnel profile"
+              className="absolute right-0 top-0 z-40 flex h-12 w-12 items-center justify-center bg-red-600 text-white shadow-md transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-200"
+            >
+              <svg
+                className="h-7 w-7"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M6 6l12 12M18 6 6 18"
+                  stroke="currentColor"
+                  strokeWidth="4.2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+
+            <div className="flex h-full w-full flex-col md:flex-row">
+              {/* Fixed 3:4 Photo Panel */}
+              <aside className="shrink-0 bg-[#0F4C5C] md:h-full md:w-[300px]">
+                <div className="aspect-[3/4] h-full w-full overflow-hidden bg-[#0F4C5C]">
+                  {showPhoto ? (
+                    <img
+                      src={photoUrl}
+                      alt={person.name}
+                      onError={() => setFailedPhoto(photoUrl)}
+                      className="h-full w-full object-cover object-[50%_20%]"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-[#0F4C5C] text-5xl font-black text-white">
+                      {getInitials(person.name)}
+                    </div>
+                  )}
+                </div>
+              </aside>
+
+              {/* Scrollable White Information Panel */}
+              <section className="personnel-modal-scroll min-h-0 flex-1 overflow-y-auto px-5 py-6 pr-2 md:px-8 md:py-8 md:pr-4">
+                <div className="mb-6">
+                  <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#0F4C5C]">
+                    Personnel Profile
                   </p>
-                  <p className="mt-1 text-sm font-medium text-slate-500 dark:text-slate-400">
-                    Tabunoc National High School
-                  </p>
+
+                  <h2 className="mt-3 text-2xl font-black leading-tight tracking-tight text-slate-950 md:text-3xl">
+                    {person.name}
+                  </h2>
+
+                  {positionDesignation && (
+                    <p className="mt-2 max-w-2xl text-sm font-bold leading-6 text-[#0F4C5C]">
+                      {positionDesignation}
+                    </p>
+                  )}
                 </div>
 
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:text-[#0F4C5C] dark:bg-[#292624] dark:text-stone-200 dark:hover:text-yellow-300"
-                >
-                  Close
-                </button>
-              </div>
-
-              <div className="grid md:grid-cols-[300px_1fr]">
-                {/* LEFT PROFILE COLUMN */}
-                <aside className="border-b border-slate-200 bg-slate-50 p-6 dark:border-[#292624] dark:bg-[#171614]/90 md:border-b-0 md:border-r md:p-8">
-                  <div className="mx-auto max-w-[230px]">
-                    <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-200 shadow-sm dark:border-[#292624] dark:bg-[#292624] dark:shadow-black/20">
-                      {showPhoto ? (
-                        <img
-                          src={person.photo}
-                          alt={person.name}
-                          onError={() => setFailedPhoto(person.photo ?? null)}
-                          className="aspect-[3/4] w-full object-cover object-[50%_20%]"
-                        />
-                      ) : (
-                        <div className="flex aspect-[3/4] w-full items-center justify-center bg-[#0F4C5C] text-5xl font-semibold text-white">
-                          {getInitials(person.name)}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="mt-6 text-center md:text-left">
-                    <h2 className="text-2xl font-extrabold leading-tight tracking-tight text-slate-950 dark:text-white">
-                      {person.name}
-                    </h2>
-
-                    <p className="mt-2 text-base font-semibold text-[#0F4C5C] dark:text-yellow-300">
-                      {displayText(person.position)}
-                    </p>
-
-                    <p className="mt-1 text-sm font-medium leading-6 text-slate-600 dark:text-stone-300">
-                      {formattedDesignation}
-                    </p>
-                  </div>
-
-                  <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 dark:border-[#292624] dark:bg-[#171614]">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-                      Quick Details
-                    </p>
-
-                    <div className="mt-4 space-y-4">
-                      <MiniInfo label="Group" value={displayText(person.group)} />
-                      <MiniInfo
-                        label="Department"
-                        value={displayText(person.department)}
-                      />
-                      <MiniInfo
-                        label="Position"
-                        value={displayText(person.position)}
-                      />
-                      <MiniInfo
-                        label="Designation"
-                        value={formattedDesignation}
-                      />
-                    </div>
-                  </div>
-                </aside>
-
-                {/* RIGHT DETAILS COLUMN */}
-                <section className="p-6 md:p-8">
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <DetailBlock
-                      label="Subject Taught"
-                      value={displayList(person.subjectTaught)}
+                <div className="grid gap-4 md:grid-cols-2">
+                  {detailFields.map((field) => (
+                    <DetailFieldCard
+                      key={`${field.label}-${field.value}`}
+                      label={field.label}
+                      value={field.value}
+                      wide={field.wide}
                     />
+                  ))}
+                </div>
 
-                    <DetailBlock
-                      label="Coordinatorship / Program"
-                      value={displayList(person.coordinatorship)}
-                    />
-
-                    <DetailBlock
-                      label="Grade Level Taught"
-                      value={displayList(person.gradeLevelTaught)}
-                    />
-
-                    <DetailBlock
-                      label="Section Handled / Advisory"
-                      value={
-                        displayList(person.sectionsHandled) !== "N/A"
-                          ? displayList(person.sectionsHandled)
-                          : getAdvisorySections(person)
-                      }
-                    />
-
-                    <DetailBlock
-                      label="Consultation Schedule"
-                      value={displayText(person.consultationSchedule)}
-                    />
-
-                    <DetailBlock label="Email" value={displayText(person.email)} />
-                  </div>
-
-                  <div className="mt-4 grid gap-4">
-                    <DetailBlock
-                      label="Teaching Philosophy"
-                      value={displayText(person.philosophy)}
-                    />
-
-                    <DetailBlock label="Profile Bio" value={displayText(person.bio)} />
-
-                    <DetailBlock
-                      label="Description"
-                      value={displayText(person.description)}
-                    />
-                  </div>
-
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                    {person.email && (
+                {(extendedPerson?.email || messengerLink) && (
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+                    {extendedPerson?.email && (
                       <a
-                        href={`mailto:${person.email}`}
-                        className="rounded-xl bg-[#0F4C5C] px-5 py-3 text-center text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:scale-[1.01]"
+                        href={`mailto:${extendedPerson.email}`}
+                        className="bg-[#0F4C5C] px-5 py-3 text-center text-sm font-black text-white transition hover:-translate-y-1 hover:bg-[#146577]"
                       >
                         Send Email
                       </a>
@@ -324,14 +465,14 @@ export default function PersonnelModal({
                         href={messengerLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="rounded-xl border border-[#0F4C5C]/30 bg-white px-5 py-3 text-center text-sm font-semibold text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:border-[#292624] dark:bg-[#171614] dark:text-stone-100 dark:hover:text-yellow-300"
+                        className="bg-slate-200 px-5 py-3 text-center text-sm font-black text-[#0F4C5C] transition hover:-translate-y-1 hover:bg-slate-300"
                       >
                         Message on Messenger
                       </a>
                     )}
                   </div>
-                </section>
-              </div>
+                )}
+              </section>
             </div>
           </motion.div>
         </motion.div>

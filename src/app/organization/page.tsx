@@ -89,16 +89,29 @@ function safeText(value: unknown) {
   return String(value ?? "").trim();
 }
 
+function isMeaningfulText(value: unknown) {
+  const text = safeText(value).toLowerCase();
+
+  return (
+    text !== "" &&
+    text !== "n/a" &&
+    text !== "na" &&
+    text !== "none" &&
+    text !== "null" &&
+    text !== "-"
+  );
+}
+
 function splitList(value?: string | null) {
   return safeText(value)
     .split("|")
     .map((item) => item.trim())
-    .filter(Boolean);
+    .filter((item) => isMeaningfulText(item));
 }
 
 function uniqueList(items: Array<string | undefined | null>) {
   return Array.from(
-    new Set(items.map((item) => safeText(item)).filter(Boolean))
+    new Set(items.map((item) => safeText(item)).filter(isMeaningfulText))
   );
 }
 
@@ -281,15 +294,49 @@ function inferRoles(record: Record<string, string>): PersonnelRole[] {
     roles.push("Class Adviser");
   }
 
-  if (
+  const hasHandledSubject =
+    isMeaningfulText(record.subjectArea) ||
+    isMeaningfulText(record.primarySubjectDepartment) ||
+    isMeaningfulText(record.subjectDepartment1) ||
+    isMeaningfulText(record.subjectDepartment2) ||
+    isMeaningfulText(record.subjectDepartment3) ||
+    isMeaningfulText(record.subjectDepartment4) ||
+    isMeaningfulText(record.subjectDepartment5) ||
+    isMeaningfulText(record.subject1) ||
+    isMeaningfulText(record.subject2) ||
+    isMeaningfulText(record.subject3) ||
+    isMeaningfulText(record.subject4) ||
+    isMeaningfulText(record.subject5) ||
+    isMeaningfulText(record.subjectTaught) ||
+    isMeaningfulText(record.subjectsTaught);
+
+  const isAcademicTeachingPersonnel =
     position.includes("teacher") ||
-    category.includes("teaching") ||
-    department.includes("senior high school") ||
-    department.includes("junior high school") ||
+    position.includes("master teacher") ||
+    (category.includes("teaching") && !category.includes("non-teaching")) ||
     displayGroup.includes("subject teacher") ||
     subGroup.includes("subject teacher") ||
-    subjectArea !== ""
-  ) {
+    designationText.includes("class adviser") ||
+    displayGroup.includes("senior high school department") ||
+    displayGroup.includes("junior high school department");
+
+  const isNonTeachingSupport =
+    position.includes("administrative officer") ||
+    position.includes("administrative assistant") ||
+    position.includes("administrative aide") ||
+    position.includes("guidance") ||
+    position.includes("job order") ||
+    position.includes("utility") ||
+    position.includes("security guard") ||
+    category.includes("non-teaching") ||
+    category.includes("job order") ||
+    category.includes("security") ||
+    displayGroup.includes("school support") ||
+    displayGroup.includes("administrative staff") ||
+    subGroup.includes("job order") ||
+    subGroup.includes("security");
+
+  if (isAcademicTeachingPersonnel && !isNonTeachingSupport && hasHandledSubject) {
     roles.push("Subject Teacher");
   }
 
@@ -347,56 +394,6 @@ function buildAdvisory(record: Record<string, string>) {
   ];
 }
 
-function normalizeSubjectDepartment(value: string) {
-  const rawValue = safeText(value);
-
-  if (!rawValue) return "Unassigned";
-
-  const normalizedValue = rawValue.toLowerCase();
-
-  const subjectMap: Array<{ pattern: RegExp; label: string }> = [
-    { pattern: /\bmapeh\b/i, label: "MAPEH" },
-    { pattern: /\benglish\b/i, label: "English" },
-    { pattern: /\bfilipino\b/i, label: "Filipino" },
-    { pattern: /\bvalues?\s*education\b|\bve\b/i, label: "Values Education" },
-    {
-      pattern: /\bedukasyon\s+sa\s+pagpapakatao\b|\besp\b/i,
-      label: "Values Education",
-    },
-    { pattern: /\bmathematics\b|\bmath\b/i, label: "Mathematics" },
-    { pattern: /\bscience\b/i, label: "Science" },
-    {
-      pattern: /\baraling\s+panlipunan\b|\bsocial\s+studies\b|\bap\b/i,
-      label: "Araling Panlipunan",
-    },
-    { pattern: /\btle\b/i, label: "TLE" },
-    { pattern: /\beim\b|\belectrical\s+installation\b/i, label: "EIM" },
-    { pattern: /\bcss\b|\bcomputer\s+systems\s+servicing\b/i, label: "CSS" },
-    {
-      pattern: /\bepas\b|\belectronic\s+products\b|\belectronics\b/i,
-      label: "EPAS",
-    },
-  ];
-
-  const matchedSubject = subjectMap.find((item) =>
-    item.pattern.test(normalizedValue)
-  );
-
-  if (matchedSubject) {
-    return matchedSubject.label;
-  }
-
-  const cleanedValue = rawValue
-    .replace(/\bgrade\s*(7|8|9|10|11|12)\b/gi, "")
-    .replace(/\bg(7|8|9|10|11|12)\b/gi, "")
-    .replace(/\b(7|8|9|10|11|12)\b/g, "")
-    .replace(/\s*(&|and|to|-|\/)\s*$/gi, "")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-
-  return cleanedValue || "Unassigned";
-}
-
 function parsePersonnelCsv(csvText: string): Personnel[] {
   const lines = csvText
     .split(/\r?\n/)
@@ -423,6 +420,9 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
     const roles = inferRoles(record);
     const advisory = buildAdvisory(record);
 
+    const primarySubjectDepartment =
+  safeText(record.primarySubjectDepartment) || safeText(record.subjectArea);
+
     const explicitSubjects = uniqueList([
       ...splitList(record.subject1),
       ...splitList(record.subject2),
@@ -437,39 +437,6 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       explicitSubjects.length > 0
         ? explicitSubjects
         : uniqueList([...splitList(record.subjectArea)]);
-
-    const rawPrimarySubjectDepartment =
-      safeText(record.primarySubjectDepartment) ||
-      safeText(record.subjectDepartment1) ||
-      safeText(record.subjectArea) ||
-      safeText(record.subject1) ||
-      safeText(record.subjectTaught) ||
-      safeText(record.subjectsTaught) ||
-      subjectTaught[0] ||
-      "";
-
-    const primarySubjectDepartment =
-      normalizeSubjectDepartment(rawPrimarySubjectDepartment);
-
-    const subjectDepartment1 = safeText(record.subjectDepartment1)
-      ? normalizeSubjectDepartment(record.subjectDepartment1)
-      : primarySubjectDepartment;
-
-    const subjectDepartment2 = safeText(record.subjectDepartment2)
-      ? normalizeSubjectDepartment(record.subjectDepartment2)
-      : "";
-
-    const subjectDepartment3 = safeText(record.subjectDepartment3)
-      ? normalizeSubjectDepartment(record.subjectDepartment3)
-      : "";
-
-    const subjectDepartment4 = safeText(record.subjectDepartment4)
-      ? normalizeSubjectDepartment(record.subjectDepartment4)
-      : "";
-
-    const subjectDepartment5 = safeText(record.subjectDepartment5)
-      ? normalizeSubjectDepartment(record.subjectDepartment5)
-      : "";
 
     const coordinatorship = designation.filter((item) => {
       const text = item.toLowerCase();
@@ -513,12 +480,7 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       roles,
       designation,
       subjectArea: safeText(record.subjectArea),
-      primarySubjectDepartment,
-      subjectDepartment1,
-      subjectDepartment2,
-      subjectDepartment3,
-      subjectDepartment4,
-      subjectDepartment5,
+      primarySubjectDepartment, 
       subjectTaught,
       coordinatorship,
       gradeLevelTaught,
@@ -543,16 +505,6 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
 }
 
 function getSearchableText(person: Personnel) {
-  const extendedPerson = person as Personnel & {
-    primarySubjectDepartment?: string;
-    subjectArea?: string;
-    subjectDepartment1?: string;
-    subjectDepartment2?: string;
-    subjectDepartment3?: string;
-    subjectDepartment4?: string;
-    subjectDepartment5?: string;
-  };
-
   return [
     person.name,
     person.position,
@@ -560,13 +512,6 @@ function getSearchableText(person: Personnel) {
     person.department,
     person.bio,
     person.description,
-    extendedPerson.subjectArea,
-    extendedPerson.primarySubjectDepartment,
-    extendedPerson.subjectDepartment1,
-    extendedPerson.subjectDepartment2,
-    extendedPerson.subjectDepartment3,
-    extendedPerson.subjectDepartment4,
-    extendedPerson.subjectDepartment5,
     ...(person.roles || []),
     ...(person.designation || []),
     ...(person.subjectTaught || []),
@@ -660,6 +605,179 @@ function getTeacherPositionRank(position: string) {
   return rankIndex === -1 ? 999 : rankIndex + 1;
 }
 
+function normalizeSubjectDepartment(value: string) {
+  const rawValue = safeText(value);
+
+  if (!rawValue) return "Unassigned";
+
+  const normalizedValue = rawValue.toLowerCase();
+
+  const subjectMap: Array<{ pattern: RegExp; label: string }> = [
+    { pattern: /\bmapeh\b/i, label: "MAPEH" },
+    { pattern: /\benglish\b/i, label: "English" },
+    { pattern: /\bfilipino\b/i, label: "Filipino" },
+    { pattern: /\bvalues?\s*education\b|\bve\b/i, label: "Values Education" },
+    {
+      pattern: /\bedukasyon\s+sa\s+pagpapakatao\b|\besp\b/i,
+      label: "Values Education",
+    },
+    { pattern: /\bmathematics\b|\bmath\b/i, label: "Mathematics" },
+    { pattern: /\bscience\b/i, label: "Science" },
+    {
+      pattern: /\baraling\s+panlipunan\b|\bsocial\s+studies\b|\bap\b/i,
+      label: "Araling Panlipunan",
+    },
+    { pattern: /\btle\b/i, label: "TLE" },
+    { pattern: /\beim\b|\belectrical\s+installation\b/i, label: "EIM" },
+    { pattern: /\bcss\b|\bcomputer\s+systems\s+servicing\b/i, label: "CSS" },
+    {
+      pattern: /\bepas\b|\belectronic\s+products\b|\belectronics\b/i,
+      label: "EPAS",
+    },
+  ];
+
+  const matchedSubject = subjectMap.find((item) =>
+    item.pattern.test(normalizedValue)
+  );
+
+  if (matchedSubject) {
+    return matchedSubject.label;
+  }
+
+  const cleanedValue = rawValue
+    .replace(/\bgrade\s*(7|8|9|10|11|12)\b/gi, "")
+    .replace(/\bg(7|8|9|10|11|12)\b/gi, "")
+    .replace(/\b(7|8|9|10|11|12)\b/g, "")
+    .replace(/\s*(&|and|to|-|\/)\s*$/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  return cleanedValue || "Unassigned";
+}
+
+function isSchoolSupportPersonnel(person: Personnel) {
+  const text = [
+    person.name,
+    person.position,
+    person.group,
+    person.department,
+    person.description,
+    ...(person.designation || []),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return (
+    text.includes("job order") ||
+    text.includes("utility") ||
+    text.includes("utility support") ||
+    text.includes("security guard") ||
+    text.includes("security personnel") ||
+    text.includes("school support personnel") ||
+    text.includes("support staff")
+  );
+}
+
+function isAdministrativeOnlyPersonnel(person: Personnel) {
+  const text = [
+    person.name,
+    person.position,
+    person.group,
+    person.department,
+    person.description,
+    ...(person.designation || []),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return (
+    text.includes("administrative officer") ||
+    text.includes("administrative assistant") ||
+    text.includes("administrative aide") ||
+    text.includes("guidance counselor") ||
+    text.includes("guidance personnel") ||
+    text.includes("guidance") ||
+    text.includes("registrar")
+  );
+}
+
+function isAcademicTeacherPersonnel(person: Personnel) {
+  const text = [
+    person.name,
+    person.position,
+    person.group,
+    person.department,
+    person.description,
+    ...(person.designation || []),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  const extendedPerson = person as Personnel & {
+    primarySubjectDepartment?: string;
+    subjectArea?: string;
+    subjectDepartment1?: string;
+    subjectDepartment2?: string;
+    subjectDepartment3?: string;
+    subjectDepartment4?: string;
+    subjectDepartment5?: string;
+  };
+
+  const hasHandledSubject =
+    (person.subjectTaught || []).some((subject) => isMeaningfulText(subject)) ||
+    isMeaningfulText(extendedPerson.subjectArea) ||
+    isMeaningfulText(extendedPerson.primarySubjectDepartment) ||
+    isMeaningfulText(extendedPerson.subjectDepartment1) ||
+    isMeaningfulText(extendedPerson.subjectDepartment2) ||
+    isMeaningfulText(extendedPerson.subjectDepartment3) ||
+    isMeaningfulText(extendedPerson.subjectDepartment4) ||
+    isMeaningfulText(extendedPerson.subjectDepartment5);
+
+  const isTeacher =
+    text.includes("teacher") ||
+    text.includes("master teacher") ||
+    text.includes("class adviser") ||
+    text.includes("subject teacher");
+
+  return (
+    isTeacher &&
+    hasHandledSubject &&
+    !person.roles.includes("Principal") &&
+    !isAdministrativeOnlyPersonnel(person) &&
+    !isSchoolSupportPersonnel(person)
+  );
+}
+
+function getSchoolSupportRank(person: Personnel) {
+  const text = [
+    person.position,
+    person.group,
+    person.department,
+    person.description,
+    ...(person.designation || []),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  if (
+    text.includes("job order") ||
+    text.includes("utility") ||
+    text.includes("utility support")
+  ) {
+    return 1;
+  }
+
+  if (
+    text.includes("security guard") ||
+    text.includes("security personnel") ||
+    text.includes("security")
+  ) {
+    return 2;
+  }
+
+  return 99;
+}
+
 function getSubjectDepartmentsForPerson(person: Personnel) {
   const extendedPerson = person as Personnel & {
     primarySubjectDepartment?: string;
@@ -736,8 +854,7 @@ function getSubjectDepartmentRank(department: string) {
 
 export default function OrganizationPage() {
   const [selectedGrade, setSelectedGrade] = useState("All");
-  const [selectedSubjectDepartment, setSelectedSubjectDepartment] =
-    useState("All");
+  const [selectedSubjectDepartment, setSelectedSubjectDepartment] = useState("All");
   const [selectedPerson, setSelectedPerson] = useState<Personnel | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<"All" | PersonnelRole>("All");
@@ -825,9 +942,23 @@ export default function OrganizationPage() {
     return allPersonnel.filter(
       (person) =>
         !person.roles.includes("Principal") &&
+        !isSchoolSupportPersonnel(person) &&
         (person.roles.includes("Administrative") ||
           person.roles.includes("Guidance"))
     );
+  }, [allPersonnel]);
+
+  const schoolSupportPersonnel = useMemo(() => {
+    return allPersonnel
+      .filter((person) => isSchoolSupportPersonnel(person))
+      .sort((a, b) => {
+        const rankA = getSchoolSupportRank(a);
+        const rankB = getSchoolSupportRank(b);
+
+        if (rankA !== rankB) return rankA - rankB;
+
+        return a.name.localeCompare(b.name);
+      });
   }, [allPersonnel]);
 
   const masterTeachers = useMemo(() => {
@@ -853,9 +984,7 @@ export default function OrganizationPage() {
   }, [allPersonnel]);
 
   const subjectTeachers = useMemo(() => {
-    return allPersonnel.filter((person) =>
-      person.roles.includes("Subject Teacher")
-    );
+    return allPersonnel.filter((person) => isAcademicTeacherPersonnel(person));
   }, [allPersonnel]);
 
   const subjectDepartmentEntries = useMemo(() => {
@@ -1089,7 +1218,7 @@ export default function OrganizationPage() {
                 School Leadership
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                School Leadership and Support Personnel
+                School Leadership and Administrative Staff
               </h2>
             </div>
 
@@ -1290,8 +1419,7 @@ export default function OrganizationPage() {
                 Subject Teachers Directory
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Select a subject department to view assigned subject teacher
-                profiles.
+                Select a subject department to view assigned subject teacher profiles.
               </p>
             </div>
 
@@ -1318,9 +1446,7 @@ export default function OrganizationPage() {
                     const teacherEntries = subjectDepartmentEntries
                       .filter((entry) => entry.department === department)
                       .sort((a, b) => {
-                        if (
-                          a.isPrimaryDepartment !== b.isPrimaryDepartment
-                        ) {
+                        if (a.isPrimaryDepartment !== b.isPrimaryDepartment) {
                           return a.isPrimaryDepartment ? -1 : 1;
                         }
 
@@ -1382,6 +1508,45 @@ export default function OrganizationPage() {
               <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 text-center">
                 <p className="font-bold text-slate-600 dark:text-stone-300">
                   Subject teacher profiles will be added soon.
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-10 text-center">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+                School Operations Support
+              </p>
+
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
+                School Support Personnel
+              </h2>
+
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
+                Personnel who support daily school operations, utility errands,
+                campus safety, and service needs.
+              </p>
+            </div>
+
+            {schoolSupportPersonnel.length > 0 ? (
+              <div className="grid gap-5 md:grid-cols-2">
+                {schoolSupportPersonnel.map((person) => (
+                  <PersonnelCard
+                    key={person.id}
+                    person={person}
+                    compact
+                    onClick={setSelectedPerson}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center">
+                <p className="font-bold text-slate-600 dark:text-stone-300">
+                  School support personnel profiles will be added soon.
                 </p>
               </div>
             )}

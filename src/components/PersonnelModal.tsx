@@ -1,18 +1,16 @@
 "use client";
 
 /**
- * FILE_ID: TABUNOC_PERSONNEL_MODAL_PUBLIC_PROFILE_ADAPTIVE
+ * FILE_ID: TABUNOC_PERSONNEL_MODAL_RESPONSIVE_PROFILE
  * PATH: src/components/PersonnelModal.tsx
- * PURPOSE: Adaptive public-facing personnel profile modal using CSV/Excel roster data.
+ * PURPOSE: Responsive public-facing personnel profile modal using CSV/Excel roster data.
  * DESIGN:
- * - Adaptive full-view modal for desktop/tablet/phone
- * - Left identity panel with fixed 3:4 profile picture
- * - Left identity text scrolls if designation is long
- * - Right information panel scrolls independently
+ * - Desktop/tablet: fixed left profile panel + scrollable right details
+ * - Mobile: full-screen profile sheet with compact top profile header
+ * - 3:4 profile photo ratio
  * - No redundant information
- * - Native draggable scrollbar with #eff3f7 track
- * - Contact and social media sections with inline SVG icons
  * - Hides N/A/blank fields
+ * - Shows non-teaching personnel details properly
  * - Retains teachingPhilosophy from Excel/CSV source
  */
 
@@ -206,6 +204,10 @@ function getDesignationText(person: Personnel) {
   return uniqueList([...cleanedDesignations, classAdviserText]).join(" / ");
 }
 
+function getRoleBadge(person: Personnel) {
+  return safeText(person.group) || safeText(person.department) || "Personnel";
+}
+
 function getTeachingDepartment(person: Personnel) {
   const department = safeText(person.department);
   const normalized = department.toLowerCase();
@@ -237,6 +239,42 @@ function getSubjectDepartments(person: Personnel) {
 function getTeachingPhilosophy(person: Personnel) {
   const extended = person as ExtendedPersonnel;
   return safeText(extended.teachingPhilosophy) || safeText(extended.philosophy);
+}
+
+function getPersonnelDetails(person: Personnel): DetailField[] {
+  return [
+    {
+      label: "Department",
+      value: safeText(person.department),
+    },
+    {
+      label: "Personnel Group",
+      value: safeText(person.group),
+    },
+  ].filter((field) => isMeaningfulText(field.value));
+}
+
+function getTeachingProfileFields(person: Personnel): DetailField[] {
+  const extended = person as ExtendedPersonnel;
+
+  return [
+    {
+      label: "Subject Area",
+      value: safeText(extended.subjectArea),
+    },
+    {
+      label: "Subject Taught",
+      value: displayList(person.subjectTaught),
+    },
+    {
+      label: "Subject Department",
+      value: getSubjectDepartments(person),
+    },
+    {
+      label: "Teaching Department",
+      value: getTeachingDepartment(person),
+    },
+  ].filter((field) => isMeaningfulText(field.value));
 }
 
 function getContactFields(person: Personnel): DetailField[] {
@@ -346,14 +384,14 @@ function SocialIcon({ icon }: { icon: SocialLink["icon"] }) {
 function DetailFieldCard({ label, value, wide }: DetailField) {
   return (
     <div
-      className={`bg-white px-5 py-4 shadow-sm ring-1 ring-slate-200/70 transition duration-300 hover:-translate-y-0.5 hover:shadow-md md:px-6 md:py-5 ${
+      className={`bg-white px-4 py-4 shadow-sm ring-1 ring-slate-200/70 transition duration-300 hover:-translate-y-0.5 hover:shadow-md sm:px-5 md:px-6 md:py-5 ${
         wide ? "xl:col-span-2" : ""
       }`}
     >
-      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0F4C5C] md:text-[11px] md:tracking-[0.22em]">
         {label}
       </p>
-      <p className="mt-3 text-sm font-semibold leading-7 text-slate-800">
+      <p className="mt-2 text-sm font-semibold leading-7 text-slate-800 md:mt-3">
         {value}
       </p>
     </div>
@@ -368,8 +406,8 @@ function SectionTitle({
   title: string;
 }) {
   return (
-    <div className="mb-5">
-      <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+    <div className="mb-4 md:mb-5">
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0F4C5C] md:text-[11px] md:tracking-[0.22em]">
         {eyebrow}
       </p>
       <h3 className="mt-2 text-xl font-black tracking-tight text-slate-950 md:text-2xl">
@@ -412,31 +450,17 @@ export default function PersonnelModal({
 
   const positionText = person ? getPositionText(person) : "";
   const designationText = person ? getDesignationText(person) : "";
+  const roleBadge = person ? getRoleBadge(person) : "";
   const teachingPhilosophy = person ? getTeachingPhilosophy(person) : "";
 
-  const profileDetails = useMemo<DetailField[]>(() => {
+  const personnelDetails = useMemo<DetailField[]>(() => {
     if (!person) return [];
+    return getPersonnelDetails(person);
+  }, [person]);
 
-    const extended = person as ExtendedPersonnel;
-
-    return [
-      {
-        label: "Subject Area",
-        value: safeText(extended.subjectArea),
-      },
-      {
-        label: "Subject Taught",
-        value: displayList(person.subjectTaught),
-      },
-      {
-        label: "Subject Department",
-        value: getSubjectDepartments(person),
-      },
-      {
-        label: "Teaching Department",
-        value: getTeachingDepartment(person),
-      },
-    ].filter((field) => isMeaningfulText(field.value));
+  const teachingProfile = useMemo<DetailField[]>(() => {
+    if (!person) return [];
+    return getTeachingProfileFields(person);
   }, [person]);
 
   const contactFields = useMemo<DetailField[]>(() => {
@@ -453,43 +477,37 @@ export default function PersonnelModal({
     <AnimatePresence>
       {person && (
         <motion.div
-          className="fixed inset-0 z-[2000] flex items-center justify-center p-0 md:px-4 md:py-6"
+          className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/55 p-0 backdrop-blur-sm md:px-4 md:py-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           <style jsx global>{`
-            .personnel-modal-scroll,
-            .personnel-profile-scroll {
+            .personnel-modal-scroll {
               scrollbar-width: thin;
               scrollbar-color: #aeb4ba #eff3f7;
               scrollbar-gutter: stable;
             }
 
-            .personnel-modal-scroll::-webkit-scrollbar,
-            .personnel-profile-scroll::-webkit-scrollbar {
+            .personnel-modal-scroll::-webkit-scrollbar {
               width: 14px;
             }
 
-            .personnel-modal-scroll::-webkit-scrollbar-track,
-            .personnel-profile-scroll::-webkit-scrollbar-track {
+            .personnel-modal-scroll::-webkit-scrollbar-track {
               background: #eff3f7;
             }
 
-            .personnel-modal-scroll::-webkit-scrollbar-thumb,
-            .personnel-profile-scroll::-webkit-scrollbar-thumb {
+            .personnel-modal-scroll::-webkit-scrollbar-thumb {
               background: #aeb4ba;
               border: 4px solid #eff3f7;
               border-radius: 999px;
             }
 
-            .personnel-modal-scroll::-webkit-scrollbar-thumb:hover,
-            .personnel-profile-scroll::-webkit-scrollbar-thumb:hover {
+            .personnel-modal-scroll::-webkit-scrollbar-thumb:hover {
               background: #858d96;
             }
 
-            .personnel-modal-scroll::-webkit-scrollbar-button,
-            .personnel-profile-scroll::-webkit-scrollbar-button {
+            .personnel-modal-scroll::-webkit-scrollbar-button {
               display: none;
               width: 0;
               height: 0;
@@ -497,49 +515,41 @@ export default function PersonnelModal({
 
             @media (min-width: 768px) {
               .personnel-modal-scroll::-webkit-scrollbar {
-                width: 28px;
+                width: 36px;
               }
 
               .personnel-modal-scroll::-webkit-scrollbar-thumb {
-                border: 8px solid #eff3f7;
+                border: 11px solid #eff3f7;
               }
             }
 
             @media (min-width: 1024px) {
               .personnel-modal-scroll::-webkit-scrollbar {
-                width: 44px;
+                width: 52px;
               }
 
               .personnel-modal-scroll::-webkit-scrollbar-thumb {
-                border: 14px solid #eff3f7;
+                border: 17px solid #eff3f7;
               }
             }
           `}</style>
 
           <motion.div
-            className="absolute inset-0 bg-black/55 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-          />
-
-          <motion.div
             onClick={(event) => event.stopPropagation()}
-            initial={{ opacity: 0, scale: 0.96, y: 18 }}
+            initial={{ opacity: 0, scale: 0.98, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 12 }}
+            exit={{ opacity: 0, scale: 0.98, y: 10 }}
             transition={{ type: "tween", duration: 0.18, ease: "easeOut" }}
-            className="relative h-screen w-screen overflow-hidden bg-white text-slate-950 shadow-2xl md:h-[90vh] md:w-[96vw] md:max-w-[1500px]"
+            className="relative flex h-[100dvh] w-full overflow-hidden bg-white text-slate-950 shadow-2xl md:h-[88vh] md:w-[96vw] md:max-w-[1500px]"
           >
             <button
               type="button"
               onClick={onClose}
               aria-label="Close personnel profile"
-              className="absolute right-0 top-0 z-40 flex h-12 w-12 items-center justify-center bg-red-600 text-white shadow-md transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 md:h-14 md:w-14"
+              className="absolute right-0 top-0 z-40 flex h-11 w-11 items-center justify-center bg-red-600 text-white shadow-md transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 md:h-12 md:w-12 lg:h-[58px] lg:w-[58px]"
             >
               <svg
-                className="h-7 w-7 md:h-8 md:w-8"
+                className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8"
                 viewBox="0 0 24 24"
                 fill="none"
                 aria-hidden="true"
@@ -554,13 +564,13 @@ export default function PersonnelModal({
             </button>
 
             <div className="flex h-full w-full flex-col md:flex-row">
-              {/* Adaptive Profile Identity Panel */}
-              <aside className="relative shrink-0 overflow-hidden bg-white px-5 py-4 md:flex md:h-full md:w-[390px] md:flex-col md:px-8 md:py-8 lg:w-[430px] lg:px-10 lg:py-10">
+              {/* Mobile profile header / Desktop fixed identity panel */}
+              <aside className="relative shrink-0 overflow-hidden bg-white px-5 py-4 pr-14 md:flex md:h-full md:w-[340px] md:flex-col md:justify-start md:px-8 md:py-8 md:pr-8 lg:w-[420px] lg:px-10 lg:py-10">
                 <div className="absolute left-0 top-0 h-full w-1.5 bg-[#0F4C5C] md:w-2" />
                 <div className="absolute left-1.5 top-0 h-full w-1 bg-[#ffdf20] md:left-2" />
 
-                <div className="relative z-10 flex h-full min-h-0 items-center gap-4 md:flex-col md:items-stretch">
-                  <div className="aspect-[3/4] w-[92px] flex-none overflow-hidden bg-[#0F4C5C] shadow-lg ring-1 ring-slate-200 sm:w-[110px] md:mx-auto md:w-[250px] lg:w-[280px]">
+                <div className="relative z-10 flex items-center gap-4 md:h-full md:min-h-0 md:flex-col md:items-stretch">
+                  <div className="aspect-[3/4] w-[92px] flex-none overflow-hidden bg-[#0F4C5C] shadow-lg ring-1 ring-slate-200 sm:w-[110px] md:mx-auto md:w-[240px] lg:w-[280px]">
                     {showPhoto ? (
                       <img
                         src={photoUrl}
@@ -575,7 +585,7 @@ export default function PersonnelModal({
                     )}
                   </div>
 
-                  <div className="personnel-profile-scroll min-w-0 md:mt-7 md:min-h-0 md:overflow-y-auto md:pr-2">
+                  <div className="min-w-0 md:mt-8 md:min-h-0 md:overflow-y-auto md:pr-2">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0F4C5C] md:text-[11px] md:tracking-[0.24em]">
                       Personnel Profile
                     </p>
@@ -595,14 +605,20 @@ export default function PersonnelModal({
                         {designationText}
                       </p>
                     )}
+
+                    {isMeaningfulText(roleBadge) && (
+                      <div className="mt-3 inline-flex bg-[#0F4C5C] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white md:mt-5 md:px-4 md:py-2 md:text-xs md:tracking-[0.16em]">
+                        {roleBadge}
+                      </div>
+                    )}
                   </div>
                 </div>
               </aside>
 
-              {/* Scrollable Information Panel */}
-              <section className="personnel-modal-scroll min-h-0 flex-1 overflow-y-auto bg-[#f8fafc] px-5 py-6 pr-3 sm:px-6 md:px-8 md:py-8 md:pr-4 lg:px-10 lg:py-10 lg:pr-5">
+              {/* Scrollable information panel */}
+              <section className="personnel-modal-scroll min-h-0 flex-1 overflow-y-auto bg-[#f8fafc] px-5 py-6 pr-3 sm:px-6 md:px-8 md:py-8 md:pr-4 lg:px-10 lg:py-12 lg:pr-5">
                 <div className="mb-6 max-w-3xl md:mb-8">
-                  <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-[#0F4C5C] md:text-sm md:tracking-[0.22em]">
                     Profile Information
                   </p>
                   <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950 md:mt-3 md:text-3xl">
@@ -614,7 +630,27 @@ export default function PersonnelModal({
                   </p>
                 </div>
 
-                {profileDetails.length > 0 && (
+                {personnelDetails.length > 0 && (
+                  <section className="mb-8 md:mb-10">
+                    <SectionTitle
+                      eyebrow="Personnel Details"
+                      title="Basic assignment information"
+                    />
+
+                    <div className="grid gap-4 md:gap-5 xl:grid-cols-2">
+                      {personnelDetails.map((field) => (
+                        <DetailFieldCard
+                          key={`${field.label}-${field.value}`}
+                          label={field.label}
+                          value={field.value}
+                          wide={field.wide}
+                        />
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {teachingProfile.length > 0 && (
                   <section className="mb-8 md:mb-10">
                     <SectionTitle
                       eyebrow="Teaching Profile"
@@ -622,7 +658,7 @@ export default function PersonnelModal({
                     />
 
                     <div className="grid gap-4 md:gap-5 xl:grid-cols-2">
-                      {profileDetails.map((field) => (
+                      {teachingProfile.map((field) => (
                         <DetailFieldCard
                           key={`${field.label}-${field.value}`}
                           label={field.label}
@@ -683,7 +719,7 @@ export default function PersonnelModal({
                           href={link.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-3 bg-white px-5 py-3 text-sm font-black text-[#0F4C5C] shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-[#0F4C5C] hover:text-white lg:justify-start"
+                          className="inline-flex items-center justify-center gap-3 bg-white px-5 py-3 text-sm font-black text-[#0F4C5C] shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-[#0F4C5C] hover:text-white"
                         >
                           <SocialIcon icon={link.icon} />
                           {link.label}
@@ -693,13 +729,14 @@ export default function PersonnelModal({
                   </section>
                 )}
 
-                {profileDetails.length === 0 &&
+                {personnelDetails.length === 0 &&
+                  teachingProfile.length === 0 &&
                   !isMeaningfulText(teachingPhilosophy) &&
                   contactFields.length === 0 &&
                   socialLinks.length === 0 && (
-                    <div className="bg-white p-8 text-center shadow-sm ring-1 ring-slate-200">
+                    <div className="bg-white p-6 text-center shadow-sm ring-1 ring-slate-200 md:p-8">
                       <p className="font-bold text-slate-600">
-                        Additional public profile details will be added soon.
+                        Public profile details will be added soon.
                       </p>
                     </div>
                   )}

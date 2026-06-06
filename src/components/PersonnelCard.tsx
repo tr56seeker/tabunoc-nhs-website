@@ -1,6 +1,17 @@
 "use client";
 
-import { useState } from "react";
+/**
+ * FILE_ID: TABUNOC_PERSONNEL_CARD_COMPACT_PREVIEW
+ * PATH: src/components/PersonnelCard.tsx
+ * PURPOSE: Compact organization preview card with fixed 3:4 photo ratio.
+ * DISPLAY:
+ * - Name
+ * - Position
+ * - Department
+ * - Designation, one line only with ellipsis when long
+ */
+
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import type { Personnel } from "@/data/organization";
 
@@ -10,58 +21,161 @@ type PersonnelCardProps = {
   onClick?: (person: Personnel) => void;
 };
 
+type ExtendedPersonnel = Personnel & {
+  photo?: string;
+  photoUrl?: string;
+  image?: string;
+  avatar?: string;
+  imageUrl?: string;
+  profileImage?: string;
+  profilePhoto?: string;
+};
+
+function safeText(value: unknown) {
+  return String(value ?? "").trim();
+}
+
+function isMeaningfulText(value: unknown) {
+  const text = safeText(value).toLowerCase();
+
+  return (
+    text !== "" &&
+    text !== "n/a" &&
+    text !== "na" &&
+    text !== "none" &&
+    text !== "null" &&
+    text !== "-"
+  );
+}
+
+function uniqueList(items: Array<string | undefined | null>) {
+  return Array.from(
+    new Set(items.map((item) => safeText(item)).filter(isMeaningfulText))
+  );
+}
+
 function getInitials(name: string) {
   return name
     .split(" ")
     .filter(Boolean)
     .slice(0, 2)
     .map((word) => word[0])
-    .join("");
+    .join("")
+    .toUpperCase();
+}
+
+function getPhotoUrl(person: Personnel) {
+  const extendedPerson = person as ExtendedPersonnel;
+
+  return (
+    safeText(extendedPerson.photo) ||
+    safeText(extendedPerson.photoUrl) ||
+    safeText(extendedPerson.image) ||
+    safeText(extendedPerson.avatar) ||
+    safeText(extendedPerson.imageUrl) ||
+    safeText(extendedPerson.profileImage) ||
+    safeText(extendedPerson.profilePhoto)
+  );
 }
 
 function getAdvisoryText(person: Personnel) {
   if (!person.advisory || person.advisory.length === 0) return "";
 
   return person.advisory
-    .map((item) => `${item.gradeLevel}-${item.section.replace(/^\d+-/, "")}`)
+    .map((item) => {
+      const gradeLevel = safeText(item.gradeLevel);
+      const section = safeText(item.section).replace(/^\d+-/, "");
+
+      if (!gradeLevel && !section) return "";
+      if (!section) return gradeLevel;
+      if (!gradeLevel) return section;
+
+      return `${gradeLevel}-${section}`;
+    })
+    .filter(isMeaningfulText)
     .join(", ");
 }
 
-function getPositionDesignation(person: Personnel) {
-  const parts: string[] = [];
-
-  if (person.position) {
-    parts.push(person.position);
-  }
-
-  const designations = person.designation || [];
+function getDesignationPreview(person: Personnel) {
+  const position = safeText(person.position).toLowerCase();
   const advisoryText = getAdvisoryText(person);
 
-  const hasClassAdviser =
-    designations.some(
-      (designation) => designation.trim().toLowerCase() === "class adviser"
-    ) || advisoryText !== "";
-
-  const cleanedDesignations = designations.filter(
-    (designation) => designation.trim().toLowerCase() !== "class adviser"
+  const designations = uniqueList(person.designation || []).filter(
+    (designation) => designation.toLowerCase() !== position
   );
 
-  if (cleanedDesignations.length > 0) {
-    parts.push(...cleanedDesignations);
-  }
+  const hasClassAdviser =
+    advisoryText !== "" ||
+    designations.some(
+      (designation) => designation.toLowerCase() === "class adviser"
+    );
 
-  if (hasClassAdviser) {
-    parts.push(
-      advisoryText ? `Class Adviser, ${advisoryText}` : "Class Adviser"
+  const cleanedDesignations = designations.filter(
+    (designation) => designation.toLowerCase() !== "class adviser"
+  );
+
+  const classAdviserText =
+    hasClassAdviser && advisoryText
+      ? `Class Adviser, ${advisoryText}`
+      : hasClassAdviser
+        ? "Class Adviser"
+        : "";
+
+  return uniqueList([...cleanedDesignations, classAdviserText]).join(" / ");
+}
+
+function PreviewLine({
+  value,
+  variant = "normal",
+  title,
+}: {
+  value: string;
+  variant?: "name" | "normal" | "muted" | "designation";
+  title?: string;
+}) {
+  if (!isMeaningfulText(value)) return null;
+
+  if (variant === "name") {
+    return (
+      <p
+        title={title || value}
+        className="line-clamp-2 text-base font-black leading-tight tracking-tight text-slate-950 transition group-hover:text-[#0F4C5C] dark:text-white dark:group-hover:text-yellow-300"
+      >
+        {value}
+      </p>
     );
   }
 
-  return Array.from(new Set(parts)).join(" / ");
-}
+  if (variant === "designation") {
+    return (
+      <p
+        title={title || value}
+        className="truncate text-xs font-semibold leading-snug text-slate-500 dark:text-stone-400"
+      >
+        {value}
+      </p>
+    );
+  }
 
-function getSubjectText(person: Personnel) {
-  if (!person.subjectTaught || person.subjectTaught.length === 0) return "";
-  return person.subjectTaught.join(", ");
+  if (variant === "muted") {
+    return (
+      <p
+        title={title || value}
+        className="truncate text-sm font-semibold leading-snug text-slate-600 dark:text-stone-300"
+      >
+        {value}
+      </p>
+    );
+  }
+
+  return (
+    <p
+      title={title || value}
+      className="truncate text-sm font-bold leading-snug text-[#0F4C5C] dark:text-yellow-300"
+    >
+      {value}
+    </p>
+  );
 }
 
 export default function PersonnelCard({
@@ -69,82 +183,59 @@ export default function PersonnelCard({
   compact = false,
   onClick,
 }: PersonnelCardProps) {
-  const initials = getInitials(person.name);
-  const positionDesignation = getPositionDesignation(person);
-  const subjectText = getSubjectText(person);
   const [failedPhoto, setFailedPhoto] = useState<string | null>(null);
-  const showPhoto = person.photo && failedPhoto !== person.photo;
+
+  const photoUrl = getPhotoUrl(person);
+  const showPhoto = photoUrl && failedPhoto !== photoUrl;
+  const initials = getInitials(person.name);
+  const designationPreview = getDesignationPreview(person);
+
+  useEffect(() => {
+    setFailedPhoto(null);
+  }, [person.id, photoUrl]);
+
+  const cardHeight = compact ? "h-[128px]" : "h-[136px]";
+  const photoWidth = compact ? "w-[96px]" : "w-[102px]";
 
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 18 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      whileHover={{}}
-      transition={{ duration: 0.25 }}
+      transition={{ duration: 0.22 }}
       onClick={() => onClick?.(person)}
-      className="group relative h-full cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:scale-[1.01] dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20"
+      className={`group ${cardHeight} cursor-pointer overflow-hidden border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20`}
     >
       <div className="flex h-full">
-        {/* LEFT PHOTO BLOCK */}
-        <div className="w-[132px] shrink-0 bg-[#0F4C5C]">
+        {/* Fixed 3:4 Photo */}
+        <div className={`${photoWidth} h-full shrink-0 bg-[#0F4C5C]`}>
           {showPhoto ? (
             <img
-              src={person.photo}
+              src={photoUrl}
               alt={person.name}
-              onError={() => setFailedPhoto(person.photo ?? null)}
+              onError={() => setFailedPhoto(photoUrl)}
               className="h-full w-full object-cover object-[50%_20%]"
             />
           ) : (
-            <div className="flex h-full min-h-[132px] w-full items-center justify-center bg-[#0F4C5C] text-2xl font-semibold text-white">
+            <div className="flex h-full w-full items-center justify-center bg-[#0F4C5C] text-2xl font-black text-white">
               {initials}
             </div>
           )}
         </div>
 
-        {/* RIGHT CONTENT */}
-        <div className="relative flex flex-1 flex-col justify-center px-5 py-4">
-          <h3
-            className={`leading-tight tracking-tight text-slate-950 transition group-hover:text-[#0F4C5C] dark:text-white dark:group-hover:text-yellow-300 ${
-              compact ? "text-base font-bold" : "text-lg font-extrabold"
-            }`}
-          >
-            {person.name}
-          </h3>
-
-          {positionDesignation && (
-            <div className="mt-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-                Position/Designation
-              </p>
-              <p className="mt-1 text-sm font-medium leading-snug text-[#123C9C] dark:text-yellow-300">
-                {positionDesignation}
-              </p>
-            </div>
-          )}
-
-          {subjectText && (
-            <div className="mt-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-                Subject Taught
-              </p>
-              <p className="mt-1 text-sm font-medium leading-snug text-[#0F4C5C] dark:text-stone-200">
-                {subjectText}
-              </p>
-            </div>
-          )}
-
-          {person.department && (
-            <div className="mt-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
-                Department
-              </p>
-              <p className="mt-1 text-sm font-medium leading-snug text-slate-700 dark:text-stone-300">
-                {person.department}
-              </p>
-            </div>
-          )}
+        {/* Short Preview Information */}
+        <div className="flex min-w-0 flex-1 flex-col justify-center px-4 py-3">
+          <div className="grid min-w-0 gap-1.5">
+            <PreviewLine value={person.name} variant="name" />
+            <PreviewLine value={safeText(person.position)} />
+            <PreviewLine value={safeText(person.department)} variant="muted" />
+            <PreviewLine
+              value={designationPreview}
+              variant="designation"
+              title={designationPreview}
+            />
+          </div>
         </div>
       </div>
     </motion.article>

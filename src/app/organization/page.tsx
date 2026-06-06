@@ -1,12 +1,5 @@
 "use client";
 
-/**
- * FILE_ID: TABUNOC_ORGANIZATION_PAGE_CSV_ROSTER
- * PATH: src/app/organization/page.tsx
- * DATA_SOURCE: public/data/personnel.csv
- * PURPOSE: School organization page using CSV-powered personnel roster.
- */
-
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
@@ -106,12 +99,12 @@ function splitList(value?: string | null) {
   return safeText(value)
     .split("|")
     .map((item) => item.trim())
-    .filter((item) => isMeaningfulText(item));
+    .filter(Boolean);
 }
 
 function uniqueList(items: Array<string | undefined | null>) {
   return Array.from(
-    new Set(items.map((item) => safeText(item)).filter(isMeaningfulText))
+    new Set(items.map((item) => safeText(item)).filter(Boolean))
   );
 }
 
@@ -195,14 +188,76 @@ function extractSection(record: Record<string, string>) {
   );
 }
 
+function normalizeLeadershipText(value: string) {
+  return safeText(value)
+    .toLowerCase()
+    .replace(/[–—-]/g, " ")
+    .replace(/[()]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isExactShsCoordinatorDesignation(value: string) {
+  const text = safeText(value)
+    .toLowerCase()
+    .replace(/[–—]/g, "-")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return text === "shs coordinator" || text === "senior high school coordinator";
+}
+
+function isGradeLeaderDesignationText(value: string) {
+  const text = safeText(value)
+    .toLowerCase()
+    .replace(/[–—-]/g, " ")
+    .replace(/[()]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!text) return false;
+
+  // Do not treat coordinatorship as grade leadership.
+  // SHS Coordinator is handled separately by exact matching only.
+  if (text.includes("coordinator")) return false;
+
+  // Class Adviser alone is not a Grade Leader.
+  const isOnlyClassAdviser =
+    text.includes("class adviser") &&
+    !text.includes("grade leader") &&
+    !text.includes("chairperson") &&
+    !text.includes("chairman") &&
+    !text.includes("chair");
+
+  if (isOnlyClassAdviser) return false;
+
+  const hasGrade =
+    /\bgrade\s*(7|8|9|10|11|12)\b/i.test(text) ||
+    /\b(7|8|9|10|11|12)(?:st|nd|rd|th)?\s*grade\b/i.test(text) ||
+    /\bgrade\s*11\s*(and|&)\s*12\b/i.test(text);
+
+  const hasLeaderKeyword =
+    /\bgrade\s*leader\b/i.test(text) ||
+    /\bleader\b/i.test(text) ||
+    /\bgrade\s*level\s*(chairperson|chairman|chair)\b/i.test(text) ||
+    /\b(chairperson|chairman|chair)\b/i.test(text);
+
+  return hasGrade && hasLeaderKeyword;
+}
+
+function isGradeLeaderOrShsCoordinatorDesignation(value: string) {
+  return (
+    isExactShsCoordinatorDesignation(value) ||
+    isGradeLeaderDesignationText(value)
+  );
+}
+
 function inferRoles(record: Record<string, string>): PersonnelRole[] {
   const position = safeText(record.position).toLowerCase();
   const category = safeText(record.category).toLowerCase();
   const department = safeText(record.department).toLowerCase();
   const displayGroup = safeText(record.displayGroup).toLowerCase();
   const subGroup = safeText(record.subGroup).toLowerCase();
-  const subjectArea = safeText(record.subjectArea).toLowerCase();
-
   const designation1Text = safeText(record.designation1).toLowerCase();
 
   const designationText = getAllDesignationsFromRecord(record)
@@ -262,25 +317,21 @@ function inferRoles(record: Record<string, string>): PersonnelRole[] {
     roles.push("Master Teacher");
   }
 
-  if (
-    designationText.includes("grade leader") ||
-    designationText.includes("grade level chairperson") ||
-    designationText.includes("grade level coordinator") ||
-    /\b(7|8|9|10|11|12)(st|nd|rd|th)?\s*grade level chairperson\b/i.test(
-      designationText
-    ) ||
-    displayGroup.includes("grade leader") ||
-    subGroup.includes("grade leader")
-  ) {
+  const designationItems = getAllDesignationsFromRecord(record);
+
+  const hasActualGradeLeaderDesignation = designationItems.some((item) =>
+    isGradeLeaderDesignationText(item)
+  );
+
+  const hasExactShsCoordinatorDesignation = designationItems.some((item) =>
+    isExactShsCoordinatorDesignation(item)
+  );
+
+  if (hasActualGradeLeaderDesignation || hasExactShsCoordinatorDesignation) {
     roles.push("Grade Leader");
   }
 
-  if (
-    designationText.includes("shs coordinator") ||
-    designationText.includes("senior high school coordinator") ||
-    designationText.includes("senior high school focal") ||
-    subGroup.includes("shs coordinator")
-  ) {
+  if (hasExactShsCoordinatorDesignation) {
     roles.push("SHS Coordinator");
   }
 
@@ -297,6 +348,7 @@ function inferRoles(record: Record<string, string>): PersonnelRole[] {
   const hasHandledSubject =
     isMeaningfulText(record.subjectArea) ||
     isMeaningfulText(record.primarySubjectDepartment) ||
+    isMeaningfulText(record.subjectDepartment) ||
     isMeaningfulText(record.subjectDepartment1) ||
     isMeaningfulText(record.subjectDepartment2) ||
     isMeaningfulText(record.subjectDepartment3) ||
@@ -420,8 +472,43 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
     const roles = inferRoles(record);
     const advisory = buildAdvisory(record);
 
-    const primarySubjectDepartment =
-  safeText(record.primarySubjectDepartment) || safeText(record.subjectArea);
+    const rawPrimarySubjectDepartment =
+      safeText(record.primarySubjectDepartment) ||
+      safeText(record.subjectDepartment) ||
+      safeText(record.subjectDepartment1) ||
+      safeText(record.subjectArea) ||
+      safeText(record.subject1) ||
+      safeText(record.subjectTaught) ||
+      safeText(record.subjectsTaught) ||
+      "";
+
+    const primarySubjectDepartment = normalizeSubjectDepartment(
+      rawPrimarySubjectDepartment
+    );
+
+    const subjectDepartment = safeText(record.subjectDepartment)
+      ? normalizeSubjectDepartment(record.subjectDepartment)
+      : primarySubjectDepartment;
+
+    const subjectDepartment1 = safeText(record.subjectDepartment1)
+      ? normalizeSubjectDepartment(record.subjectDepartment1)
+      : subjectDepartment;
+
+    const subjectDepartment2 = safeText(record.subjectDepartment2)
+      ? normalizeSubjectDepartment(record.subjectDepartment2)
+      : "";
+
+    const subjectDepartment3 = safeText(record.subjectDepartment3)
+      ? normalizeSubjectDepartment(record.subjectDepartment3)
+      : "";
+
+    const subjectDepartment4 = safeText(record.subjectDepartment4)
+      ? normalizeSubjectDepartment(record.subjectDepartment4)
+      : "";
+
+    const subjectDepartment5 = safeText(record.subjectDepartment5)
+      ? normalizeSubjectDepartment(record.subjectDepartment5)
+      : "";
 
     const explicitSubjects = uniqueList([
       ...splitList(record.subject1),
@@ -477,10 +564,6 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
         safeText(record.designation1) ||
         safeText(record.subjectArea) ||
         safeText(record.department),
-      teachingPhilosophy:
-        safeText(record.teachingPhilosophy) || safeText(record.philosophy),
-      philosophy:
-        safeText(record.teachingPhilosophy) || safeText(record.philosophy),
       roles,
       designation,
       subjectArea: safeText(record.subjectArea),
@@ -491,17 +574,14 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       sectionsHandled,
       advisory,
 
-      subjectDepartment: safeText(record.subjectDepartment),
-      subjectDepartment1: safeText(record.subjectDepartment1),
-      subjectDepartment2: safeText(record.subjectDepartment2),
-      subjectDepartment3: safeText(record.subjectDepartment3),
-      subjectDepartment4: safeText(record.subjectDepartment4),
-      subjectDepartment5: safeText(record.subjectDepartment5),
-
+      subjectDepartment,
+      teachingPhilosophy:
+        safeText(record.teachingPhilosophy) || safeText(record.philosophy),
+      philosophy:
+        safeText(record.teachingPhilosophy) || safeText(record.philosophy),
       email: safeText(record.email),
       consultationSchedule: safeText(record.consultationSchedule),
       contactNote: safeText(record.contactNote),
-
       facebook: safeText(record.facebook),
       facebookUrl: safeText(record.facebookUrl),
       messenger: safeText(record.messenger),
@@ -551,47 +631,45 @@ function getSearchableText(person: Personnel) {
 }
 
 function getGradeLeaderRank(person: Personnel) {
-  const leadershipText = [
-    person.name,
-    person.position,
-    person.group,
-    person.department,
-    person.description,
-    ...(person.designation || []),
-    ...(person.coordinatorship || []),
-    ...(person.gradeLevelTaught || []),
-    ...(person.sectionsHandled || []),
-    ...(person.advisory || []).map((item) => item?.gradeLevel || ""),
-    ...(person.advisory || []).map((item) => item?.section || ""),
-  ]
-    .join(" ")
-    .toLowerCase();
+  const designationItems = uniqueList([...(person.designation || [])]);
 
-  if (
-    leadershipText.includes("shs coordinator") ||
-    leadershipText.includes("senior high school coordinator") ||
-    leadershipText.includes("senior high school focal") ||
-    leadershipText.includes("shs focal")
-  ) {
+  if (designationItems.some((item) => isExactShsCoordinatorDesignation(item))) {
     return 0;
   }
 
+  const leadershipText = designationItems
+    .map((item) =>
+      safeText(item)
+        .toLowerCase()
+        .replace(/[–—-]/g, " ")
+        .replace(/[()]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+    )
+    .join(" ");
+
+  if (
+    /\bgrade\s*11\s*(and|&)\s*12\b/i.test(leadershipText) ||
+    /\bgrade\s*(11|12)\b/i.test(leadershipText) ||
+    /\b(11|12)(?:st|nd|rd|th)?\s*grade\b/i.test(leadershipText)
+  ) {
+    return 1;
+  }
+
   const gradeOrder: Record<string, number> = {
-    "12": 1,
-    "11": 2,
-    "10": 3,
-    "9": 4,
-    "8": 5,
-    "7": 6,
+    "10": 2,
+    "9": 3,
+    "8": 4,
+    "7": 5,
   };
 
-  const gradeFirst = leadershipText.match(/grade\s*(7|8|9|10|11|12)/i);
+  const gradeFirst = leadershipText.match(/grade\s*(7|8|9|10)/i);
   if (gradeFirst) {
     return gradeOrder[gradeFirst[1]] ?? 99;
   }
 
   const numberFirst = leadershipText.match(
-    /\b(7|8|9|10|11|12)(st|nd|rd|th)?\s*grade/i
+    /\b(7|8|9|10)(?:st|nd|rd|th)?\s*grade/i
   );
   if (numberFirst) {
     return gradeOrder[numberFirst[1]] ?? 99;
@@ -629,45 +707,7 @@ function getTeacherPositionRank(position: string) {
 }
 
 function normalizeSubjectDepartment(value: string) {
-  const rawValue = safeText(value);
-
-  if (!rawValue) return "Unassigned";
-
-  const normalizedValue = rawValue.toLowerCase();
-
-  const subjectMap: Array<{ pattern: RegExp; label: string }> = [
-    { pattern: /\bmapeh\b/i, label: "MAPEH" },
-    { pattern: /\benglish\b/i, label: "English" },
-    { pattern: /\bfilipino\b/i, label: "Filipino" },
-    { pattern: /\bvalues?\s*education\b|\bve\b/i, label: "Values Education" },
-    {
-      pattern: /\bedukasyon\s+sa\s+pagpapakatao\b|\besp\b/i,
-      label: "Values Education",
-    },
-    { pattern: /\bmathematics\b|\bmath\b/i, label: "Mathematics" },
-    { pattern: /\bscience\b/i, label: "Science" },
-    {
-      pattern: /\baraling\s+panlipunan\b|\bsocial\s+studies\b|\bap\b/i,
-      label: "Araling Panlipunan",
-    },
-    { pattern: /\btle\b/i, label: "TLE" },
-    { pattern: /\beim\b|\belectrical\s+installation\b/i, label: "EIM" },
-    { pattern: /\bcss\b|\bcomputer\s+systems\s+servicing\b/i, label: "CSS" },
-    {
-      pattern: /\bepas\b|\belectronic\s+products\b|\belectronics\b/i,
-      label: "EPAS",
-    },
-  ];
-
-  const matchedSubject = subjectMap.find((item) =>
-    item.pattern.test(normalizedValue)
-  );
-
-  if (matchedSubject) {
-    return matchedSubject.label;
-  }
-
-  const cleanedValue = rawValue
+  const normalized = safeText(value)
     .replace(/\bgrade\s*(7|8|9|10|11|12)\b/gi, "")
     .replace(/\bg(7|8|9|10|11|12)\b/gi, "")
     .replace(/\b(7|8|9|10|11|12)\b/g, "")
@@ -675,7 +715,7 @@ function normalizeSubjectDepartment(value: string) {
     .replace(/\s{2,}/g, " ")
     .trim();
 
-  return cleanedValue || "Unassigned";
+  return normalized || "Unassigned";
 }
 
 function isSchoolSupportPersonnel(person: Personnel) {
@@ -739,6 +779,7 @@ function isAcademicTeacherPersonnel(person: Personnel) {
   const extendedPerson = person as Personnel & {
     primarySubjectDepartment?: string;
     subjectArea?: string;
+    subjectDepartment?: string;
     subjectDepartment1?: string;
     subjectDepartment2?: string;
     subjectDepartment3?: string;
@@ -750,6 +791,7 @@ function isAcademicTeacherPersonnel(person: Personnel) {
     (person.subjectTaught || []).some((subject) => isMeaningfulText(subject)) ||
     isMeaningfulText(extendedPerson.subjectArea) ||
     isMeaningfulText(extendedPerson.primarySubjectDepartment) ||
+    isMeaningfulText(extendedPerson.subjectDepartment) ||
     isMeaningfulText(extendedPerson.subjectDepartment1) ||
     isMeaningfulText(extendedPerson.subjectDepartment2) ||
     isMeaningfulText(extendedPerson.subjectDepartment3) ||
@@ -805,6 +847,7 @@ function getSubjectDepartmentsForPerson(person: Personnel) {
   const extendedPerson = person as Personnel & {
     primarySubjectDepartment?: string;
     subjectArea?: string;
+    subjectDepartment?: string;
     subjectDepartment1?: string;
     subjectDepartment2?: string;
     subjectDepartment3?: string;
@@ -814,6 +857,7 @@ function getSubjectDepartmentsForPerson(person: Personnel) {
 
   const rawPrimaryDepartment =
     safeText(extendedPerson.primarySubjectDepartment) ||
+    safeText(extendedPerson.subjectDepartment) ||
     safeText(extendedPerson.subjectDepartment1) ||
     safeText(extendedPerson.subjectArea) ||
     safeText((person.subjectTaught || [])[0]) ||
@@ -822,6 +866,7 @@ function getSubjectDepartmentsForPerson(person: Personnel) {
   const primaryDepartment = normalizeSubjectDepartment(rawPrimaryDepartment);
 
   const additionalDepartments = uniqueList([
+    extendedPerson.subjectDepartment,
     extendedPerson.subjectDepartment1,
     extendedPerson.subjectDepartment2,
     extendedPerson.subjectDepartment3,
@@ -858,12 +903,18 @@ function getSubjectDepartmentRank(department: string) {
     "filipino",
     "values education",
     "mathematics",
+    "math",
     "science",
     "araling panlipunan",
+    "ap",
     "mapeh",
     "tle",
+    "tvl",
+    "electrical installation and maintenance",
     "eim",
+    "computer systems servicing",
     "css",
+    "electronic products assembly and servicing",
     "epas",
     "unassigned",
   ];
@@ -990,12 +1041,18 @@ export default function OrganizationPage() {
     );
   }, [allPersonnel]);
 
-  const gradeLeaders = useMemo(() => {
-    return allPersonnel.filter(
-      (person) =>
-        person.roles.includes("Grade Leader") ||
-        person.roles.includes("SHS Coordinator")
+  function isActualGradeLeader(person: Personnel) {
+    const designationItems = uniqueList([...(person.designation || [])]);
+
+    return designationItems.some(
+      (item) =>
+        isExactShsCoordinatorDesignation(item) ||
+        isGradeLeaderDesignationText(item)
     );
+  }
+
+  const gradeLeaders = useMemo(() => {
+    return allPersonnel.filter((person) => isActualGradeLeader(person));
   }, [allPersonnel]);
 
   const classAdvisers = useMemo(() => {
@@ -1029,13 +1086,13 @@ export default function OrganizationPage() {
     });
   }, [subjectDepartmentEntries]);
 
-  const visibleSubjectDepartments = useMemo(() => {
-    if (selectedSubjectDepartment === "All") return subjectDepartments;
+const visibleSubjectDepartments = useMemo(() => {
+  if (selectedSubjectDepartment === "All") return subjectDepartments;
 
-    return subjectDepartments.filter(
-      (department) => department === selectedSubjectDepartment
-    );
-  }, [selectedSubjectDepartment, subjectDepartments]);
+  return subjectDepartments.filter(
+    (department) => department === selectedSubjectDepartment
+  );
+}, [selectedSubjectDepartment, subjectDepartments]);
 
   const programImplementers = useMemo(() => {
     return allPersonnel.filter((person) =>
@@ -1096,7 +1153,7 @@ export default function OrganizationPage() {
       <Navbar />
 
       <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 pb-20 pt-36 text-slate-950 dark:text-white">
+        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-5 pb-20 pt-36 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
           <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
@@ -1134,7 +1191,7 @@ export default function OrganizationPage() {
           </div>
         </section>
 
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-16 text-slate-950 dark:text-white">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-16 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-8 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
@@ -1207,7 +1264,7 @@ export default function OrganizationPage() {
                     </div>
 
                     {searchResults.length > 0 ? (
-                      <div className="grid gap-5 lg:grid-cols-2">
+                      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                         {searchResults.map((person) => (
                           <PersonnelCard
                             key={person.id}
@@ -1234,7 +1291,7 @@ export default function OrganizationPage() {
           </div>
         </section>
 
-        <section className="bg-white dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
+        <section className="bg-white dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
@@ -1245,18 +1302,8 @@ export default function OrganizationPage() {
               </h2>
             </div>
 
-            <div className="mx-auto max-w-3xl">
-              {leadership.map((person) => (
-                <PersonnelCard
-                  key={person.id}
-                  person={person}
-                  onClick={setSelectedPerson}
-                />
-              ))}
-            </div>
-
-            <div className="mx-auto mt-8 grid max-w-5xl gap-5 md:grid-cols-2">
-              {administrativePersonnel.map((person) => (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {[...leadership, ...administrativePersonnel].map((person) => (
                 <PersonnelCard
                   key={person.id}
                   person={person}
@@ -1268,7 +1315,7 @@ export default function OrganizationPage() {
           </div>
         </section>
 
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
@@ -1285,7 +1332,7 @@ export default function OrganizationPage() {
             </div>
 
             {sortedProgramImplementers.length > 0 ? (
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {sortedProgramImplementers.map((person) => (
                   <PersonnelCard
                     key={person.id}
@@ -1305,7 +1352,7 @@ export default function OrganizationPage() {
           </div>
         </section>
 
-        <section className="bg-white dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
+        <section className="bg-white dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
@@ -1321,7 +1368,7 @@ export default function OrganizationPage() {
               </p>
             </div>
 
-            <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {masterTeachers.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -1334,7 +1381,7 @@ export default function OrganizationPage() {
           </div>
         </section>
 
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
@@ -1345,7 +1392,7 @@ export default function OrganizationPage() {
               </h2>
             </div>
 
-            <div className="mx-auto grid max-w-5xl items-stretch gap-5 md:grid-cols-2">
+            <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {sortedGradeLeaders.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -1358,7 +1405,7 @@ export default function OrganizationPage() {
           </div>
         </section>
 
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
@@ -1415,7 +1462,7 @@ export default function OrganizationPage() {
                       </p>
                     </div>
 
-                    <div className="grid gap-5 md:grid-cols-2">
+                    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                       {advisers.map((person) => (
                         <PersonnelCard
                           key={`${grade}-${person.id}`}
@@ -1432,7 +1479,7 @@ export default function OrganizationPage() {
           </div>
         </section>
 
-        <section className="bg-white dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
+        <section className="bg-white dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
@@ -1508,7 +1555,7 @@ export default function OrganizationPage() {
                           </p>
                         </div>
 
-                        <div className="grid gap-5 md:grid-cols-2">
+                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                           {teacherEntries.map((entry) => (
                             <PersonnelCard
                               key={`${department}-${entry.person.id}-${
@@ -1538,7 +1585,7 @@ export default function OrganizationPage() {
         </section>
 
 
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20 text-slate-950 dark:text-white">
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
@@ -1556,7 +1603,7 @@ export default function OrganizationPage() {
             </div>
 
             {schoolSupportPersonnel.length > 0 ? (
-              <div className="grid gap-5 md:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {schoolSupportPersonnel.map((person) => (
                   <PersonnelCard
                     key={person.id}

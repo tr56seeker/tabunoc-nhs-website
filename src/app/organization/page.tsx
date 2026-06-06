@@ -1016,9 +1016,18 @@ export default function OrganizationPage() {
     return allPersonnel.filter(
       (person) =>
         !person.roles.includes("Principal") &&
+        !person.roles.includes("Guidance") &&
         !isSchoolSupportPersonnel(person) &&
-        (person.roles.includes("Administrative") ||
-          person.roles.includes("Guidance"))
+        person.roles.includes("Administrative")
+    );
+  }, [allPersonnel]);
+
+  const guidancePersonnel = useMemo(() => {
+    return allPersonnel.filter(
+      (person) =>
+        !person.roles.includes("Principal") &&
+        !isSchoolSupportPersonnel(person) &&
+        person.roles.includes("Guidance")
     );
   }, [allPersonnel]);
 
@@ -1291,25 +1300,80 @@ const visibleSubjectDepartments = useMemo(() => {
           </div>
         </section>
 
-        <section className="bg-white dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
+        {/* SCHOOL HEAD */}
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 School Leadership
               </p>
               <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                School Leadership and Administrative Staff
+                School Head
               </h2>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {[...leadership, ...administrativePersonnel].map((person) => (
+            <div className="mx-auto grid max-w-[420px] gap-4">
+              {leadership.map((person) => (
                 <PersonnelCard
                   key={person.id}
                   person={person}
                   compact
                   onClick={setSelectedPerson}
                 />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ADMINISTRATIVE STAFF */}
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-10 text-center">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+                Administrative Support
+              </p>
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
+                Administrative Staff
+              </h2>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {administrativePersonnel.map((person) => (
+                <PersonnelCard
+                  key={person.id}
+                  person={person}
+                  compact
+                  onClick={setSelectedPerson}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* GUIDANCE PERSONNEL */}
+        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 2xl:px-[190px]">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-10 text-center">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+                Learner Support Services
+              </p>
+              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
+                Guidance Personnel
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
+                Guidance personnel support learner welfare, counseling services, career guidance, and student development programs.
+              </p>
+            </div>
+
+            <div className="mx-auto flex max-w-[860px] flex-wrap justify-center gap-4">
+              {guidancePersonnel.map((person) => (
+                <div key={person.id} className="w-full max-w-[420px] sm:w-[calc(50%-0.5rem)]">
+                  <PersonnelCard
+                    person={person}
+                    compact
+                    onClick={setSelectedPerson}
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -1368,16 +1432,16 @@ const visibleSubjectDepartments = useMemo(() => {
               </p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {masterTeachers.map((person) => (
-                <PersonnelCard
-                  key={person.id}
-                  person={person}
-                  compact
-                  onClick={setSelectedPerson}
-                />
-              ))}
-            </div>
+            <div className="mx-auto grid max-w-[860px] gap-4 sm:grid-cols-2">
+            {masterTeachers.map((person) => (
+              <PersonnelCard
+                key={person.id}
+                person={person}
+                compact
+                onClick={setSelectedPerson}
+              />
+            ))}
+          </div>
           </div>
         </section>
 
@@ -1603,7 +1667,7 @@ const visibleSubjectDepartments = useMemo(() => {
             </div>
 
             {schoolSupportPersonnel.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="mx-auto grid max-w-[860px] gap-4 sm:grid-cols-2">
                 {schoolSupportPersonnel.map((person) => (
                   <PersonnelCard
                     key={person.id}

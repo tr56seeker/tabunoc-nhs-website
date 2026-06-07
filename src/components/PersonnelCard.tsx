@@ -7,8 +7,8 @@
  * DISPLAY:
  * - Name
  * - Position
- * - Department
  * - Designation, one line only with ellipsis when long
+ * - Department / Teaching Department
  */
 
 import { useEffect, useState } from "react";
@@ -161,7 +161,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="truncate text-sm font-semibold leading-snug text-slate-600 dark:text-stone-300"
+        className="truncate text-xs font-semibold leading-snug text-slate-600 dark:text-stone-300"
       >
         {value}
       </p>
@@ -189,6 +189,7 @@ export default function PersonnelCard({
   const showPhoto = photoUrl && failedPhoto !== photoUrl;
   const initials = getInitials(person.name);
   const designationPreview = getDesignationPreview(person);
+  const departmentPreview = safeText(person.department);
 
   useEffect(() => {
     setFailedPhoto(null);
@@ -229,11 +230,17 @@ export default function PersonnelCard({
           <div className="grid min-w-0 gap-1.5">
             <PreviewLine value={person.name} variant="name" />
             <PreviewLine value={safeText(person.position)} />
-            <PreviewLine value={safeText(person.department)} variant="muted" />
+
             <PreviewLine
               value={designationPreview}
               variant="designation"
               title={designationPreview}
+            />
+
+            <PreviewLine
+              value={departmentPreview}
+              variant="muted"
+              title={departmentPreview}
             />
           </div>
         </div>

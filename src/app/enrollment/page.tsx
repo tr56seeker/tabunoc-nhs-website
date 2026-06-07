@@ -164,31 +164,6 @@ const learnerCategories: LearnerCategory[] = [
       "Parents/guardians should ensure that contact numbers are active and updated.",
     ],
   },
-  {
-    id: "late-enrollees",
-    title: "Late Enrollees",
-    description:
-      "For learners who were not able to enroll during the announced enrollment schedule.",
-    requirements: [
-      "Available school records such as School Form 9 / Report Card",
-      "Learner Reference Number (LRN), if available",
-      "Photocopy of PSA Birth Certificate, if available",
-      "Accomplished Basic Education Enrollment Form",
-      "Parent/guardian contact information",
-    ],
-    procedure: [
-      "Proceed to the school office during office hours.",
-      "Inform the receiving personnel that the learner is a late enrollee.",
-      "Submit available documents for checking and learner verification.",
-      "Wait for assessment of available slots, class sectioning, and school capacity.",
-      "Follow further instructions from the enrollment team or school office.",
-    ],
-    reminders: [
-      "Late enrollment is subject to learner verification, available slots, classroom capacity, and school enrollment processing.",
-      "Parents/guardians should avoid assuming automatic acceptance until verification is completed.",
-      "Bring all available documents to help the school process the request faster.",
-    ],
-  },
 ];
 
 const enrollmentSteps = [
@@ -197,6 +172,14 @@ const enrollmentSteps = [
   "Proceed to the designated enrollment area or follow the announced procedure.",
   "Submit documents for checking and verification.",
   "Wait for sectioning, confirmation, or further instructions.",
+];
+
+const lateEnrollmentProcedure = [
+  "Visit the school office during office hours.",
+  "Inform the receiving personnel that the learner was not able to enroll during the announced enrollment schedule.",
+  "Bring the available documents based on the learner’s correct category, such as incoming Grade 7, incoming Grade 11, transferee, returning learner, ALS completer/passer, or continuing learner.",
+  "Allow the enrollment team to verify learner records, LRN, grade level, available slots, and class sectioning.",
+  "Wait for the school’s advice or confirmation before assuming that enrollment is finalized.",
 ];
 
 const reminders = [
@@ -220,9 +203,9 @@ const enrollmentFaqs = [
       "Yes. Transferees may inquire for enrollment subject to DepEd guidelines, availability of slots, school capacity, and submission of required documents for verification.",
   },
   {
-    question: "Can late enrollees still inquire?",
+    question: "What if late ko magpa-enroll unya nagklase na?",
     answer:
-      "Yes. Late enrollees may inquire at the school office during office hours. Enrollment will be subject to learner verification, available slots, class sectioning, and school capacity.",
+      "Please visit the school office during office hours. The learner will be assisted based on the correct enrollment category, and enrollment will be subject to learner verification, available slots, classroom capacity, class sectioning, and school enrollment processing.",
   },
   {
     question: "What if the PSA Birth Certificate is not yet available?",
@@ -589,8 +572,8 @@ export default function EnrollmentPage() {
                 className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-700"
               >
                 Basic enrollment information for incoming learners,
-                transferees, returning learners, ALS passers, late enrollees,
-                parents, and guardians of Tabunoc National High School.
+                transferees, returning learners, ALS passers, parents, and
+                guardians of Tabunoc National High School.
               </motion.p>
 
               <motion.div
@@ -728,6 +711,58 @@ export default function EnrollmentPage() {
             </div>
           </div>
         </section>
+
+{/* LATE ENROLLMENT PROCEDURE */}
+<section className="bg-white py-20">
+  <div className={`mx-auto w-full ${pagePadding}`}>
+    <motion.div
+      {...fadeUp}
+      className="mx-auto grid max-w-6xl gap-6 rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm md:p-8 lg:grid-cols-[0.85fr_1.15fr]"
+    >
+      <div>
+        <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+          Late Enrollment Concern
+        </p>
+
+        <h2 className="mt-3 text-3xl font-black tracking-tight text-[#071E29]">
+          What if late ko magpa-enroll unya nagklase na?
+        </h2>
+
+        <p className="mt-4 leading-7 text-slate-700">
+          Late enrollees learner must still follow the
+          requirements based on the correct category such as incoming Grade 7,
+          incoming Grade 11, transferee, returning learner, ALS completer/passer,
+          or continuing learner.
+        </p>
+
+        <div className="mt-5 rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
+          <p className="text-sm font-bold leading-6 text-slate-700">
+            Important: Late enrollment is subject to learner verification,
+            available slots, classroom capacity, class sectioning, and school
+            enrollment processing.
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-3">
+        {lateEnrollmentProcedure.map((step, index) => (
+          <div
+            key={step}
+            className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl bg-white p-4 shadow-sm"
+          >
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
+              {index + 1}
+            </div>
+
+            <p className="text-sm font-semibold leading-6 text-slate-700">
+              {step}
+            </p>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  </div>
+</section>
 
         {/* STEPS */}
         <section id="steps" className="bg-white py-20">

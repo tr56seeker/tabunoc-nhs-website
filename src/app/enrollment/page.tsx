@@ -1,12 +1,13 @@
 "use client";
 
 /**
- * FILE_ID: TABUNOC_ENROLLMENT_PAGE_SIMPLIFIED
+ * FILE_ID: TABUNOC_ENROLLMENT_PAGE_FUSED_CATEGORY_REQUIREMENTS
  * PATH: src/app/enrollment/page.tsx
- * PURPOSE: Clean, easy-to-scan Enrollment Guide page for Tabunoc National High School.
+ * PURPOSE: Clean Enrollment Guide page with learner category-based requirements and late enrollee procedure.
  */
 
 import type { ReactNode } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -23,92 +24,178 @@ const fadeUp = {
   transition: { duration: 0.5 },
 };
 
-const learnerTypes = [
+type LearnerCategory = {
+  id: string;
+  title: string;
+  description: string;
+  requirements: string[];
+  procedure?: string[];
+  reminders?: string[];
+};
+
+const learnerCategories: LearnerCategory[] = [
   {
+    id: "incoming-grade-7",
     title: "Incoming Grade 7",
     description: "For Grade 6 completers entering Junior High School.",
-  },
-  {
-    title: "Incoming Grade 11",
-    description: "For Grade 10 completers entering Senior High School.",
-  },
-  {
-    title: "Transferees",
-    description: "For learners coming from another school.",
-  },
-  {
-    title: "Returning Learners / Balik-Aral",
-    description: "For learners who stopped schooling and wish to return.",
-  },
-  {
-    title: "ALS Completers / Passers",
-    description:
-      "For ALS learners or completers seeking placement in formal basic education.",
-  },
-  {
-    title: "Continuing Learners",
-    description: "For current learners continuing their studies in the school.",
-  },
-];
-
-const requirements = [
-  {
-    group: "Incoming Grade 7",
-    items: [
+    requirements: [
       "School Form 9 / Report Card",
       "Photocopy of PSA Birth Certificate, if available",
       "Learner Reference Number (LRN), if available",
-      "Accomplished enrollment form",
+      "Accomplished Basic Education Enrollment Form",
       "Parent/guardian contact information",
+    ],
+    reminders: [
+      "Bring original documents for verification when requested.",
+      "Use the learner’s correct full name based on official records.",
+      "Proceed to the assigned enrollment area for Junior High School, if announced.",
     ],
   },
   {
-    group: "Incoming Grade 11",
-    items: [
+    id: "incoming-grade-11",
+    title: "Incoming Grade 11",
+    description: "For Grade 10 completers entering Senior High School.",
+    requirements: [
       "School Form 9 / Grade 10 Report Card",
       "Photocopy of PSA Birth Certificate, if available",
       "Learner Reference Number (LRN)",
-      "Accomplished enrollment form",
+      "Accomplished Basic Education Enrollment Form",
       "Preferred SHS track/strand/specialization information",
+    ],
+    procedure: [
+      "Review the available Senior High School offerings before enrollment.",
+      "Prepare the required documents.",
+      "Submit documents for checking and validation.",
+      "Coordinate with the enrollment team for track, strand, or specialization guidance.",
+      "Wait for sectioning, confirmation, or further instruction.",
+    ],
+    reminders: [
+      "Track, strand, or specialization placement may depend on available programs, learner interest, and school capacity.",
+      "Learners and parents/guardians are encouraged to review the SHS offerings page before enrollment.",
     ],
   },
   {
-    group: "Transferees",
-    items: [
+    id: "transferees",
+    title: "Transferees",
+    description: "For learners coming from another school.",
+    requirements: [
       "School Form 9 / Report Card",
       "Learner Reference Number (LRN)",
       "Photocopy of PSA Birth Certificate, if available",
       "Certificate of Good Moral Character, if required",
       "Other documents for record verification, if needed",
     ],
-  },
-  {
-    group: "Returning Learners / Balik-Aral",
-    items: [
-      "Latest available school record",
-      "PSA Birth Certificate or acceptable proof of identity, if available",
-      "Accomplished enrollment form",
-      "Parent/guardian contact information",
-      "Additional validation by the enrollment team, if needed",
+    procedure: [
+      "Proceed to the school office or assigned enrollment area.",
+      "Present available school records for checking.",
+      "Allow the enrollment team to verify grade level, LRN, and previous school information.",
+      "Complete the enrollment form once documents are validated.",
+      "Wait for sectioning, confirmation, or additional instructions.",
+    ],
+    reminders: [
+      "Enrollment of transferees is subject to verification, available slots, and school capacity.",
+      "Incomplete documents may still be received for initial checking, but follow-up requirements may be requested.",
     ],
   },
   {
-    group: "ALS Completers / Passers",
-    items: [
+    id: "returning-learners",
+    title: "Returning Learners / Balik-Aral",
+    description: "For learners who stopped schooling and wish to return.",
+    requirements: [
+      "Latest available school record",
+      "PSA Birth Certificate or acceptable proof of identity, if available",
+      "Accomplished Basic Education Enrollment Form",
+      "Parent/guardian contact information",
+      "Additional validation by the enrollment team, if needed",
+    ],
+    procedure: [
+      "Visit the school office or assigned enrollment area.",
+      "Present available records or proof of previous schooling.",
+      "Coordinate with the enrollment team for validation and appropriate grade level placement.",
+      "Complete the enrollment form.",
+      "Wait for confirmation, placement, or further instructions.",
+    ],
+    reminders: [
+      "Placement may require verification of previous records and learner history.",
+      "Parents/guardians should provide active contact information for follow-up concerns.",
+    ],
+  },
+  {
+    id: "als-completers",
+    title: "ALS Completers / Passers",
+    description:
+      "For ALS learners or completers seeking placement in formal basic education.",
+    requirements: [
       "ALS Certificate of Completion or Certificate of Rating, if available",
       "Learner Reference Number (LRN), if available",
       "Photocopy of PSA Birth Certificate or acceptable proof of identity",
-      "Accomplished enrollment form",
+      "Accomplished Basic Education Enrollment Form",
       "Placement or eligibility validation by the school, if needed",
+    ],
+    procedure: [
+      "Submit ALS-related documents for checking.",
+      "Coordinate with the enrollment team for eligibility and placement validation.",
+      "Complete the enrollment form once the learner category and placement are confirmed.",
+      "Wait for further instructions from the school.",
+    ],
+    reminders: [
+      "ALS completers/passers may need additional validation depending on available records and placement requirements.",
+      "Bring all available ALS-related documents to make the process faster.",
+    ],
+  },
+  {
+    id: "continuing-learners",
+    title: "Continuing Learners",
+    description: "For current learners continuing their studies in the school.",
+    requirements: [
+      "Updated learner information, if requested",
+      "Parent/guardian contact information",
+      "School Form 9 / Report Card, if requested by the adviser or enrollment team",
+      "Other school-required update forms, if applicable",
+    ],
+    procedure: [
+      "Follow the procedure announced by the class adviser or school enrollment team.",
+      "Confirm or update learner information.",
+      "Submit required forms or documents, if requested.",
+      "Wait for sectioning or class confirmation.",
+    ],
+    reminders: [
+      "Continuing learners should still follow official school announcements.",
+      "Parents/guardians should ensure that contact numbers are active and updated.",
+    ],
+  },
+  {
+    id: "late-enrollees",
+    title: "Late Enrollees",
+    description:
+      "For learners who were not able to enroll during the announced enrollment schedule.",
+    requirements: [
+      "Available school records such as School Form 9 / Report Card",
+      "Learner Reference Number (LRN), if available",
+      "Photocopy of PSA Birth Certificate, if available",
+      "Accomplished Basic Education Enrollment Form",
+      "Parent/guardian contact information",
+    ],
+    procedure: [
+      "Proceed to the school office during office hours.",
+      "Inform the receiving personnel that the learner is a late enrollee.",
+      "Submit available documents for checking and learner verification.",
+      "Wait for assessment of available slots, class sectioning, and school capacity.",
+      "Follow further instructions from the enrollment team or school office.",
+    ],
+    reminders: [
+      "Late enrollment is subject to learner verification, available slots, classroom capacity, and school enrollment processing.",
+      "Parents/guardians should avoid assuming automatic acceptance until verification is completed.",
+      "Bring all available documents to help the school process the request faster.",
     ],
   },
 ];
 
 const enrollmentSteps = [
-  "Prepare the required documents.",
+  "Identify the correct learner category.",
+  "Prepare the documents listed for that category.",
   "Proceed to the designated enrollment area or follow the announced procedure.",
   "Submit documents for checking and verification.",
-  "Fill out or confirm the learner enrollment information.",
   "Wait for sectioning, confirmation, or further instructions.",
 ];
 
@@ -130,7 +217,12 @@ const enrollmentFaqs = [
   {
     question: "Can transferees enroll?",
     answer:
-      "Yes. Transferees may enroll subject to DepEd guidelines, availability of slots, and submission of required documents for verification.",
+      "Yes. Transferees may inquire for enrollment subject to DepEd guidelines, availability of slots, school capacity, and submission of required documents for verification.",
+  },
+  {
+    question: "Can late enrollees still inquire?",
+    answer:
+      "Yes. Late enrollees may inquire at the school office during office hours. Enrollment will be subject to learner verification, available slots, class sectioning, and school capacity.",
   },
   {
     question: "What if the PSA Birth Certificate is not yet available?",
@@ -147,20 +239,20 @@ const enrollmentFaqs = [
 const contactLinks = [
   {
     label: "Facebook Page",
-    detail: "facebook.com/tabunocnatlhs",
     href: "https://facebook.com/tabunocnatlhs",
+    icon: "facebook",
   },
   {
     label: "Messenger",
-    detail: "m.me/tabunocnatlhs",
     href: "https://m.me/tabunocnatlhs",
+    icon: "messenger",
   },
   {
     label: "Email",
-    detail: "303111@deped.gov.ph",
     href: "mailto:303111@deped.gov.ph",
+    icon: "email",
   },
-];
+] as const;
 
 function ArrowIcon() {
   return (
@@ -193,6 +285,47 @@ function CheckIcon() {
         d="M20 6 9 17l-5-5"
         stroke="currentColor"
         strokeWidth="2.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ContactIcon({ icon }: { icon: "facebook" | "messenger" | "email" }) {
+  if (icon === "facebook") {
+    return (
+      <svg viewBox="0 0 24 24" className="h-8 w-8" fill="currentColor">
+        <path d="M13.5 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.3-1.5 1.6-1.5h1.7V4.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V14h2.8v8h3.4Z" />
+      </svg>
+    );
+  }
+
+  if (icon === "messenger") {
+    return (
+      <svg viewBox="0 0 24 24" className="h-8 w-8" fill="currentColor">
+        <path d="M12 2C6.5 2 2.2 6 2.2 11.4c0 3.1 1.5 5.8 3.8 7.5V22l3.5-1.9c.8.2 1.6.3 2.5.3 5.5 0 9.8-4 9.8-9.4S17.5 2 12 2Zm1 12.6-2.5-2.7-4.9 2.7 5.4-5.8 2.5 2.7 4.9-2.7-5.4 5.8Z" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="h-8 w-8"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M4 6.5h16v11H4v-11Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path
+        d="m4.5 7 7.5 6 7.5-6"
+        stroke="currentColor"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -257,7 +390,76 @@ function SectionHeading({
   );
 }
 
+function CategoryButton({
+  category,
+  active,
+  onClick,
+}: {
+  category: LearnerCategory;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`group rounded-2xl border p-5 text-left shadow-sm transition duration-300 hover:-translate-y-1 ${
+        active
+          ? "border-[#0F4C5C] bg-[#0F4C5C] text-white shadow-md"
+          : "border-slate-200 bg-white text-slate-950 hover:border-[#0F4C5C]/40"
+      }`}
+    >
+      <h3
+        className={`text-lg font-black ${
+          active ? "text-white" : "text-[#071E29]"
+        }`}
+      >
+        {category.title}
+      </h3>
+      <p
+        className={`mt-2 text-sm leading-6 ${
+          active ? "text-teal-50" : "text-slate-600"
+        }`}
+      >
+        {category.description}
+      </p>
+      <div
+        className={`mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] ${
+          active ? "text-yellow-300" : "text-[#0F4C5C]"
+        }`}
+      >
+        View guide
+        <ArrowIcon />
+      </div>
+    </button>
+  );
+}
+
+function InfoList({ items }: { items: string[] }) {
+  return (
+    <ul className="grid gap-3">
+      {items.map((item) => (
+        <li key={item} className="flex gap-3 text-sm leading-6 text-slate-700">
+          <CheckIcon />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function EnrollmentPage() {
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    learnerCategories[0].id
+  );
+
+  const selectedCategory = useMemo(() => {
+    return (
+      learnerCategories.find((category) => category.id === selectedCategoryId) ||
+      learnerCategories[0]
+    );
+  }, [selectedCategoryId]);
+
   return (
     <>
       <Navbar />
@@ -297,8 +499,8 @@ export default function EnrollmentPage() {
                 className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-700"
               >
                 Basic enrollment information for incoming learners,
-                transferees, returning learners, ALS passers, parents, and
-                guardians of Tabunoc National High School.
+                transferees, returning learners, ALS passers, late enrollees,
+                parents, and guardians of Tabunoc National High School.
               </motion.p>
 
               <motion.div
@@ -308,10 +510,10 @@ export default function EnrollmentPage() {
                 className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"
               >
                 <ActionLink
-                  href="#requirements"
+                  href="#learner-category"
                   className="bg-[#0F4C5C] text-white hover:bg-[#146577]"
                 >
-                  View Requirements
+                  Choose Learner Category
                   <ArrowIcon />
                 </ActionLink>
 
@@ -362,79 +564,98 @@ export default function EnrollmentPage() {
           </div>
         </section>
 
-        {/* WHO MAY ENROLL */}
-        <section className="bg-[#F8FAFC] py-16">
+        {/* LEARNER CATEGORY + REQUIREMENTS */}
+        <section id="learner-category" className="bg-[#F8FAFC] py-20">
           <div className={`mx-auto w-full ${pagePadding}`}>
             <SectionHeading
               eyebrow="Who May Enroll"
               title="Choose your learner category"
-              description="Find the category that best describes the learner before preparing documents."
+              description="Tap a learner category to view the description, requirements, procedure, and reminders that apply."
             />
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {learnerTypes.map((type, index) => (
-                <motion.div
-                  key={type.title}
-                  {...fadeUp}
-                  transition={{ duration: 0.5, delay: index * 0.04 }}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
-                >
-                  <h3 className="text-xl font-black text-[#071E29]">
-                    {type.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    {type.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
+            <div className="grid gap-8 xl:grid-cols-[0.95fr_1.05fr]">
+              <motion.div {...fadeUp} className="grid gap-4 md:grid-cols-2">
+                {learnerCategories.map((category) => (
+                  <CategoryButton
+                    key={category.id}
+                    category={category}
+                    active={selectedCategory.id === category.id}
+                    onClick={() => setSelectedCategoryId(category.id)}
+                  />
+                ))}
+              </motion.div>
 
-        {/* REQUIREMENTS */}
-        <section id="requirements" className="bg-white py-20">
-          <div className={`mx-auto w-full ${pagePadding}`}>
-            <SectionHeading
-              eyebrow="Requirements"
-              title="Prepare only what applies to you"
-              description="Use the list below as guide. Original documents may be requested for verification."
-            />
+              <motion.div
+                {...fadeUp}
+                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
+              >
+                <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+                  Selected Category
+                </p>
+                <h3 className="mt-3 text-3xl font-black tracking-tight text-[#071E29]">
+                  {selectedCategory.title}
+                </h3>
+                <p className="mt-3 leading-7 text-slate-600">
+                  {selectedCategory.description}
+                </p>
 
-            <div className="mx-auto grid max-w-5xl gap-4">
-              {requirements.map((group) => (
-                <motion.details
-                  key={group.group}
-                  {...fadeUp}
-                  className="group rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 shadow-sm open:bg-white"
-                >
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
-                    <span className="text-lg font-black text-[#071E29]">
-                      {group.group}
-                    </span>
-                    <span className="rounded-full bg-[#0F4C5C]/10 p-2 text-[#0F4C5C] transition group-open:rotate-90">
-                      <ArrowIcon />
-                    </span>
-                  </summary>
+                <div className="mt-8 grid gap-8">
+                  <div>
+                    <h4 className="text-lg font-black text-[#071E29]">
+                      Requirements
+                    </h4>
+                    <p className="mt-1 text-sm leading-6 text-slate-500">
+                      Prepare what is available and applicable. Original
+                      documents may be requested for verification.
+                    </p>
+                    <div className="mt-4">
+                      <InfoList items={selectedCategory.requirements} />
+                    </div>
+                  </div>
 
-                  <ul className="mt-5 grid gap-3">
-                    {group.items.map((item) => (
-                      <li
-                        key={item}
-                        className="flex gap-3 text-sm leading-6 text-slate-700"
-                      >
-                        <CheckIcon />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </motion.details>
-              ))}
+                  {selectedCategory.procedure &&
+                    selectedCategory.procedure.length > 0 && (
+                      <div>
+                        <h4 className="text-lg font-black text-[#071E29]">
+                          Procedure
+                        </h4>
+                        <div className="mt-4 grid gap-3">
+                          {selectedCategory.procedure.map((step, index) => (
+                            <div
+                              key={step}
+                              className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl bg-[#F8FAFC] p-4"
+                            >
+                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
+                                {index + 1}
+                              </div>
+                              <p className="text-sm font-semibold leading-6 text-slate-700">
+                                {step}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                  {selectedCategory.reminders &&
+                    selectedCategory.reminders.length > 0 && (
+                      <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
+                        <h4 className="text-lg font-black text-[#071E29]">
+                          Important Notes
+                        </h4>
+                        <div className="mt-4">
+                          <InfoList items={selectedCategory.reminders} />
+                        </div>
+                      </div>
+                    )}
+                </div>
+              </motion.div>
             </div>
           </div>
         </section>
 
         {/* STEPS */}
-        <section id="steps" className="bg-[#F8FAFC] py-20">
+        <section id="steps" className="bg-white py-20">
           <div className={`mx-auto w-full ${pagePadding}`}>
             <SectionHeading
               eyebrow="Enrollment Process"
@@ -448,7 +669,7 @@ export default function EnrollmentPage() {
                   key={step}
                   {...fadeUp}
                   transition={{ duration: 0.5, delay: index * 0.04 }}
-                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 shadow-sm"
                 >
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0F4C5C] text-sm font-black text-white">
                     {index + 1}
@@ -463,7 +684,7 @@ export default function EnrollmentPage() {
         </section>
 
         {/* SHS NOTE + REMINDERS */}
-        <section className="bg-white py-20">
+        <section className="bg-[#F8FAFC] py-20">
           <div
             className={`mx-auto grid w-full gap-6 lg:grid-cols-[0.95fr_1.05fr] ${pagePadding}`}
           >
@@ -495,7 +716,7 @@ export default function EnrollmentPage() {
 
             <motion.div
               {...fadeUp}
-              className="rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm md:p-8"
+              className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
             >
               <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
                 Parent and Learner Reminders
@@ -516,7 +737,7 @@ export default function EnrollmentPage() {
         </section>
 
         {/* FAQ */}
-        <section className="bg-[#F8FAFC] py-20">
+        <section className="bg-white py-20">
           <div className={`mx-auto w-full ${pagePadding}`}>
             <SectionHeading
               eyebrow="Enrollment FAQs"
@@ -529,7 +750,7 @@ export default function EnrollmentPage() {
                 <motion.details
                   key={faq.question}
                   {...fadeUp}
-                  className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+                  className="group rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 shadow-sm"
                 >
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
                     <span className="font-black text-[#071E29]">
@@ -561,7 +782,7 @@ export default function EnrollmentPage() {
         {/* HELP */}
         <section id="help" className="bg-[#0F4C5C] py-20 text-white">
           <div
-            className={`mx-auto grid w-full gap-8 lg:grid-cols-[0.9fr_1.1fr] ${pagePadding}`}
+            className={`mx-auto grid w-full gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center ${pagePadding}`}
           >
             <motion.div {...fadeUp}>
               <p className="text-sm font-black uppercase tracking-[0.2em] text-yellow-300">
@@ -583,7 +804,7 @@ export default function EnrollmentPage() {
 
             <motion.div
               {...fadeUp}
-              className="grid gap-4 md:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3"
+              className="flex flex-wrap items-center justify-center gap-5 lg:justify-end"
             >
               {contactLinks.map((link) => (
                 <a
@@ -595,14 +816,11 @@ export default function EnrollmentPage() {
                       ? "noopener noreferrer"
                       : undefined
                   }
-                  className="rounded-2xl border border-white/10 bg-white p-5 text-slate-950 shadow-sm transition hover:-translate-y-1 hover:bg-yellow-50"
+                  aria-label={link.label}
+                  title={link.label}
+                  className="group flex h-20 w-20 items-center justify-center rounded-3xl border border-white/20 bg-white/10 text-white shadow-sm backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-[#ffdf20] hover:bg-[#ffdf20] hover:text-[#071E29]"
                 >
-                  <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
-                    {link.label}
-                  </p>
-                  <p className="mt-2 break-words text-sm font-bold leading-6 text-slate-700">
-                    {link.detail}
-                  </p>
+                  <ContactIcon icon={link.icon} />
                 </a>
               ))}
             </motion.div>

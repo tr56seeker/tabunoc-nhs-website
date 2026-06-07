@@ -390,51 +390,6 @@ function SectionHeading({
   );
 }
 
-function CategoryButton({
-  category,
-  active,
-  onClick,
-}: {
-  category: LearnerCategory;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`group rounded-2xl border p-5 text-left shadow-sm transition duration-300 hover:-translate-y-1 ${
-        active
-          ? "border-[#0F4C5C] bg-[#0F4C5C] text-white shadow-md"
-          : "border-slate-200 bg-white text-slate-950 hover:border-[#0F4C5C]/40"
-      }`}
-    >
-      <h3
-        className={`text-lg font-black ${
-          active ? "text-white" : "text-[#071E29]"
-        }`}
-      >
-        {category.title}
-      </h3>
-      <p
-        className={`mt-2 text-sm leading-6 ${
-          active ? "text-teal-50" : "text-slate-600"
-        }`}
-      >
-        {category.description}
-      </p>
-      <div
-        className={`mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] ${
-          active ? "text-yellow-300" : "text-[#0F4C5C]"
-        }`}
-      >
-        View guide
-        <ArrowIcon />
-      </div>
-    </button>
-  );
-}
-
 function InfoList({ items }: { items: string[] }) {
   return (
     <ul className="grid gap-3">
@@ -448,15 +403,150 @@ function InfoList({ items }: { items: string[] }) {
   );
 }
 
+function CategoryDetails({
+  category,
+  showHeader = false,
+}: {
+  category: LearnerCategory;
+  showHeader?: boolean;
+}) {
+  return (
+    <div>
+      {showHeader && (
+        <>
+          <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+            Selected Category
+          </p>
+          <h3 className="mt-3 text-3xl font-black tracking-tight text-[#071E29]">
+            {category.title}
+          </h3>
+          <p className="mt-3 leading-7 text-slate-600">
+            {category.description}
+          </p>
+        </>
+      )}
+
+      <div className={showHeader ? "mt-8 grid gap-8" : "grid gap-6"}>
+        <div>
+          <h4 className="text-lg font-black text-[#071E29]">Requirements</h4>
+          <p className="mt-1 text-sm leading-6 text-slate-500">
+            Prepare what is available and applicable. Original documents may be
+            requested for verification.
+          </p>
+
+          <div className="mt-4">
+            <InfoList items={category.requirements} />
+          </div>
+        </div>
+
+        {category.procedure && category.procedure.length > 0 && (
+          <div>
+            <h4 className="text-lg font-black text-[#071E29]">Procedure</h4>
+
+            <div className="mt-4 grid gap-3">
+              {category.procedure.map((step, index) => (
+                <div
+                  key={step}
+                  className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl bg-[#F8FAFC] p-4"
+                >
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
+                    {index + 1}
+                  </div>
+                  <p className="text-sm font-semibold leading-6 text-slate-700">
+                    {step}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {category.reminders && category.reminders.length > 0 && (
+          <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
+            <h4 className="text-lg font-black text-[#071E29]">
+              Important Notes
+            </h4>
+
+            <div className="mt-4">
+              <InfoList items={category.reminders} />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CategoryButton({
+  category,
+  active,
+  onClick,
+}: {
+  category: LearnerCategory;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      className={`overflow-hidden rounded-2xl border shadow-sm transition duration-300 ${
+        active
+          ? "border-[#0F4C5C] bg-white shadow-md"
+          : "border-slate-200 bg-white hover:border-[#0F4C5C]/40"
+      }`}
+    >
+      <button
+        type="button"
+        onClick={onClick}
+        className={`group w-full p-5 text-left transition duration-300 hover:-translate-y-0.5 ${
+          active ? "bg-[#0F4C5C] text-white" : "bg-white text-slate-950"
+        }`}
+      >
+        <h3
+          className={`text-lg font-black ${
+            active ? "text-white" : "text-[#071E29]"
+          }`}
+        >
+          {category.title}
+        </h3>
+
+        <p
+          className={`mt-2 text-sm leading-6 ${
+            active ? "text-teal-50" : "text-slate-600"
+          }`}
+        >
+          {category.description}
+        </p>
+
+        <div
+          className={`mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] ${
+            active ? "text-yellow-300" : "text-[#0F4C5C]"
+          }`}
+        >
+          {active ? "Guide opened" : "View guide"}
+          <ArrowIcon />
+        </div>
+      </button>
+
+      {active && (
+        <div className="border-t border-slate-200 bg-white p-5 xl:hidden">
+          <CategoryDetails category={category} />
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function EnrollmentPage() {
-  const [selectedCategoryId, setSelectedCategoryId] = useState(
-    learnerCategories[0].id
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null
   );
 
   const selectedCategory = useMemo(() => {
+    if (!selectedCategoryId) return null;
+
     return (
       learnerCategories.find((category) => category.id === selectedCategoryId) ||
-      learnerCategories[0]
+      null
     );
   }, [selectedCategoryId]);
 
@@ -574,81 +664,66 @@ export default function EnrollmentPage() {
             />
 
             <div className="grid gap-8 xl:grid-cols-[0.95fr_1.05fr]">
-              <motion.div {...fadeUp} className="grid gap-4 md:grid-cols-2">
-                {learnerCategories.map((category) => (
-                  <CategoryButton
-                    key={category.id}
-                    category={category}
-                    active={selectedCategory.id === category.id}
-                    onClick={() => setSelectedCategoryId(category.id)}
-                  />
-                ))}
+              <motion.div {...fadeUp}>
+                {/* Mobile: normal single-column order */}
+                <div className="grid gap-4 md:hidden">
+                  {learnerCategories.map((category) => (
+                    <CategoryButton
+                      key={category.id}
+                      category={category}
+                      active={selectedCategoryId === category.id}
+                      onClick={() =>
+                        setSelectedCategoryId((current) =>
+                          current === category.id ? null : category.id
+                        )
+                      }
+                    />
+                  ))}
+                </div>
+
+                {/* Tablet/Desktop: independent left and right columns */}
+                <div className="hidden gap-4 md:grid md:grid-cols-2">
+                  {[0, 1].map((columnIndex) => (
+                    <div key={columnIndex} className="grid content-start gap-4">
+                      {learnerCategories
+                        .filter((_, index) => index % 2 === columnIndex)
+                        .map((category) => (
+                          <CategoryButton
+                            key={category.id}
+                            category={category}
+                            active={selectedCategoryId === category.id}
+                            onClick={() =>
+                              setSelectedCategoryId((current) =>
+                                current === category.id ? null : category.id
+                              )
+                            }
+                          />
+                        ))}
+                    </div>
+                  ))}
+                </div>
               </motion.div>
 
               <motion.div
                 {...fadeUp}
-                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
+                className="hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8 xl:block"
               >
-                <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
-                  Selected Category
-                </p>
-                <h3 className="mt-3 text-3xl font-black tracking-tight text-[#071E29]">
-                  {selectedCategory.title}
-                </h3>
-                <p className="mt-3 leading-7 text-slate-600">
-                  {selectedCategory.description}
-                </p>
-
-                <div className="mt-8 grid gap-8">
-                  <div>
-                    <h4 className="text-lg font-black text-[#071E29]">
-                      Requirements
-                    </h4>
-                    <p className="mt-1 text-sm leading-6 text-slate-500">
-                      Prepare what is available and applicable. Original
-                      documents may be requested for verification.
+                {selectedCategory ? (
+                  <CategoryDetails category={selectedCategory} showHeader />
+                ) : (
+                  <div className="flex min-h-[360px] flex-col items-center justify-center text-center">
+                    <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+                      Enrollment Guide
                     </p>
-                    <div className="mt-4">
-                      <InfoList items={selectedCategory.requirements} />
-                    </div>
+                    <h3 className="mt-3 text-3xl font-black tracking-tight text-[#071E29]">
+                      Select a learner category
+                    </h3>
+                    <p className="mt-3 max-w-md leading-7 text-slate-600">
+                      Choose from the learner categories on the left to view the applicable
+                      requirements, procedure, and reminders.
+                    </p>
                   </div>
-
-                  {selectedCategory.procedure &&
-                    selectedCategory.procedure.length > 0 && (
-                      <div>
-                        <h4 className="text-lg font-black text-[#071E29]">
-                          Procedure
-                        </h4>
-                        <div className="mt-4 grid gap-3">
-                          {selectedCategory.procedure.map((step, index) => (
-                            <div
-                              key={step}
-                              className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl bg-[#F8FAFC] p-4"
-                            >
-                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
-                                {index + 1}
-                              </div>
-                              <p className="text-sm font-semibold leading-6 text-slate-700">
-                                {step}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                  {selectedCategory.reminders &&
-                    selectedCategory.reminders.length > 0 && (
-                      <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
-                        <h4 className="text-lg font-black text-[#071E29]">
-                          Important Notes
-                        </h4>
-                        <div className="mt-4">
-                          <InfoList items={selectedCategory.reminders} />
-                        </div>
-                      </div>
-                    )}
-                </div>
+                )}
               </motion.div>
             </div>
           </div>
@@ -669,14 +744,17 @@ export default function EnrollmentPage() {
                   key={step}
                   {...fadeUp}
                   transition={{ duration: 0.5, delay: index * 0.04 }}
-                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 shadow-sm"
+                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-sm"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0F4C5C] text-sm font-black text-white">
-                    {index + 1}
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
+                      {index + 1}
+                    </div>
+
+                    <p className="text-sm font-bold leading-6 text-slate-700">
+                      {step}
+                    </p>
                   </div>
-                  <p className="mt-4 text-sm font-bold leading-6 text-slate-700">
-                    {step}
-                  </p>
                 </motion.div>
               ))}
             </div>

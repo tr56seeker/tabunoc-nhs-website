@@ -24,6 +24,7 @@ type PersonnelModalProps = {
 };
 
 type ExtendedPersonnel = Personnel & {
+  displayName?: string;
   photoUrl?: string;
   image?: string;
   avatar?: string;
@@ -33,6 +34,8 @@ type ExtendedPersonnel = Personnel & {
   profilePhoto?: string;
 
   subjectArea?: string;
+  track?: string;
+  subjectTaught?: string | string[];
   primarySubjectDepartment?: string;
   subjectDepartment?: string;
   subjectDepartment1?: string;
@@ -54,7 +57,13 @@ type ExtendedPersonnel = Personnel & {
   portfolioUrl?: string;
 
   teachingPhilosophy?: string;
+  professionalBelief?: string;
   philosophy?: string;
+  bio?: string;
+  description?: string;
+  designation1?: string;
+  designation2?: string;
+  designation3?: string;
 };
 
 type DetailField = {
@@ -95,6 +104,14 @@ function uniqueList(items: Array<string | undefined | null>) {
 function displayList(value?: string[]) {
   if (!value || value.length === 0) return "";
   return uniqueList(value).join(", ");
+}
+
+function displayFlexibleList(value: unknown) {
+  if (Array.isArray(value)) {
+    return uniqueList(value.map((item) => safeText(item))).join(", ");
+  }
+
+  return safeText(value);
 }
 
 function normalizeMessengerLink(link?: string) {
@@ -140,6 +157,10 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
+function getDisplayName(person: Personnel) {
+  return safeText((person as ExtendedPersonnel).displayName) || person.name;
+}
+
 function getPhotoUrl(person: Personnel) {
   const extendedPerson = person as ExtendedPersonnel;
 
@@ -176,36 +197,15 @@ function getPositionText(person: Personnel) {
   return safeText(person.position);
 }
 
-function getDesignationText(person: Personnel) {
-  const advisoryText = getAdvisorySections(person);
-  const position = getPositionText(person).toLowerCase();
+function getDesignationItems(person: Personnel) {
+  const extended = person as ExtendedPersonnel;
 
-  const designations = uniqueList(person.designation || []).filter(
-    (designation) => designation.toLowerCase() !== position
-  );
-
-  const hasClassAdviser =
-    advisoryText !== "" ||
-    designations.some(
-      (designation) => designation.toLowerCase() === "class adviser"
-    );
-
-  const cleanedDesignations = designations.filter(
-    (designation) => designation.toLowerCase() !== "class adviser"
-  );
-
-  const classAdviserText =
-    hasClassAdviser && advisoryText
-      ? `Class Adviser, ${advisoryText}`
-      : hasClassAdviser
-        ? "Class Adviser"
-        : "";
-
-  return uniqueList([...cleanedDesignations, classAdviserText]).join(" / ");
-}
-
-function getRoleBadge(person: Personnel) {
-  return safeText(person.group) || safeText(person.department) || "Personnel";
+  return uniqueList([
+    ...(person.designation || []),
+    extended.designation1,
+    extended.designation2,
+    extended.designation3,
+  ]);
 }
 
 function getTeachingDepartment(person: Personnel) {
@@ -238,41 +238,58 @@ function getSubjectDepartments(person: Personnel) {
 
 function getTeachingPhilosophy(person: Personnel) {
   const extended = person as ExtendedPersonnel;
-  return safeText(extended.teachingPhilosophy) || safeText(extended.philosophy);
-}
-
-function getPersonnelDetails(person: Personnel): DetailField[] {
-  return [
-    {
-      label: "Department",
-      value: safeText(person.department),
-    },
-    {
-      label: "Personnel Group",
-      value: safeText(person.group),
-    },
-  ].filter((field) => isMeaningfulText(field.value));
+  return (
+    safeText(extended.professionalBelief) ||
+    safeText(extended.teachingPhilosophy) ||
+    safeText(extended.philosophy)
+  );
 }
 
 function getTeachingProfileFields(person: Personnel): DetailField[] {
   const extended = person as ExtendedPersonnel;
+  const subjectTaught =
+    displayList(person.subjectTaught) ||
+    displayFlexibleList(extended.subjectTaught) ||
+    safeText(extended.subjectArea);
+  const trackOrDepartment =
+    safeText(extended.track) ||
+    getSubjectDepartments(person) ||
+    safeText(person.department) ||
+    getTeachingDepartment(person);
 
   return [
     {
-      label: "Subject Area",
-      value: safeText(extended.subjectArea),
+      label: "Subject/s Taught",
+      value: subjectTaught,
     },
     {
-      label: "Subject Taught",
-      value: displayList(person.subjectTaught),
+      label: "Track or Department",
+      value: trackOrDepartment,
     },
     {
-      label: "Subject Department",
-      value: getSubjectDepartments(person),
+      label: "Advisory",
+      value: getAdvisorySections(person),
+    },
+  ].filter((field) => isMeaningfulText(field.value));
+}
+
+function getAdditionalTaskFields(person: Personnel): DetailField[] {
+  const position = getPositionText(person).toLowerCase();
+  const advisory = getAdvisorySections(person);
+  const designations = getDesignationItems(person)
+    .filter((designation) => designation.toLowerCase() !== position)
+    .filter((designation) => designation.toLowerCase() !== "class adviser");
+
+  return [
+    {
+      label: "Coordinatorship / Designations",
+      value: uniqueList(designations).join(", "),
+      wide: true,
     },
     {
-      label: "Teaching Department",
-      value: getTeachingDepartment(person),
+      label: "Advisory Assignment",
+      value: advisory ? `Class Adviser, ${advisory}` : "",
+      wide: true,
     },
   ].filter((field) => isMeaningfulText(field.value));
 }
@@ -293,6 +310,10 @@ function getContactFields(person: Personnel): DetailField[] {
       label: "Contact Note",
       value: safeText(extended.contactNote),
       wide: true,
+    },
+    {
+      label: "Messenger",
+      value: safeText(extended.messenger),
     },
   ].filter((field) => isMeaningfulText(field.value));
 }
@@ -381,36 +402,24 @@ function SocialIcon({ icon }: { icon: SocialLink["icon"] }) {
   );
 }
 
-function DetailFieldCard({ label, value, wide }: DetailField) {
+function DetailFieldCard({ label, value }: DetailField) {
   return (
-    <div
-      className={`bg-white px-4 py-4 shadow-sm ring-1 ring-slate-200/70 transition duration-300 hover:-translate-y-0.5 hover:shadow-md sm:px-5 md:px-6 md:py-5 ${
-        wide ? "xl:col-span-2" : ""
-      }`}
-    >
-      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0F4C5C] md:text-[11px] md:tracking-[0.22em]">
+    <div className="grid gap-1 py-0.5 sm:grid-cols-[170px_minmax(0,1fr)] sm:gap-5 md:py-1">
+      <p className="text-sm font-bold leading-6 text-slate-950">
         {label}
       </p>
-      <p className="mt-2 text-sm font-semibold leading-7 text-slate-800 md:mt-3">
+
+      <p className="min-w-0 whitespace-pre-line break-words text-sm font-medium leading-6 text-slate-800 md:text-[16px]">
         {value}
       </p>
     </div>
   );
 }
 
-function SectionTitle({
-  eyebrow,
-  title,
-}: {
-  eyebrow: string;
-  title: string;
-}) {
+function SectionTitle({ title }: { title: string }) {
   return (
-    <div className="mb-4 md:mb-5">
-      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0F4C5C] md:text-[11px] md:tracking-[0.22em]">
-        {eyebrow}
-      </p>
-      <h3 className="mt-2 text-xl font-black tracking-tight text-slate-950 md:text-2xl">
+    <div className="mb-3 md:mb-4">
+      <h3 className="text-2xl font-bold tracking-[-0.02em] text-slate-950 md:text-[30px] md:leading-tight">
         {title}
       </h3>
     </div>
@@ -423,6 +432,15 @@ export default function PersonnelModal({
 }: PersonnelModalProps) {
   const [failedPhoto, setFailedPhoto] = useState<string | null>(null);
 
+  function requestClose() {
+    if (window.history.state?.personnelModal) {
+      window.history.back();
+      return;
+    }
+
+    onClose();
+  }
+
   useEffect(() => {
     setFailedPhoto(null);
   }, [person?.id]);
@@ -430,37 +448,53 @@ export default function PersonnelModal({
   useEffect(() => {
     if (!person) return;
 
+    const previousOverflow = document.body.style.overflow;
+    const modalStateKey = `personnel-modal-${person.id}-${Date.now()}`;
+
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        onClose();
+        requestClose();
       }
     }
 
+    function handlePopState(event: PopStateEvent) {
+      if (event.state?.personnelModal === modalStateKey) return;
+      onClose();
+    }
+
+    window.history.pushState(
+      { ...(window.history.state || {}), personnelModal: modalStateKey },
+      "",
+      window.location.href
+    );
+
     document.addEventListener("keydown", handleEscape);
+    window.addEventListener("popstate", handlePopState);
     document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "";
+      window.removeEventListener("popstate", handlePopState);
+      document.body.style.overflow = previousOverflow;
     };
   }, [person, onClose]);
 
   const photoUrl = person ? getPhotoUrl(person) : "";
   const showPhoto = Boolean(person && photoUrl && failedPhoto !== photoUrl);
+  const displayName = person ? getDisplayName(person) : "";
 
   const positionText = person ? getPositionText(person) : "";
-  const designationText = person ? getDesignationText(person) : "";
-  const roleBadge = person ? getRoleBadge(person) : "";
+  const departmentText = person ? safeText(person.department) : "";
   const teachingPhilosophy = person ? getTeachingPhilosophy(person) : "";
-
-  const personnelDetails = useMemo<DetailField[]>(() => {
-    if (!person) return [];
-    return getPersonnelDetails(person);
-  }, [person]);
 
   const teachingProfile = useMemo<DetailField[]>(() => {
     if (!person) return [];
     return getTeachingProfileFields(person);
+  }, [person]);
+
+  const additionalTasks = useMemo<DetailField[]>(() => {
+    if (!person) return [];
+    return getAdditionalTaskFields(person);
   }, [person]);
 
   const contactFields = useMemo<DetailField[]>(() => {
@@ -477,7 +511,8 @@ export default function PersonnelModal({
     <AnimatePresence>
       {person && (
         <motion.div
-          className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/55 p-0 backdrop-blur-sm md:px-4 md:py-6"
+          onClick={requestClose}
+          className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/60 p-0 backdrop-blur-[2px] sm:p-4 md:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -485,52 +520,27 @@ export default function PersonnelModal({
           <style jsx global>{`
             .personnel-modal-scroll {
               scrollbar-width: thin;
-              scrollbar-color: #aeb4ba #eff3f7;
-              scrollbar-gutter: stable;
+              scrollbar-color: #aeb4ba transparent;
             }
 
             .personnel-modal-scroll::-webkit-scrollbar {
-              width: 14px;
+              width: 10px;
             }
 
             .personnel-modal-scroll::-webkit-scrollbar-track {
-              background: #eff3f7;
+              background: transparent;
             }
 
             .personnel-modal-scroll::-webkit-scrollbar-thumb {
               background: #aeb4ba;
-              border: 4px solid #eff3f7;
+              border: 2px solid transparent;
               border-radius: 999px;
+              background-clip: content-box;
             }
 
             .personnel-modal-scroll::-webkit-scrollbar-thumb:hover {
               background: #858d96;
-            }
-
-            .personnel-modal-scroll::-webkit-scrollbar-button {
-              display: none;
-              width: 0;
-              height: 0;
-            }
-
-            @media (min-width: 768px) {
-              .personnel-modal-scroll::-webkit-scrollbar {
-                width: 36px;
-              }
-
-              .personnel-modal-scroll::-webkit-scrollbar-thumb {
-                border: 11px solid #eff3f7;
-              }
-            }
-
-            @media (min-width: 1024px) {
-              .personnel-modal-scroll::-webkit-scrollbar {
-                width: 52px;
-              }
-
-              .personnel-modal-scroll::-webkit-scrollbar-thumb {
-                border: 17px solid #eff3f7;
-              }
+              background-clip: content-box;
             }
           `}</style>
 
@@ -540,16 +550,16 @@ export default function PersonnelModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 10 }}
             transition={{ type: "tween", duration: 0.18, ease: "easeOut" }}
-            className="relative flex h-[100dvh] w-full overflow-hidden bg-white text-slate-950 shadow-2xl md:h-[88vh] md:w-[96vw] md:max-w-[1500px]"
+            className="relative flex max-h-[100dvh] w-full max-w-[1120px] overflow-hidden bg-white text-slate-950 shadow-2xl sm:max-h-[calc(100dvh-2rem)] md:max-h-[88vh]"
           >
             <button
               type="button"
-              onClick={onClose}
+              onClick={requestClose}
               aria-label="Close personnel profile"
-              className="absolute right-0 top-0 z-40 flex h-11 w-11 items-center justify-center bg-red-600 text-white shadow-md transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 md:h-12 md:w-12 lg:h-[58px] lg:w-[58px]"
+              className="absolute right-0 top-0 z-40 flex h-14 w-14 items-center justify-center bg-red-600 text-white shadow-lg transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 active:scale-95 md:h-14 md:w-14"
             >
               <svg
-                className="h-6 w-6 md:h-7 md:w-7 lg:h-8 lg:w-8"
+                className="h-7 w-7"
                 viewBox="0 0 24 24"
                 fill="none"
                 aria-hidden="true"
@@ -563,101 +573,58 @@ export default function PersonnelModal({
               </svg>
             </button>
 
-            <div className="flex h-full w-full flex-col md:flex-row">
-              {/* Mobile profile header / Desktop fixed identity panel */}
-              <aside className="relative shrink-0 overflow-hidden bg-white px-5 py-4 pr-14 md:flex md:h-full md:w-[340px] md:flex-col md:justify-start md:px-8 md:py-8 md:pr-8 lg:w-[420px] lg:px-10 lg:py-10">
-                <div className="absolute left-0 top-0 h-full w-1.5 bg-[#0F4C5C] md:w-2" />
-                <div className="absolute left-1.5 top-0 h-full w-1 bg-[#ffdf20] md:left-2" />
-
-                <div className="relative z-10 flex items-center gap-4 md:h-full md:min-h-0 md:flex-col md:items-stretch">
-                  <div className="aspect-[3/4] w-[92px] flex-none overflow-hidden bg-[#0F4C5C] shadow-lg ring-1 ring-slate-200 sm:w-[110px] md:mx-auto md:w-[240px] lg:w-[280px]">
+            <div className="flex w-full flex-col md:flex-row">
+              <aside className="shrink-0 bg-white px-6 pb-8 pt-20 sm:px-8 md:flex md:w-[38%] md:flex-col md:items-center md:justify-center md:px-10 md:py-12">
+                <div className="mx-auto max-w-[340px] text-center md:max-w-none">
+                  <div className="mx-auto aspect-[3/4] w-full max-w-[234px] overflow-hidden rounded-[10px] bg-[#f3b02f] shadow-md ring-1 ring-black/10">
                     {showPhoto ? (
                       <img
                         src={photoUrl}
-                        alt={person.name}
+                        alt={displayName}
                         onError={() => setFailedPhoto(photoUrl)}
                         className="h-full w-full object-cover object-[50%_20%]"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-[#0F4C5C] text-3xl font-black text-white md:text-5xl">
-                        {getInitials(person.name)}
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#ffdf20] via-[#f59e0b] to-[#b45309] text-5xl font-black text-white md:text-6xl">
+                        {getInitials(displayName)}
                       </div>
                     )}
                   </div>
 
-                  <div className="min-w-0 md:mt-8 md:min-h-0 md:overflow-y-auto md:pr-2">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0F4C5C] md:text-[11px] md:tracking-[0.24em]">
-                      Personnel Profile
+                  <h2 className="mt-10 text-3xl font-bold leading-tight tracking-[-0.02em] text-slate-950 sm:text-[34px]">
+                    {displayName}
+                  </h2>
+
+                  {positionText && (
+                    <p className="mt-7 text-lg font-semibold leading-6 text-[#024253]">
+                    {positionText}
+                  </p>
+                  )}
+
+                  {departmentText && (
+                    <p className="mt-1 text-lg font-semibold leading-6 text-black">
+                      {departmentText} Department
                     </p>
-
-                    <h2 className="mt-2 text-xl font-black leading-tight tracking-tight text-slate-950 sm:text-2xl md:mt-4 md:text-3xl">
-                      {person.name}
-                    </h2>
-
-                    {positionText && (
-                      <p className="mt-2 text-xs font-black leading-5 text-[#0F4C5C] md:mt-3 md:text-sm md:leading-6">
-                        {positionText}
-                      </p>
-                    )}
-
-                    {designationText && (
-                      <p className="mt-1 text-xs font-semibold leading-5 text-slate-700 md:text-sm md:leading-6">
-                        {designationText}
-                      </p>
-                    )}
-
-                    {isMeaningfulText(roleBadge) && (
-                      <div className="mt-3 inline-flex bg-[#0F4C5C] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white md:mt-5 md:px-4 md:py-2 md:text-xs md:tracking-[0.16em]">
-                        {roleBadge}
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
               </aside>
 
-              {/* Scrollable information panel */}
-              <section className="personnel-modal-scroll min-h-0 flex-1 overflow-y-auto bg-[#f8fafc] px-5 py-6 pr-3 sm:px-6 md:px-8 md:py-8 md:pr-4 lg:px-10 lg:py-12 lg:pr-5">
-                <div className="mb-6 max-w-3xl md:mb-8">
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-[#0F4C5C] md:text-sm md:tracking-[0.22em]">
-                    Profile Information
-                  </p>
-                  <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-950 md:mt-3 md:text-3xl">
-                    Official personnel details
-                  </h3>
-                  <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">
-                    Information is based on the official school roster encoded
-                    for the Tabunoc National High School website.
-                  </p>
-                </div>
-
-                {personnelDetails.length > 0 && (
+              <section className="personnel-modal-scroll min-h-0 flex-1 overflow-y-auto bg-[#e9e9e9] px-6 py-8 sm:max-h-[calc(100dvh-2rem)] sm:px-8 md:max-h-[88vh] md:px-12 md:py-16 lg:px-16">
+                {isMeaningfulText(teachingPhilosophy) && (
                   <section className="mb-8 md:mb-10">
-                    <SectionTitle
-                      eyebrow="Personnel Details"
-                      title="Basic assignment information"
-                    />
+                    <SectionTitle title="Professional Belief in Teaching" />
 
-                    <div className="grid gap-4 md:gap-5 xl:grid-cols-2">
-                      {personnelDetails.map((field) => (
-                        <DetailFieldCard
-                          key={`${field.label}-${field.value}`}
-                          label={field.label}
-                          value={field.value}
-                          wide={field.wide}
-                        />
-                      ))}
-                    </div>
+                    <p className="max-w-[660px] text-sm font-medium leading-7 tracking-[-0.01em] text-slate-800 md:text-[16px]">
+                      &ldquo;{teachingPhilosophy}&rdquo;
+                    </p>
                   </section>
                 )}
 
                 {teachingProfile.length > 0 && (
                   <section className="mb-8 md:mb-10">
-                    <SectionTitle
-                      eyebrow="Teaching Profile"
-                      title="Teaching and subject assignment"
-                    />
+                    <SectionTitle title="Teaching Profile" />
 
-                    <div className="grid gap-4 md:gap-5 xl:grid-cols-2">
+                    <div className="space-y-0.5 md:space-y-1">
                       {teachingProfile.map((field) => (
                         <DetailFieldCard
                           key={`${field.label}-${field.value}`}
@@ -670,29 +637,28 @@ export default function PersonnelModal({
                   </section>
                 )}
 
-                {isMeaningfulText(teachingPhilosophy) && (
+                {additionalTasks.length > 0 && (
                   <section className="mb-8 md:mb-10">
-                    <SectionTitle
-                      eyebrow="Teaching Philosophy"
-                      title="Professional belief in teaching"
-                    />
+                    <SectionTitle title="Task" />
 
-                    <div className="border-l-[6px] border-[#ffdf20] bg-yellow-50 px-5 py-5 shadow-sm md:px-6">
-                      <p className="text-sm font-semibold italic leading-8 text-slate-800">
-                        “{teachingPhilosophy}”
-                      </p>
+                    <div className="space-y-0.5 md:space-y-1">
+                      {additionalTasks.map((field) => (
+                        <DetailFieldCard
+                          key={`${field.label}-${field.value}`}
+                          label={field.label}
+                          value={field.value}
+                          wide={field.wide}
+                        />
+                      ))}
                     </div>
                   </section>
                 )}
 
                 {contactFields.length > 0 && (
                   <section className="mb-8 md:mb-10">
-                    <SectionTitle
-                      eyebrow="Contact Information"
-                      title="Official contact details"
-                    />
+                    <SectionTitle title="Consultation and Contact" />
 
-                    <div className="grid gap-4 md:gap-5 xl:grid-cols-2">
+                    <div className="space-y-0.5 md:space-y-1">
                       {contactFields.map((field) => (
                         <DetailFieldCard
                           key={`${field.label}-${field.value}`}
@@ -707,10 +673,7 @@ export default function PersonnelModal({
 
                 {socialLinks.length > 0 && (
                   <section>
-                    <SectionTitle
-                      eyebrow="Social Media"
-                      title="Public profile links"
-                    />
+                    <SectionTitle title="Public Links" />
 
                     <div className="grid gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap">
                       {socialLinks.map((link) => (
@@ -719,7 +682,7 @@ export default function PersonnelModal({
                           href={link.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center justify-center gap-3 bg-white px-5 py-3 text-sm font-black text-[#0F4C5C] shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-1 hover:bg-[#0F4C5C] hover:text-white"
+                          className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 py-3 text-sm font-black text-[#0F4C5C] shadow-sm ring-1 ring-slate-200 transition hover:bg-[#0F4C5C] hover:text-white"
                         >
                           <SocialIcon icon={link.icon} />
                           {link.label}
@@ -729,12 +692,12 @@ export default function PersonnelModal({
                   </section>
                 )}
 
-                {personnelDetails.length === 0 &&
-                  teachingProfile.length === 0 &&
+                {teachingProfile.length === 0 &&
+                  additionalTasks.length === 0 &&
                   !isMeaningfulText(teachingPhilosophy) &&
                   contactFields.length === 0 &&
                   socialLinks.length === 0 && (
-                    <div className="bg-white p-6 text-center shadow-sm ring-1 ring-slate-200 md:p-8">
+                    <div className="bg-white/70 p-6 text-center ring-1 ring-black/10 md:p-8">
                       <p className="font-bold text-slate-600">
                         Public profile details will be added soon.
                       </p>

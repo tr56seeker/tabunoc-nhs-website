@@ -6,7 +6,7 @@
  * PURPOSE: Responsive public-facing personnel profile modal using CSV/Excel roster data.
  * DESIGN:
  * - Desktop/tablet: fixed left profile panel + scrollable right details
- * - Mobile: same profile layout with reduced photo size, spacing, and text size
+ * - Mobile: horizontal profile header: Photo | Name, Position, Teaching Department, Designation
  * - 3:4 profile photo ratio
  * - No redundant information
  * - Hides N/A/blank fields
@@ -206,6 +206,19 @@ function getDesignationItems(person: Personnel) {
     extended.designation2,
     extended.designation3,
   ]);
+}
+
+function getSummaryDesignationText(person: Personnel) {
+  const position = getPositionText(person).toLowerCase();
+  const advisory = getAdvisorySections(person);
+
+  const designations = getDesignationItems(person)
+    .filter((designation) => designation.toLowerCase() !== position)
+    .filter((designation) => designation.toLowerCase() !== "class adviser");
+
+  const advisoryText = advisory ? `Class Adviser, ${advisory}` : "";
+
+  return uniqueList([...designations, advisoryText]).join(" / ");
 }
 
 function getTeachingDepartment(person: Personnel) {
@@ -484,6 +497,10 @@ export default function PersonnelModal({
 
   const positionText = person ? getPositionText(person) : "";
   const departmentText = person ? safeText(person.department) : "";
+  const teachingDepartmentText = person
+    ? getTeachingDepartment(person) || departmentText
+    : "";
+  const designationText = person ? getSummaryDesignationText(person) : "";
   const teachingPhilosophy = person ? getTeachingPhilosophy(person) : "";
 
   const teachingProfile = useMemo<DetailField[]>(() => {
@@ -573,9 +590,9 @@ export default function PersonnelModal({
             </button>
 
             <div className="flex w-full flex-col md:flex-row">
-              <aside className="shrink-0 bg-white px-5 pb-5 pt-16 sm:px-6 sm:pb-6 sm:pt-18 md:flex md:w-[38%] md:flex-col md:items-center md:justify-center md:px-10 md:py-12">
-                <div className="mx-auto max-w-[300px] text-center sm:max-w-[320px] md:max-w-none">
-                  <div className="mx-auto aspect-[3/4] w-full max-w-[150px] overflow-hidden rounded-[10px] bg-[#f3b02f] shadow-md ring-1 ring-black/10 sm:max-w-[170px] md:max-w-[234px]">
+              <aside className="shrink-0 bg-white px-5 pb-5 pt-16 sm:px-6 sm:pb-6 md:flex md:w-[38%] md:flex-col md:items-center md:justify-center md:px-10 md:py-12">
+                <div className="mx-auto flex max-w-[460px] items-start gap-4 text-left md:block md:max-w-none md:text-center">
+                  <div className="aspect-[3/4] w-[150px] max-w-[42vw] shrink-0 overflow-hidden rounded-[10px] bg-[#f3b02f] shadow-md ring-1 ring-black/10 sm:w-[170px] md:mx-auto md:w-full md:max-w-[234px]">
                     {showPhoto ? (
                       <img
                         src={photoUrl}
@@ -590,21 +607,32 @@ export default function PersonnelModal({
                     )}
                   </div>
 
-                  <h2 className="mt-4 text-2xl font-bold leading-tight tracking-[-0.02em] text-slate-950 sm:text-[28px] md:mt-10 md:text-[34px]">
-                    {displayName}
-                  </h2>
+                  <div className="min-w-0 flex-1 pt-1 md:pt-0">
+                    <h2
+                      title={displayName}
+                      className="line-clamp-2 text-2xl font-bold leading-tight tracking-[-0.02em] text-slate-950 sm:text-[26px] md:mt-10 md:text-[30px] md:leading-tight"
+                    >
+                      {displayName}
+                    </h2>
 
-                  {positionText && (
-                    <p className="mt-2 text-base font-semibold leading-6 text-[#024253] md:mt-7 md:text-lg">
-                      {positionText}
-                    </p>
-                  )}
+                    {positionText && (
+                      <p className="mt-2 text-base font-semibold leading-5 text-[#024253] sm:text-[17px] md:mt-6 md:text-lg md:leading-6">
+                        {positionText}
+                      </p>
+                    )}
 
-                  {departmentText && (
-                    <p className="mt-1 text-sm font-semibold leading-5 text-slate-700 sm:text-base md:text-lg md:leading-6">
-                      {departmentText}
-                    </p>
-                  )}
+                    {teachingDepartmentText && (
+                      <p className="mt-1 text-sm font-bold uppercase leading-5 tracking-[0.12em] text-slate-500 sm:text-[15px] md:text-base">
+                        {teachingDepartmentText}
+                      </p>
+                    )}
+
+                    {designationText && (
+                      <p className="mt-2 line-clamp-3 text-sm font-semibold leading-5 text-slate-700 sm:text-[15px] md:mx-auto md:max-w-[280px] md:text-base md:leading-6">
+                        {designationText}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </aside>
 

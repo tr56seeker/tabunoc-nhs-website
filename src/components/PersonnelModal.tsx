@@ -6,7 +6,7 @@
  * PURPOSE: Responsive public-facing personnel profile modal using CSV/Excel roster data.
  * DESIGN:
  * - Desktop/tablet: fixed left profile panel + scrollable right details
- * - Mobile: full-screen profile sheet with compact top profile header
+ * - Mobile: same profile layout with reduced photo size, spacing, and text size
  * - 3:4 profile photo ratio
  * - No redundant information
  * - Hides N/A/blank fields
@@ -251,6 +251,7 @@ function getTeachingProfileFields(person: Personnel): DetailField[] {
     displayList(person.subjectTaught) ||
     displayFlexibleList(extended.subjectTaught) ||
     safeText(extended.subjectArea);
+
   const trackOrDepartment =
     safeText(extended.track) ||
     getSubjectDepartments(person) ||
@@ -405,9 +406,7 @@ function SocialIcon({ icon }: { icon: SocialLink["icon"] }) {
 function DetailFieldCard({ label, value }: DetailField) {
   return (
     <div className="grid gap-1 py-0.5 sm:grid-cols-[170px_minmax(0,1fr)] sm:gap-5 md:py-1">
-      <p className="text-sm font-bold leading-6 text-slate-950">
-        {label}
-      </p>
+      <p className="text-sm font-bold leading-6 text-slate-950">{label}</p>
 
       <p className="min-w-0 whitespace-pre-line break-words text-sm font-medium leading-6 text-slate-800 md:text-[16px]">
         {value}
@@ -556,10 +555,10 @@ export default function PersonnelModal({
               type="button"
               onClick={requestClose}
               aria-label="Close personnel profile"
-              className="absolute right-0 top-0 z-40 flex h-14 w-14 items-center justify-center bg-red-600 text-white shadow-lg transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 active:scale-95 md:h-14 md:w-14"
+              className="absolute right-0 top-0 z-40 flex h-12 w-12 items-center justify-center bg-red-600 text-white shadow-lg transition hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-200 active:scale-95 md:h-14 md:w-14"
             >
               <svg
-                className="h-7 w-7"
+                className="h-6 w-6 md:h-7 md:w-7"
                 viewBox="0 0 24 24"
                 fill="none"
                 aria-hidden="true"
@@ -574,9 +573,9 @@ export default function PersonnelModal({
             </button>
 
             <div className="flex w-full flex-col md:flex-row">
-              <aside className="shrink-0 bg-white px-6 pb-8 pt-20 sm:px-8 md:flex md:w-[38%] md:flex-col md:items-center md:justify-center md:px-10 md:py-12">
-                <div className="mx-auto max-w-[340px] text-center md:max-w-none">
-                  <div className="mx-auto aspect-[3/4] w-full max-w-[234px] overflow-hidden rounded-[10px] bg-[#f3b02f] shadow-md ring-1 ring-black/10">
+              <aside className="shrink-0 bg-white px-5 pb-5 pt-16 sm:px-6 sm:pb-6 sm:pt-18 md:flex md:w-[38%] md:flex-col md:items-center md:justify-center md:px-10 md:py-12">
+                <div className="mx-auto max-w-[300px] text-center sm:max-w-[320px] md:max-w-none">
+                  <div className="mx-auto aspect-[3/4] w-full max-w-[150px] overflow-hidden rounded-[10px] bg-[#f3b02f] shadow-md ring-1 ring-black/10 sm:max-w-[170px] md:max-w-[234px]">
                     {showPhoto ? (
                       <img
                         src={photoUrl}
@@ -585,31 +584,31 @@ export default function PersonnelModal({
                         className="h-full w-full object-cover object-[50%_20%]"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#ffdf20] via-[#f59e0b] to-[#b45309] text-5xl font-black text-white md:text-6xl">
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#ffdf20] via-[#f59e0b] to-[#b45309] text-4xl font-black text-white md:text-6xl">
                         {getInitials(displayName)}
                       </div>
                     )}
                   </div>
 
-                  <h2 className="mt-10 text-3xl font-bold leading-tight tracking-[-0.02em] text-slate-950 sm:text-[34px]">
+                  <h2 className="mt-4 text-2xl font-bold leading-tight tracking-[-0.02em] text-slate-950 sm:text-[28px] md:mt-10 md:text-[34px]">
                     {displayName}
                   </h2>
 
                   {positionText && (
-                    <p className="mt-7 text-lg font-semibold leading-6 text-[#024253]">
-                    {positionText}
-                  </p>
+                    <p className="mt-2 text-base font-semibold leading-6 text-[#024253] md:mt-7 md:text-lg">
+                      {positionText}
+                    </p>
                   )}
 
                   {departmentText && (
-                    <p className="mt-1 text-lg font-semibold leading-6 text-black">
-                      {departmentText} Department
+                    <p className="mt-1 text-sm font-semibold leading-5 text-slate-700 sm:text-base md:text-lg md:leading-6">
+                      {departmentText}
                     </p>
                   )}
                 </div>
               </aside>
 
-              <section className="personnel-modal-scroll min-h-0 flex-1 overflow-y-auto bg-[#e9e9e9] px-6 py-8 sm:max-h-[calc(100dvh-2rem)] sm:px-8 md:max-h-[88vh] md:px-12 md:py-16 lg:px-16">
+              <section className="personnel-modal-scroll min-h-0 flex-1 overflow-y-auto bg-[#e9e9e9] px-5 py-7 sm:max-h-[calc(100dvh-2rem)] sm:px-8 md:max-h-[88vh] md:px-12 md:py-16 lg:px-16">
                 {isMeaningfulText(teachingPhilosophy) && (
                   <section className="mb-8 md:mb-10">
                     <SectionTitle title="Professional Belief in Teaching" />

@@ -591,7 +591,7 @@ export default function PersonnelModal({
 
             <div className="flex w-full flex-col md:flex-row">
               <aside className="shrink-0 bg-white px-5 pb-5 pt-16 sm:px-6 sm:pb-6 md:flex md:w-[38%] md:flex-col md:items-center md:justify-center md:px-10 md:py-12">
-                <div className="mx-auto flex max-w-[460px] items-start gap-4 text-left md:block md:max-w-none md:text-center">
+                <div className="mx-auto flex max-w-[460px] items-end gap-4 text-left md:block md:max-w-none md:text-center">
                   <div className="aspect-[3/4] w-[150px] max-w-[42vw] shrink-0 overflow-hidden rounded-[10px] bg-[#f3b02f] shadow-md ring-1 ring-black/10 sm:w-[170px] md:mx-auto md:w-full md:max-w-[234px]">
                     {showPhoto ? (
                       <img
@@ -607,31 +607,32 @@ export default function PersonnelModal({
                     )}
                   </div>
 
-                  <div className="min-w-0 flex-1 pt-1 md:pt-0">
+                  <div className="min-w-0 flex-1 pb-1 md:pt-0">
                     <h2
-                      title={displayName}
-                      className="line-clamp-2 text-2xl font-bold leading-tight tracking-[-0.02em] text-slate-950 sm:text-[26px] md:mt-10 md:text-[30px] md:leading-tight"
-                    >
-                      {displayName}
-                    </h2>
+                          title={displayName}
+                          className="line-clamp-2 text-2xl font-bold leading-tight tracking-[-0.02em] text-slate-950 sm:text-[26px] md:mt-10 md:text-[30px] md:leading-tight"
+                        >
+                          {displayName}
+                        </h2>
 
-                    {positionText && (
-                      <p className="mt-2 text-base font-semibold leading-5 text-[#024253] sm:text-[17px] md:mt-6 md:text-lg md:leading-6">
-                        {positionText}
-                      </p>
-                    )}
+                        {positionText && (
+                          <p className="mt-2 text-base font-semibold leading-5 text-[#024253] sm:text-[17px] md:mt-6 md:text-lg md:leading-6">
+                            {positionText}
+                          </p>
+                        )}
 
-                    {teachingDepartmentText && (
-                      <p className="mt-1 text-sm font-bold uppercase leading-5 tracking-[0.12em] text-slate-500 sm:text-[15px] md:text-base">
-                        {teachingDepartmentText}
-                      </p>
-                    )}
+                        {teachingDepartmentText && (
+                          <p className="mt-1 text-sm font-bold uppercase leading-5 tracking-[0.12em] text-slate-500 sm:text-[15px] md:text-base">
+                            {teachingDepartmentText}
+                          </p>
+                        )}
 
-                    {designationText && (
-                      <p className="mt-2 line-clamp-3 text-sm font-semibold leading-5 text-slate-700 sm:text-[15px] md:mx-auto md:max-w-[280px] md:text-base md:leading-6">
-                        {designationText}
-                      </p>
-                    )}
+                        {designationText && (
+                          <p className="mt-2 line-clamp-3 text-sm font-semibold leading-5 text-slate-700 sm:text-[15px] md:mx-auto md:max-w-[280px] md:text-base md:leading-6">
+                            {designationText}
+                          </p>
+                        )}
+
                   </div>
                 </div>
               </aside>

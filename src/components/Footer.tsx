@@ -17,6 +17,7 @@ const footerLinks = [
   {
     title: "Services",
     links: [
+      { label: "Install App", href: "/install" },
       { label: "Enrollment Guide", href: "/enrollment" },
       { label: "SHS Offerings", href: "/shs-offerings" },
       { label: "School DRRM", href: "/#drrm" },
@@ -60,8 +61,15 @@ export default function Footer() {
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <a
-              href="/enrollment"
+              href="/install"
               className="rounded-xl bg-yellow-300 px-5 py-3 text-center text-sm font-black text-slate-950 transition duration-300 hover:-translate-y-1 hover:scale-[1.01]"
+            >
+              Install App
+            </a>
+
+            <a
+              href="/enrollment"
+              className="rounded-xl border border-yellow-300/40 px-5 py-3 text-center text-sm font-black text-white transition duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:text-yellow-300"
             >
               Enrollment Guide
             </a>

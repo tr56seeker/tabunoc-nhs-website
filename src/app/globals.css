@@ -24,6 +24,22 @@ body {
     "Helvetica Neue", Arial, sans-serif;
 }
 
+:root {
+  --app-safe-top: max(env(safe-area-inset-top), 20px);
+  --navbar-height: calc(5rem + var(--app-safe-top));
+  --org-tabs-top: var(--navbar-height);
+  --org-section-top: calc(var(--navbar-height) + 3.5rem);
+  --org-group-top: calc(var(--navbar-height) + 6.75rem);
+  --org-grade-top: calc(var(--navbar-height) + 10rem);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --app-safe-top: env(safe-area-inset-top);
+    --navbar-height: calc(5rem + var(--app-safe-top));
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0908;

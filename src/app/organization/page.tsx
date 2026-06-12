@@ -1413,13 +1413,11 @@ const visibleSubjectDepartments = useMemo(() => {
     });
   }
 
-  return (
-    <>
-      <div className="fixed left-0 right-0 top-0 z-[100]">
-        <Navbar />
-      </div>
+return (
+  <>
+    <Navbar />
 
-      <main className="min-h-screen bg-[#F8FAFC] text-slate-950 dark:bg-[#0a0908] dark:text-white">
+    <main className="min-h-screen bg-[#F8FAFC] text-slate-950 dark:bg-[#0a0908] dark:text-white">
         <section className="border-b border-slate-200 bg-white px-5 pb-12 pt-32 text-slate-950 dark:border-[#292624] dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10">
           <div className="mx-auto max-w-6xl text-center">
             <BrandHeader />

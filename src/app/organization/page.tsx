@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 import Navbar from "@/components/Navbar";
@@ -37,6 +37,28 @@ const defaultGradeLevels = [
   "Grade 10",
   "Grade 11",
   "Grade 12",
+];
+
+const topDirectoryTabs = [
+  { label: "Administration", targetId: "school-head" },
+  { label: "Program Coordinators", targetId: "program-implementers" },
+  { label: "Teaching Personnel", targetId: "master-teachers" },
+  { label: "Support Staff", targetId: "support-staff" },
+];
+
+const mainSectionTopTabMap = [
+  { sectionId: "school-head", tabLabel: "Administration" },
+  { sectionId: "administrative-staff", tabLabel: "Administration" },
+  { sectionId: "guidance-personnel", tabLabel: "Administration" },
+
+  { sectionId: "program-implementers", tabLabel: "Program Coordinators" },
+
+  { sectionId: "master-teachers", tabLabel: "Teaching Personnel" },
+  { sectionId: "grade-leaders", tabLabel: "Teaching Personnel" },
+  { sectionId: "class-advisory", tabLabel: "Teaching Personnel" },
+  { sectionId: "subject-teachers", tabLabel: "Teaching Personnel" },
+
+  { sectionId: "support-staff", tabLabel: "Support Staff" },
 ];
 
 function parseCsvLine(line: string) {
@@ -113,6 +135,10 @@ function slugify(value: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+}
+
+function getAdvisoryGradeSectionId(grade: string) {
+  return `class-advisory-${slugify(grade)}`;
 }
 
 function buildFallbackDisplayName(record: Record<string, string>) {
@@ -932,8 +958,12 @@ export default function OrganizationPage() {
   const [selectedPerson, setSelectedPerson] = useState<Personnel | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<"All" | PersonnelRole>("All");
+  const [activeMainTab, setActiveMainTab] = useState("");
   const [allPersonnel, setAllPersonnel] = useState<Personnel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const directoryTabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>(
+    {}
+  );
 
   useEffect(() => {
     async function loadPersonnel() {
@@ -1003,9 +1033,13 @@ export default function OrganizationPage() {
 
     const matchedPerson = allPersonnel.find((person) => person.id === profileId);
 
-    if (matchedPerson) {
+    if (!matchedPerson) return;
+
+    const openProfileTimer = window.setTimeout(() => {
       setSelectedPerson(matchedPerson);
-    }
+    }, 0);
+
+    return () => window.clearTimeout(openProfileTimer);
   }, [allPersonnel]);
 
   const leadership = useMemo(() => {
@@ -1120,9 +1154,39 @@ const visibleSubjectDepartments = useMemo(() => {
   }, [classAdvisers]);
 
   const visibleGradeLevels = useMemo(() => {
-    if (selectedGrade === "All") return gradeLevels;
-    return gradeLevels.filter((grade) => grade === selectedGrade);
-  }, [selectedGrade, gradeLevels]);
+    return gradeLevels;
+  }, [gradeLevels]);
+
+  useEffect(() => {
+    const gradeSections = gradeLevels
+      .map((grade) => document.getElementById(getAdvisoryGradeSectionId(grade)))
+      .filter((section): section is HTMLElement => Boolean(section));
+
+    if (gradeSections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visibleEntries = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        const activeGrade = (visibleEntries[0]?.target as HTMLElement | undefined)
+          ?.dataset.grade;
+
+        if (activeGrade) {
+          setSelectedGrade(activeGrade);
+        }
+      },
+      {
+        rootMargin: "-220px 0px -55% 0px",
+        threshold: [0.1, 0.25, 0.5],
+      }
+    );
+
+    gradeSections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, [gradeLevels]);
 
   const sortedGradeLeaders = useMemo(() => {
     return [...gradeLeaders].sort(
@@ -1157,23 +1221,212 @@ const visibleSubjectDepartments = useMemo(() => {
     });
   }, [allPersonnel, searchTerm, selectedRole]);
 
+  const isDirectorySearchActive =
+    searchTerm.trim() !== "" || selectedRole !== "All";
+
+  useEffect(() => {
+    if (isDirectorySearchActive) {
+      setActiveMainTab("");
+      return;
+    }
+
+    let animationFrameId = 0;
+
+    function getActiveMainTabFromScroll() {
+      const stickyOffset = 176;
+
+      const sections = mainSectionTopTabMap
+        .map((section) => {
+          const element = document.getElementById(section.sectionId);
+
+          if (!element) return null;
+
+          const sectionTop = element.getBoundingClientRect().top + window.scrollY;
+
+          return {
+            sectionId: section.sectionId,
+            tabLabel: section.tabLabel,
+            top: sectionTop,
+          };
+        })
+        .filter(
+          (
+            section
+          ): section is {
+            sectionId: string;
+            tabLabel: string;
+            top: number;
+          } => Boolean(section)
+        )
+        .sort((a, b) => a.top - b.top);
+
+      if (sections.length === 0) return "";
+
+      const currentScrollPosition = window.scrollY + stickyOffset;
+      const firstSectionTop = sections[0].top;
+
+      if (currentScrollPosition < firstSectionTop) {
+        return "";
+      }
+
+      const currentSection = [...sections]
+        .reverse()
+        .find((section) => currentScrollPosition >= section.top);
+
+      return currentSection?.tabLabel || "";
+    }
+
+    function updateActiveMainTab() {
+      const nextActiveMainTab = getActiveMainTabFromScroll();
+
+      setActiveMainTab((currentActiveMainTab) =>
+        currentActiveMainTab === nextActiveMainTab
+          ? currentActiveMainTab
+          : nextActiveMainTab
+      );
+    }
+
+    function requestActiveMainTabUpdate() {
+      if (animationFrameId) return;
+
+      animationFrameId = window.requestAnimationFrame(() => {
+        updateActiveMainTab();
+        animationFrameId = 0;
+      });
+    }
+
+    const initialChecks = [
+      window.setTimeout(updateActiveMainTab, 0),
+      window.setTimeout(updateActiveMainTab, 150),
+      window.setTimeout(updateActiveMainTab, 500),
+    ];
+
+    window.addEventListener("scroll", requestActiveMainTabUpdate, {
+      passive: true,
+    });
+    window.addEventListener("resize", requestActiveMainTabUpdate);
+
+    return () => {
+      initialChecks.forEach((timer) => window.clearTimeout(timer));
+
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+
+      window.removeEventListener("scroll", requestActiveMainTabUpdate);
+      window.removeEventListener("resize", requestActiveMainTabUpdate);
+    };
+  }, [isDirectorySearchActive, isLoading]);
+
+  useEffect(() => {
+    if (!activeMainTab) return;
+
+    const activeButton = directoryTabButtonRefs.current[activeMainTab];
+
+    activeButton?.scrollIntoView({
+      behavior: "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+  }, [activeMainTab]);
+
+  const sectionIntroClass = "mb-3 px-1 sm:mb-4 sm:px-0";
+
+  const stickySectionHeaderClass =
+    "sticky top-[136px] z-30 -mx-5 mb-4 flex min-h-12 items-center border-b border-slate-200 bg-white/90 px-5 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/90 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10";
+
+  const stickyGroupHeaderClass =
+    "sticky top-[188px] z-20 -mx-4 mb-3 flex min-h-11 items-center border-b border-slate-200 bg-white/90 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
+
+  const advisorySubmenuClass =
+    "sticky top-[188px] z-30 -mx-5 mb-4 overflow-x-auto border-b border-slate-200 bg-white/90 px-5 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/90 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10";
+
+  const stickyAdvisoryGradeHeaderClass =
+    "sticky top-[240px] z-20 -mx-4 mb-3 flex min-h-11 items-center border-b border-slate-200 bg-white/90 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
+
+  function SectionHeading({
+    eyebrow,
+    title,
+    description,
+  }: {
+    eyebrow: string;
+    title: string;
+    description?: string;
+  }) {
+    return (
+      <>
+        <div className={sectionIntroClass}>
+          <p className="text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20] sm:text-sm">
+            {eyebrow}
+          </p>
+          <h2 className="mt-1.5 text-2xl font-black leading-tight text-slate-950 dark:text-white md:text-4xl">
+            {title}
+          </h2>
+          {description ? (
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-stone-300 md:text-base md:leading-7">
+              {description}
+            </p>
+          ) : null}
+        </div>
+
+        <div className={stickySectionHeaderClass}>
+          <h2 className="line-clamp-1 text-base font-black leading-tight text-slate-950 dark:text-white md:text-lg">
+            {title}
+          </h2>
+        </div>
+      </>
+    );
+  }
+
+  function scrollToDirectorySection(label: string, targetId: string) {
+    setActiveMainTab(label);
+
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    const topOffset = 172;
+    const targetTop =
+      target.getBoundingClientRect().top + window.scrollY - topOffset;
+
+    window.scrollTo({
+      top: Math.max(targetTop, 0),
+      behavior: "smooth",
+    });
+  }
+
+  function scrollToAdvisoryGrade(grade: string) {
+    setSelectedGrade(grade);
+
+    const targetId =
+      grade === "All" ? "class-advisory" : getAdvisoryGradeSectionId(grade);
+    const target = document.getElementById(targetId);
+
+    if (!target) return;
+
+    const topOffset = grade === "All" ? 172 : 248;
+    const targetTop =
+      target.getBoundingClientRect().top + window.scrollY - topOffset;
+
+    window.scrollTo({
+      top: Math.max(targetTop, 0),
+      behavior: "smooth",
+    });
+  }
+
   return (
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-5 pb-20 pt-36 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
-          <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
-          <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
-
-          <div className="relative mx-auto max-w-7xl text-center">
+      <main className="min-h-screen bg-[#F8FAFC] text-slate-950 dark:bg-[#0a0908] dark:text-white">
+        <section className="border-b border-slate-200 bg-white px-5 pb-12 pt-32 text-slate-950 dark:border-[#292624] dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10">
+          <div className="mx-auto max-w-6xl text-center">
             <BrandHeader />
 
             <motion.p
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
+              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20]"
             >
               School Directory
             </motion.p>
@@ -1182,7 +1435,7 @@ const visibleSubjectDepartments = useMemo(() => {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.15 }}
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
+              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight text-slate-950 dark:text-white md:text-6xl"
             >
               School Administration, Faculty, and Staff
             </motion.h1>
@@ -1191,7 +1444,7 @@ const visibleSubjectDepartments = useMemo(() => {
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.25 }}
-              className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200"
+              className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-700 dark:text-stone-200 md:text-lg"
             >
               Meet the school administration, faculty members, advisers,
               program coordinators, and support personnel of Tabunoc National
@@ -1200,29 +1453,63 @@ const visibleSubjectDepartments = useMemo(() => {
           </div>
         </section>
 
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-16 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-8 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Faculty and Personnel Directory
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
-                Search the School Directory
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Search by name, section, role, subject taught, position,
-                designation, or program handled.
-              </p>
-            </div>
+        <nav
+          aria-label="Organization categories"
+          className="sticky top-20 z-40 bg-white/95 py-3 backdrop-blur-md dark:bg-[#0a0908]/95"
+        >
+          <div className="relative mx-auto max-w-6xl">
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-5 bg-gradient-to-l from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />
 
-            <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-5 shadow-sm dark:shadow-black/20 md:p-6">
+            <div className="no-scrollbar -mx-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
+              <div className="flex min-w-max gap-2 pr-5 sm:gap-2.5 lg:pr-0">
+              {topDirectoryTabs.map((tab) => {
+                const isActive = activeMainTab === tab.label;
+
+                return (
+                  <button
+                    key={tab.label}
+                    ref={(button) => {
+                      directoryTabButtonRefs.current[tab.label] = button;
+                    }}
+                    type="button"
+                    onClick={() =>
+                      scrollToDirectorySection(tab.label, tab.targetId)
+                    }
+                    className={`rounded-full px-3.5 py-2 text-xs font-bold transition sm:px-4 sm:text-sm ${
+                      isActive
+                        ? "bg-slate-900 text-white shadow-sm dark:bg-stone-100 dark:text-[#171614]"
+                        : "bg-slate-50 text-slate-600 ring-1 ring-slate-200/80 hover:bg-slate-100 hover:text-slate-900 dark:bg-[#171614] dark:text-stone-300 dark:ring-[#292624] dark:hover:bg-[#211f1c] dark:hover:text-white"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <section
+          id="directory-search"
+          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              eyebrow="Faculty and Personnel Directory"
+              title="Search the School Directory"
+              description="Search by name, section, role, subject taught, position, designation, or program handled."
+            />
+
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5">
               <div className="grid gap-4 lg:grid-cols-[1fr_260px]">
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   placeholder="Search by name, section, subject, designation, or program..."
-                  className="w-full rounded-xl border border-slate-300 dark:border-[#292624] bg-white dark:bg-[#171614] px-5 py-4 text-sm font-semibold text-slate-900 dark:text-white outline-none transition placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/50"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white dark:placeholder:text-slate-500"
                 />
 
                 <select
@@ -1230,7 +1517,7 @@ const visibleSubjectDepartments = useMemo(() => {
                   onChange={(event) =>
                     setSelectedRole(event.target.value as "All" | PersonnelRole)
                   }
-                  className="w-full rounded-xl border border-slate-300 dark:border-[#292624] bg-white dark:bg-[#171614] px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/50"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-bold text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white"
                 >
                   {roleFilters.map((role) => (
                     <option key={role} value={role}>
@@ -1245,7 +1532,7 @@ const visibleSubjectDepartments = useMemo(() => {
               </div>
 
               {isLoading && (
-                <div className="mt-6 rounded-xl bg-slate-100 dark:bg-[#292624] p-8 text-center">
+                <div className="mt-6 rounded-xl bg-slate-100 p-8 text-center dark:bg-[#292624]">
                   <p className="font-bold text-slate-700 dark:text-stone-200">
                     Loading personnel roster...
                   </p>
@@ -1266,14 +1553,14 @@ const visibleSubjectDepartments = useMemo(() => {
                           setSearchTerm("");
                           setSelectedRole("All");
                         }}
-                        className="w-fit rounded-lg bg-slate-100 dark:bg-[#292624] px-4 py-2 text-sm font-black text-slate-700 dark:text-stone-200 transition hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                        className="w-fit rounded-full bg-[#ffdf20] px-4 py-2 text-sm font-black text-slate-950 transition hover:bg-[#0F4C5C] hover:text-white"
                       >
                         Clear Search
                       </button>
                     </div>
 
                     {searchResults.length > 0 ? (
-                      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                         {searchResults.map((person) => (
                           <PersonnelCard
                             key={person.id}
@@ -1284,7 +1571,7 @@ const visibleSubjectDepartments = useMemo(() => {
                         ))}
                       </div>
                     ) : (
-                      <div className="rounded-xl bg-slate-100 dark:bg-[#292624] p-8 text-center">
+                      <div className="rounded-xl bg-slate-100 p-8 text-center dark:bg-[#292624]">
                         <p className="font-bold text-slate-700 dark:text-stone-200">
                           No matching personnel found.
                         </p>
@@ -1301,18 +1588,14 @@ const visibleSubjectDepartments = useMemo(() => {
         </section>
 
         {/* SCHOOL HEAD */}
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                School Leadership
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                School Head
-              </h2>
-            </div>
+        <section
+          id="school-head"
+          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading eyebrow="School Leadership" title="School Head" />
 
-            <div className="mx-auto grid max-w-[420px] gap-4">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {leadership.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -1326,18 +1609,17 @@ const visibleSubjectDepartments = useMemo(() => {
         </section>
 
         {/* ADMINISTRATIVE STAFF */}
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Administrative Support
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                Administrative Staff
-              </h2>
-            </div>
+        <section
+          id="administrative-staff"
+          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              eyebrow="Administrative Support"
+              title="Administrative Staff"
+            />
 
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {administrativePersonnel.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -1351,23 +1633,20 @@ const visibleSubjectDepartments = useMemo(() => {
         </section>
 
         {/* GUIDANCE PERSONNEL */}
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 2xl:px-[190px]">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Learner Support Services
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                Guidance Personnel
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Guidance personnel support learner welfare, counseling services, career guidance, and student development programs.
-              </p>
-            </div>
+        <section
+          id="guidance-personnel"
+          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              eyebrow="Learner Support Services"
+              title="Guidance Personnel"
+              description="Guidance personnel support learner welfare, counseling services, career guidance, and student development programs."
+            />
 
-            <div className="mx-auto flex max-w-[860px] flex-wrap justify-center gap-4">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {guidancePersonnel.map((person) => (
-                <div key={person.id} className="w-full max-w-[420px] sm:w-[calc(50%-0.5rem)]">
+                <div key={person.id}>
                   <PersonnelCard
                     person={person}
                     compact
@@ -1379,24 +1658,19 @@ const visibleSubjectDepartments = useMemo(() => {
           </div>
         </section>
 
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Program Coordination
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                Program Coordinators
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Program coordinators support school programs, committees,
-                initiatives, and special assignments aligned with school
-                operations, learner support, and DepEd priority programs.
-              </p>
-            </div>
+        <section
+          id="program-implementers"
+          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              eyebrow="Program Coordination"
+              title="Program Coordinators"
+              description="Program coordinators support school programs, committees, initiatives, and special assignments aligned with school operations, learner support, and DepEd priority programs."
+            />
 
             {sortedProgramImplementers.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {sortedProgramImplementers.map((person) => (
                   <PersonnelCard
                     key={person.id}
@@ -1416,23 +1690,18 @@ const visibleSubjectDepartments = useMemo(() => {
           </div>
         </section>
 
-        <section className="bg-white dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Instructional Leadership
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                Master Teachers
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Master Teachers provide instructional support, mentoring, and
-                technical assistance for curriculum implementation and teaching
-                practice.
-              </p>
-            </div>
+        <section
+          id="master-teachers"
+          className="bg-white px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              eyebrow="Instructional Leadership"
+              title="Master Teachers"
+              description="Master Teachers provide instructional support, mentoring, and technical assistance for curriculum implementation and teaching practice."
+            />
 
-            <div className="mx-auto grid max-w-[860px] gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {masterTeachers.map((person) => (
               <PersonnelCard
                 key={person.id}
@@ -1445,18 +1714,17 @@ const visibleSubjectDepartments = useMemo(() => {
           </div>
         </section>
 
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Grade Level Leadership
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                Grade Leaders
-              </h2>
-            </div>
+        <section
+          id="grade-leaders"
+          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              eyebrow="Grade Level Leadership"
+              title="Grade Leaders"
+            />
 
-            <div className="grid items-stretch gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid items-stretch gap-3 md:grid-cols-2 xl:grid-cols-3">
               {sortedGradeLeaders.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -1469,37 +1737,37 @@ const visibleSubjectDepartments = useMemo(() => {
           </div>
         </section>
 
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Class Advisers
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                Class Adviser Directory
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Select a grade level to view assigned class adviser profiles.
-              </p>
-            </div>
+        <section
+          id="class-advisory"
+          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              eyebrow="Class Advisers"
+              title="Class Adviser Directory"
+              description="Select a grade level to jump to assigned class adviser profiles."
+            />
 
-            <div className="mb-10 flex flex-wrap justify-center gap-3">
-              {["All", ...gradeLevels].map((grade) => (
+            <div className={advisorySubmenuClass}>
+              <div className="flex min-w-max gap-2 pr-4">
+              {["All", ...defaultGradeLevels].map((grade) => (
                 <button
                   key={grade}
-                  onClick={() => setSelectedGrade(grade)}
-                  className={`rounded-full px-5 py-2 text-sm font-bold transition ${
+                  type="button"
+                  onClick={() => scrollToAdvisoryGrade(grade)}
+                  className={`rounded-full px-4 py-2 text-sm font-black transition ${
                     selectedGrade === grade
-                      ? "bg-[#0F4C5C] text-white"
-                      : "bg-white dark:bg-[#171614] text-slate-700 dark:text-stone-200 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                      ? "bg-[#ffdf20] text-slate-950 shadow-sm"
+                      : "bg-white text-slate-700 ring-1 ring-slate-200 hover:text-[#0F4C5C] dark:bg-[#171614] dark:text-stone-200 dark:ring-[#292624] dark:hover:text-[#ffdf20]"
                   }`}
                 >
                   {grade}
                 </button>
               ))}
+              </div>
             </div>
 
-            <div className="grid gap-8">
+            <div className="grid gap-6">
               {visibleGradeLevels.map((grade) => {
                 const advisers = classAdvisers.filter((person) =>
                   person.advisory?.some((item) => item.gradeLevel === grade)
@@ -1507,26 +1775,23 @@ const visibleSubjectDepartments = useMemo(() => {
 
                 return (
                   <motion.div
+                    id={getAdvisoryGradeSectionId(grade)}
                     key={grade}
+                    data-grade={grade}
                     layout
                     initial={{ opacity: 0, y: 24 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.45 }}
-                    className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-4 shadow-sm dark:shadow-black/20 md:p-6"
+                    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5"
                   >
-                    <div className="mb-6">
-                      <h3 className="text-3xl font-black text-slate-950 dark:text-white">
+                    <div className={stickyAdvisoryGradeHeaderClass}>
+                      <h3 className="line-clamp-1 text-base font-black text-slate-950 dark:text-white md:text-lg">
                         {grade}
                       </h3>
-
-                      <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-stone-400">
-                        {advisers.length} adviser profile
-                        {advisers.length > 1 ? "s" : ""}
-                      </p>
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                       {advisers.map((person) => (
                         <PersonnelCard
                           key={`${grade}-${person.id}`}
@@ -1543,31 +1808,28 @@ const visibleSubjectDepartments = useMemo(() => {
           </div>
         </section>
 
-        <section className="bg-white dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                Teaching Personnel
-              </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                Subject Teachers Directory
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Select a subject department to view assigned subject teacher profiles.
-              </p>
-            </div>
+        <section
+          id="subject-teachers"
+          className="bg-white px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              eyebrow="Teaching Personnel"
+              title="Subject Teachers Directory"
+              description="Select a subject department to view assigned subject teacher profiles."
+            />
 
             {subjectTeachers.length > 0 ? (
               <>
-                <div className="mb-10 flex flex-wrap justify-center gap-3">
+                <div className="mb-8 flex flex-wrap gap-2">
                   {["All", ...subjectDepartments].map((department) => (
                     <button
                       key={department}
                       onClick={() => setSelectedSubjectDepartment(department)}
                       className={`rounded-full px-5 py-2 text-sm font-bold transition ${
                         selectedSubjectDepartment === department
-                          ? "bg-[#0F4C5C] text-white"
-                          : "bg-[#F8FAFC] dark:bg-[#171614] text-slate-700 dark:text-stone-200 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                          ? "bg-[#ffdf20] text-slate-950 shadow-sm"
+                          : "bg-[#F8FAFC] text-slate-700 shadow-sm ring-1 ring-slate-200 hover:text-[#0F4C5C] dark:bg-[#171614] dark:text-stone-200 dark:ring-[#292624] dark:hover:text-[#ffdf20]"
                       }`}
                     >
                       {department}
@@ -1575,7 +1837,7 @@ const visibleSubjectDepartments = useMemo(() => {
                   ))}
                 </div>
 
-                <div className="grid gap-8">
+                <div className="grid gap-6">
                   {visibleSubjectDepartments.map((department) => {
                     const teacherEntries = subjectDepartmentEntries
                       .filter((entry) => entry.department === department)
@@ -1606,20 +1868,15 @@ const visibleSubjectDepartments = useMemo(() => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.45 }}
-                        className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-4 shadow-sm dark:shadow-black/20 md:p-6"
+                        className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5"
                       >
-                        <div className="mb-6">
-                          <h3 className="text-3xl font-black text-slate-950 dark:text-white">
+                        <div className={stickyGroupHeaderClass}>
+                          <h3 className="line-clamp-1 text-base font-black text-slate-950 dark:text-white md:text-lg">
                             {department}
                           </h3>
-
-                          <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-stone-400">
-                            {teacherEntries.length} teacher profile
-                            {teacherEntries.length > 1 ? "s" : ""}
-                          </p>
                         </div>
 
-                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                           {teacherEntries.map((entry) => (
                             <PersonnelCard
                               key={`${department}-${entry.person.id}-${
@@ -1649,25 +1906,19 @@ const visibleSubjectDepartments = useMemo(() => {
         </section>
 
 
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-5 py-20 text-slate-950 dark:text-white sm:px-6 lg:px-10 xl:px-16 2xl:px-20">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
-                School Operations Support
-              </p>
-
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
-                School Support Personnel
-              </h2>
-
-              <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                Personnel who support daily school operations, utility errands,
-                campus safety, and service needs.
-              </p>
-            </div>
+        <section
+          id="support-staff"
+          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionHeading
+              eyebrow="School Operations Support"
+              title="School Support Personnel"
+              description="Personnel who support daily school operations, utility errands, campus safety, and service needs."
+            />
 
             {schoolSupportPersonnel.length > 0 ? (
-              <div className="mx-auto grid max-w-[860px] gap-4 sm:grid-cols-2">
+              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {schoolSupportPersonnel.map((person) => (
                   <PersonnelCard
                     key={person.id}

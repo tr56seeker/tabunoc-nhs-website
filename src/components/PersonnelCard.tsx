@@ -3,15 +3,15 @@
 /**
  * FILE_ID: TABUNOC_PERSONNEL_CARD_COMPACT_PREVIEW
  * PATH: src/components/PersonnelCard.tsx
- * PURPOSE: Compact organization preview card with fixed 3:4 photo ratio.
+ * PURPOSE: Minimal organization directory list card with fixed 3:4 portrait photo.
  * DISPLAY:
  * - Name
- * - Position
- * - Designation, one line only with ellipsis when long
- * - Department / Teaching Department
+ * - Position/designation
+ * - Advisory/subject/details
+ * - Details action
  */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Personnel } from "@/data/organization";
 
@@ -124,6 +124,40 @@ function getDesignationPreview(person: Personnel) {
   return uniqueList([...cleanedDesignations, classAdviserText]).join(" / ");
 }
 
+function getDetailsPreview(person: Personnel) {
+  const advisoryText = getAdvisoryText(person);
+
+  if (advisoryText) {
+    return advisoryText;
+  }
+
+  const subjectText = uniqueList(person.subjectTaught || []).join(", ");
+
+  if (subjectText) {
+    return subjectText;
+  }
+
+  const gradeText = uniqueList(person.gradeLevelTaught || []).join(", ");
+
+  if (gradeText) {
+    return gradeText;
+  }
+
+  const coordinatorText = uniqueList(person.coordinatorship || []).join(", ");
+
+  if (coordinatorText) {
+    return coordinatorText;
+  }
+
+  return safeText(person.department);
+}
+
+function getRolePreview(person: Personnel) {
+  return uniqueList([safeText(person.position), getDesignationPreview(person)]).join(
+    " / "
+  );
+}
+
 function PreviewLine({
   value,
   variant = "normal",
@@ -139,7 +173,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-2 text-base font-black leading-tight tracking-tight text-slate-950 transition group-hover:text-[#0F4C5C] dark:text-white dark:group-hover:text-yellow-300"
+        className="line-clamp-2 text-base font-black leading-tight text-slate-950 transition group-hover:text-slate-900 dark:text-white sm:text-[17px]"
       >
         {value}
       </p>
@@ -150,7 +184,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="truncate text-xs font-semibold leading-snug text-slate-500 dark:text-stone-400"
+        className="line-clamp-1 text-xs font-semibold leading-snug text-slate-500 dark:text-stone-400"
       >
         {value}
       </p>
@@ -161,7 +195,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="truncate text-xs font-semibold leading-snug text-slate-600 dark:text-stone-300"
+        className="line-clamp-2 text-xs font-medium leading-snug text-slate-500 dark:text-stone-400"
       >
         {value}
       </p>
@@ -171,7 +205,7 @@ function PreviewLine({
   return (
     <p
       title={title || value}
-      className="truncate text-sm font-bold leading-snug text-[#0F4C5C] dark:text-yellow-300"
+      className="line-clamp-1 text-xs font-semibold leading-snug text-slate-500 dark:text-stone-400"
     >
       {value}
     </p>
@@ -188,15 +222,11 @@ export default function PersonnelCard({
   const photoUrl = getPhotoUrl(person);
   const showPhoto = photoUrl && failedPhoto !== photoUrl;
   const initials = getInitials(person.name);
-  const designationPreview = getDesignationPreview(person);
-  const departmentPreview = safeText(person.department);
+  const rolePreview = getRolePreview(person);
+  const detailsPreview = getDetailsPreview(person);
 
-  useEffect(() => {
-    setFailedPhoto(null);
-  }, [person.id, photoUrl]);
-
-  const cardHeight = compact ? "h-[128px]" : "h-[136px]";
-  const photoWidth = compact ? "w-[96px]" : "w-[102px]";
+  const photoSize =
+    "h-[112px] w-[84px] md:h-[128px] md:w-[96px] lg:h-[144px] lg:w-[108px]";
 
   return (
     <motion.article
@@ -206,43 +236,46 @@ export default function PersonnelCard({
       viewport={{ once: true }}
       transition={{ duration: 0.22 }}
       onClick={() => onClick?.(person)}
-      className={`group ${cardHeight} cursor-pointer overflow-hidden border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20`}
+      className="group cursor-pointer overflow-hidden rounded-xl bg-white transition duration-200 hover:bg-slate-50 dark:bg-[#171614] dark:hover:bg-[#1f1d1a]"
     >
-      <div className="flex h-full">
-        {/* Fixed 3:4 Photo */}
-        <div className={`${photoWidth} h-full shrink-0 bg-[#0F4C5C]`}>
+      <div className="flex min-h-[128px] gap-3 p-2.5 sm:gap-4 sm:p-3 md:min-h-[144px] lg:min-h-[160px]">
+        <div
+          className={`relative ${photoSize} shrink-0 overflow-hidden rounded-xl bg-slate-200 dark:bg-[#292624]`}
+        >
           {showPhoto ? (
             <img
               src={photoUrl}
               alt={person.name}
               onError={() => setFailedPhoto(photoUrl)}
-              className="h-full w-full object-cover object-[50%_20%]"
+              className="h-full w-full object-cover object-top"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-[#0F4C5C] text-2xl font-black text-white">
+            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-xl font-black text-slate-600 dark:bg-[#292624] dark:text-stone-300">
               {initials}
             </div>
           )}
         </div>
 
-        {/* Short Preview Information */}
-        <div className="flex min-w-0 flex-1 flex-col justify-center px-4 py-3">
+        <div className="flex min-w-0 flex-1 flex-col justify-between gap-2 py-1">
           <div className="grid min-w-0 gap-1.5">
             <PreviewLine value={person.name} variant="name" />
-            <PreviewLine value={safeText(person.position)} />
 
             <PreviewLine
-              value={designationPreview}
+              value={rolePreview}
               variant="designation"
-              title={designationPreview}
+              title={rolePreview}
             />
 
             <PreviewLine
-              value={departmentPreview}
+              value={detailsPreview}
               variant="muted"
-              title={departmentPreview}
+              title={detailsPreview}
             />
           </div>
+
+          <span className="inline-flex w-fit items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold leading-none text-slate-700 transition group-hover:bg-slate-200 dark:bg-[#292624] dark:text-stone-200 dark:group-hover:bg-[#34302b]">
+            View Details
+          </span>
         </div>
       </div>
     </motion.article>

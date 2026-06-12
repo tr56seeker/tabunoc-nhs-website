@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
@@ -394,12 +395,12 @@ export default function MemosPage() {
               </p>
 
               <div className="mt-6 grid gap-4">
-                <a
+                <Link
                   href="/#contact"
                   className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                 >
                   Contact the School
-                </a>
+                </Link>
 
                 <a
                   href="https://m.me/tabunocnatlhs"

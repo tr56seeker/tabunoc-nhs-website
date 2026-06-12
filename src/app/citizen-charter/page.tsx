@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
@@ -500,12 +501,12 @@ export default function CitizenCharterPage() {
             </p>
 
             <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-              <a
+              <Link
                 href="/#contact"
                 className="rounded-xl bg-[#0F4C5C] px-6 py-3 font-black text-white transition hover:-translate-y-1 hover:scale-[1.01]"
               >
                 Contact the School
-              </a>
+              </Link>
 
               <a
                 href="https://m.me/tabunocnatlhs"

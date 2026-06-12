@@ -442,7 +442,10 @@ export default function PersonnelModal({
   person,
   onClose,
 }: PersonnelModalProps) {
-  const [failedPhoto, setFailedPhoto] = useState<string | null>(null);
+  const [failedPhoto, setFailedPhoto] = useState<{
+    personId: string;
+    photoUrl: string;
+  } | null>(null);
 
   function requestClose() {
     if (window.history.state?.personnelModal) {
@@ -452,10 +455,6 @@ export default function PersonnelModal({
 
     onClose();
   }
-
-  useEffect(() => {
-    setFailedPhoto(null);
-  }, [person?.id]);
 
   useEffect(() => {
     if (!person) return;
@@ -492,7 +491,11 @@ export default function PersonnelModal({
   }, [person, onClose]);
 
   const photoUrl = person ? getPhotoUrl(person) : "";
-  const showPhoto = Boolean(person && photoUrl && failedPhoto !== photoUrl);
+  const showPhoto = Boolean(
+    person &&
+      photoUrl &&
+      (failedPhoto?.personId !== person.id || failedPhoto.photoUrl !== photoUrl)
+  );
   const displayName = person ? getDisplayName(person) : "";
 
   const positionText = person ? getPositionText(person) : "";
@@ -597,7 +600,12 @@ export default function PersonnelModal({
                       <img
                         src={photoUrl}
                         alt={displayName}
-                        onError={() => setFailedPhoto(photoUrl)}
+                        onError={() =>
+                          setFailedPhoto({
+                            personId: person.id,
+                            photoUrl,
+                          })
+                        }
                         className="h-full w-full object-cover object-[50%_20%]"
                       />
                     ) : (

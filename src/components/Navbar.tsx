@@ -243,8 +243,12 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
   }, []);
 
   useEffect(() => {
-    setMenuOpen(false);
-    setMobileOpenGroup(null);
+    const closeMenuTimer = window.setTimeout(() => {
+      setMenuOpen(false);
+      setMobileOpenGroup(null);
+    }, 0);
+
+    return () => window.clearTimeout(closeMenuTimer);
   }, [pathname]);
 
   const showBrand = brandMode === "always" || hasScrolled;

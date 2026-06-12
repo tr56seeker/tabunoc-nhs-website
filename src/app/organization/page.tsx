@@ -1333,16 +1333,16 @@ const visibleSubjectDepartments = useMemo(() => {
   const sectionIntroClass = "mb-3 px-1 sm:mb-4 sm:px-0";
 
   const stickySectionHeaderClass =
-    "sticky top-[136px] z-30 -mx-5 mb-4 flex min-h-12 items-center border-b border-slate-200 bg-white/90 px-5 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/90 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10";
+    "sticky top-[calc(8.5rem_+_env(safe-area-inset-top))] z-30 -mx-5 mb-4 flex min-h-12 items-center border-b border-slate-200 bg-white/90 px-5 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/90 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10";
 
   const stickyGroupHeaderClass =
-    "sticky top-[188px] z-20 -mx-4 mb-3 flex min-h-11 items-center border-b border-slate-200 bg-white/90 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
+    "sticky top-[calc(11.75rem_+_env(safe-area-inset-top))] z-20 -mx-4 mb-3 flex min-h-11 items-center border-b border-slate-200 bg-white/90 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
 
   const advisorySubmenuClass =
-    "sticky top-[188px] z-30 -mx-5 mb-4 overflow-x-auto border-b border-slate-200 bg-white/90 px-5 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/90 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10";
+    "sticky top-[calc(11.75rem_+_env(safe-area-inset-top))] z-30 -mx-5 mb-4 overflow-x-auto border-b border-slate-200 bg-white/90 px-5 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/90 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10";
 
   const stickyAdvisoryGradeHeaderClass =
-    "sticky top-[240px] z-20 -mx-4 mb-3 flex min-h-11 items-center border-b border-slate-200 bg-white/90 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
+    "sticky top-[calc(15rem_+_env(safe-area-inset-top))] z-20 -mx-4 mb-3 flex min-h-11 items-center border-b border-slate-200 bg-white/90 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
 
   function SectionHeading({
     eyebrow,
@@ -1455,7 +1455,7 @@ const visibleSubjectDepartments = useMemo(() => {
 
         <nav
           aria-label="Organization categories"
-          className="sticky top-20 z-40 bg-white/95 py-3 backdrop-blur-md dark:bg-[#0a0908]/95"
+          className="sticky top-[calc(5rem_+_env(safe-area-inset-top))] z-40 bg-white/95 py-3 backdrop-blur-md dark:bg-[#0a0908]/95"
         >
           <div className="relative mx-auto max-w-6xl">
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />

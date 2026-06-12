@@ -255,7 +255,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
   const centerMenu = brandMode === "afterScroll" && !hasScrolled;
 
   return (
-    <header className="fixed left-0 top-0 z-[999] w-full border-b border-white/10 bg-[#2f3935]/90 text-white shadow-sm backdrop-blur-xl">
+    <header className="fixed left-0 right-0 top-0 z-[100] w-full border-b border-white/10 bg-[#2f3935]/90 pt-[env(safe-area-inset-top)] text-white shadow-sm backdrop-blur-xl">
       <nav className="relative mx-auto flex h-20 w-full items-center px-5 md:px-8 xl:px-[90px] 2xl:px-[170px]">
         <Link
           href="/"
@@ -386,7 +386,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
       </nav>
 
       {menuOpen && (
-        <div className="fixed left-0 top-20 z-[1000] max-h-[calc(100vh-5rem)] w-full overflow-y-auto border-t border-white/10 bg-[#0a0d0c]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl xl:hidden">
+        <div className="fixed left-0 top-[calc(5rem_+_env(safe-area-inset-top))] z-[1000] max-h-[calc(100vh_-_5rem_-_env(safe-area-inset-top))] w-full overflow-y-auto border-t border-white/10 bg-[#0a0d0c]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl xl:hidden">
           <div className="mx-auto grid max-w-3xl gap-2">
             {navItems.map((item) => {
               const active = isItemActive(pathname, item);

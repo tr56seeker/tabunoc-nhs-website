@@ -1233,7 +1233,7 @@ const visibleSubjectDepartments = useMemo(() => {
     let animationFrameId = 0;
 
     function getActiveMainTabFromScroll() {
-      const stickyOffset = 176;
+      const stickyOffset = 196;
 
       const sections = mainSectionTopTabMap
         .map((section) => {
@@ -1330,19 +1330,19 @@ const visibleSubjectDepartments = useMemo(() => {
     });
   }, [activeMainTab]);
 
-  const sectionIntroClass = "mb-3 px-1 sm:mb-4 sm:px-0";
+  const sectionIntroClass = "mb-6 px-1 text-center sm:mb-8 sm:px-0";
 
-  const stickySectionHeaderClass =
-    "sticky top-[calc(8.5rem_+_env(safe-area-inset-top))] z-30 -mx-5 mb-4 flex min-h-12 items-center border-b border-slate-200 bg-white/90 px-5 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/90 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10";
+  const centeredPersonnelGridClass =
+    "grid grid-cols-[repeat(auto-fit,minmax(16rem,28rem))] justify-center gap-3";
 
   const stickyGroupHeaderClass =
-    "sticky top-[calc(11.75rem_+_env(safe-area-inset-top))] z-20 -mx-4 mb-3 flex min-h-11 items-center border-b border-slate-200 bg-white/90 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
+    "sticky top-[calc(9.75rem_+_env(safe-area-inset-top))] z-20 -mx-4 mb-3 flex min-h-11 items-center justify-center border-b border-slate-200 bg-white/90 px-4 py-2 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
 
   const advisorySubmenuClass =
-    "sticky top-[calc(11.75rem_+_env(safe-area-inset-top))] z-30 -mx-5 mb-4 overflow-x-auto border-b border-slate-200 bg-white/90 px-5 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/90 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10";
+    "no-scrollbar sticky top-[calc(8.95rem_+_env(safe-area-inset-top))] z-40 -mx-5 mb-2 overflow-x-auto border-b border-slate-200/70 bg-[#F8FAFC]/95 px-5 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/95 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10";
 
   const stickyAdvisoryGradeHeaderClass =
-    "sticky top-[calc(15rem_+_env(safe-area-inset-top))] z-20 -mx-4 mb-3 flex min-h-11 items-center border-b border-slate-200 bg-white/90 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
+    "sticky top-[calc(12.15rem_+_env(safe-area-inset-top))] z-30 -mx-4 mb-1 flex min-h-8 items-center justify-center border-b border-slate-100 bg-[#F8FAFC]/95 px-4 py-1 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/95 md:-mx-5 md:px-5";
 
   function SectionHeading({
     eyebrow,
@@ -1354,27 +1354,21 @@ const visibleSubjectDepartments = useMemo(() => {
     description?: string;
   }) {
     return (
-      <>
-        <div className={sectionIntroClass}>
-          <p className="text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20] sm:text-sm">
-            {eyebrow}
-          </p>
-          <h2 className="mt-1.5 text-2xl font-black leading-tight text-slate-950 dark:text-white md:text-4xl">
-            {title}
-          </h2>
-          {description ? (
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-stone-300 md:text-base md:leading-7">
-              {description}
-            </p>
-          ) : null}
-        </div>
+      <div className={sectionIntroClass}>
+        <p className="text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20] sm:text-sm">
+          {eyebrow}
+        </p>
 
-        <div className={stickySectionHeaderClass}>
-          <h2 className="line-clamp-1 text-base font-black leading-tight text-slate-950 dark:text-white md:text-lg">
-            {title}
-          </h2>
-        </div>
-      </>
+        <h2 className="mx-auto mt-1.5 max-w-4xl text-2xl font-black leading-tight text-slate-950 dark:text-white md:text-4xl">
+          {title}
+        </h2>
+
+        {description ? (
+          <p className="mx-auto mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-stone-300 md:text-base md:leading-7">
+            {description}
+          </p>
+        ) : null}
+      </div>
     );
   }
 
@@ -1384,7 +1378,7 @@ const visibleSubjectDepartments = useMemo(() => {
     const target = document.getElementById(targetId);
     if (!target) return;
 
-    const topOffset = 172;
+    const topOffset = 196;
     const targetTop =
       target.getBoundingClientRect().top + window.scrollY - topOffset;
 
@@ -1403,7 +1397,7 @@ const visibleSubjectDepartments = useMemo(() => {
 
     if (!target) return;
 
-    const topOffset = grade === "All" ? 172 : 248;
+    const topOffset = grade === "All" ? 196 : 268;
     const targetTop =
       target.getBoundingClientRect().top + window.scrollY - topOffset;
 
@@ -1455,14 +1449,14 @@ return (
 
         <nav
           aria-label="Organization categories"
-          className="sticky top-[calc(5rem_+_env(safe-area-inset-top))] z-40 bg-white/95 py-3 backdrop-blur-md dark:bg-[#0a0908]/95"
+          className="sticky top-[calc(5.75rem_+_env(safe-area-inset-top))] z-50 border-b border-slate-200/70 bg-[#F8FAFC]/95 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/95"
         >
           <div className="relative mx-auto max-w-6xl">
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-5 bg-gradient-to-l from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />
 
             <div className="no-scrollbar -mx-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
-              <div className="flex min-w-max gap-2 pr-5 sm:gap-2.5 lg:pr-0">
+              <div className="flex min-w-max gap-2 pr-5 sm:gap-2.5 lg:mx-auto lg:w-max lg:justify-center lg:pr-0">
               {topDirectoryTabs.map((tab) => {
                 const isActive = activeMainTab === tab.label;
 
@@ -1595,7 +1589,7 @@ return (
           <div className="mx-auto max-w-6xl">
             <SectionHeading eyebrow="School Leadership" title="School Head" />
 
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className={centeredPersonnelGridClass}>
               {leadership.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -1619,7 +1613,7 @@ return (
               title="Administrative Staff"
             />
 
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className={centeredPersonnelGridClass}>
               {administrativePersonnel.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -1644,7 +1638,7 @@ return (
               description="Guidance personnel support learner welfare, counseling services, career guidance, and student development programs."
             />
 
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className={centeredPersonnelGridClass}>
               {guidancePersonnel.map((person) => (
                 <div key={person.id}>
                   <PersonnelCard
@@ -1701,8 +1695,8 @@ return (
               description="Master Teachers provide instructional support, mentoring, and technical assistance for curriculum implementation and teaching practice."
             />
 
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {masterTeachers.map((person) => (
+            <div className={centeredPersonnelGridClass}>
+              {masterTeachers.map((person) => (
               <PersonnelCard
                 key={person.id}
                 person={person}
@@ -1749,7 +1743,7 @@ return (
             />
 
             <div className={advisorySubmenuClass}>
-              <div className="flex min-w-max gap-2 pr-4">
+              <div className="flex min-w-max gap-2 pr-4 sm:gap-2.5 lg:mx-auto lg:w-max lg:justify-center lg:pr-0">
               {["All", ...defaultGradeLevels].map((grade) => (
                 <button
                   key={grade}
@@ -1786,7 +1780,7 @@ return (
                     className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5"
                   >
                     <div className={stickyAdvisoryGradeHeaderClass}>
-                      <h3 className="line-clamp-1 text-base font-black text-slate-950 dark:text-white md:text-lg">
+                      <h3 className="sr-only">
                         {grade}
                       </h3>
                     </div>

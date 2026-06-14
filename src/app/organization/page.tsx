@@ -1156,8 +1156,10 @@ const visibleSubjectDepartments = useMemo(() => {
   }, [classAdvisers]);
 
   const visibleGradeLevels = useMemo(() => {
-    return gradeLevels;
-  }, [gradeLevels]);
+    if (selectedGrade === "All") return gradeLevels;
+
+    return gradeLevels.filter((grade) => grade === selectedGrade);
+  }, [gradeLevels, selectedGrade]);
 
   useEffect(() => {
     const gradeSections = gradeLevels
@@ -1763,9 +1765,8 @@ return (
               description="Select a grade level to view assigned class adviser profiles."
             />
 
-            <div className={advisorySubmenuClass}>
-              <div className="flex min-w-max gap-2 pr-4 sm:gap-2.5 lg:mx-auto lg:w-max lg:justify-center lg:pr-0">
-              {["All", ...visibleGradeLevels].map((grade) => (
+            <div className="mb-8 flex flex-wrap justify-center gap-2">
+              {["All", ...gradeLevels].map((grade) => (
                 <button
                   key={grade}
                   type="button"
@@ -1779,7 +1780,6 @@ return (
                   {grade}
                 </button>
               ))}
-              </div>
             </div>
 
             <div className="grid gap-6">

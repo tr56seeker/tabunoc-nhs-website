@@ -11,7 +11,7 @@ const footerLinks = [
     title: "School",
     links: [
       { label: "Home", href: "/" },
-      { label: "School Directory", href: "/organization" },
+      { label: "Faculty & Staff", href: "/organization" },
       { label: "Learner Population", href: "/learner-population" },
       { label: "Citizen's Charter", href: "/citizen-charter" },
       { label: "School Memos", href: "/memos" },
@@ -24,7 +24,7 @@ const footerLinks = [
       { label: "Enrollment Guide", href: "/enrollment" },
       { label: "SHS Offerings", href: "/shs-offerings" },
       { label: "School DRRM", href: "/#drrm" },
-      { label: "Contact Section", href: "/#contact" },
+      { label: "Contact the School", href: "/#contact" },
       { label: "School MIS", href: "https://smis.tabunocnatlhs.com" },
       { label: "Get Directions", href: "https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu" },
     ],

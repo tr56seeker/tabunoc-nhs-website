@@ -1441,7 +1441,7 @@ return (
               transition={{ duration: 0.7, delay: 0.1 }}
               className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20]"
             >
-              School Directory
+              Faculty and Staff Directory
             </motion.p>
 
             <motion.h1
@@ -1512,9 +1512,9 @@ return (
         >
           <div className="mx-auto max-w-6xl">
             <SectionHeading
-              eyebrow="Faculty and Personnel Directory"
-              title="Search the School Directory"
-              description="Search by name, section, role, subject taught, position, designation, or program handled."
+              eyebrow="School Personnel Directory"
+              title="Search the Personnel Directory"
+              description="Search by name, role, subject taught, advisory section, position, designation, or program handled."
             />
 
             <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5">
@@ -1695,13 +1695,13 @@ return (
                   />
                 ))}
               </div>
-            ) : (
+            ) : !isLoading ? (
               <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center">
                 <p className="font-bold text-slate-600 dark:text-stone-300">
                   Program coordinator profiles will be added soon.
                 </p>
               </div>
-            )}
+            ) : null}
           </div>
         </section>
 
@@ -1760,7 +1760,7 @@ return (
             <SectionHeading
               eyebrow="Class Advisers"
               title="Class Adviser Directory"
-              description="Select a grade level to jump to assigned class adviser profiles."
+              description="Select a grade level to view assigned class adviser profiles."
             />
 
             <div className={advisorySubmenuClass}>
@@ -1910,13 +1910,13 @@ return (
                   })}
                 </div>
               </>
-            ) : (
+            ) : !isLoading ? (
               <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 text-center">
                 <p className="font-bold text-slate-600 dark:text-stone-300">
                   Subject teacher profiles will be added soon.
                 </p>
               </div>
-            )}
+            ) : null}
           </div>
         </section>
 
@@ -1929,7 +1929,7 @@ return (
             <SectionHeading
               eyebrow="School Operations Support"
               title="School Support Personnel"
-              description="Personnel who support daily school operations, utility errands, campus safety, and service needs."
+              description="Personnel who support daily school operations, office assistance, campus upkeep, safety, and other operational needs."
             />
 
             {schoolSupportPersonnel.length > 0 ? (
@@ -1943,13 +1943,13 @@ return (
                   />
                 ))}
               </div>
-            ) : (
+            ) : !isLoading ? (
               <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center">
                 <p className="font-bold text-slate-600 dark:text-stone-300">
                   School support personnel profiles will be added soon.
                 </p>
               </div>
-            )}
+            ) : null}
           </div>
         </section>
 

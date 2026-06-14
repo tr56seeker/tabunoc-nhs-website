@@ -47,9 +47,9 @@ const navItems: NavItem[] = [
     href: "/organization",
     items: [
       {
-        label: "School Profile",
+        label: "Faculty & Staff",
         href: "/organization",
-        description: "Administration, personnel, and school organization",
+        description: "Administration, faculty, personnel, and school organization",
       },
       {
         label: "Citizen's Charter",
@@ -120,6 +120,83 @@ const navItems: NavItem[] = [
   },
 ];
 
+const mobileBottomNavItems = [
+  { label: "Home", href: "/", icon: "home" },
+  { label: "Enroll", href: "/enrollment", icon: "enroll" },
+  { label: "Directory", href: "/organization", icon: "directory" },
+  { label: "Updates", href: "/updates", icon: "updates" },
+] as const;
+
+const mobileMoreGroups = [
+  {
+    title: "School",
+    items: [
+      {
+        label: "Faculty & Staff",
+        href: "/organization",
+        description: "Administration, faculty, and personnel",
+      },
+      {
+        label: "Citizen’s Charter",
+        href: "/citizens-charter",
+        description: "Frontline services and public assistance",
+      },
+    ],
+  },
+  {
+    title: "Services",
+    items: [
+      {
+        label: "Enrollment",
+        href: "/enrollment",
+        description: "Enrollment guide and requirements",
+      },
+      {
+        label: "SHS Offerings",
+        href: "/shs-offerings",
+        description: "Senior High School tracks and strands",
+      },
+      {
+        label: "School MIS",
+        href: "https://smis.tabunocnatlhs.com",
+        description: "School Management Information System",
+        external: true,
+      },
+    ],
+  },
+  {
+    title: "Community",
+    items: [
+      {
+        label: "Alumni",
+        href: "/alumni",
+        description: "Alumni information and engagement",
+      },
+      {
+        label: "Facebook Page",
+        href: "https://facebook.com/tabunocnatlhs",
+        description: "Official school Facebook page",
+        external: true,
+      },
+    ],
+  },
+  {
+    title: "Updates",
+    items: [
+      {
+        label: "Announcements",
+        href: "/updates",
+        description: "Latest school announcements",
+      },
+      {
+        label: "Memoranda",
+        href: "/memos",
+        description: "School memoranda and advisories",
+      },
+    ],
+  },
+] as const;
+
 function isInternalActive(pathname: string, href: string) {
   if (href.startsWith("http")) return false;
   if (href === "/") return pathname === "/";
@@ -177,26 +254,146 @@ function ExternalIcon() {
   );
 }
 
+function MobileNavIcon({
+  icon,
+}: {
+  icon: (typeof mobileBottomNavItems)[number]["icon"] | "more";
+}) {
+  if (icon === "home") {
+    return (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1v-9.5Z"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  if (icon === "enroll") {
+    return (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M6 4h9l3 3v13H6V4Z"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M9 12h6M9 16h6M15 4v4h3"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  if (icon === "directory") {
+    return (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M4 6h16v14H4V6ZM8 6V4h8v2"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8 11h8M8 15h5"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+    );
+  }
+
+  if (icon === "updates") {
+    return (
+      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path
+          d="M5 5h14v14H5V5ZM8 9h8M8 13h8M8 17h5"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  return (
+    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M5 12h.01M12 12h.01M19 12h.01"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 function DropdownLink({
   item,
   onClick,
+  variant = "mobile",
+  active = false,
 }: {
   item: DropdownItem;
   onClick?: () => void;
+  variant?: "desktop" | "mobile";
+  active?: boolean;
 }) {
   const className =
-    "group/dropitem block rounded-2xl px-4 py-3 text-left transition hover:bg-[#ffdf20] hover:text-[#071E29]";
+    variant === "desktop"
+      ? `group/dropitem flex items-center justify-between gap-4 px-5 py-4 text-left transition ${
+          active
+            ? "bg-[#0F5C5C] text-white"
+            : "text-slate-600 hover:bg-[#0F5C5C] hover:text-white"
+        }`
+      : "group/dropitem block rounded-2xl px-4 py-3 text-left transition hover:bg-[#ffdf20] hover:text-[#071E29]";
+
+  const labelClass =
+    variant === "desktop"
+      ? "text-sm font-black"
+      : "flex items-center justify-between gap-3 text-sm font-black";
+
+  const descriptionClass =
+    variant === "desktop"
+      ? `mt-1 block line-clamp-2 text-xs font-semibold leading-5 ${
+          active
+            ? "text-white/75"
+            : "text-slate-400 group-hover/dropitem:text-white/75"
+        }`
+      : "mt-1 block text-xs font-semibold leading-5 text-white/60 group-hover/dropitem:text-[#071E29]/75";
 
   const content = (
     <>
-      <span className="flex items-center justify-between gap-3 text-sm font-black">
-        {item.label}
-        {item.external && <ExternalIcon />}
+      <span className="min-w-0">
+        <span className={labelClass}>
+          {item.label}
+          {item.external && variant === "mobile" && <ExternalIcon />}
+        </span>
+
+        {item.description && (
+          <span className={descriptionClass}>{item.description}</span>
+        )}
       </span>
 
-      {item.description && (
-        <span className="mt-1 block text-xs font-semibold leading-5 text-white/60 group-hover/dropitem:text-[#071E29]/75">
-          {item.description}
+      {variant === "desktop" && (
+        <span className="shrink-0 text-lg font-black opacity-0 transition group-hover/dropitem:translate-x-1 group-hover/dropitem:opacity-100">
+          ›
+        </span>
+      )}
+
+      {item.external && variant === "desktop" && (
+        <span className="shrink-0">
+          <ExternalIcon />
         </span>
       )}
     </>
@@ -229,6 +426,8 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
   const [hasScrolled, setHasScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileOpenGroup, setMobileOpenGroup] = useState<string | null>(null);
+  const [moreSheetOpen, setMoreSheetOpen] = useState(false);
+  const [desktopOpenGroup, setDesktopOpenGroup] = useState<string | null>(null);
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
 
   useEffect(() => {
@@ -255,7 +454,8 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
   const centerMenu = brandMode === "afterScroll" && !hasScrolled;
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-[100] w-full border-b border-white/10 bg-[#2f3935]/90 pt-[max(env(safe-area-inset-top),16px)] text-white shadow-sm backdrop-blur-xl">
+    <>
+      <header className="fixed left-0 right-0 top-0 z-[100] w-full border-b border-white/10 bg-[#24313E]/95 pt-[env(safe-area-inset-top)] text-white shadow-sm backdrop-blur-xl">
       <nav className="relative mx-auto flex h-20 w-full items-center px-5 md:px-8 xl:px-[90px] 2xl:px-[170px]">
         <Link
           href="/"
@@ -273,7 +473,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
               className="h-9 w-auto object-contain 2xl:h-10"
             />
 
-            <div className="h-9 w-px bg-white/25" />
+            <div className="h-9 w-px bg-white/30" />
 
             <img
               src={schoolLogo}
@@ -302,39 +502,64 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
           {navItems.map((item) => {
             const active = isItemActive(pathname, item);
             const highlighted =
-              hoveredHref === item.href || (!hoveredHref && active);
+              hoveredHref === item.href ||
+              desktopOpenGroup === item.label ||
+              (!hoveredHref && !desktopOpenGroup && active);
             const hasDropdown = Boolean(item.items?.length);
+            const desktopDropdownOpen = desktopOpenGroup === item.label;
+
+            const navItemClassName = `inline-flex h-20 items-center gap-1.5 px-4 text-sm font-black transition-all duration-200 2xl:gap-2 2xl:px-6 ${
+              highlighted
+                ? "bg-white text-[#24313E]"
+                : "text-white/90 hover:bg-white hover:text-[#24313E]"
+            }`;
 
             return (
               <div
                 key={item.label}
                 className="group/navitem relative"
                 onMouseEnter={() => setHoveredHref(item.href)}
-                onMouseLeave={() => setHoveredHref(null)}
+                onMouseLeave={() => {
+                  setHoveredHref(null);
+                  setDesktopOpenGroup(null);
+                }}
               >
-                <Link
-                  href={item.href}
-                  className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-3 text-sm font-black transition-all duration-200 2xl:gap-2 2xl:px-6 ${
-                    highlighted
-                      ? "bg-[#ffdf20] text-[#071E29]"
-                      : "text-white/90 hover:bg-[#ffdf20] hover:text-[#071E29]"
-                  }`}
-                >
-                  {item.label}
-                  {hasDropdown && (
+                {hasDropdown ? (
+                  <button
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded={desktopDropdownOpen}
+                    onClick={() =>
+                      setDesktopOpenGroup(
+                        desktopDropdownOpen ? null : item.label
+                      )
+                    }
+                    className={navItemClassName}
+                  >
+                    {item.label}
                     <span className="transition-transform duration-200 group-hover/navitem:rotate-180">
-                      <ChevronDownIcon />
+                      <ChevronDownIcon open={desktopDropdownOpen} />
                     </span>
-                  )}
-                </Link>
+                  </button>
+                ) : (
+                  <Link href={item.href} className={navItemClassName}>
+                    {item.label}
+                  </Link>
+                )}
 
                 {hasDropdown && (
-                  <div className="pointer-events-none absolute left-1/2 top-full z-[1001] w-[320px] -translate-x-1/2 pt-3 opacity-0 transition-all duration-200 group-hover/navitem:pointer-events-auto group-hover/navitem:opacity-100">
-                    <div className="overflow-hidden rounded-3xl border border-white/10 bg-[#0a0d0c]/95 p-2 text-white shadow-2xl shadow-black/30 backdrop-blur-xl">
+                  <div
+                    className={`pointer-events-none absolute left-1/2 top-full z-[1001] -translate-x-1/2 opacity-0 transition-all duration-200 group-hover/navitem:pointer-events-auto group-hover/navitem:opacity-100 ${
+                      desktopDropdownOpen ? "pointer-events-auto opacity-100" : ""
+                    }`}
+                  >
+                    <div className="w-[300px] overflow-hidden border-t-4 border-[#FFDF20] bg-white py-2 text-[#24313E] shadow-2xl shadow-black/25">
                       {item.items?.map((dropdownItem) => (
                         <DropdownLink
                           key={`${item.label}-${dropdownItem.label}`}
                           item={dropdownItem}
+                          variant="desktop"
+                          active={isInternalActive(pathname, dropdownItem.href)}
                         />
                       ))}
                     </div>
@@ -386,7 +611,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
       </nav>
 
       {menuOpen && (
-        <div className="fixed left-0 top-[calc(5rem+max(env(safe-area-inset-top),16px))] z-[1000] max-h-[calc(100dvh-5rem-max(env(safe-area-inset-top),16px))] w-full overflow-y-auto border-t border-white/10 bg-[#0a0d0c]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl xl:hidden">
+        <div className="fixed left-0 top-[calc(5rem+env(safe-area-inset-top))] z-[1000] max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] w-full overflow-y-auto border-t border-white/10 bg-[#24313E]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl xl:hidden">
           <div className="mx-auto grid max-w-3xl gap-2">
             {navItems.map((item) => {
               const active = isItemActive(pathname, item);
@@ -396,20 +621,37 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
               return (
                 <div key={item.label} className="rounded-2xl">
                   <div className="flex items-center gap-2">
-                    <Link
-                      href={item.href}
-                      onClick={() => {
-                        setMenuOpen(false);
-                        setMobileOpenGroup(null);
-                      }}
-                      className={`flex-1 rounded-xl px-4 py-3 text-sm font-black transition ${
-                        active
-                          ? "bg-[#ffdf20] text-[#071E29]"
-                          : "text-white/90 hover:bg-white/10"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
+                    {hasDropdown ? (
+                      <button
+                        type="button"
+                        aria-expanded={openGroup}
+                        onClick={() =>
+                          setMobileOpenGroup(openGroup ? null : item.label)
+                        }
+                        className={`flex-1 rounded-xl px-4 py-3 text-left text-sm font-black transition ${
+                          active
+                            ? "bg-[#ffdf20] text-[#071E29]"
+                            : "text-white/90 hover:bg-white/10"
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        onClick={() => {
+                          setMenuOpen(false);
+                          setMobileOpenGroup(null);
+                        }}
+                        className={`flex-1 rounded-xl px-4 py-3 text-sm font-black transition ${
+                          active
+                            ? "bg-[#ffdf20] text-[#071E29]"
+                            : "text-white/90 hover:bg-white/10"
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    )}
 
                     {hasDropdown && (
                       <button
@@ -427,7 +669,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
                   </div>
 
                   {hasDropdown && openGroup && (
-                    <div className="mt-2 grid gap-1 rounded-2xl border border-white/10 bg-black/20 p-2">
+                    <div className="mt-2 grid gap-1 rounded-2xl border border-white/10 bg-[#1B2A35]/80 p-2">
                       {item.items?.map((dropdownItem) => (
                         <DropdownLink
                           key={`${item.label}-${dropdownItem.label}`}
@@ -457,6 +699,170 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
           </div>
         </div>
       )}
-    </header>
+      </header>
+
+      {moreSheetOpen && (
+        <div className="fixed inset-0 z-[1001] xl:hidden">
+          <button
+            type="button"
+            aria-label="Close more menu"
+            className="absolute inset-0 bg-black/55"
+            onClick={() => setMoreSheetOpen(false)}
+          />
+
+          <section
+            id="mobile-more-sheet"
+            aria-label="More navigation links"
+            className="absolute bottom-0 left-0 right-0 max-h-[82dvh] overflow-y-auto rounded-t-[2rem] bg-[#F8FAFC] px-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-4 text-[#24313E] shadow-2xl shadow-black/30"
+          >
+            <div className="mx-auto max-w-3xl">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-black uppercase text-slate-500">
+                    More
+                  </p>
+                  <h2 className="text-xl font-black text-[#24313E]">
+                    School navigation
+                  </h2>
+                </div>
+
+                <button
+                  type="button"
+                  aria-label="Close more menu"
+                  onClick={() => setMoreSheetOpen(false)}
+                  className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#24313E] text-white transition hover:bg-[#334557]"
+                >
+                  <svg
+                    className="h-5 w-5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M6 6l12 12M18 6 6 18"
+                      stroke="currentColor"
+                      strokeWidth="2.2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </button>
+              </div>
+
+              <div className="grid gap-4">
+                {mobileMoreGroups.map((group) => (
+                  <div
+                    key={group.title}
+                    className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
+                  >
+                    <div className="bg-[#24313E] px-4 py-3 text-sm font-black text-white">
+                      {group.title}
+                    </div>
+
+                    <div className="grid gap-1 p-2">
+                      {group.items.map((item) => {
+                        const active = isInternalActive(pathname, item.href);
+                        const external = "external" in item && item.external;
+                        const className = `block rounded-2xl px-4 py-3 text-left transition ${
+                          active
+                            ? "bg-[#FFDF20] text-[#24313E]"
+                            : "text-slate-600 hover:bg-slate-100 hover:text-[#24313E]"
+                        }`;
+                        const content = (
+                          <>
+                            <span className="flex items-center justify-between gap-3 text-sm font-black">
+                              {item.label}
+                              {external && <ExternalIcon />}
+                            </span>
+                            <span className="mt-1 block text-xs font-semibold leading-5 text-slate-500">
+                              {item.description}
+                            </span>
+                          </>
+                        );
+
+                        if (external) {
+                          return (
+                            <a
+                              key={`${group.title}-${item.label}`}
+                              href={item.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => setMoreSheetOpen(false)}
+                              className={className}
+                            >
+                              {content}
+                            </a>
+                          );
+                        }
+
+                        return (
+                          <Link
+                            key={`${group.title}-${item.label}`}
+                            href={item.href}
+                            onClick={() => setMoreSheetOpen(false)}
+                            className={className}
+                          >
+                            {content}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
+
+      <nav
+        aria-label="Mobile app navigation"
+        className="fixed bottom-0 left-0 right-0 z-[1002] border-t border-slate-200/80 bg-white/90 px-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-2 text-[#24313E] shadow-2xl shadow-black/15 backdrop-blur-xl xl:hidden"
+      >
+        <div className="mx-auto grid max-w-3xl grid-cols-5 gap-1">
+          {mobileBottomNavItems.map((item) => {
+            const active = isInternalActive(pathname, item.href);
+
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                onClick={() => {
+                  setMenuOpen(false);
+                  setMobileOpenGroup(null);
+                  setMoreSheetOpen(false);
+                }}
+                className={`flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[11px] font-black transition ${
+                  active
+                    ? "bg-[#FFDF20] text-[#24313E]"
+                    : "text-slate-500 hover:bg-slate-100 hover:text-[#24313E]"
+                }`}
+              >
+                <MobileNavIcon icon={item.icon} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+
+          <button
+            type="button"
+            aria-expanded={moreSheetOpen}
+            aria-controls="mobile-more-sheet"
+            onClick={() => {
+              setMenuOpen(false);
+              setMobileOpenGroup(null);
+              setMoreSheetOpen((open) => !open);
+            }}
+            className={`flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[11px] font-black transition ${
+              moreSheetOpen
+                ? "bg-[#24313E] text-white"
+                : "text-slate-500 hover:bg-slate-100 hover:text-[#24313E]"
+            }`}
+          >
+            <MobileNavIcon icon="more" />
+            <span>More</span>
+          </button>
+        </div>
+      </nav>
+    </>
   );
 }

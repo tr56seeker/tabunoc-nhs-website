@@ -965,6 +965,8 @@ export default function OrganizationPage() {
     {}
   );
 
+  const directoryTabScrollRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     async function loadPersonnel() {
       try {
@@ -1321,12 +1323,29 @@ const visibleSubjectDepartments = useMemo(() => {
   useEffect(() => {
     if (!activeMainTab) return;
 
+    const scrollContainer = directoryTabScrollRef.current;
     const activeButton = directoryTabButtonRefs.current[activeMainTab];
 
-    activeButton?.scrollIntoView({
+    if (!scrollContainer || !activeButton) return;
+
+    const maxScrollLeft =
+      scrollContainer.scrollWidth - scrollContainer.clientWidth;
+
+    if (maxScrollLeft <= 0) return;
+
+    const containerRect = scrollContainer.getBoundingClientRect();
+    const buttonRect = activeButton.getBoundingClientRect();
+
+    const nextScrollLeft =
+      scrollContainer.scrollLeft +
+      buttonRect.left -
+      containerRect.left -
+      containerRect.width / 2 +
+      buttonRect.width / 2;
+
+    scrollContainer.scrollTo({
+      left: Math.max(0, Math.min(nextScrollLeft, maxScrollLeft)),
       behavior: "smooth",
-      inline: "center",
-      block: "nearest",
     });
   }, [activeMainTab]);
 
@@ -1455,7 +1474,9 @@ return (
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-5 bg-gradient-to-l from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />
 
-            <div className="no-scrollbar overflow-x-auto px-4 sm:px-6 lg:px-0">
+            <div 
+              ref={directoryTabScrollRef}
+              className="no-scrollbar overflow-x-auto px-4 sm:px-6 lg:px-0">
               <div className="flex min-w-max gap-2 pr-5 sm:gap-2.5 lg:mx-auto lg:w-max lg:justify-center lg:pr-0">
               {topDirectoryTabs.map((tab) => {
                 const isActive = activeMainTab === tab.label;

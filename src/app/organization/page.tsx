@@ -581,6 +581,8 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
     const personnel = {
       id: profileId,
       name,
+      displayName: name,
+      firstName: safeText(record.firstName),
       position: safeText(record.position),
       group: safeText(record.displayGroup) || safeText(record.category),
       department: safeText(record.department),
@@ -732,6 +734,105 @@ function getTeacherPositionRank(position: string) {
   );
 
   return rankIndex === -1 ? 999 : rankIndex + 1;
+}
+
+function romanToNumber(value?: string) {
+  const normalized = safeText(value).toUpperCase().trim();
+
+  const romanMap: Record<string, number> = {
+    I: 1,
+    II: 2,
+    III: 3,
+    IV: 4,
+    V: 5,
+    VI: 6,
+    VII: 7,
+    VIII: 8,
+    IX: 9,
+    X: 10,
+  };
+
+  if (romanMap[normalized]) {
+    return romanMap[normalized];
+  }
+
+  const numericValue = Number(normalized);
+
+  if (!Number.isNaN(numericValue)) {
+    return numericValue;
+  }
+
+  return 0;
+}
+
+function getProgramCoordinatorPositionRank(position?: string) {
+  const normalized = safeText(position)
+    .toLowerCase()
+    .replace(/\./g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!normalized) return 0;
+
+  if (normalized.includes("assistant principal")) return 950;
+  if (normalized.includes("principal")) return 1000;
+  if (normalized.includes("head teacher")) return 900;
+
+  const masterTeacherMatch = normalized.match(
+    /\bmaster teacher\s+([ivx]+|\d+)\b/i
+  );
+
+  if (masterTeacherMatch) {
+    return 800 + romanToNumber(masterTeacherMatch[1]);
+  }
+
+  const teacherMatch = normalized.match(/\bteacher\s+([ivx]+|\d+)\b/i);
+
+  if (teacherMatch) {
+    return 700 + romanToNumber(teacherMatch[1]);
+  }
+
+  if (normalized.includes("administrative assistant")) return 300;
+  if (normalized.includes("administrative aide")) return 250;
+  if (normalized.includes("job order")) return 200;
+  if (normalized.includes("security guard")) return 150;
+
+  return 0;
+}
+
+function getPersonnelFirstName(person: Personnel) {
+  const firstName = safeText(person.firstName);
+
+  if (firstName) {
+    return firstName;
+  }
+
+  const displayName = safeText(person.displayName) || safeText(person.name);
+
+  return displayName.split(/\s+/)[0] ?? "";
+}
+
+function getProgramCoordinatorTitle(person: Personnel) {
+  return (
+    safeText(person.designation1) ||
+    safeText(person.designation?.[1]) ||
+    safeText(person.designation?.[2]) ||
+    safeText(person.designation?.[0])
+  ).trim();
+}
+
+function isAlternateCoordinator(title?: string) {
+  return /\balternate\b/i.test(title ?? "");
+}
+
+function getCoordinatorBaseTitle(title?: string) {
+  return safeText(title)
+    .toLowerCase()
+    .replace(/\balternate\b/g, "")
+    .replace(/\(.*?\)/g, "")
+    .replace(/[-–—]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function normalizeSubjectDepartment(value: string) {
@@ -1200,16 +1301,19 @@ const visibleSubjectDepartments = useMemo(() => {
     );
   }, [gradeLeaders]);
 
-  const sortedProgramImplementers = useMemo(() => {
+  const sortedProgramCoordinators = useMemo(() => {
     return [...programImplementers].sort((a, b) => {
-      const positionRankA = getTeacherPositionRank(a.position);
-      const positionRankB = getTeacherPositionRank(b.position);
+      const rankDifference =
+        getProgramCoordinatorPositionRank(b.position) -
+        getProgramCoordinatorPositionRank(a.position);
 
-      if (positionRankA !== positionRankB) {
-        return positionRankA - positionRankB;
+      if (rankDifference !== 0) {
+        return rankDifference;
       }
 
-      return a.name.localeCompare(b.name);
+      return getPersonnelFirstName(a).localeCompare(getPersonnelFirstName(b), "en", {
+        sensitivity: "base",
+      });
     });
   }, [programImplementers]);
 
@@ -1688,9 +1792,9 @@ return (
               description="Program coordinators support school programs, committees, initiatives, and special assignments aligned with school operations, learner support, and DepEd priority programs."
             />
 
-            {sortedProgramImplementers.length > 0 ? (
+            {sortedProgramCoordinators.length > 0 ? (
               <div className={centeredPersonnelGridClass}>
-                {sortedProgramImplementers.map((person) => (
+                {sortedProgramCoordinators.map((person) => (
                   <PersonnelCard
                     key={person.id}
                     person={person}

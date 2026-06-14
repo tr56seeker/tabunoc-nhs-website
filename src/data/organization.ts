@@ -18,6 +18,8 @@ export type AdvisoryAssignment = {
 export type Personnel = {
   id: string;
   name: string;
+  displayName?: string;
+  firstName?: string;
   position: string;
   designation?: string[];
   roles: PersonnelRole[];

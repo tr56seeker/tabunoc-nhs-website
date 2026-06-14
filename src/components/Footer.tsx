@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import PwaInstallButton from "@/components/PwaInstallButton";
+
 const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
 
 const depedLogo = "/images/deped-logo.png";
@@ -61,12 +63,7 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row">
-            <a
-              href="/install"
-              className="rounded-xl bg-yellow-300 px-5 py-3 text-center text-sm font-black text-slate-950 transition duration-300 hover:-translate-y-1 hover:scale-[1.01]"
-            >
-              Install App
-            </a>
+            <PwaInstallButton />
 
             <a
               href="/enrollment"

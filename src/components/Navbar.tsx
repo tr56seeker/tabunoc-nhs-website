@@ -52,6 +52,11 @@ const navItems: NavItem[] = [
         description: "Administration, faculty, personnel, and school organization",
       },
       {
+        label: "Learner Population",
+        href: "/learner-population",
+        description: "School-level aggregate enrollment information",
+      },
+      {
         label: "Citizen's Charter",
         href: "/citizen-charter",
         description: "Frontline service standards and public assistance",
@@ -192,8 +197,8 @@ function DropdownLink({
     variant === "desktop"
       ? `group/dropitem flex items-center justify-between gap-4 px-5 py-4 text-left transition ${
           active
-            ? "bg-[#0F5C5C] text-white"
-            : "text-slate-600 hover:bg-[#0F5C5C] hover:text-white"
+            ? "bg-[#2f3c48] text-white"
+            : "text-slate-600 hover:bg-[#2f3c48] hover:text-white"
         }`
       : "group/dropitem block rounded-2xl px-4 py-3 text-left transition hover:bg-[#ffdf20] hover:text-[#071E29]";
 
@@ -391,7 +396,7 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
                       desktopDropdownOpen ? "pointer-events-auto opacity-100" : ""
                     }`}
                   >
-                    <div className="w-[300px] overflow-hidden border-t-4 border-[#FFDF20] bg-white py-2 text-[#24313E] shadow-2xl shadow-black/25">
+                    <div className="w-[300px] overflow-hidden border-t-4 border-[#ffdf20] bg-white py-2 text-[#24313E] shadow-2xl shadow-black/25">
                       {item.items?.map((dropdownItem) => (
                         <DropdownLink
                           key={`${item.label}-${dropdownItem.label}`}

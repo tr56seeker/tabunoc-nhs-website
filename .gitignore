@@ -41,3 +41,9 @@ yarn-error.log*
 next-env.d.ts
 *.psd
 *.psb
+
+# Learner population master workbook contains internal/sensitive categories.
+data-private/
+**/*learner-population-master*.xlsx
+**/*.xlsm
+public/data/*.xlsx

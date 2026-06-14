@@ -1339,7 +1339,7 @@ const visibleSubjectDepartments = useMemo(() => {
     "sticky top-[calc(9.75rem_+_env(safe-area-inset-top))] z-20 -mx-4 mb-3 flex min-h-11 items-center justify-center border-b border-slate-200 bg-white/90 px-4 py-2 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
 
   const advisorySubmenuClass =
-    "no-scrollbar sticky top-[calc(8.95rem_+_env(safe-area-inset-top))] z-40 -mx-5 mb-2 overflow-x-auto border-b border-slate-200/70 bg-[#F8FAFC]/95 px-5 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/95 sm:-mx-6 sm:px-6 lg:-mx-10 lg:px-10";
+    "no-scrollbar sticky top-[calc(8.95rem_+_env(safe-area-inset-top))] z-40 mb-2 overflow-x-auto border-b border-slate-200/70 bg-[#F8FAFC]/95 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/95 sm:px-6 lg:px-0";
 
   const stickyAdvisoryGradeHeaderClass =
     "sticky top-[calc(12.15rem_+_env(safe-area-inset-top))] z-30 -mx-4 mb-1 flex min-h-8 items-center justify-center border-b border-slate-100 bg-[#F8FAFC]/95 px-4 py-1 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/95 md:-mx-5 md:px-5";
@@ -1411,7 +1411,7 @@ return (
   <>
     <Navbar />
 
-    <main className="min-h-screen bg-[#F8FAFC] text-slate-950 dark:bg-[#0a0908] dark:text-white">
+    <main className="min-h-screen w-full overflow-x-hidden bg-[#F8FAFC] text-slate-950 dark:bg-[#0a0908] dark:text-white">
         <section className="border-b border-slate-200 bg-white px-5 pb-12 pt-32 text-slate-950 dark:border-[#292624] dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10">
           <div className="mx-auto max-w-6xl text-center">
             <BrandHeader />
@@ -1455,7 +1455,7 @@ return (
             <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />
             <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-5 bg-gradient-to-l from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />
 
-            <div className="no-scrollbar -mx-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
+            <div className="no-scrollbar overflow-x-auto px-4 sm:px-6 lg:px-0">
               <div className="flex min-w-max gap-2 pr-5 sm:gap-2.5 lg:mx-auto lg:w-max lg:justify-center lg:pr-0">
               {topDirectoryTabs.map((tab) => {
                 const isActive = activeMainTab === tab.label;
@@ -1815,7 +1815,7 @@ return (
 
             {subjectTeachers.length > 0 ? (
               <>
-                <div className="mb-8 flex flex-wrap gap-2">
+                <div className="mb-8 flex flex-wrap justify-center gap-2">
                   {["All", ...subjectDepartments].map((department) => (
                     <button
                       key={department}

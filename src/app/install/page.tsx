@@ -6,9 +6,9 @@ export const metadata = {
 
 export default function InstallPage() {
   return (
-    <main className="min-h-screen bg-white px-6 py-24 text-gray-900">
+    <main className="min-h-screen bg-[#F8FAFC] px-6 py-24 text-[#24313E]">
       <section className="mx-auto max-w-4xl">
-        <p className="mb-3 text-sm font-bold uppercase tracking-wide text-yellow-600">
+        <p className="mb-3 text-sm font-bold uppercase tracking-wide text-[#24313E]">
           Official School Web App
         </p>
 
@@ -21,6 +21,45 @@ export default function InstallPage() {
           home screen for quick access to announcements, enrollment information,
           SHS offerings, school contacts, and online services.
         </p>
+
+        <div className="mb-6 rounded-3xl border border-[#24313E]/10 bg-white p-6 shadow-sm">
+          <div className="mb-5 border-l-4 border-[#ffdf20] pl-4">
+            <h2 className="text-xl font-bold text-[#24313E]">
+              Install using Microsoft Edge
+            </h2>
+            <p className="mt-2 text-sm font-semibold text-gray-600">
+              Recommended for Windows laptops and desktop computers using
+              Microsoft Edge.
+            </p>
+          </div>
+
+          <ol className="space-y-3 text-sm text-gray-700">
+            <li>1. Open Microsoft Edge.</li>
+            <li>2. Go to https://www.tabunocnatlhs.com.</li>
+            <li>
+              3. Look at the right side of the address bar for the app install
+              icon.
+            </li>
+            <li>4. Click the install icon, then select Install.</li>
+            <li>
+              5. If the install icon does not appear, click the three-dot menu
+              &hellip;.
+            </li>
+            <li>
+              6. Go to More tools &rarr; Apps &rarr; Install this site as an
+              app.
+            </li>
+            <li>
+              7. After installation, open the app from the Start Menu, desktop
+              shortcut, or Microsoft Edge apps page.
+            </li>
+          </ol>
+
+          <p className="mt-5 rounded-2xl bg-[#F8FAFC] px-4 py-3 text-sm font-semibold text-[#24313E]">
+            In Microsoft Edge, installed website apps can be managed by typing
+            edge://apps in the address bar.
+          </p>
+        </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           <div className="rounded-3xl border border-gray-200 bg-gray-50 p-6 shadow-sm">

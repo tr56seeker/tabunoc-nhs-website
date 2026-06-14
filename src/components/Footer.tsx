@@ -10,6 +10,7 @@ const footerLinks = [
     links: [
       { label: "Home", href: "/" },
       { label: "School Directory", href: "/organization" },
+      { label: "Learner Population", href: "/learner-population" },
       { label: "Citizen's Charter", href: "/citizen-charter" },
       { label: "School Memos", href: "/memos" },
     ],

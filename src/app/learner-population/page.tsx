@@ -85,7 +85,7 @@ function readPopulationRows(): PopulationRow[] {
 }
 
 function formatCount(count: number) {
-  return new Intl.NumberFormat("en-US").format(count);
+  return new Intl.NumberFormat("en-PH").format(count);
 }
 
 function formatDate(dateString: string) {
@@ -106,6 +106,13 @@ export default function LearnerPopulationPage() {
   const populationData = readPopulationRows();
   const schoolYear = populationData[0]?.schoolYear ?? "";
   const lastUpdated = populationData[0]?.lastUpdated ?? "";
+  const totalRow =
+    populationData.find((item) => item.category === "Total Learners") ??
+    populationData[0];
+
+  const programRows = populationData.filter(
+    (item) => item.category !== "Total Learners"
+  );
 
   return (
     <>
@@ -126,7 +133,9 @@ export default function LearnerPopulationPage() {
               </h1>
 
               <p className="mx-auto mt-5 max-w-2xl text-base font-semibold leading-7 text-slate-600 md:text-lg">
-                Aggregate school-level learner population for public information
+                Tabunoc National High School serves learners from Junior High
+                School and Senior High School. The figures below present the
+                current school-level enrollment summary for public information
                 and school profile reference.
               </p>
 
@@ -141,68 +150,96 @@ export default function LearnerPopulationPage() {
 
         <section className="px-6 pb-20">
           <div className="mx-auto max-w-6xl">
-            <div className="grid gap-4 md:grid-cols-3">
-              {populationData.map((item) => (
+            <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
+              {totalRow ? (
                 <div
-                  key={item.category}
-                  className={`border bg-white p-6 shadow-sm ${
-                    item.sortOrder === 1
-                      ? "border-[#ffdf20] md:col-span-1"
-                      : "border-slate-200"
-                  }`}
+                  key={totalRow.category}
+                  className="border border-[#ffdf20] bg-white p-7 shadow-sm md:p-8"
                 >
-                  <p className="text-sm font-black uppercase tracking-[0.16em] text-slate-500">
-                    {item.category}
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <p className="text-sm font-black uppercase tracking-[0.16em] text-slate-500">
+                        Total Learners
+                      </p>
+
+                      <p className="mt-2 text-sm font-bold text-slate-500">
+                        {totalRow.grades}
+                      </p>
+                    </div>
+
+                    {schoolYear ? (
+                      <p className="inline-flex w-fit bg-[#ffdf20] px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-[#24313E]">
+                        {schoolYear}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <p className="mt-8 text-6xl font-black tracking-tight text-[#24313E] md:text-7xl">
+                    {formatCount(totalRow.count)}
                   </p>
 
-                  <p className="mt-2 text-sm font-bold text-slate-500">
-                    {item.grades}
-                  </p>
-
-                  <p className="mt-5 text-5xl font-black tracking-tight text-[#24313E] md:text-6xl">
-                    {formatCount(item.count)}
-                  </p>
+                  {lastUpdated ? (
+                    <p className="mt-5 text-sm font-bold text-slate-500">
+                      Last Updated: {formatDate(lastUpdated)}
+                    </p>
+                  ) : null}
                 </div>
-              ))}
+
+              ) : null}
+
+              <div className="grid gap-4">
+                {programRows.map((item) => (
+                  <div
+                    key={item.category}
+                    className="border border-slate-200 bg-white p-6 shadow-sm"
+                  >
+                    <p className="text-sm font-black uppercase tracking-[0.16em] text-slate-500">
+                      {item.category}
+                    </p>
+
+                    <p className="mt-2 text-sm font-bold text-slate-500">
+                      {item.grades}
+                    </p>
+
+                    <p className="mt-5 text-5xl font-black tracking-tight text-[#24313E]">
+                      {formatCount(item.count)}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="mt-8 grid gap-4 lg:grid-cols-3">
-              <div className="border-l-4 border-[#24313E] bg-white p-6 shadow-sm">
+              <div className="border-t-4 border-[#ffdf20] bg-white p-6 shadow-sm">
                 <h2 className="text-lg font-black text-[#24313E]">
-                  Public Summary Notes
-                </h2>
-                <div className="mt-3 space-y-2">
-                  {populationData.map((item) => (
-                    <p
-                      key={`${item.sortOrder}-${item.category}`}
-                      className="text-sm font-semibold leading-6 text-slate-600"
-                    >
-                      <span className="font-black text-[#24313E]">
-                        {item.category}:
-                      </span>{" "}
-                      {item.note}
-                    </p>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border-l-4 border-[#ffdf20] bg-white p-6 shadow-sm">
-                <h2 className="text-lg font-black text-[#24313E]">
-                  Data Note
+                  Enrollment Profile
                 </h2>
                 <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">
-                  Figures are aggregate school-level data and may change based
-                  on official validation.
+                  The learner population reflects the combined enrollment of
+                  Junior High School and Senior High School learners of Tabunoc
+                  National High School for the indicated school year.
                 </p>
               </div>
 
-              <div className="border-l-4 border-[#24313E] bg-white p-6 shadow-sm">
+              <div className="border-t-4 border-[#24313E] bg-white p-6 shadow-sm">
                 <h2 className="text-lg font-black text-[#24313E]">
-                  Data Privacy Reminder
+                  Data Source and Update Status
                 </h2>
                 <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">
-                  No learner names, LRN, addresses, contact details, sections,
-                  or personally identifiable data are published.
+                  Figures are based on available school enrollment records and
+                  are subject to updating based on official validation.
+                </p>
+              </div>
+
+              <div className="border-t-4 border-[#24313E] bg-white p-6 shadow-sm">
+                <h2 className="text-lg font-black text-[#24313E]">
+                  Privacy Notice
+                </h2>
+                <p className="mt-3 text-sm font-semibold leading-7 text-slate-600">
+                  Only aggregate learner population figures are published. This
+                  page does not display learner names, Learner Reference
+                  Numbers, section lists, addresses, contact numbers, or
+                  sensitive learner information.
                 </p>
               </div>
             </div>

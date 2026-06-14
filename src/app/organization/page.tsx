@@ -962,8 +962,8 @@ export default function OrganizationPage() {
   const [allPersonnel, setAllPersonnel] = useState<Personnel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const directoryTabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>(
-    {}
-  );
+  {}
+);
 
   const directoryTabScrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -1352,16 +1352,16 @@ const visibleSubjectDepartments = useMemo(() => {
   const sectionIntroClass = "mb-6 px-1 text-center sm:mb-8 sm:px-0";
 
   const centeredPersonnelGridClass =
-    "grid grid-cols-[repeat(auto-fit,minmax(16rem,28rem))] justify-center gap-3";
+  "grid grid-cols-[repeat(auto-fit,minmax(min(100%,20rem),22rem))] justify-center gap-3";
 
   const stickyGroupHeaderClass =
-    "sticky top-[calc(9.75rem_+_env(safe-area-inset-top))] z-20 -mx-4 mb-3 flex min-h-11 items-center justify-center border-b border-slate-200 bg-white/90 px-4 py-2 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90 md:-mx-5 md:px-5";
+    "sticky top-[calc(9.75rem_+_env(safe-area-inset-top))] z-20 mb-3 flex min-h-11 items-center justify-center border-b border-slate-200 bg-white/90 px-4 py-2 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90";
 
   const advisorySubmenuClass =
     "no-scrollbar sticky top-[calc(8.95rem_+_env(safe-area-inset-top))] z-40 mb-2 overflow-x-auto border-b border-slate-200/70 bg-[#F8FAFC]/95 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/95 sm:px-6 lg:px-0";
 
   const stickyAdvisoryGradeHeaderClass =
-    "sticky top-[calc(12.15rem_+_env(safe-area-inset-top))] z-30 -mx-4 mb-1 flex min-h-8 items-center justify-center border-b border-slate-100 bg-[#F8FAFC]/95 px-4 py-1 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/95 md:-mx-5 md:px-5";
+    "sticky top-[calc(12.15rem_+_env(safe-area-inset-top))] z-30 mb-1 flex min-h-8 items-center justify-center border-b border-slate-100 bg-[#F8FAFC]/95 px-4 py-1 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/95";
 
   function SectionHeading({
     eyebrow,
@@ -1471,8 +1471,8 @@ return (
           className="sticky top-[calc(5.75rem_+_env(safe-area-inset-top))] z-50 border-b border-slate-200/70 bg-[#F8FAFC]/95 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/95"
         >
           <div className="relative mx-auto max-w-6xl">
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-5 bg-gradient-to-l from-white/95 to-transparent dark:from-[#0a0908]/95 sm:w-6" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-[#F8FAFC]/95 to-transparent dark:from-[#0a0908]/95 sm:w-6 lg:hidden" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-5 bg-gradient-to-l from-[#F8FAFC]/95 to-transparent dark:from-[#0a0908]/95 sm:w-6 lg:hidden" />
 
             <div 
               ref={directoryTabScrollRef}
@@ -1575,7 +1575,7 @@ return (
                     </div>
 
                     {searchResults.length > 0 ? (
-                      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                      <div className={centeredPersonnelGridClass}>
                         {searchResults.map((person) => (
                           <PersonnelCard
                             key={person.id}
@@ -1685,7 +1685,7 @@ return (
             />
 
             {sortedProgramImplementers.length > 0 ? (
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              <div className={centeredPersonnelGridClass}>
                 {sortedProgramImplementers.map((person) => (
                   <PersonnelCard
                     key={person.id}
@@ -1739,7 +1739,7 @@ return (
               title="Grade Leaders"
             />
 
-            <div className="grid items-stretch gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className={centeredPersonnelGridClass}>
               {sortedGradeLeaders.map((person) => (
                 <PersonnelCard
                   key={person.id}
@@ -1765,7 +1765,7 @@ return (
 
             <div className={advisorySubmenuClass}>
               <div className="flex min-w-max gap-2 pr-4 sm:gap-2.5 lg:mx-auto lg:w-max lg:justify-center lg:pr-0">
-              {["All", ...defaultGradeLevels].map((grade) => (
+              {["All", ...visibleGradeLevels].map((grade) => (
                 <button
                   key={grade}
                   type="button"
@@ -1806,7 +1806,7 @@ return (
                       </h3>
                     </div>
 
-                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                    <div className={centeredPersonnelGridClass}>
                       {advisers.map((person) => (
                         <PersonnelCard
                           key={`${grade}-${person.id}`}
@@ -1891,7 +1891,7 @@ return (
                           </h3>
                         </div>
 
-                        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                        <div className={centeredPersonnelGridClass}>
                           {teacherEntries.map((entry) => (
                             <PersonnelCard
                               key={`${department}-${entry.person.id}-${
@@ -1933,7 +1933,7 @@ return (
             />
 
             {schoolSupportPersonnel.length > 0 ? (
-              <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              <div className={centeredPersonnelGridClass}>
                 {schoolSupportPersonnel.map((person) => (
                   <PersonnelCard
                     key={person.id}

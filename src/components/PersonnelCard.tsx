@@ -3,7 +3,7 @@
 /**
  * FILE_ID: TABUNOC_PERSONNEL_CARD_COMPACT_PREVIEW
  * PATH: src/components/PersonnelCard.tsx
- * PURPOSE: Minimal organization directory list card with fixed 3:4 portrait photo.
+ * PURPOSE: Minimal organization directory list card with fixed responsive size.
  * DISPLAY:
  * - Name
  * - Position/designation
@@ -173,7 +173,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-2 text-base font-black leading-tight text-slate-950 transition group-hover:text-slate-900 dark:text-white sm:text-[17px]"
+        className="line-clamp-2 text-[15px] font-black leading-tight text-slate-950 transition group-hover:text-slate-900 dark:text-white sm:text-base lg:text-[17px]"
       >
         {value}
       </p>
@@ -184,7 +184,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-1 text-xs font-semibold leading-snug text-slate-500 dark:text-stone-400"
+        className="line-clamp-1 text-[11px] font-semibold leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
       >
         {value}
       </p>
@@ -195,7 +195,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-2 text-xs font-medium leading-snug text-slate-500 dark:text-stone-400"
+        className="line-clamp-1 text-[11px] font-medium leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
       >
         {value}
       </p>
@@ -205,7 +205,7 @@ function PreviewLine({
   return (
     <p
       title={title || value}
-      className="line-clamp-1 text-xs font-semibold leading-snug text-slate-500 dark:text-stone-400"
+      className="line-clamp-1 text-[11px] font-semibold leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
     >
       {value}
     </p>
@@ -225,8 +225,15 @@ export default function PersonnelCard({
   const rolePreview = getRolePreview(person);
   const detailsPreview = getDetailsPreview(person);
 
-  const photoSize =
-    "h-[112px] w-[84px] md:h-[128px] md:w-[96px] lg:h-[144px] lg:w-[108px]";
+  const cardSize = compact
+    ? "mx-auto h-[9rem] w-full max-w-[20rem] sm:h-[9.75rem] sm:w-[20.5rem] sm:max-w-none md:h-[10.25rem] md:w-[21rem] lg:h-[10.75rem] lg:w-[22rem]"
+    : "mx-auto h-[9rem] w-full max-w-[20rem] sm:h-[9.75rem] sm:w-[20.5rem] sm:max-w-none md:h-[10.25rem] md:w-[21rem] lg:h-[10.75rem] lg:w-[22rem]";
+
+const photoSize =
+  "h-[104px] w-[78px] sm:h-[112px] sm:w-[84px] md:h-[124px] md:w-[93px] lg:h-[136px] lg:w-[102px]";
+
+const contentHeight =
+  "h-[104px] sm:h-[112px] md:h-[124px] lg:h-[136px]";
 
   return (
     <motion.article
@@ -236,9 +243,9 @@ export default function PersonnelCard({
       viewport={{ once: true }}
       transition={{ duration: 0.22 }}
       onClick={() => onClick?.(person)}
-      className="group cursor-pointer overflow-hidden rounded-xl bg-white transition duration-200 hover:bg-slate-50 dark:bg-[#171614] dark:hover:bg-[#1f1d1a]"
+      className={`group cursor-pointer overflow-hidden rounded-xl bg-white transition duration-200 hover:bg-slate-50 dark:bg-[#171614] dark:hover:bg-[#1f1d1a] ${cardSize}`}
     >
-      <div className="flex min-h-[128px] gap-3 p-2.5 sm:gap-4 sm:p-3 md:min-h-[144px] lg:min-h-[160px]">
+      <div className="flex h-full gap-3 p-2.5 sm:gap-3.5 sm:p-3">
         <div
           className={`relative ${photoSize} shrink-0 overflow-hidden rounded-xl bg-slate-200 dark:bg-[#292624]`}
         >
@@ -250,14 +257,14 @@ export default function PersonnelCard({
               className="h-full w-full object-cover object-top"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-xl font-black text-slate-600 dark:bg-[#292624] dark:text-stone-300">
+            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-lg font-black text-slate-600 dark:bg-[#292624] dark:text-stone-300 sm:text-xl">
               {initials}
             </div>
           )}
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col justify-between gap-2 py-1">
-          <div className="grid min-w-0 gap-1.5">
+        <div className={`flex min-w-0 flex-1 flex-col justify-between gap-2 overflow-hidden ${contentHeight}`}>
+          <div className="grid min-w-0 gap-1.5 overflow-hidden">
             <PreviewLine value={person.name} variant="name" />
 
             <PreviewLine
@@ -273,7 +280,7 @@ export default function PersonnelCard({
             />
           </div>
 
-          <span className="inline-flex w-fit items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold leading-none text-slate-700 transition group-hover:bg-slate-200 dark:bg-[#292624] dark:text-stone-200 dark:group-hover:bg-[#34302b]">
+          <span className="inline-flex w-fit shrink-0 items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold leading-none text-slate-700 transition group-hover:bg-slate-200 dark:bg-[#292624] dark:text-stone-200 dark:group-hover:bg-[#34302b]">
             View Details
           </span>
         </div>

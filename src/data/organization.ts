@@ -23,8 +23,10 @@ export type Personnel = {
   roles: PersonnelRole[];
   group: string;
   department?: string;
+  designation1?: string;
   advisory?: AdvisoryAssignment[];
   gradeLevelTaught?: string[];
+  teachingLevel?: string;
   sectionsHandled?: string[];
   subjectTaught?: string[];
   coordinatorship?: string[];

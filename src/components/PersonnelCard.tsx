@@ -6,8 +6,8 @@
  * PURPOSE: Minimal organization directory list card with fixed responsive size.
  * DISPLAY:
  * - Name
- * - Position/designation
- * - Advisory/subject/details
+ * - Position
+ * - Department
  * - Details action
  */
 
@@ -18,6 +18,12 @@ import type { Personnel } from "@/data/organization";
 type PersonnelCardProps = {
   person: Personnel;
   compact?: boolean;
+  displayContext?:
+    | "programCoordinator"
+    | "gradeLeader"
+    | "classAdviser"
+    | "subjectTeacher"
+    | "default";
   onClick?: (person: Personnel) => void;
 };
 
@@ -29,6 +35,12 @@ type ExtendedPersonnel = Personnel & {
   imageUrl?: string;
   profileImage?: string;
   profilePhoto?: string;
+  displayName?: string;
+  designation1?: string;
+  subjectArea?: string | string[];
+  primarySubjectDepartment?: string;
+  subjectDepartment?: string;
+  teachingLevel?: string;
 };
 
 function safeText(value: unknown) {
@@ -45,12 +57,6 @@ function isMeaningfulText(value: unknown) {
     text !== "none" &&
     text !== "null" &&
     text !== "-"
-  );
-}
-
-function uniqueList(items: Array<string | undefined | null>) {
-  return Array.from(
-    new Set(items.map((item) => safeText(item)).filter(isMeaningfulText))
   );
 }
 
@@ -78,6 +84,50 @@ function getPhotoUrl(person: Personnel) {
   );
 }
 
+function getFirstMeaningfulText(value: unknown) {
+  if (Array.isArray(value)) {
+    return value.map((item) => safeText(item)).find(isMeaningfulText) ?? "";
+  }
+
+  return safeText(value);
+}
+
+function uniqueList(items: Array<string | undefined | null>) {
+  return Array.from(
+    new Set(items.map((item) => safeText(item)).filter(isMeaningfulText))
+  );
+}
+
+function getDepartmentPreview(person: Personnel) {
+  const extendedPerson = person as ExtendedPersonnel;
+
+  const department =
+    safeText(person.department) ||
+    getFirstMeaningfulText(extendedPerson.subjectArea) ||
+    getFirstMeaningfulText(person.subjectTaught);
+
+  if (isMeaningfulText(department)) {
+    return department;
+  }
+
+  if (person.roles.includes("Principal")) {
+    return "School Administration";
+  }
+
+  if (
+    person.roles.includes("Administrative") ||
+    person.roles.includes("Guidance")
+  ) {
+    return "Administrative Staff";
+  }
+
+  if (person.roles.includes("Support Personnel")) {
+    return "Support Staff";
+  }
+
+  return safeText(person.group);
+}
+
 function getAdvisoryText(person: Personnel) {
   if (!person.advisory || person.advisory.length === 0) return "";
 
@@ -96,66 +146,94 @@ function getAdvisoryText(person: Personnel) {
     .join(", ");
 }
 
-function getDesignationPreview(person: Personnel) {
+function getDesignationItems(person: Personnel) {
   const position = safeText(person.position).toLowerCase();
-  const advisoryText = getAdvisoryText(person);
 
-  const designations = uniqueList(person.designation || []).filter(
+  return uniqueList(person.designation || []).filter(
     (designation) => designation.toLowerCase() !== position
   );
-
-  const hasClassAdviser =
-    advisoryText !== "" ||
-    designations.some(
-      (designation) => designation.toLowerCase() === "class adviser"
-    );
-
-  const cleanedDesignations = designations.filter(
-    (designation) => designation.toLowerCase() !== "class adviser"
-  );
-
-  const classAdviserText =
-    hasClassAdviser && advisoryText
-      ? `Class Adviser, ${advisoryText}`
-      : hasClassAdviser
-        ? "Class Adviser"
-        : "";
-
-  return uniqueList([...cleanedDesignations, classAdviserText]).join(" / ");
 }
 
-function getDetailsPreview(person: Personnel) {
-  const advisoryText = getAdvisoryText(person);
+function getDesignation1(person: Personnel) {
+  const extendedPerson = person as ExtendedPersonnel;
 
-  if (advisoryText) {
-    return advisoryText;
-  }
+  return safeText(extendedPerson.designation1) || safeText(person.designation?.[0]);
+}
 
-  const subjectText = uniqueList(person.subjectTaught || []).join(", ");
-
-  if (subjectText) {
-    return subjectText;
-  }
-
-  const gradeText = uniqueList(person.gradeLevelTaught || []).join(", ");
-
-  if (gradeText) {
-    return gradeText;
-  }
-
+function getProgramCoordinatorPreview(person: Personnel) {
   const coordinatorText = uniqueList(person.coordinatorship || []).join(", ");
 
   if (coordinatorText) {
     return coordinatorText;
   }
 
-  return safeText(person.department);
+  return getDesignationItems(person).join(", ");
 }
 
-function getRolePreview(person: Personnel) {
-  return uniqueList([safeText(person.position), getDesignationPreview(person)]).join(
+function getGradeLeaderPreview(person: Personnel) {
+  return getDesignation1(person);
+}
+
+function getClassAdviserPreview(person: Personnel) {
+  return uniqueList([safeText(person.position), getDesignation1(person)]).join(
     " / "
   );
+}
+
+function getCardSummary(
+  person: Personnel,
+  displayContext: NonNullable<PersonnelCardProps["displayContext"]>
+) {
+  const extendedPerson = person as ExtendedPersonnel;
+  const name = safeText(extendedPerson.displayName) || safeText(person.name);
+  const defaultSummary = {
+    name,
+    line2: safeText(person.position),
+    line3: getDepartmentPreview(person),
+    line4: "",
+  };
+
+  if (displayContext === "programCoordinator") {
+    return {
+      name,
+      line2: getProgramCoordinatorPreview(person),
+      line3: "",
+      line4: "",
+    };
+  }
+
+  if (displayContext === "gradeLeader") {
+    return {
+      name,
+      line2: getGradeLeaderPreview(person),
+      line3: getDepartmentPreview(person),
+      line4: "",
+    };
+  }
+
+  if (displayContext === "classAdviser") {
+    return {
+      name,
+      line2: getClassAdviserPreview(person),
+      line3: getAdvisoryText(person),
+      line4: getDepartmentPreview(person),
+    };
+  }
+
+  if (displayContext === "subjectTeacher") {
+    const extendedPerson = person as ExtendedPersonnel;
+    const subjectHandled =
+      getFirstMeaningfulText(person.subjectTaught) || safeText(person.position);
+
+    return {
+      name,
+      line2: subjectHandled,
+      line3: safeText(extendedPerson.teachingLevel),
+      line4: "",
+    };
+  }
+
+  return defaultSummary;
 }
 
 function PreviewLine({
@@ -184,7 +262,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-1 text-[11px] font-semibold leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
+        className="line-clamp-2 text-[11px] font-semibold leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
       >
         {value}
       </p>
@@ -215,15 +293,15 @@ function PreviewLine({
 export default function PersonnelCard({
   person,
   compact = false,
+  displayContext = "default",
   onClick,
 }: PersonnelCardProps) {
   const [failedPhoto, setFailedPhoto] = useState<string | null>(null);
 
+  const cardSummary = getCardSummary(person, displayContext);
   const photoUrl = getPhotoUrl(person);
   const showPhoto = photoUrl && failedPhoto !== photoUrl;
-  const initials = getInitials(person.name);
-  const rolePreview = getRolePreview(person);
-  const detailsPreview = getDetailsPreview(person);
+  const initials = getInitials(cardSummary.name);
 
   const cardSize = compact
     ? "mx-auto h-[9rem] w-full max-w-[20rem] sm:h-[9.75rem] sm:w-[20.5rem] sm:max-w-none md:h-[10.25rem] md:w-[21rem] lg:h-[10.75rem] lg:w-[22rem]"
@@ -252,7 +330,7 @@ const contentHeight =
           {showPhoto ? (
             <img
               src={photoUrl}
-              alt={person.name}
+              alt={cardSummary.name}
               onError={() => setFailedPhoto(photoUrl)}
               className="h-full w-full object-cover object-top"
             />
@@ -263,24 +341,30 @@ const contentHeight =
           )}
         </div>
 
-        <div className={`flex min-w-0 flex-1 flex-col justify-between gap-2 overflow-hidden ${contentHeight}`}>
+        <div className={`flex min-w-0 flex-1 flex-col justify-end overflow-hidden ${contentHeight}`}>
           <div className="grid min-w-0 gap-1.5 overflow-hidden">
-            <PreviewLine value={person.name} variant="name" />
+            <PreviewLine value={cardSummary.name} variant="name" />
 
             <PreviewLine
-              value={rolePreview}
+              value={cardSummary.line2}
               variant="designation"
-              title={rolePreview}
+              title={cardSummary.line2}
             />
 
             <PreviewLine
-              value={detailsPreview}
+              value={cardSummary.line3}
               variant="muted"
-              title={detailsPreview}
+              title={cardSummary.line3}
+            />
+
+            <PreviewLine
+              value={cardSummary.line4}
+              variant="muted"
+              title={cardSummary.line4}
             />
           </div>
 
-          <span className="inline-flex w-fit shrink-0 items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold leading-none text-slate-700 transition group-hover:bg-slate-200 dark:bg-[#292624] dark:text-stone-200 dark:group-hover:bg-[#34302b]">
+          <span className="mt-3 inline-flex w-fit shrink-0 items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold leading-none text-slate-700 transition group-hover:bg-slate-200 dark:bg-[#292624] dark:text-stone-200 dark:group-hover:bg-[#34302b]">
             View Details
           </span>
         </div>

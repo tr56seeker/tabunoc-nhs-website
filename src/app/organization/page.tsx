@@ -584,6 +584,7 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       position: safeText(record.position),
       group: safeText(record.displayGroup) || safeText(record.category),
       department: safeText(record.department),
+      designation1: safeText(record.designation1),
       bio: safeText(record.bio),
       description:
         safeText(record.description) ||
@@ -597,6 +598,7 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       subjectTaught,
       coordinatorship,
       gradeLevelTaught,
+      teachingLevel: safeText(record.teachingLevel),
       sectionsHandled,
       advisory,
 
@@ -1693,6 +1695,7 @@ return (
                     key={person.id}
                     person={person}
                     compact
+                    displayContext="programCoordinator"
                     onClick={setSelectedPerson}
                   />
                 ))}
@@ -1747,6 +1750,7 @@ return (
                   key={person.id}
                   person={person}
                   compact
+                  displayContext="gradeLeader"
                   onClick={setSelectedPerson}
                 />
               ))}
@@ -1816,6 +1820,7 @@ return (
                           key={`${grade}-${person.id}`}
                           person={person}
                           compact
+                          displayContext="classAdviser"
                           onClick={setSelectedPerson}
                         />
                       ))}
@@ -1905,6 +1910,7 @@ return (
                               }`}
                               person={entry.person}
                               compact
+                              displayContext="subjectTeacher"
                               onClick={setSelectedPerson}
                             />
                           ))}

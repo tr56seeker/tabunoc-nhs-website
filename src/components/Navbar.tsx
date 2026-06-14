@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 
 type NavbarProps = {
   brandMode?: "always" | "afterScroll";
+  autoHideOnMobileScroll?: boolean;
 };
 
 type DropdownItem = {
@@ -264,10 +265,14 @@ function DropdownLink({
   );
 }
 
-export default function Navbar({ brandMode = "always" }: NavbarProps) {
+export default function Navbar({
+  brandMode = "always",
+  autoHideOnMobileScroll = false,
+}: NavbarProps) {
   const pathname = usePathname();
 
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [navbarVisible, setNavbarVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileOpenGroup, setMobileOpenGroup] = useState<string | null>(null);
   const [desktopOpenGroup, setDesktopOpenGroup] = useState<string | null>(null);
@@ -285,6 +290,63 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
   }, []);
 
   useEffect(() => {
+    if (!autoHideOnMobileScroll) {
+      setNavbarVisible(true);
+      return;
+    }
+
+    const mobileQuery = window.matchMedia("(max-width: 767px)");
+    let lastScrollY = window.scrollY;
+
+    const handleScrollVisibility = () => {
+      if (!mobileQuery.matches) {
+        setNavbarVisible(true);
+        return;
+      }
+
+      const currentScrollY = window.scrollY;
+      const scrollDifference = currentScrollY - lastScrollY;
+
+      if (currentScrollY < 40) {
+        setNavbarVisible(true);
+        lastScrollY = currentScrollY;
+        return;
+      }
+
+      if (Math.abs(scrollDifference) < 8) {
+        return;
+      }
+
+      if (scrollDifference > 0) {
+        setNavbarVisible(false);
+        setMenuOpen(false);
+      } else {
+        setNavbarVisible(true);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    const handleViewportChange = () => {
+      if (!mobileQuery.matches) {
+        setNavbarVisible(true);
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollVisibility, {
+      passive: true,
+    });
+    mobileQuery.addEventListener("change", handleViewportChange);
+
+    handleViewportChange();
+
+    return () => {
+      window.removeEventListener("scroll", handleScrollVisibility);
+      mobileQuery.removeEventListener("change", handleViewportChange);
+    };
+  }, [autoHideOnMobileScroll]);
+
+  useEffect(() => {
     const closeMenuTimer = window.setTimeout(() => {
       setMenuOpen(false);
       setMobileOpenGroup(null);
@@ -298,7 +360,11 @@ export default function Navbar({ brandMode = "always" }: NavbarProps) {
 
   return (
     <>
-      <header className="fixed left-0 right-0 top-0 z-[100] w-full border-b border-white/10 bg-[#24313E]/95 pt-[env(safe-area-inset-top)] text-white shadow-sm backdrop-blur-xl">
+      <header
+        className={`fixed left-0 right-0 top-0 z-[100] w-full border-b border-white/10 bg-[#24313E]/95 pt-[env(safe-area-inset-top)] text-white shadow-sm backdrop-blur-xl transition-transform duration-300 ease-out ${
+          navbarVisible ? "translate-y-0" : "-translate-y-full"
+        }`}
+      >
       <nav className="relative mx-auto flex h-20 w-full items-center px-5 md:px-8 xl:px-[90px] 2xl:px-[170px]">
         <Link
           href="/"

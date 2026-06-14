@@ -1428,7 +1428,7 @@ const visibleSubjectDepartments = useMemo(() => {
 
 return (
   <>
-    <Navbar />
+    <Navbar autoHideOnMobileScroll />
 
     <main className="min-h-screen w-full overflow-x-hidden bg-[#F8FAFC] text-slate-950 dark:bg-[#0a0908] dark:text-white">
         <section className="border-b border-slate-200 bg-white px-5 pb-12 pt-32 text-slate-950 dark:border-[#292624] dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10">

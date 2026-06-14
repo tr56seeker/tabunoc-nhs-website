@@ -1800,9 +1800,13 @@ return (
                     transition={{ duration: 0.45 }}
                     className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5"
                   >
-                    <div className={stickyAdvisoryGradeHeaderClass}>
-                      <h3 className="sr-only">
-                        {grade}
+                    <div className="mb-5 mt-6 border-b border-slate-200 pb-3">
+                      <h3 className="flex items-center gap-3 text-base font-black uppercase tracking-[0.14em] text-[#24313E]">
+                        <span
+                          className="h-5 w-1.5 rounded-full bg-[#ffdf20]"
+                          aria-hidden="true"
+                        />
+                        {grade} Class Advisers
                       </h3>
                     </div>
 

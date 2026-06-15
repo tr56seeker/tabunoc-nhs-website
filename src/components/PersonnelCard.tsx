@@ -276,7 +276,7 @@ function PreviewLine({
   title,
 }: {
   value: string;
-  variant?: "name" | "normal" | "muted" | "designation";
+  variant?: "name" | "normal" | "muted" | "designation" | "subjectTeacher";
   title?: string;
 }) {
   if (!isMeaningfulText(value)) return null;
@@ -285,7 +285,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-2 break-words text-[15px] font-black leading-tight text-slate-950 transition group-hover:text-slate-900 dark:text-white sm:text-base lg:text-[17px]"
+        className="line-clamp-2 break-words text-[15px] font-black leading-snug text-slate-950 transition group-hover:text-slate-900 dark:text-white sm:text-base"
       >
         {value}
       </p>
@@ -296,7 +296,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-2 break-words text-[11px] font-semibold leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
+        className="line-clamp-1 break-words text-[12px] font-semibold leading-5 text-slate-600 dark:text-stone-300 sm:text-[13px]"
       >
         {value}
       </p>
@@ -307,7 +307,18 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-1 break-words text-[11px] font-medium leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
+        className="line-clamp-1 break-words text-[12px] font-semibold leading-5 text-slate-500 dark:text-stone-400 sm:text-[13px]"
+      >
+        {value}
+      </p>
+    );
+  }
+
+  if (variant === "subjectTeacher") {
+    return (
+      <p
+        title={title || value}
+        className="truncate text-[12px] font-semibold leading-5 text-slate-600 dark:text-stone-300 sm:text-[13px]"
       >
         {value}
       </p>
@@ -317,7 +328,7 @@ function PreviewLine({
   return (
     <p
       title={title || value}
-      className="line-clamp-1 break-words text-[11px] font-semibold leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
+      className="line-clamp-1 break-words text-[12px] font-semibold leading-5 text-slate-600 dark:text-stone-300 sm:text-[13px]"
     >
       {value}
     </p>
@@ -336,10 +347,11 @@ export default function PersonnelCard({
   const photoUrl = getPhotoUrl(person);
   const showPhoto = photoUrl && failedPhoto !== photoUrl;
   const initials = getInitials(cardSummary.name);
+  const isSubjectTeacher = displayContext === "subjectTeacher";
 
   const cardSize = compact
-    ? "mx-auto h-[10.75rem] w-full max-w-[23rem] sm:h-[11rem] sm:w-[23.5rem] sm:max-w-none md:h-[11.5rem] md:w-[24rem] lg:h-[10.75rem] lg:w-[22rem]"
-    : "mx-auto h-[10.75rem] w-full max-w-[23rem] sm:h-[11rem] sm:w-[23.5rem] sm:max-w-none md:h-[11.5rem] md:w-[24rem] lg:h-[10.75rem] lg:w-[22rem]";
+    ? "mx-auto h-[8.5rem] w-full max-w-[24rem] sm:h-[9rem] sm:w-[23.5rem] sm:max-w-none md:h-[9.75rem] md:w-[24rem] lg:h-[10.5rem] lg:w-[22rem]"
+    : "mx-auto h-[8.5rem] w-full max-w-[24rem] sm:h-[9rem] sm:w-[23.5rem] sm:max-w-none md:h-[9.75rem] md:w-[24rem] lg:h-[10.5rem] lg:w-[22rem]";
 
   const photoSize =
     "h-[104px] w-[78px] sm:h-[112px] sm:w-[84px] md:h-[124px] md:w-[93px] lg:h-[136px] lg:w-[102px]";
@@ -357,7 +369,7 @@ export default function PersonnelCard({
       onClick={() => onClick?.(person)}
       className={`group cursor-pointer overflow-hidden rounded-xl bg-white transition duration-200 hover:bg-slate-50 dark:bg-[#171614] dark:hover:bg-[#1f1d1a] ${cardSize}`}
     >
-      <div className="flex h-full gap-3 p-2.5 sm:gap-3.5 sm:p-3">
+      <div className="flex h-full items-center gap-4 p-4">
         <div
           className={`relative ${photoSize} shrink-0 overflow-hidden rounded-xl bg-slate-200 dark:bg-[#292624]`}
         >
@@ -379,18 +391,18 @@ export default function PersonnelCard({
         </div>
 
         <div className={`flex min-w-0 flex-1 flex-col justify-end ${contentHeight}`}>
-          <div className="grid min-w-0 gap-1.5 overflow-hidden">
+          <div className="grid min-w-0 gap-0.5 overflow-hidden">
             <PreviewLine value={cardSummary.name} variant="name" />
 
             <PreviewLine
               value={cardSummary.line2}
-              variant="designation"
+              variant={isSubjectTeacher ? "subjectTeacher" : "designation"}
               title={cardSummary.line2}
             />
 
             <PreviewLine
               value={cardSummary.line3}
-              variant="muted"
+              variant={isSubjectTeacher ? "subjectTeacher" : "muted"}
               title={cardSummary.line3}
             />
 
@@ -401,7 +413,7 @@ export default function PersonnelCard({
             />
           </div>
 
-          <span className="mt-3 inline-flex w-fit shrink-0 items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold leading-none text-slate-700 transition group-hover:bg-slate-200 dark:bg-[#292624] dark:text-stone-200 dark:group-hover:bg-[#34302b]">
+          <span className="mt-2 inline-flex w-fit shrink-0 items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold leading-none text-slate-700 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:bg-[#24313E] group-hover:text-[#ffdf20] group-hover:shadow-md dark:bg-[#292624] dark:text-stone-200 dark:group-hover:bg-[#24313E] dark:group-hover:text-[#ffdf20]">
             View Details
           </span>
         </div>

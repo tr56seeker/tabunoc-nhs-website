@@ -23,6 +23,7 @@ type PersonnelCardProps = {
     | "gradeLeader"
     | "classAdviser"
     | "subjectTeacher"
+    | "guidance"
     | "default";
   onClick?: (person: Personnel) => void;
 };
@@ -37,6 +38,8 @@ type ExtendedPersonnel = Personnel & {
   profilePhoto?: string;
   displayName?: string;
   designation1?: string;
+  designation2?: string;
+  designation3?: string;
   subjectArea?: string | string[];
   primarySubjectDepartment?: string;
   subjectDepartment?: string;
@@ -180,6 +183,27 @@ function getClassAdviserPreview(person: Personnel) {
   );
 }
 
+function getGuidanceDesignation(person: Personnel) {
+  const extendedPerson = person as ExtendedPersonnel;
+
+  return (
+    safeText(extendedPerson.designation1) ||
+    safeText(extendedPerson.designation2) ||
+    safeText(extendedPerson.designation3) ||
+    safeText(person.position)
+  );
+}
+
+function getGuidanceDepartment(person: Personnel) {
+  const extendedPerson = person as ExtendedPersonnel;
+
+  return (
+    safeText(person.department) ||
+    getFirstMeaningfulText(extendedPerson.subjectArea) ||
+    "Guidance Office"
+  );
+}
+
 function getCardSummary(
   person: Personnel,
   displayContext: NonNullable<PersonnelCardProps["displayContext"]>
@@ -229,6 +253,15 @@ function getCardSummary(
       name,
       line2: subjectHandled,
       line3: safeText(extendedPerson.teachingLevel),
+      line4: "",
+    };
+  }
+
+  if (displayContext === "guidance") {
+    return {
+      name,
+      line2: getGuidanceDesignation(person),
+      line3: getGuidanceDepartment(person),
       line4: "",
     };
   }

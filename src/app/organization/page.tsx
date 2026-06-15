@@ -587,6 +587,8 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       group: safeText(record.displayGroup) || safeText(record.category),
       department: safeText(record.department),
       designation1: safeText(record.designation1),
+      designation2: safeText(record.designation2),
+      designation3: safeText(record.designation3),
       bio: safeText(record.bio),
       description:
         safeText(record.description) ||
@@ -1773,6 +1775,7 @@ return (
                   <PersonnelCard
                     person={person}
                     compact
+                    displayContext="guidance"
                     onClick={setSelectedPerson}
                   />
                 </div>

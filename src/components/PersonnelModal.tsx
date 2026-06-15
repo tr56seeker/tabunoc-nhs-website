@@ -16,6 +16,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import type { Personnel } from "@/data/organization";
 
 type PersonnelModalProps = {
@@ -597,9 +598,12 @@ export default function PersonnelModal({
                 <div className="mx-auto flex max-w-[460px] items-end gap-4 text-left md:block md:max-w-none md:text-center">
                   <div className="aspect-[3/4] w-[150px] max-w-[42vw] shrink-0 overflow-hidden rounded-[10px] bg-[#f3b02f] shadow-md ring-1 ring-black/10 sm:w-[170px] md:mx-auto md:w-full md:max-w-[234px]">
                     {showPhoto ? (
-                      <img
+                      <Image
                         src={photoUrl}
                         alt={displayName}
+                        width={360}
+                        height={480}
+                        sizes="(max-width: 768px) 70vw, 360px"
                         onError={() =>
                           setFailedPhoto({
                             personId: person.id,

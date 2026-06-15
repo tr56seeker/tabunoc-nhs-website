@@ -13,6 +13,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import type { Personnel } from "@/data/organization";
 
 type PersonnelCardProps = {
@@ -361,9 +362,12 @@ const contentHeight =
           className={`relative ${photoSize} shrink-0 overflow-hidden rounded-xl bg-slate-200 dark:bg-[#292624]`}
         >
           {showPhoto ? (
-            <img
+            <Image
               src={photoUrl}
               alt={cardSummary.name}
+              width={102}
+              height={136}
+              sizes="(max-width: 640px) 78px, (max-width: 768px) 84px, (max-width: 1024px) 93px, 102px"
               onError={() => setFailedPhoto(photoUrl)}
               className="h-full w-full object-cover object-top"
             />

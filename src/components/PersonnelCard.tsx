@@ -285,7 +285,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-2 text-[15px] font-black leading-tight text-slate-950 transition group-hover:text-slate-900 dark:text-white sm:text-base lg:text-[17px]"
+        className="line-clamp-2 break-words text-[15px] font-black leading-tight text-slate-950 transition group-hover:text-slate-900 dark:text-white sm:text-base lg:text-[17px]"
       >
         {value}
       </p>
@@ -296,7 +296,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-2 text-[11px] font-semibold leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
+        className="line-clamp-2 break-words text-[11px] font-semibold leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
       >
         {value}
       </p>
@@ -307,7 +307,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-1 text-[11px] font-medium leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
+        className="line-clamp-1 break-words text-[11px] font-medium leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
       >
         {value}
       </p>
@@ -317,7 +317,7 @@ function PreviewLine({
   return (
     <p
       title={title || value}
-      className="line-clamp-1 text-[11px] font-semibold leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
+      className="line-clamp-1 break-words text-[11px] font-semibold leading-snug text-slate-500 dark:text-stone-400 sm:text-xs"
     >
       {value}
     </p>
@@ -338,14 +338,14 @@ export default function PersonnelCard({
   const initials = getInitials(cardSummary.name);
 
   const cardSize = compact
-    ? "mx-auto h-[9rem] w-full max-w-[20rem] sm:h-[9.75rem] sm:w-[20.5rem] sm:max-w-none md:h-[10.25rem] md:w-[21rem] lg:h-[10.75rem] lg:w-[22rem]"
-    : "mx-auto h-[9rem] w-full max-w-[20rem] sm:h-[9.75rem] sm:w-[20.5rem] sm:max-w-none md:h-[10.25rem] md:w-[21rem] lg:h-[10.75rem] lg:w-[22rem]";
+    ? "mx-auto h-[10.75rem] w-full max-w-[23rem] sm:h-[11rem] sm:w-[23.5rem] sm:max-w-none md:h-[11.5rem] md:w-[24rem] lg:h-[10.75rem] lg:w-[22rem]"
+    : "mx-auto h-[10.75rem] w-full max-w-[23rem] sm:h-[11rem] sm:w-[23.5rem] sm:max-w-none md:h-[11.5rem] md:w-[24rem] lg:h-[10.75rem] lg:w-[22rem]";
 
-const photoSize =
-  "h-[104px] w-[78px] sm:h-[112px] sm:w-[84px] md:h-[124px] md:w-[93px] lg:h-[136px] lg:w-[102px]";
+  const photoSize =
+    "h-[104px] w-[78px] sm:h-[112px] sm:w-[84px] md:h-[124px] md:w-[93px] lg:h-[136px] lg:w-[102px]";
 
-const contentHeight =
-  "h-[104px] sm:h-[112px] md:h-[124px] lg:h-[136px]";
+  const contentHeight =
+    "h-[104px] sm:h-[112px] md:h-[124px] lg:h-[136px]";
 
   return (
     <motion.article
@@ -378,7 +378,7 @@ const contentHeight =
           )}
         </div>
 
-        <div className={`flex min-w-0 flex-1 flex-col justify-end overflow-hidden ${contentHeight}`}>
+        <div className={`flex min-w-0 flex-1 flex-col justify-end ${contentHeight}`}>
           <div className="grid min-w-0 gap-1.5 overflow-hidden">
             <PreviewLine value={cardSummary.name} variant="name" />
 

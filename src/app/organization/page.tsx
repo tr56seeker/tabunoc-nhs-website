@@ -1462,7 +1462,7 @@ const visibleSubjectDepartments = useMemo(() => {
   const sectionIntroClass = "mb-6 px-1 text-center sm:mb-8 sm:px-0";
 
   const centeredPersonnelGridClass =
-  "grid grid-cols-[repeat(auto-fit,minmax(min(100%,20rem),22rem))] justify-center gap-3";
+  "grid grid-cols-[repeat(auto-fit,minmax(min(100%,22rem),24rem))] justify-center gap-3 lg:grid-cols-[repeat(auto-fit,minmax(min(100%,20rem),22rem))]";
 
   const stickyGroupHeaderClass =
     "sticky top-[calc(9.75rem_+_env(safe-area-inset-top))] z-20 mb-3 flex min-h-11 items-center justify-center border-b border-slate-200 bg-white/90 px-4 py-2 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90";

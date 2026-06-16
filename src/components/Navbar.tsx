@@ -58,6 +58,10 @@ const navItems: NavItem[] = [
         description: "School-level aggregate enrollment information",
       },
       {
+        label: "Evacuation Map",
+        href: "/evacuation-map",
+      },
+      {
         label: "Citizen's Charter",
         href: "/citizen-charter",
         description: "Frontline service standards and public assistance",

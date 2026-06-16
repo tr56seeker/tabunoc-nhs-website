@@ -1,0 +1,290 @@
+{
+  "locations": [
+    {
+      "id": "shs-eim-shop",
+      "label": "SHS EIM Shop",
+      "description": "Senior High School EIM workshop area",
+      "x": 20.3,
+      "y": 89.1,
+      "recommendedExit": "Main South Exit",
+      "assemblyArea": "Assembly Area A",
+      "routePoints": [
+        {
+          "x": 20.3,
+          "y": 81.9
+        },
+        {
+          "x": 26.9,
+          "y": 81.8
+        },
+        {
+          "x": 26.9,
+          "y": 79.1
+        },
+        {
+          "x": 18.4,
+          "y": 77
+        },
+        {
+          "x": 18.6,
+          "y": 60.5
+        },
+        {
+          "x": 17.4,
+          "y": 45.3
+        },
+        {
+          "x": 17.5,
+          "y": 18.2
+        }
+      ],
+      "instruction": "Proceed from the SHS EIM Shop to the nearest corridor, use the Main South Exit, and continue to Assembly Area A."
+    },
+    {
+      "id": "shs-room-1",
+      "label": "SHS Room 1",
+      "description": "Senior High School classroom area",
+      "x": 29.7,
+      "y": 88.8,
+      "recommendedExit": "Main South Exit",
+      "assemblyArea": "Assembly Area A",
+      "routePoints": [
+        {
+          "x": 29.5,
+          "y": 82.1
+        },
+        {
+          "x": 25,
+          "y": 78.8
+        },
+        {
+          "x": 18.7,
+          "y": 78
+        },
+        {
+          "x": 19,
+          "y": 60.5
+        },
+        {
+          "x": 17.6,
+          "y": 45.5
+        },
+        {
+          "x": 17.4,
+          "y": 19.5
+        }
+      ],
+      "instruction": "Leave SHS Room 1 in an orderly line, follow the corridor to the Main South Exit, and proceed to Assembly Area A."
+    },
+    {
+      "id": "faculty-room",
+      "label": "Faculty Room",
+      "description": "Faculty and personnel work area",
+      "x": 47,
+      "y": 45,
+      "recommendedExit": "North Exit",
+      "assemblyArea": "Assembly Area B",
+      "routePoints": [
+        {
+          "x": 47,
+          "y": 45
+        },
+        {
+          "x": 47,
+          "y": 40
+        },
+        {
+          "x": 60,
+          "y": 40
+        },
+        {
+          "x": 60,
+          "y": 32
+        },
+        {
+          "x": 82,
+          "y": 32
+        },
+        {
+          "x": 82,
+          "y": 28
+        },
+        {
+          "x": 86,
+          "y": 28
+        }
+      ],
+      "instruction": "Exit the Faculty Room calmly, guide nearby learners toward the North Exit, and proceed to Assembly Area B."
+    },
+    {
+      "id": "clinic",
+      "label": "Clinic",
+      "description": "School clinic and first aid station",
+      "x": 12.4,
+      "y": 64.5,
+      "recommendedExit": "North Exit",
+      "assemblyArea": "Assembly Area B",
+      "routePoints": [
+        {
+          "x": 18.5,
+          "y": 64.8
+        },
+        {
+          "x": 18.4,
+          "y": 18.5
+        }
+      ],
+      "instruction": "Exit the Clinic through the nearest safe doorway, assist anyone needing support, and proceed through the North Exit to Assembly Area B."
+    },
+    {
+      "id": "science-building",
+      "label": "Science Building",
+      "description": "Science laboratory and classroom area",
+      "x": 39,
+      "y": 31,
+      "recommendedExit": "North Exit",
+      "assemblyArea": "Assembly Area C",
+      "routePoints": [
+        {
+          "x": 39,
+          "y": 31
+        },
+        {
+          "x": 39,
+          "y": 28
+        },
+        {
+          "x": 62,
+          "y": 28
+        },
+        {
+          "x": 62,
+          "y": 24
+        },
+        {
+          "x": 79,
+          "y": 24
+        }
+      ],
+      "instruction": "Move away from laboratory fixtures, follow teacher guidance to the open pathway, and proceed to Assembly Area C."
+    },
+    {
+      "id": "jhs-building",
+      "label": "JHS Building",
+      "description": "Junior High School building area",
+      "x": 21,
+      "y": 39,
+      "recommendedExit": "North Exit",
+      "assemblyArea": "Assembly Area C",
+      "routePoints": [
+        {
+          "x": 21,
+          "y": 39
+        },
+        {
+          "x": 21,
+          "y": 34
+        },
+        {
+          "x": 38,
+          "y": 34
+        },
+        {
+          "x": 38,
+          "y": 28
+        },
+        {
+          "x": 62,
+          "y": 28
+        },
+        {
+          "x": 62,
+          "y": 24
+        },
+        {
+          "x": 79,
+          "y": 24
+        }
+      ],
+      "instruction": "Leave the JHS Building by the assigned corridor, use the open pathway toward the North Exit area, and proceed to Assembly Area C."
+    },
+    {
+      "id": "admin-office",
+      "label": "Admin Office",
+      "description": "School administration office",
+      "x": 66,
+      "y": 57,
+      "recommendedExit": "Main South Exit",
+      "assemblyArea": "Assembly Area B",
+      "routePoints": [
+        {
+          "x": 66,
+          "y": 57
+        },
+        {
+          "x": 66,
+          "y": 50
+        },
+        {
+          "x": 76,
+          "y": 50
+        },
+        {
+          "x": 76,
+          "y": 38
+        },
+        {
+          "x": 84,
+          "y": 38
+        },
+        {
+          "x": 84,
+          "y": 32
+        },
+        {
+          "x": 86,
+          "y": 32
+        },
+        {
+          "x": 86,
+          "y": 28
+        }
+      ],
+      "instruction": "Exit the Admin Office through the nearest safe route, keep access paths clear, and proceed to Assembly Area B."
+    }
+  ],
+  "emergencyExits": [
+    {
+      "id": "exit-main",
+      "label": "Main South Exit",
+      "x": 84,
+      "y": 38
+    },
+    {
+      "id": "exit-north",
+      "label": "North Exit",
+      "x": 82,
+      "y": 28
+    }
+  ],
+  "assemblyAreas": [
+    {
+      "id": "assembly-a",
+      "label": "Assembly Area A",
+      "x": 88,
+      "y": 38
+    },
+    {
+      "id": "assembly-b",
+      "label": "Assembly Area B",
+      "x": 86,
+      "y": 28
+    },
+    {
+      "id": "assembly-c",
+      "label": "Assembly Area C",
+      "x": 79,
+      "y": 24
+    }
+  ]
+}

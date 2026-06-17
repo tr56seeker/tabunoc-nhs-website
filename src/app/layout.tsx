@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientParallaxBackground from "@/components/ClientParallaxBackground";
 import InstallAppPrompt from "@/components/InstallAppPrompt";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,6 +50,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col overflow-x-hidden bg-white text-slate-950">
         <ClientParallaxBackground />
         {children}
+        <Analytics />
         <InstallAppPrompt />
       </body>
     </html>

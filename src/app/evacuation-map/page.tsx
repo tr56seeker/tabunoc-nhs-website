@@ -6,8 +6,8 @@ import {
   useState,
   type MouseEvent,
   type PointerEvent,
-  type WheelEvent,
 } from "react";
+import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 type MapPoint = {
   x: number;
@@ -89,6 +89,19 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
+function isValidMapPoint(point?: MapPoint | null): point is MapPoint {
+  return (
+    typeof point?.x === "number" &&
+    Number.isFinite(point.x) &&
+    typeof point.y === "number" &&
+    Number.isFinite(point.y)
+  );
+}
+
+function getValidRoutePoints(points?: MapPoint[]) {
+  return (points ?? []).filter(isValidMapPoint);
+}
+
 function slugifyLocationName(name: string) {
   return name
     .trim()
@@ -144,27 +157,26 @@ export default function EvacuationMapPage() {
   const editorLocation =
     mapData.locations.find((location) => location.id === editorSelectedId) ??
     null;
-  const selectedExitFallback =
-    selectedLocation && selectedLocation.recommendedExit
-      ? mapData.emergencyExits.find(
-          (exit) => exit.label === selectedLocation.recommendedExit,
-        ) ?? null
-      : null;
-  const selectedAssemblyAreaFallback =
-    selectedLocation && selectedLocation.assemblyArea
-      ? mapData.assemblyAreas.find(
-          (area) => area.label === selectedLocation.assemblyArea,
-        ) ?? null
+  const selectedLocationPoint =
+    selectedLocation && isValidMapPoint(selectedLocation)
+      ? selectedLocation
       : null;
   const selectedExitPoint =
-    selectedLocation?.emergencyExit ?? selectedExitFallback ?? null;
+    selectedLocation && isValidMapPoint(selectedLocation.emergencyExit)
+      ? selectedLocation.emergencyExit
+      : null;
   const selectedAssemblyAreaPoint =
-    selectedLocation?.assemblyAreaPoint ??
-    selectedLocation?.routePoints.at(-1) ??
-    selectedAssemblyAreaFallback ??
-    null;
-  const routePointMarkers = isCalibrationMode && editorMode === "route"
-    ? editorLocation?.routePoints ?? []
+    selectedLocation && isValidMapPoint(selectedLocation.assemblyAreaPoint)
+      ? selectedLocation.assemblyAreaPoint
+      : null;
+  const selectedRoutePoints = selectedLocation
+    ? getValidRoutePoints(selectedLocation.routePoints)
+    : [];
+  const routePointMarkers =
+    isCalibrationMode &&
+    editorMode === "route" &&
+    editorLocation?.id === selectedLocation?.id
+    ? getValidRoutePoints(editorLocation?.routePoints)
     : [];
 
   useEffect(() => {
@@ -223,6 +235,18 @@ export default function EvacuationMapPage() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isFullscreenMapOpen]);
+
+  useEffect(() => {
+    if (mapData.locations.length > 0) {
+      return;
+    }
+
+    setSelectedId("");
+    setEditorSelectedId("");
+    setLatestPoint(null);
+    setEditorMode("idle");
+    setSelectedMarkerType("room");
+  }, [mapData.locations.length]);
 
   function getClickedPoint(event: MouseEvent<HTMLDivElement>) {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -635,10 +659,10 @@ export default function EvacuationMapPage() {
                 preserveAspectRatio="none"
                 viewBox="0 0 100 100"
               >
-                {selectedLocation && selectedLocation.routePoints.length > 0 && (
+                {selectedRoutePoints.length > 0 && (
                   <>
                     <path
-                      d={getRoutePath(selectedLocation.routePoints)}
+                      d={getRoutePath(selectedRoutePoints)}
                       fill="none"
                       stroke="rgba(255,255,255,0.9)"
                       strokeLinecap="round"
@@ -650,7 +674,7 @@ export default function EvacuationMapPage() {
                       vectorEffect="non-scaling-stroke"
                     />
                     <path
-                      d={getRoutePath(selectedLocation.routePoints)}
+                      d={getRoutePath(selectedRoutePoints)}
                       fill="none"
                       stroke="#087EA4"
                       strokeLinecap="round"
@@ -662,25 +686,7 @@ export default function EvacuationMapPage() {
                 )}
               </svg>
 
-              {mapData.emergencyExits
-                .filter(
-                  (exit) =>
-                    !(
-                      selectedLocation?.emergencyExit &&
-                      exit.label === selectedLocation.recommendedExit
-                    ),
-                )
-                .map((exit) => (
-                <div
-                  key={exit.id}
-                  aria-hidden="true"
-                  className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-[3px] border border-white bg-[#dc2626] shadow"
-                  style={{ left: `${exit.x}%`, top: `${exit.y}%` }}
-                  title={exit.label}
-                />
-              ))}
-
-              {selectedLocation?.emergencyExit && (
+              {selectedExitPoint && (
                 <button
                   type="button"
                   aria-label="Selected emergency exit marker"
@@ -702,31 +708,13 @@ export default function EvacuationMapPage() {
                       : ""
                   }`}
                   style={{
-                    left: `${selectedLocation.emergencyExit.x}%`,
-                    top: `${selectedLocation.emergencyExit.y}%`,
+                    left: `${selectedExitPoint.x}%`,
+                    top: `${selectedExitPoint.y}%`,
                   }}
                 />
               )}
 
-              {mapData.assemblyAreas
-                .filter(
-                  (area) =>
-                    !(
-                      selectedLocation?.assemblyAreaPoint &&
-                      area.label === selectedLocation.assemblyArea
-                    ),
-                )
-                .map((area) => (
-                <div
-                  key={area.id}
-                  aria-hidden="true"
-                  className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#facc15] shadow"
-                  style={{ left: `${area.x}%`, top: `${area.y}%` }}
-                  title={area.label}
-                />
-              ))}
-
-              {selectedLocation?.assemblyAreaPoint && (
+              {selectedAssemblyAreaPoint && (
                 <button
                   type="button"
                   aria-label="Selected assembly area marker"
@@ -748,72 +736,49 @@ export default function EvacuationMapPage() {
                       : ""
                   }`}
                   style={{
-                    left: `${selectedLocation.assemblyAreaPoint.x}%`,
-                    top: `${selectedLocation.assemblyAreaPoint.y}%`,
+                    left: `${selectedAssemblyAreaPoint.x}%`,
+                    top: `${selectedAssemblyAreaPoint.y}%`,
                   }}
                 />
               )}
 
-              {selectedLocation &&
-                !selectedLocation.assemblyAreaPoint &&
-                selectedAssemblyAreaPoint && (
-                  <div
-                    aria-hidden="true"
-                    className="absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#facc15] shadow"
-                    style={{
-                      left: `${selectedAssemblyAreaPoint.x}%`,
-                      top: `${selectedAssemblyAreaPoint.y}%`,
-                    }}
-                  />
-                )}
-
-              {mapData.locations.map((location) => {
-                const isSelected = location.id === selectedId;
-
-                return (
+              {selectedLocationPoint && (
                   <button
-                    key={location.id}
                     type="button"
-                    aria-label={`Select ${location.label}`}
-                    aria-pressed={isSelected}
+                    aria-label={`Select ${selectedLocationPoint.label}`}
+                    aria-pressed="true"
                     onClick={(event) => {
                       event.stopPropagation();
-                      setSelectedId(location.id);
+                      setSelectedId(selectedLocationPoint.id);
                       if (isCalibrationMode) {
-                        setEditorSelectedId(location.id);
+                        setEditorSelectedId(selectedLocationPoint.id);
                         setSelectedMarkerType("room");
                       }
                     }}
                     onPointerDown={(event) => {
-                      if (location.id === editorLocation?.id) {
+                      if (selectedLocationPoint.id === editorLocation?.id) {
                         handleMarkerPointerDown(event, "room");
                       }
                     }}
                     onPointerMove={(event) => {
-                      if (location.id === editorLocation?.id) {
+                      if (selectedLocationPoint.id === editorLocation?.id) {
                         handleMarkerPointerMove(event, "room");
                       }
                     }}
-                    className={`absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 outline-none focus:ring-4 focus:ring-[#0F4C5C]/25 ${
-                      isSelected
-                        ? `h-8 w-8 border-white bg-[#0F4C5C] text-white shadow-lg sm:h-9 sm:w-9 ${
-                            isCalibrationMode && selectedMarkerType === "room"
-                              ? "ring-4 ring-[#ffdf20]/80"
-                              : "ring-4 ring-[#ffdf20]/70"
-                          }`
-                        : "h-5 w-5 border-white bg-white/90 text-[#0F4C5C] shadow-sm hover:bg-[#ECFDF5] sm:h-6 sm:w-6"
+                    className={`absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-[#0F4C5C] text-white shadow-lg outline-none focus:ring-4 focus:ring-[#0F4C5C]/25 sm:h-9 sm:w-9 ${
+                      isCalibrationMode && selectedMarkerType === "room"
+                        ? "ring-4 ring-[#ffdf20]/80"
+                        : "ring-4 ring-[#ffdf20]/70"
                     }`}
-                    style={{ left: `${location.x}%`, top: `${location.y}%` }}
-                    title={location.label}
+                    style={{
+                      left: `${selectedLocationPoint.x}%`,
+                      top: `${selectedLocationPoint.y}%`,
+                    }}
+                    title={selectedLocationPoint.label}
                   >
-                    <span
-                      className={`rounded-full bg-current ${
-                        isSelected ? "h-3 w-3" : "h-2 w-2"
-                      }`}
-                    />
+                    <span className="h-3 w-3 rounded-full bg-current" />
                   </button>
-                );
-              })}
+              )}
 
               {routePointMarkers.map((point, index) => (
                 <div
@@ -826,13 +791,13 @@ export default function EvacuationMapPage() {
                 </div>
               ))}
 
-              {selectedLocation && (
+              {selectedLocationPoint && (
                 <span
                   aria-hidden="true"
                   className="pointer-events-none absolute z-10 -translate-x-1/2 translate-y-3 rounded-full border border-white bg-[#0F4C5C] px-2 py-1 text-[10px] font-bold text-white shadow-sm"
                   style={{
-                    left: `${selectedLocation.x}%`,
-                    top: `${selectedLocation.y}%`,
+                    left: `${selectedLocationPoint.x}%`,
+                    top: `${selectedLocationPoint.y}%`,
                   }}
                 >
                   You are here
@@ -908,7 +873,11 @@ export default function EvacuationMapPage() {
                 onChange={(event) => setSelectedId(event.target.value)}
                 className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none focus:border-[#2f6f4e] focus:ring-2 focus:ring-[#2f6f4e]/20"
               >
-                <option value="">Choose location...</option>
+                <option value="">
+                  {mapData.locations.length === 0
+                    ? "No locations available. Add a location in calibration mode."
+                    : "Choose location..."}
+                </option>
                 {mapData.locations.map((location) => (
                   <option key={location.id} value={location.id}>
                     {location.label}
@@ -1015,7 +984,9 @@ export default function EvacuationMapPage() {
           selectedExitPoint={selectedExitPoint}
           selectedId={selectedId}
           selectedLocation={selectedLocation}
+          selectedLocationPoint={selectedLocationPoint}
           selectedMarkerType={selectedMarkerType}
+          selectedRoutePoints={selectedRoutePoints}
           onClose={() => setIsFullscreenMapOpen(false)}
           onMapEditorClick={handleMapEditorClick}
           onSelectLocation={(locationId) => {
@@ -1042,7 +1013,9 @@ function FullscreenMapViewer({
   selectedExitPoint,
   selectedId,
   selectedLocation,
+  selectedLocationPoint,
   selectedMarkerType,
+  selectedRoutePoints,
   onClose,
   onMapEditorClick,
   onSelectLocation,
@@ -1058,157 +1031,94 @@ function FullscreenMapViewer({
   selectedExitPoint: MapPoint | null;
   selectedId: string;
   selectedLocation: EvacuationLocation | null;
+  selectedLocationPoint: EvacuationLocation | null;
   selectedMarkerType: MarkerType;
+  selectedRoutePoints: MapPoint[];
   onClose: () => void;
   onMapEditorClick: (event: MouseEvent<HTMLDivElement>) => void;
   onSelectLocation: (locationId: string) => void;
   onSetSelectedMarkerType: (markerType: MarkerType) => void;
   onUpdateSelectedMarker: (markerType: MarkerType, point: MapPoint) => void;
 }) {
-  const viewportRef = useRef<HTMLDivElement | null>(null);
-  const pointersRef = useRef(new Map<number, MapPoint>());
-  const dragRef = useRef({ lastX: 0, lastY: 0, moved: false });
-  const pinchRef = useRef<{
-    distance: number;
-    midpoint: MapPoint;
-    offset: MapPoint;
-    scale: number;
-  } | null>(null);
   const suppressClickRef = useRef(false);
-  const [scale, setScale] = useState(1);
-  const [offset, setOffset] = useState<MapPoint>({ x: 0, y: 0 });
+  const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(true);
   const [isLegendOpen, setIsLegendOpen] = useState(false);
 
-  function getPointerDistance(points: MapPoint[]) {
-    return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
-  }
+  function renderRouteDetails() {
+    return (
+      <>
+        <div className="grid gap-3 lg:block">
+          <label className="grid gap-1 text-xs font-bold text-slate-700">
+            Location
+            <select
+              value={selectedId}
+              onChange={(event) => onSelectLocation(event.target.value)}
+              className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#0F4C5C]/15"
+            >
+              <option value="">
+                {data.locations.length === 0
+                  ? "No locations available. Add a location in calibration mode."
+                  : "Choose location..."}
+              </option>
+              {data.locations.map((location) => (
+                <option key={location.id} value={location.id}>
+                  {location.label}
+                </option>
+              ))}
+            </select>
+          </label>
 
-  function getPointerMidpoint(points: MapPoint[]) {
-    return {
-      x: (points[0].x + points[1].x) / 2,
-      y: (points[0].y + points[1].y) / 2,
-    };
-  }
+          <div className="text-xs leading-5 text-slate-700 lg:mt-5">
+            <p className="font-bold text-[#0F4C5C]">
+              {selectedLocation?.label ?? "Select a location"}
+            </p>
+            <p className="mt-1">
+              {data.locations.length === 0
+                ? "No locations available. Add a location in calibration mode."
+                : selectedLocation?.instruction ??
+                  "Choose your current location to view the recommended route."}
+            </p>
+            {isCalibrationMode && editorLocation && editorMode !== "idle" && (
+              <p className="mt-2 font-semibold text-[#0F4C5C]">
+                Calibration: click the map to{" "}
+                {editorMode === "room-pin"
+                  ? "set the room pin"
+                  : editorMode === "exit-pin"
+                    ? "set the emergency exit pin"
+                    : editorMode === "assembly-pin"
+                      ? "set the assembly area pin"
+                      : "add route points"}
+                .
+              </p>
+            )}
+          </div>
 
-  function zoomAt(clientX: number, clientY: number, nextScale: number) {
-    const viewport = viewportRef.current;
+          <button
+            type="button"
+            onClick={() => setIsLegendOpen((isOpen) => !isOpen)}
+            className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-slate-300/60 lg:mt-5"
+          >
+            {isLegendOpen ? "Hide Legend" : "Show Legend"}
+          </button>
+        </div>
 
-    if (!viewport) {
-      return;
-    }
-
-    const rect = viewport.getBoundingClientRect();
-    const point = {
-      x: clientX - rect.left,
-      y: clientY - rect.top,
-    };
-    const ratio = nextScale / scale;
-
-    setOffset({
-      x: point.x - (point.x - offset.x) * ratio,
-      y: point.y - (point.y - offset.y) * ratio,
-    });
-    setScale(nextScale);
-  }
-
-  function handleWheel(event: WheelEvent<HTMLDivElement>) {
-    event.preventDefault();
-    const direction = event.deltaY > 0 ? -1 : 1;
-    const nextScale = clamp(scale + direction * 0.2, 1, 4);
-    zoomAt(event.clientX, event.clientY, nextScale);
-  }
-
-  function handlePointerDown(event: PointerEvent<HTMLDivElement>) {
-    event.currentTarget.setPointerCapture(event.pointerId);
-    pointersRef.current.set(event.pointerId, {
-      x: event.clientX,
-      y: event.clientY,
-    });
-
-    const points = Array.from(pointersRef.current.values());
-    dragRef.current = {
-      lastX: event.clientX,
-      lastY: event.clientY,
-      moved: false,
-    };
-
-    if (points.length === 2) {
-      pinchRef.current = {
-        distance: getPointerDistance(points),
-        midpoint: getPointerMidpoint(points),
-        offset,
-        scale,
-      };
-    }
-  }
-
-  function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
-    if (!pointersRef.current.has(event.pointerId)) {
-      return;
-    }
-
-    pointersRef.current.set(event.pointerId, {
-      x: event.clientX,
-      y: event.clientY,
-    });
-
-    const points = Array.from(pointersRef.current.values());
-
-    if (points.length >= 2 && pinchRef.current) {
-      const midpoint = getPointerMidpoint(points);
-      const nextDistance = getPointerDistance(points);
-      const nextScale = clamp(
-        pinchRef.current.scale * (nextDistance / pinchRef.current.distance),
-        1,
-        4,
-      );
-      const ratio = nextScale / pinchRef.current.scale;
-
-      setScale(nextScale);
-      setOffset({
-        x:
-          midpoint.x -
-          (pinchRef.current.midpoint.x - pinchRef.current.offset.x) * ratio,
-        y:
-          midpoint.y -
-          (pinchRef.current.midpoint.y - pinchRef.current.offset.y) * ratio,
-      });
-      dragRef.current.moved = true;
-      return;
-    }
-
-    if (points.length === 1) {
-      const deltaX = event.clientX - dragRef.current.lastX;
-      const deltaY = event.clientY - dragRef.current.lastY;
-
-      if (Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2) {
-        dragRef.current.moved = true;
-      }
-
-      setOffset((currentOffset) => ({
-        x: currentOffset.x + deltaX,
-        y: currentOffset.y + deltaY,
-      }));
-      dragRef.current.lastX = event.clientX;
-      dragRef.current.lastY = event.clientY;
-    }
-  }
-
-  function handlePointerEnd(event: PointerEvent<HTMLDivElement>) {
-    pointersRef.current.delete(event.pointerId);
-    pinchRef.current = null;
-
-    if (dragRef.current.moved) {
-      suppressClickRef.current = true;
-      window.setTimeout(() => {
-        suppressClickRef.current = false;
-      }, 0);
-    }
-  }
-
-  function resetView() {
-    setScale(1);
-    setOffset({ x: 0, y: 0 });
+        {isLegendOpen && (
+          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-3 rounded-xl bg-[#F8FAFC] p-3 lg:grid lg:gap-3">
+            {legendItems.map((item) => (
+              <div
+                key={item.label}
+                className="flex min-w-fit items-center gap-2"
+              >
+                <LegendSample sample={item.sample} />
+                <span className="text-xs font-semibold text-slate-600">
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </>
+    );
   }
 
   function handleMapClick(event: MouseEvent<HTMLDivElement>) {
@@ -1264,92 +1174,103 @@ function FullscreenMapViewer({
   return (
     <div
       aria-modal="true"
-      className="fixed inset-0 z-[2000] bg-slate-950 text-white"
+      className="fixed inset-0 z-[2000] bg-[#f7f8f5] text-slate-950"
       role="dialog"
     >
-      <div
-        ref={viewportRef}
-        className="relative h-[100dvh] w-screen touch-none overflow-hidden"
-        onPointerCancel={handlePointerEnd}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerEnd}
-        onWheel={handleWheel}
+      <TransformWrapper
+        centerOnInit
+        centerZoomedOut
+        limitToBounds
+        smooth
+        minScale={1}
+        maxScale={5}
+        wheel={{ disabled: false, step: 0.12 }}
+        pinch={{ disabled: false, allowPanning: true, step: 6 }}
+        panning={{
+          disabled: false,
+          velocityDisabled: false,
+          excluded: ["button", "select", "input", "textarea"],
+        }}
+        doubleClick={{
+          disabled: false,
+          mode: "zoomIn",
+          step: 0.7,
+          animationTime: 160,
+          excluded: ["button", "select", "input", "textarea"],
+        }}
+        velocityAnimation={{
+          animationTime: 180,
+          maxAnimationTime: 220,
+        }}
+        onPanningStart={() => {
+          suppressClickRef.current = true;
+        }}
+        onPanningStop={() => {
+          window.setTimeout(() => {
+            suppressClickRef.current = false;
+          }, 100);
+        }}
       >
-        <div
-          className="absolute left-0 top-0 w-full max-w-none select-none"
-          style={{
-            transform: `translate3d(${offset.x}px, ${offset.y}px, 0) scale(${scale})`,
-            transformOrigin: "0 0",
-          }}
-        >
-          <div
-            onClick={handleMapClick}
-            className={`relative overflow-hidden bg-slate-100 ${
-              isCalibrationMode && editorMode !== "idle"
-                ? "cursor-crosshair"
-                : ""
-            }`}
-          >
-            <img
-              alt="Tabunoc National High School Evacuation Map"
-              className="block w-full max-w-none"
-              draggable={false}
-              src="/images/drrm/school-map.png"
-            />
-
-            <svg
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 h-full w-full [--route-stroke:4px] md:[--route-stroke:5px]"
-              preserveAspectRatio="none"
-              viewBox="0 0 100 100"
+        {({ zoomIn, zoomOut, resetTransform }) => (
+          <div className="relative h-[100dvh] w-screen overflow-hidden bg-[#f7f8f5]">
+            <TransformComponent
+              wrapperClass={`!h-full cursor-grab touch-none active:cursor-grabbing ${
+                isDetailsPanelOpen
+                  ? "!w-full lg:!absolute lg:!inset-y-0 lg:!left-0 lg:!right-96 lg:!w-auto"
+                  : "!w-full"
+              }`}
+              contentClass="!h-fit !w-fit"
             >
-              {selectedLocation && selectedLocation.routePoints.length > 0 && (
-                <>
-                  <path
-                    d={getRoutePath(selectedLocation.routePoints)}
-                    fill="none"
-                    stroke="rgba(255,255,255,0.9)"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    style={{
-                      filter: "drop-shadow(0 1px 2px rgb(15 23 42 / 0.35))",
-                      strokeWidth: "calc(var(--route-stroke) + 6px)",
-                    }}
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  <path
-                    d={getRoutePath(selectedLocation.routePoints)}
-                    fill="none"
-                    stroke="#087EA4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    style={{ strokeWidth: "var(--route-stroke)" }}
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </>
-              )}
-            </svg>
-
-            {data.emergencyExits
-              .filter(
-                (exit) =>
-                  !(
-                    selectedLocation?.emergencyExit &&
-                    exit.label === selectedLocation.recommendedExit
-                  ),
-              )
-              .map((exit) => (
               <div
-                key={exit.id}
-                aria-hidden="true"
-                className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-[3px] border border-white bg-[#dc2626] shadow"
-                style={{ left: `${exit.x}%`, top: `${exit.y}%` }}
-                title={exit.label}
-              />
-            ))}
+                onClick={handleMapClick}
+                className={`relative aspect-[26247/18508] w-[min(100vw,calc(100dvh*26247/18508))] max-w-none select-none overflow-hidden bg-white shadow-sm ${
+                  isCalibrationMode && editorMode !== "idle"
+                    ? "cursor-crosshair"
+                    : ""
+                }`}
+                draggable={false}
+              >
+                <img
+                  alt="Tabunoc National High School Evacuation Map"
+                  className="block h-full w-full max-w-none select-none object-contain"
+                  draggable={false}
+                  src="/images/drrm/school-map.png"
+                />
 
-            {selectedLocation?.emergencyExit && (
+                <svg
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 h-full w-full [--route-stroke:4px] md:[--route-stroke:5px]"
+                  preserveAspectRatio="none"
+                  viewBox="0 0 100 100"
+                >
+                  {selectedRoutePoints.length > 0 && (
+                    <>
+                      <path
+                        d={getRoutePath(selectedRoutePoints)}
+                        fill="none"
+                        stroke="rgba(255,255,255,0.9)"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        style={{
+                          filter: "drop-shadow(0 1px 2px rgb(15 23 42 / 0.35))",
+                          strokeWidth: "calc(var(--route-stroke) + 6px)",
+                        }}
+                        vectorEffect="non-scaling-stroke"
+                      />
+                      <path
+                        d={getRoutePath(selectedRoutePoints)}
+                        fill="none"
+                        stroke="#087EA4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        style={{ strokeWidth: "var(--route-stroke)" }}
+                        vectorEffect="non-scaling-stroke"
+                      />
+                    </>
+                  )}
+                </svg>
+
+            {selectedExitPoint && (
               <button
                 type="button"
                 aria-label="Selected emergency exit marker"
@@ -1371,31 +1292,13 @@ function FullscreenMapViewer({
                     : ""
                 }`}
                 style={{
-                  left: `${selectedLocation.emergencyExit.x}%`,
-                  top: `${selectedLocation.emergencyExit.y}%`,
+                  left: `${selectedExitPoint.x}%`,
+                  top: `${selectedExitPoint.y}%`,
                 }}
               />
             )}
 
-            {data.assemblyAreas
-              .filter(
-                (area) =>
-                  !(
-                    selectedLocation?.assemblyAreaPoint &&
-                    area.label === selectedLocation.assemblyArea
-                  ),
-              )
-              .map((area) => (
-              <div
-                key={area.id}
-                aria-hidden="true"
-                className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#facc15] shadow"
-                style={{ left: `${area.x}%`, top: `${area.y}%` }}
-                title={area.label}
-              />
-            ))}
-
-            {selectedLocation?.assemblyAreaPoint && (
+            {selectedAssemblyAreaPoint && (
               <button
                 type="button"
                 aria-label="Selected assembly area marker"
@@ -1417,71 +1320,48 @@ function FullscreenMapViewer({
                     : ""
                 }`}
                 style={{
-                  left: `${selectedLocation.assemblyAreaPoint.x}%`,
-                  top: `${selectedLocation.assemblyAreaPoint.y}%`,
+                  left: `${selectedAssemblyAreaPoint.x}%`,
+                  top: `${selectedAssemblyAreaPoint.y}%`,
                 }}
               />
             )}
 
-            {selectedLocation &&
-              !selectedLocation.assemblyAreaPoint &&
-              selectedAssemblyAreaPoint && (
-                <div
-                  aria-hidden="true"
-                  className="absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#facc15] shadow"
-                  style={{
-                    left: `${selectedAssemblyAreaPoint.x}%`,
-                    top: `${selectedAssemblyAreaPoint.y}%`,
-                  }}
-                />
-              )}
-
-            {data.locations.map((location) => {
-              const isSelected = location.id === selectedId;
-
-              return (
+            {selectedLocationPoint && (
                 <button
-                  key={location.id}
                   type="button"
-                  aria-label={`Select ${location.label}`}
-                  aria-pressed={isSelected}
+                  aria-label={`Select ${selectedLocationPoint.label}`}
+                  aria-pressed="true"
                   onClick={(event) => {
                     event.stopPropagation();
-                    onSelectLocation(location.id);
+                    onSelectLocation(selectedLocationPoint.id);
                     if (isCalibrationMode) {
                       onSetSelectedMarkerType("room");
                     }
                   }}
                   onPointerDown={(event) => {
-                    if (location.id === editorLocation?.id) {
+                    if (selectedLocationPoint.id === editorLocation?.id) {
                       handleFullscreenMarkerPointerDown(event, "room");
                     }
                   }}
                   onPointerMove={(event) => {
-                    if (location.id === editorLocation?.id) {
+                    if (selectedLocationPoint.id === editorLocation?.id) {
                       handleFullscreenMarkerPointerMove(event, "room");
                     }
                   }}
-                  className={`absolute flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 outline-none focus:ring-4 focus:ring-[#0F4C5C]/25 ${
-                    isSelected
-                      ? `h-8 w-8 border-white bg-[#0F4C5C] text-white shadow-lg sm:h-9 sm:w-9 ${
-                          isCalibrationMode && selectedMarkerType === "room"
-                            ? "ring-4 ring-[#ffdf20]/80"
-                            : "ring-4 ring-[#ffdf20]/70"
-                        }`
-                      : "h-5 w-5 border-white bg-white/90 text-[#0F4C5C] shadow-sm hover:bg-[#ECFDF5] sm:h-6 sm:w-6"
+                  className={`absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-[#0F4C5C] text-white shadow-lg outline-none focus:ring-4 focus:ring-[#0F4C5C]/25 sm:h-9 sm:w-9 ${
+                    isCalibrationMode && selectedMarkerType === "room"
+                      ? "ring-4 ring-[#ffdf20]/80"
+                      : "ring-4 ring-[#ffdf20]/70"
                   }`}
-                  style={{ left: `${location.x}%`, top: `${location.y}%` }}
-                  title={location.label}
+                  style={{
+                    left: `${selectedLocationPoint.x}%`,
+                    top: `${selectedLocationPoint.y}%`,
+                  }}
+                  title={selectedLocationPoint.label}
                 >
-                  <span
-                    className={`rounded-full bg-current ${
-                      isSelected ? "h-3 w-3" : "h-2 w-2"
-                    }`}
-                  />
+                  <span className="h-3 w-3 rounded-full bg-current" />
                 </button>
-              );
-            })}
+            )}
 
             {routePointMarkers.map((point, index) => (
               <div
@@ -1494,13 +1374,13 @@ function FullscreenMapViewer({
               </div>
             ))}
 
-            {selectedLocation && (
+            {selectedLocationPoint && (
               <span
                 aria-hidden="true"
                 className="pointer-events-none absolute z-10 -translate-x-1/2 translate-y-3 rounded-full border border-white bg-[#0F4C5C] px-2 py-1 text-[10px] font-bold text-white shadow-sm"
                 style={{
-                  left: `${selectedLocation.x}%`,
-                  top: `${selectedLocation.y}%`,
+                  left: `${selectedLocationPoint.x}%`,
+                  top: `${selectedLocationPoint.y}%`,
                 }}
               >
                 You are here
@@ -1532,117 +1412,91 @@ function FullscreenMapViewer({
                 Assembly Area
               </span>
             )}
-          </div>
-        </div>
+              </div>
+            </TransformComponent>
 
-        <div
-          className="absolute right-3 top-3 z-30 flex gap-2"
-          onPointerDown={(event) => event.stopPropagation()}
-        >
-          <button
-            type="button"
-            aria-label="Zoom in"
-            onClick={() => zoomAt(window.innerWidth / 2, window.innerHeight / 2, clamp(scale + 0.25, 1, 4))}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-white/40"
-          >
-            +
-          </button>
-          <button
-            type="button"
-            aria-label="Zoom out"
-            onClick={() => zoomAt(window.innerWidth / 2, window.innerHeight / 2, clamp(scale - 0.25, 1, 4))}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-white/40"
-          >
-            -
-          </button>
-          <button
-            type="button"
-            aria-label="Reset map view"
-            onClick={resetView}
-            className="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-white/40"
-          >
-            Reset
-          </button>
-          <button
-            type="button"
-            aria-label="Close fullscreen map"
-            onClick={onClose}
-            className="rounded-full bg-[#0F4C5C] px-4 py-2 text-sm font-bold text-white shadow-lg outline-none focus:ring-4 focus:ring-white/40"
-          >
-            Close
-          </button>
-        </div>
-
-        <div
-          className="absolute inset-x-3 bottom-3 z-30 rounded-2xl border border-white/20 bg-white/95 p-3 text-slate-950 shadow-2xl backdrop-blur md:left-1/2 md:max-w-3xl md:-translate-x-1/2"
-          onPointerDown={(event) => event.stopPropagation()}
-        >
-          <div className="grid gap-3 md:grid-cols-[0.9fr_1.1fr_auto] md:items-end">
-            <label className="grid gap-1 text-xs font-bold text-slate-700">
-              Location
-              <select
-                value={selectedId}
-                onChange={(event) => onSelectLocation(event.target.value)}
-                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#0F4C5C]/15"
-              >
-                <option value="">Choose location...</option>
-                {data.locations.map((location) => (
-                  <option key={location.id} value={location.id}>
-                    {location.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <div className="text-xs leading-5 text-slate-700">
-              <p className="font-bold text-[#0F4C5C]">
-                {selectedLocation?.label ?? "Select a location"}
-              </p>
-              <p>
-                {selectedLocation?.instruction ??
-                  "Choose your current location to view the recommended route."}
-              </p>
-              {isCalibrationMode && editorLocation && editorMode !== "idle" && (
-                <p className="mt-1 font-semibold text-[#0F4C5C]">
-                  Calibration: click the map to{" "}
-                  {editorMode === "room-pin"
-                    ? "set the room pin"
-                    : editorMode === "exit-pin"
-                      ? "set the emergency exit pin"
-                      : editorMode === "assembly-pin"
-                        ? "set the assembly area pin"
-                        : "add route points"}
-                  .
-                </p>
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setIsLegendOpen((isOpen) => !isOpen)}
-              className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-slate-300/60"
+            <div
+              className="absolute left-3 top-3 z-30 flex flex-wrap gap-2"
+              onPointerDown={(event) => event.stopPropagation()}
             >
-              {isLegendOpen ? "Hide Legend" : "Show Legend"}
-            </button>
-          </div>
-
-          {isLegendOpen && (
-            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-3 rounded-xl bg-[#F8FAFC] p-3">
-              {legendItems.map((item) => (
-                <div
-                  key={item.label}
-                  className="flex min-w-fit items-center gap-2"
-                >
-                  <LegendSample sample={item.sample} />
-                  <span className="text-xs font-semibold text-slate-600">
-                    {item.label}
-                  </span>
-                </div>
-              ))}
+              <button
+                type="button"
+                aria-label="Zoom in"
+                onClick={() => zoomIn(0.35, 160)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-[#0F4C5C]/20"
+              >
+                +
+              </button>
+              <button
+                type="button"
+                aria-label="Zoom out"
+                onClick={() => zoomOut(0.35, 160)}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-[#0F4C5C]/20"
+              >
+                -
+              </button>
+              <button
+                type="button"
+                aria-label="Reset map view"
+                onClick={() => resetTransform(180)}
+                className="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-[#0F4C5C]/20"
+              >
+                Reset
+              </button>
+              <button
+                type="button"
+                aria-label="Close fullscreen map"
+                onClick={onClose}
+                className="rounded-full bg-[#0F4C5C] px-4 py-2 text-sm font-bold text-white shadow-lg outline-none focus:ring-4 focus:ring-white/40"
+              >
+                Close
+              </button>
             </div>
-          )}
-        </div>
-      </div>
+
+            {isDetailsPanelOpen ? (
+              <aside
+                className="absolute inset-y-0 right-0 z-30 hidden w-96 max-w-[calc(100vw-4rem)] overflow-y-auto rounded-l-3xl border-l border-slate-200 bg-white/95 p-5 text-slate-950 shadow-2xl backdrop-blur lg:block"
+                onPointerDown={(event) => event.stopPropagation()}
+              >
+                <div className="mb-5 flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6f4e]">
+                      Route Details
+                    </p>
+                    <h2 className="mt-2 text-lg font-bold text-slate-950">
+                      {selectedLocation?.label ?? "Select a location"}
+                    </h2>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsDetailsPanelOpen(false)}
+                    className="shrink-0 rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-slate-300/60"
+                  >
+                    Hide Panel
+                  </button>
+                </div>
+                {renderRouteDetails()}
+              </aside>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsDetailsPanelOpen(true)}
+                className="absolute right-3 top-3 z-30 hidden rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-[#0F4C5C]/20 lg:block"
+                onPointerDown={(event) => event.stopPropagation()}
+              >
+                Show Details
+              </button>
+            )}
+
+            <div
+              className="absolute inset-x-3 bottom-3 z-30 rounded-2xl border border-white/20 bg-white/95 p-3 text-slate-950 shadow-2xl backdrop-blur md:left-1/2 md:max-w-3xl md:-translate-x-1/2 lg:hidden"
+              onPointerDown={(event) => event.stopPropagation()}
+            >
+              {renderRouteDetails()}
+            </div>
+          </div>
+        )}
+      </TransformWrapper>
     </div>
   );
 }

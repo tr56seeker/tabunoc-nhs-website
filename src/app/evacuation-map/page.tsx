@@ -44,6 +44,11 @@ type EvacuationMapData = {
   assemblyAreas: MapMarker[];
 };
 
+type LockableScreenOrientation = ScreenOrientation & {
+  lock?: (orientation: "landscape") => Promise<void>;
+  unlock?: () => void;
+};
+
 type MarkerType = "room" | "exit" | "assembly";
 
 type EditorMode = "idle" | "room-pin" | "exit-pin" | "assembly-pin" | "route";
@@ -136,6 +141,42 @@ function updateLocation(
   };
 }
 
+async function requestLandscapeFullscreen(element: HTMLElement) {
+  try {
+    await element.requestFullscreen?.();
+  } catch {
+    // Continue even if fullscreen fails.
+  }
+
+  try {
+    const orientation = screen.orientation as
+      | LockableScreenOrientation
+      | undefined;
+    await orientation?.lock?.("landscape");
+  } catch {
+    // Some mobile browsers do not allow orientation lock.
+  }
+}
+
+async function exitLandscapeFullscreen() {
+  try {
+    const orientation = screen.orientation as
+      | LockableScreenOrientation
+      | undefined;
+    orientation?.unlock?.();
+  } catch {
+    // Ignore unsupported browsers.
+  }
+
+  try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen?.();
+    }
+  } catch {
+    // Continue even if browser fullscreen exit fails.
+  }
+}
+
 export default function EvacuationMapPage() {
   const [mapData, setMapData] = useState<EvacuationMapData>(emptyMapData);
   const [selectedId, setSelectedId] = useState("");
@@ -226,7 +267,7 @@ export default function EvacuationMapPage() {
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setIsFullscreenMapOpen(false);
+        handleCloseFullscreenMap();
       }
     }
 
@@ -238,6 +279,16 @@ export default function EvacuationMapPage() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isFullscreenMapOpen]);
+
+  function handleOpenFullscreenMap() {
+    setIsFullscreenMapOpen(true);
+    void requestLandscapeFullscreen(document.documentElement);
+  }
+
+  function handleCloseFullscreenMap() {
+    setIsFullscreenMapOpen(false);
+    void exitLandscapeFullscreen();
+  }
 
   useEffect(() => {
     if (mapData.locations.length > 0) {
@@ -630,7 +681,7 @@ export default function EvacuationMapPage() {
             </div>
             <button
               type="button"
-              onClick={() => setIsFullscreenMapOpen(true)}
+              onClick={handleOpenFullscreenMap}
               className="rounded-xl bg-[#0F4C5C] px-4 py-3 text-sm font-bold text-white outline-none hover:bg-[#146577] focus:ring-4 focus:ring-[#0F4C5C]/20 sm:px-5"
             >
               Open Fullscreen Map
@@ -992,7 +1043,7 @@ export default function EvacuationMapPage() {
           selectedLocationPoint={selectedLocationPoint}
           selectedMarkerType={selectedMarkerType}
           selectedRoutePoints={selectedRoutePoints}
-          onClose={() => setIsFullscreenMapOpen(false)}
+          onClose={handleCloseFullscreenMap}
           onMapEditorClick={handleMapEditorClick}
           onSelectLocation={(locationId) => {
             setSelectedId(locationId);
@@ -1048,74 +1099,99 @@ function FullscreenMapViewer({
   onUpdateSelectedMarker: (markerType: MarkerType, point: MapPoint) => void;
 }) {
   const suppressClickRef = useRef(false);
-  const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(true);
-  const [isLegendOpen, setIsLegendOpen] = useState(false);
 
   function renderRouteDetails() {
     return (
-      <>
-        <div className="grid gap-3 lg:block">
-          <label className="grid gap-1 text-xs font-bold text-slate-700">
-            Location
-            <select
-              value={selectedId}
-              onChange={(event) => onSelectLocation(event.target.value)}
-              className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#0F4C5C]/15"
-            >
-              <option value="">
-                {data.locations.length === 0
-                  ? "No locations available. Add a location in calibration mode."
-                  : "Choose location..."}
-              </option>
-              {data.locations.map((location) => (
-                <option key={location.id} value={location.id}>
-                  {location.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <div className="text-xs leading-5 text-slate-700 lg:mt-5">
-            <p className="font-bold text-[#0F4C5C]">
-              {selectedLocation?.label ?? "Select a location"}
-            </p>
-            <p className="mt-1">
+      <div className="grid gap-5">
+        <label className="grid gap-2 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+          Choose your location
+          <select
+            value={selectedId}
+            onChange={(event) => onSelectLocation(event.target.value)}
+            className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold normal-case tracking-normal text-slate-900 outline-none focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#0F4C5C]/15"
+          >
+            <option value="">
               {data.locations.length === 0
                 ? "No locations available. Add a location in calibration mode."
-                : selectedLocation?.instruction ??
-                  "Choose your current location to view the recommended route."}
+                : "Choose location..."}
+            </option>
+            {data.locations.map((location) => (
+              <option key={location.id} value={location.id}>
+                {location.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <section className="grid gap-3 border-t border-slate-200 pt-5 text-sm leading-6 text-slate-700">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6f4e]">
+            Selected Location
+          </p>
+          <h2 className="text-xl font-bold leading-tight text-slate-950">
+            {selectedLocation?.label ?? "Select a location"}
+          </h2>
+          <p>
+            {data.locations.length === 0
+              ? "No locations available. Add a location in calibration mode."
+              : selectedLocation?.description ??
+                "Choose your current location to view the recommended route."}
+          </p>
+
+          {selectedLocation && (
+            <dl className="grid gap-3 rounded-2xl bg-[#F8FAFC] p-4 text-sm">
+              <div>
+                <dt className="font-bold text-[#0F4C5C]">Start</dt>
+                <dd className="mt-1 font-semibold text-slate-900">
+                  {selectedLocation.label}
+                </dd>
+              </div>
+              <div>
+                <dt className="font-bold text-[#0F4C5C]">Exit</dt>
+                <dd className="mt-1 font-semibold text-slate-900">
+                  {selectedLocation.recommendedExit}
+                </dd>
+              </div>
+              <div>
+                <dt className="font-bold text-[#0F4C5C]">Destination</dt>
+                <dd className="mt-1 font-semibold text-slate-900">
+                  {selectedLocation.assemblyArea}
+                </dd>
+              </div>
+            </dl>
+          )}
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-4">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+              Short Evacuation Instruction
             </p>
-            {isCalibrationMode && editorLocation && editorMode !== "idle" && (
-              <p className="mt-2 font-semibold text-[#0F4C5C]">
-                Calibration: click the map to{" "}
-                {editorMode === "room-pin"
-                  ? "set the room pin"
-                  : editorMode === "exit-pin"
-                    ? "set the emergency exit pin"
-                    : editorMode === "assembly-pin"
-                      ? "set the assembly area pin"
-                      : "add route points"}
-                .
-              </p>
-            )}
+            <p className="mt-2">
+              {selectedLocation?.instruction ??
+                "Choose your current location to view the recommended route."}
+            </p>
           </div>
 
-          <button
-            type="button"
-            onClick={() => setIsLegendOpen((isOpen) => !isOpen)}
-            className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-slate-300/60 lg:mt-5"
-          >
-            {isLegendOpen ? "Hide Legend" : "Show Legend"}
-          </button>
-        </div>
+          {isCalibrationMode && editorLocation && editorMode !== "idle" && (
+            <p className="rounded-2xl bg-[#ECFDF5] p-4 text-xs font-semibold text-[#0F4C5C]">
+              Calibration: click the map to{" "}
+              {editorMode === "room-pin"
+                ? "set the room pin"
+                : editorMode === "exit-pin"
+                  ? "set the emergency exit pin"
+                  : editorMode === "assembly-pin"
+                    ? "set the assembly area pin"
+                    : "add route points"}
+              .
+            </p>
+          )}
+        </section>
 
-        {isLegendOpen && (
-          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-3 rounded-xl bg-[#F8FAFC] p-3 lg:grid lg:gap-3">
+        <section className="grid gap-3 border-t border-slate-200 pt-5">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6f4e]">
+            Legend
+          </p>
+          <div className="grid gap-3 rounded-2xl bg-[#F8FAFC] p-4">
             {legendItems.map((item) => (
-              <div
-                key={item.label}
-                className="flex min-w-fit items-center gap-2"
-              >
+              <div key={item.label} className="flex items-center gap-2">
                 <LegendSample sample={item.sample} />
                 <span className="text-xs font-semibold text-slate-600">
                   {item.label}
@@ -1123,8 +1199,8 @@ function FullscreenMapViewer({
               </div>
             ))}
           </div>
-        )}
-      </>
+        </section>
+      </div>
     );
   }
 
@@ -1181,56 +1257,59 @@ function FullscreenMapViewer({
   return (
     <div
       aria-modal="true"
-      className="fixed inset-0 z-[2000] bg-[#f7f8f5] text-slate-950"
+      className="fixed inset-0 z-[9999] bg-[#071E29] text-slate-950"
       role="dialog"
     >
-      <TransformWrapper
-        centerOnInit
-        centerZoomedOut
-        limitToBounds
-        smooth
-        minScale={1}
-        maxScale={5}
-        wheel={{ disabled: false, step: 0.12 }}
-        pinch={{ disabled: false, allowPanning: true, step: 6 }}
-        panning={{
-          disabled: false,
-          velocityDisabled: false,
-          excluded: ["button", "select", "input", "textarea"],
-        }}
-        doubleClick={{
-          disabled: false,
-          mode: "zoomIn",
-          step: 0.7,
-          animationTime: 160,
-          excluded: ["button", "select", "input", "textarea"],
-        }}
-        velocityAnimation={{
-          animationTime: 180,
-          maxAnimationTime: 220,
-        }}
-        onPanningStart={() => {
-          suppressClickRef.current = true;
-        }}
-        onPanningStop={() => {
-          window.setTimeout(() => {
-            suppressClickRef.current = false;
-          }, 100);
-        }}
-      >
-        {({ zoomIn, zoomOut, resetTransform }) => (
-          <div className="relative h-[100dvh] w-screen overflow-hidden bg-[#f7f8f5]">
-            <TransformComponent
-              wrapperClass={`!h-full cursor-grab touch-none active:cursor-grabbing ${
-                isDetailsPanelOpen
-                  ? "!w-full lg:!absolute lg:!inset-y-0 lg:!left-0 lg:!right-96 lg:!w-auto"
-                  : "!w-full"
-              }`}
-              contentClass="!h-fit !w-fit"
-            >
+      <div className="flex h-[100dvh] w-[100dvw] flex-row overflow-hidden">
+        <div className="min-w-0 flex-1">
+          <TransformWrapper
+            centerOnInit
+            centerZoomedOut
+            limitToBounds
+            smooth
+            minScale={1}
+            maxScale={5}
+            wheel={{ disabled: false, step: 0.12 }}
+            pinch={{ disabled: false, allowPanning: true, step: 6 }}
+            panning={{
+              disabled: false,
+              velocityDisabled: false,
+              excluded: ["button", "select", "input", "textarea"],
+            }}
+            doubleClick={{
+              disabled: false,
+              mode: "zoomIn",
+              step: 0.7,
+              animationTime: 160,
+              excluded: ["button", "select", "input", "textarea"],
+            }}
+            velocityAnimation={{
+              animationTime: 180,
+              maxAnimationTime: 220,
+            }}
+            onInit={({ resetTransform }) => {
+              requestAnimationFrame(() => {
+                resetTransform(0);
+              });
+            }}
+            onPanningStart={() => {
+              suppressClickRef.current = true;
+            }}
+            onPanningStop={() => {
+              window.setTimeout(() => {
+                suppressClickRef.current = false;
+              }, 100);
+            }}
+          >
+            {({ zoomIn, zoomOut, resetTransform }) => (
+              <div className="relative h-full w-full overflow-hidden bg-[#f7f8f5]">
+                <TransformComponent
+                  wrapperClass="!h-full !w-full overflow-hidden cursor-grab touch-none active:cursor-grabbing"
+                  contentClass="!h-full !w-fit"
+                >
               <div
                 onClick={handleMapClick}
-                className={`relative aspect-[26247/18508] w-[min(100vw,calc(100dvh*26247/18508))] max-w-none select-none overflow-hidden bg-white shadow-sm ${
+                className={`relative aspect-[26247/18508] h-full w-auto max-w-none select-none overflow-hidden bg-white shadow-sm ${
                   isCalibrationMode && editorMode !== "idle"
                     ? "cursor-crosshair"
                     : ""
@@ -1420,7 +1499,7 @@ function FullscreenMapViewer({
               </span>
             )}
               </div>
-            </TransformComponent>
+                </TransformComponent>
 
             <div
               className="absolute left-3 top-3 z-30 flex flex-wrap gap-2"
@@ -1450,60 +1529,38 @@ function FullscreenMapViewer({
               >
                 Reset
               </button>
-              <button
-                type="button"
-                aria-label="Close fullscreen map"
-                onClick={onClose}
-                className="rounded-full bg-[#0F4C5C] px-4 py-2 text-sm font-bold text-white shadow-lg outline-none focus:ring-4 focus:ring-white/40"
-              >
-                Close
-              </button>
             </div>
-
-            {isDetailsPanelOpen ? (
-              <aside
-                className="absolute inset-y-0 right-0 z-30 hidden w-96 max-w-[calc(100vw-4rem)] overflow-y-auto rounded-l-3xl border-l border-slate-200 bg-white/95 p-5 text-slate-950 shadow-2xl backdrop-blur lg:block"
-                onPointerDown={(event) => event.stopPropagation()}
-              >
-                <div className="mb-5 flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6f4e]">
-                      Route Details
-                    </p>
-                    <h2 className="mt-2 text-lg font-bold text-slate-950">
-                      {selectedLocation?.label ?? "Select a location"}
-                    </h2>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsDetailsPanelOpen(false)}
-                    className="shrink-0 rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none focus:ring-4 focus:ring-slate-300/60"
-                  >
-                    Hide Panel
-                  </button>
-                </div>
-                {renderRouteDetails()}
-              </aside>
-            ) : (
-              <button
-                type="button"
-                onClick={() => setIsDetailsPanelOpen(true)}
-                className="absolute right-3 top-3 z-30 hidden rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-[#0F4C5C]/20 lg:block"
-                onPointerDown={(event) => event.stopPropagation()}
-              >
-                Show Details
-              </button>
+              </div>
             )}
+          </TransformWrapper>
+        </div>
 
-            <div
-              className="absolute inset-x-3 bottom-3 z-30 rounded-2xl border border-white/20 bg-white/95 p-3 text-slate-950 shadow-2xl backdrop-blur md:left-1/2 md:max-w-3xl md:-translate-x-1/2 lg:hidden"
-              onPointerDown={(event) => event.stopPropagation()}
-            >
-              {renderRouteDetails()}
+        <aside
+          className="w-[36vw] min-w-[240px] max-w-[340px] overflow-y-auto border-l border-white/10 bg-white p-5 text-[#24313E]"
+          onPointerDown={(event) => event.stopPropagation()}
+        >
+          <div className="mb-5 flex items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6f4e]">
+                Route Details
+              </p>
+              <h2 className="mt-2 text-lg font-bold leading-tight text-slate-950">
+                Evacuation Map
+              </h2>
             </div>
+            <button
+              type="button"
+              aria-label="Exit fullscreen evacuation map"
+              onClick={onClose}
+              className="min-h-11 shrink-0 rounded-xl bg-[#0F4C5C] px-4 py-2 text-xs font-bold text-white outline-none focus:ring-4 focus:ring-[#0F4C5C]/20"
+            >
+              Close
+            </button>
           </div>
-        )}
-      </TransformWrapper>
+
+          {renderRouteDetails()}
+        </aside>
+      </div>
     </div>
   );
 }

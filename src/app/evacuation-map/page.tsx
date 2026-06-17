@@ -9,6 +9,9 @@ import {
 } from "react";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+
 type MapPoint = {
   x: number;
   y: number;
@@ -596,7 +599,9 @@ export default function EvacuationMapPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f7f8f5] px-5 py-24 text-[#1f2933]">
+    <>
+      <Navbar />
+      <main className="min-h-screen bg-[#f7f8f5] px-5 py-24 text-[#1f2933]">
       <section
         className={`mx-auto ${isCalibrationMode ? "max-w-7xl" : "max-w-5xl"}`}
       >
@@ -999,7 +1004,9 @@ export default function EvacuationMapPage() {
           onUpdateSelectedMarker={updateSelectedMarker}
         />
       )}
-    </main>
+      </main>
+      <Footer />
+    </>
   );
 }
 

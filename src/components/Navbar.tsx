@@ -60,6 +60,7 @@ const navItems: NavItem[] = [
       {
         label: "Evacuation Map",
         href: "/evacuation-map",
+        description: "Interactive school evacuation routes and assembly areas",
       },
       {
         label: "Citizen's Charter",
@@ -202,7 +203,7 @@ function DropdownLink({
     variant === "desktop"
       ? `group/dropitem flex items-center justify-between gap-4 px-5 py-4 text-left transition ${
           active
-            ? "bg-[#2f3c48] text-white"
+            ? "bg-[#F8FAFC] text-[#24313E]"
             : "text-slate-600 hover:bg-[#2f3c48] hover:text-white"
         }`
       : "group/dropitem block rounded-2xl px-4 py-3 text-left transition hover:bg-[#ffdf20] hover:text-[#071E29]";
@@ -216,7 +217,7 @@ function DropdownLink({
     variant === "desktop"
       ? `mt-1 block line-clamp-2 text-xs font-semibold leading-5 ${
           active
-            ? "text-white/75"
+            ? "text-slate-500"
             : "text-slate-400 group-hover/dropitem:text-white/75"
         }`
       : "mt-1 block text-xs font-semibold leading-5 text-white/60 group-hover/dropitem:text-[#071E29]/75";

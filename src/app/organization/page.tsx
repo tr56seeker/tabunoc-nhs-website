@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 
 import Navbar from "@/components/Navbar";
@@ -37,28 +37,6 @@ const defaultGradeLevels = [
   "Grade 10",
   "Grade 11",
   "Grade 12",
-];
-
-const topDirectoryTabs = [
-  { label: "Administration", targetId: "school-head" },
-  { label: "Program Coordinators", targetId: "program-implementers" },
-  { label: "Teaching Personnel", targetId: "master-teachers" },
-  { label: "Support Staff", targetId: "support-staff" },
-];
-
-const mainSectionTopTabMap = [
-  { sectionId: "school-head", tabLabel: "Administration" },
-  { sectionId: "administrative-staff", tabLabel: "Administration" },
-  { sectionId: "guidance-personnel", tabLabel: "Administration" },
-
-  { sectionId: "program-implementers", tabLabel: "Program Coordinators" },
-
-  { sectionId: "master-teachers", tabLabel: "Teaching Personnel" },
-  { sectionId: "grade-leaders", tabLabel: "Teaching Personnel" },
-  { sectionId: "class-advisory", tabLabel: "Teaching Personnel" },
-  { sectionId: "subject-teachers", tabLabel: "Teaching Personnel" },
-
-  { sectionId: "support-staff", tabLabel: "Support Staff" },
 ];
 
 function parseCsvLine(line: string) {
@@ -1063,14 +1041,8 @@ export default function OrganizationPage() {
   const [selectedPerson, setSelectedPerson] = useState<Personnel | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<"All" | PersonnelRole>("All");
-  const [activeMainTab, setActiveMainTab] = useState("");
   const [allPersonnel, setAllPersonnel] = useState<Personnel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const directoryTabButtonRefs = useRef<Record<string, HTMLButtonElement | null>>(
-  {}
-);
-
-  const directoryTabScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     async function loadPersonnel() {
@@ -1333,132 +1305,6 @@ const visibleSubjectDepartments = useMemo(() => {
     });
   }, [allPersonnel, searchTerm, selectedRole]);
 
-  const isDirectorySearchActive =
-    searchTerm.trim() !== "" || selectedRole !== "All";
-
-  useEffect(() => {
-    if (isDirectorySearchActive) {
-      setActiveMainTab("");
-      return;
-    }
-
-    let animationFrameId = 0;
-
-    function getActiveMainTabFromScroll() {
-      const stickyOffset = 196;
-
-      const sections = mainSectionTopTabMap
-        .map((section) => {
-          const element = document.getElementById(section.sectionId);
-
-          if (!element) return null;
-
-          const sectionTop = element.getBoundingClientRect().top + window.scrollY;
-
-          return {
-            sectionId: section.sectionId,
-            tabLabel: section.tabLabel,
-            top: sectionTop,
-          };
-        })
-        .filter(
-          (
-            section
-          ): section is {
-            sectionId: string;
-            tabLabel: string;
-            top: number;
-          } => Boolean(section)
-        )
-        .sort((a, b) => a.top - b.top);
-
-      if (sections.length === 0) return "";
-
-      const currentScrollPosition = window.scrollY + stickyOffset;
-      const firstSectionTop = sections[0].top;
-
-      if (currentScrollPosition < firstSectionTop) {
-        return "";
-      }
-
-      const currentSection = [...sections]
-        .reverse()
-        .find((section) => currentScrollPosition >= section.top);
-
-      return currentSection?.tabLabel || "";
-    }
-
-    function updateActiveMainTab() {
-      const nextActiveMainTab = getActiveMainTabFromScroll();
-
-      setActiveMainTab((currentActiveMainTab) =>
-        currentActiveMainTab === nextActiveMainTab
-          ? currentActiveMainTab
-          : nextActiveMainTab
-      );
-    }
-
-    function requestActiveMainTabUpdate() {
-      if (animationFrameId) return;
-
-      animationFrameId = window.requestAnimationFrame(() => {
-        updateActiveMainTab();
-        animationFrameId = 0;
-      });
-    }
-
-    const initialChecks = [
-      window.setTimeout(updateActiveMainTab, 0),
-      window.setTimeout(updateActiveMainTab, 150),
-      window.setTimeout(updateActiveMainTab, 500),
-    ];
-
-    window.addEventListener("scroll", requestActiveMainTabUpdate, {
-      passive: true,
-    });
-    window.addEventListener("resize", requestActiveMainTabUpdate);
-
-    return () => {
-      initialChecks.forEach((timer) => window.clearTimeout(timer));
-
-      if (animationFrameId) {
-        window.cancelAnimationFrame(animationFrameId);
-      }
-
-      window.removeEventListener("scroll", requestActiveMainTabUpdate);
-      window.removeEventListener("resize", requestActiveMainTabUpdate);
-    };
-  }, [isDirectorySearchActive, isLoading]);
-
-  useEffect(() => {
-    if (!activeMainTab) return;
-
-    const scrollContainer = directoryTabScrollRef.current;
-    const activeButton = directoryTabButtonRefs.current[activeMainTab];
-
-    if (!scrollContainer || !activeButton) return;
-
-    const maxScrollLeft =
-      scrollContainer.scrollWidth - scrollContainer.clientWidth;
-
-    if (maxScrollLeft <= 0) return;
-
-    const containerRect = scrollContainer.getBoundingClientRect();
-    const buttonRect = activeButton.getBoundingClientRect();
-
-    const nextScrollLeft =
-      scrollContainer.scrollLeft +
-      buttonRect.left -
-      containerRect.left -
-      containerRect.width / 2 +
-      buttonRect.width / 2;
-
-    scrollContainer.scrollTo({
-      left: Math.max(0, Math.min(nextScrollLeft, maxScrollLeft)),
-      behavior: "smooth",
-    });
-  }, [activeMainTab]);
-
   const sectionIntroClass = "mb-6 px-1 text-center sm:mb-8 sm:px-0";
 
   const centeredPersonnelGridClass =
@@ -1499,22 +1345,6 @@ const visibleSubjectDepartments = useMemo(() => {
         ) : null}
       </div>
     );
-  }
-
-  function scrollToDirectorySection(label: string, targetId: string) {
-    setActiveMainTab(label);
-
-    const target = document.getElementById(targetId);
-    if (!target) return;
-
-    const topOffset = 196;
-    const targetTop =
-      target.getBoundingClientRect().top + window.scrollY - topOffset;
-
-    window.scrollTo({
-      top: Math.max(targetTop, 0),
-      behavior: "smooth",
-    });
   }
 
   function scrollToAdvisoryGrade(grade: string) {
@@ -1575,46 +1405,6 @@ return (
             </motion.p>
           </div>
         </section>
-
-        <nav
-          aria-label="Organization categories"
-          className="sticky top-[calc(5.75rem_+_env(safe-area-inset-top))] z-50 border-b border-slate-200/70 bg-[#F8FAFC]/95 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/95"
-        >
-          <div className="relative mx-auto max-w-6xl">
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-5 bg-gradient-to-r from-[#F8FAFC]/95 to-transparent dark:from-[#0a0908]/95 sm:w-6 lg:hidden" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-5 bg-gradient-to-l from-[#F8FAFC]/95 to-transparent dark:from-[#0a0908]/95 sm:w-6 lg:hidden" />
-
-            <div 
-              ref={directoryTabScrollRef}
-              className="no-scrollbar overflow-x-auto px-4 sm:px-6 lg:px-0">
-              <div className="flex min-w-max gap-2 pr-5 sm:gap-2.5 lg:mx-auto lg:w-max lg:justify-center lg:pr-0">
-              {topDirectoryTabs.map((tab) => {
-                const isActive = activeMainTab === tab.label;
-
-                return (
-                  <button
-                    key={tab.label}
-                    ref={(button) => {
-                      directoryTabButtonRefs.current[tab.label] = button;
-                    }}
-                    type="button"
-                    onClick={() =>
-                      scrollToDirectorySection(tab.label, tab.targetId)
-                    }
-                    className={`rounded-full px-3.5 py-2 text-xs font-bold transition sm:px-4 sm:text-sm ${
-                      isActive
-                        ? "bg-slate-900 text-white shadow-sm dark:bg-stone-100 dark:text-[#171614]"
-                        : "bg-slate-50 text-slate-600 ring-1 ring-slate-200/80 hover:bg-slate-100 hover:text-slate-900 dark:bg-[#171614] dark:text-stone-300 dark:ring-[#292624] dark:hover:bg-[#211f1c] dark:hover:text-white"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                );
-              })}
-              </div>
-            </div>
-          </div>
-        </nav>
 
         <section
           id="directory-search"

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 
 type Personnel = {
   order: number;
@@ -384,10 +385,12 @@ function ProfileImage({
       className={`relative flex flex-none items-center justify-center overflow-hidden bg-[#ECFDF5] text-[#0F4C5C] ring-1 ring-[#0F4C5C]/10 ${sizeClass}`}
     >
       {!imageFailed && person.photoUrl ? (
-        <img
+        <Image
           src={person.photoUrl}
           alt={`${person.name} profile photo`}
-          className="h-full w-full object-cover"
+          fill
+          sizes={size === "large" ? "(max-width: 768px) 100vw, 280px" : "56px"}
+          className="object-cover"
           onError={() => setImageFailed(true)}
         />
       ) : (

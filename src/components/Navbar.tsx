@@ -11,8 +11,10 @@
  */
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "motion/react";
 
 type NavbarProps = {
   brandMode?: "always" | "afterScroll";
@@ -32,11 +34,9 @@ type NavItem = {
   items?: DropdownItem[];
 };
 
-const depedLogo =
-  "https://depedph.com/wp-content/uploads/2024/01/deped-logo-philippines-1536x783.png";
+const depedLogo = "/images/deped-logo.png";
 
-const schoolLogo =
-  "https://github.com/tr56seeker/tabunocnatlhs/blob/main/TabunocNHSLOGO%E2%80%94NEW.png?raw=true";
+const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
 
 const navItems: NavItem[] = [
   {
@@ -296,8 +296,11 @@ export default function Navbar({
 
   useEffect(() => {
     if (!autoHideOnMobileScroll) {
-      setNavbarVisible(true);
-      return;
+      const showNavbarTimer = window.setTimeout(() => {
+        setNavbarVisible(true);
+      }, 0);
+
+      return () => window.clearTimeout(showNavbarTimer);
     }
 
     const mobileQuery = window.matchMedia("(max-width: 767px)");
@@ -381,17 +384,21 @@ export default function Navbar({
           }`}
         >
           <div className="flex items-center gap-2">
-            <img
+            <Image
               src={depedLogo}
               alt="Department of Education logo"
+              width={141}
+              height={72}
               className="h-9 w-auto object-contain 2xl:h-10"
             />
 
             <div className="h-9 w-px bg-white/30" />
 
-            <img
+            <Image
               src={schoolLogo}
               alt="Tabunoc National High School logo"
+              width={44}
+              height={44}
               className="h-10 w-10 rounded-full object-contain 2xl:h-11 2xl:w-11"
             />
           </div>
@@ -461,24 +468,30 @@ export default function Navbar({
                   </Link>
                 )}
 
-                {hasDropdown && (
-                  <div
-                    className={`pointer-events-none absolute left-1/2 top-full z-[1001] -translate-x-1/2 opacity-0 transition-all duration-200 group-hover/navitem:pointer-events-auto group-hover/navitem:opacity-100 ${
-                      desktopDropdownOpen ? "pointer-events-auto opacity-100" : ""
-                    }`}
-                  >
-                    <div className="w-[300px] overflow-hidden border-t-4 border-[#ffdf20] bg-white py-2 text-[#24313E] shadow-2xl shadow-black/25">
-                      {item.items?.map((dropdownItem) => (
-                        <DropdownLink
-                          key={`${item.label}-${dropdownItem.label}`}
-                          item={dropdownItem}
-                          variant="desktop"
-                          active={isInternalActive(pathname, dropdownItem.href)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
+                <AnimatePresence>
+                  {hasDropdown &&
+                    (desktopDropdownOpen || hoveredHref === item.href) && (
+                      <motion.div
+                        key={`${item.label}-desktop-dropdown`}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 6 }}
+                        transition={{ duration: 0.16, ease: "easeOut" }}
+                        className="absolute left-1/2 top-full z-[1001] -translate-x-1/2"
+                      >
+                        <div className="w-[300px] overflow-hidden border-t-4 border-[#ffdf20] bg-white py-2 text-[#24313E] shadow-2xl shadow-black/25">
+                          {item.items?.map((dropdownItem) => (
+                            <DropdownLink
+                              key={`${item.label}-${dropdownItem.label}`}
+                              item={dropdownItem}
+                              variant="desktop"
+                              active={isInternalActive(pathname, dropdownItem.href)}
+                            />
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                </AnimatePresence>
               </div>
             );
           })}
@@ -524,8 +537,16 @@ export default function Navbar({
         </button>
       </nav>
 
+      <AnimatePresence>
       {menuOpen && (
-        <div className="fixed left-0 top-[calc(5rem+env(safe-area-inset-top))] z-[1000] max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] w-full overflow-y-auto border-t border-white/10 bg-[#24313E]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl xl:hidden">
+        <motion.div
+          key="mobile-navigation"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
+          className="fixed left-0 top-[calc(5rem+env(safe-area-inset-top))] z-[1000] max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] w-full overflow-y-auto border-t border-white/10 bg-[#24313E]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl xl:hidden"
+        >
           <div className="mx-auto grid max-w-3xl gap-2">
             {navItems.map((item) => {
               const active = isItemActive(pathname, item);
@@ -582,20 +603,31 @@ export default function Navbar({
                     )}
                   </div>
 
-                  {hasDropdown && openGroup && (
-                    <div className="mt-2 grid gap-1 rounded-2xl border border-white/10 bg-[#1B2A35]/80 p-2">
-                      {item.items?.map((dropdownItem) => (
-                        <DropdownLink
-                          key={`${item.label}-${dropdownItem.label}`}
-                          item={dropdownItem}
-                          onClick={() => {
-                            setMenuOpen(false);
-                            setMobileOpenGroup(null);
-                          }}
-                        />
-                      ))}
-                    </div>
-                  )}
+                  <AnimatePresence initial={false}>
+                    {hasDropdown && openGroup && (
+                      <motion.div
+                        key={`${item.label}-mobile-dropdown`}
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-2 grid gap-1 rounded-2xl border border-white/10 bg-[#1B2A35]/80 p-2">
+                          {item.items?.map((dropdownItem) => (
+                            <DropdownLink
+                              key={`${item.label}-${dropdownItem.label}`}
+                              item={dropdownItem}
+                              onClick={() => {
+                                setMenuOpen(false);
+                                setMobileOpenGroup(null);
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               );
             })}
@@ -611,8 +643,9 @@ export default function Navbar({
               Contact
             </Link>
           </div>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
       </header>
 
     </>

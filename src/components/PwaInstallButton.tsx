@@ -26,11 +26,9 @@ function isAppInstalled() {
 export default function PwaInstallButton() {
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
-  const [installed, setInstalled] = useState(false);
+  const [installed, setInstalled] = useState(() => isAppInstalled());
 
   useEffect(() => {
-    setInstalled(isAppInstalled());
-
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
       setDeferredPrompt(event as BeforeInstallPromptEvent);

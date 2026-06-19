@@ -7,6 +7,7 @@ import {
   type MouseEvent,
   type PointerEvent,
 } from "react";
+import Image from "next/image";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 import Footer from "@/components/Footer";
@@ -295,11 +296,15 @@ export default function EvacuationMapPage() {
       return;
     }
 
-    setSelectedId("");
-    setEditorSelectedId("");
-    setLatestPoint(null);
-    setEditorMode("idle");
-    setSelectedMarkerType("room");
+    const resetSelectionTimer = window.setTimeout(() => {
+      setSelectedId("");
+      setEditorSelectedId("");
+      setLatestPoint(null);
+      setEditorMode("idle");
+      setSelectedMarkerType("room");
+    }, 0);
+
+    return () => window.clearTimeout(resetSelectionTimer);
   }, [mapData.locations.length]);
 
   function getClickedPoint(event: MouseEvent<HTMLDivElement>) {
@@ -703,9 +708,13 @@ export default function EvacuationMapPage() {
                   : ""
               }`}
             >
-              <img
+              <Image
                 src="/images/drrm/school-map.png"
                 alt="Tabunoc National High School Evacuation Map"
+                width={26247}
+                height={18508}
+                priority
+                sizes="(max-width: 1024px) 100vw, 960px"
                 className="block w-full rounded-2xl"
               />
 
@@ -1316,11 +1325,14 @@ function FullscreenMapViewer({
                 }`}
                 draggable={false}
               >
-                <img
+                <Image
+                  src="/images/drrm/school-map.png"
                   alt="Tabunoc National High School Evacuation Map"
+                  width={26247}
+                  height={18508}
+                  sizes="100vw"
                   className="block h-full w-full max-w-none select-none object-contain"
                   draggable={false}
-                  src="/images/drrm/school-map.png"
                 />
 
                 <svg

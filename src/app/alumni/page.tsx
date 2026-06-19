@@ -7,7 +7,7 @@
  */
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";

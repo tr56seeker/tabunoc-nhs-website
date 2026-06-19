@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
@@ -38,6 +38,36 @@ const defaultGradeLevels = [
   "Grade 11",
   "Grade 12",
 ];
+
+const sectionIntroClass = "mb-6 px-1 text-center sm:mb-8 sm:px-0";
+
+function SectionHeading({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow: string;
+  title: string;
+  description?: string;
+}) {
+  return (
+    <div className={sectionIntroClass}>
+      <p className="text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20] sm:text-sm">
+        {eyebrow}
+      </p>
+
+      <h2 className="mx-auto mt-1.5 max-w-4xl text-2xl font-black leading-tight text-slate-950 dark:text-white md:text-4xl">
+        {title}
+      </h2>
+
+      {description ? (
+        <p className="mx-auto mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-stone-300 md:text-base md:leading-7">
+          {description}
+        </p>
+      ) : null}
+    </div>
+  );
+}
 
 function parseCsvLine(line: string) {
   const values: string[] = [];
@@ -1305,8 +1335,6 @@ const visibleSubjectDepartments = useMemo(() => {
     });
   }, [allPersonnel, searchTerm, selectedRole]);
 
-  const sectionIntroClass = "mb-6 px-1 text-center sm:mb-8 sm:px-0";
-
   const centeredPersonnelGridClass =
   "grid grid-cols-[repeat(auto-fit,minmax(min(100%,22rem),24rem))] justify-center gap-3 lg:grid-cols-[repeat(auto-fit,minmax(min(100%,20rem),22rem))]";
 
@@ -1318,34 +1346,6 @@ const visibleSubjectDepartments = useMemo(() => {
 
   const stickyAdvisoryGradeHeaderClass =
     "sticky top-[calc(12.15rem_+_env(safe-area-inset-top))] z-30 mb-1 flex min-h-8 items-center justify-center border-b border-slate-100 bg-[#F8FAFC]/95 px-4 py-1 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/95";
-
-  function SectionHeading({
-    eyebrow,
-    title,
-    description,
-  }: {
-    eyebrow: string;
-    title: string;
-    description?: string;
-  }) {
-    return (
-      <div className={sectionIntroClass}>
-        <p className="text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20] sm:text-sm">
-          {eyebrow}
-        </p>
-
-        <h2 className="mx-auto mt-1.5 max-w-4xl text-2xl font-black leading-tight text-slate-950 dark:text-white md:text-4xl">
-          {title}
-        </h2>
-
-        {description ? (
-          <p className="mx-auto mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-stone-300 md:text-base md:leading-7">
-            {description}
-          </p>
-        ) : null}
-      </div>
-    );
-  }
 
   function scrollToAdvisoryGrade(grade: string) {
     setSelectedGrade(grade);

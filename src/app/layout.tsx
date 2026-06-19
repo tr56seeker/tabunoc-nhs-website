@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientParallaxBackground from "@/components/ClientParallaxBackground";
 import InstallAppPrompt from "@/components/InstallAppPrompt";
+import MotionProvider from "@/components/MotionProvider";
+import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
@@ -48,10 +50,13 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} light h-full bg-white text-slate-950 antialiased`}
     >
       <body className="min-h-full flex flex-col overflow-x-hidden bg-white text-slate-950">
-        <ClientParallaxBackground />
-        {children}
-        <Analytics />
-        <InstallAppPrompt />
+        <MotionProvider>
+          <SmoothScrollProvider />
+          <ClientParallaxBackground />
+          {children}
+          <Analytics />
+          <InstallAppPrompt />
+        </MotionProvider>
       </body>
     </html>
   );

@@ -39,7 +39,6 @@ export default function InstallAppPrompt() {
 
   useEffect(() => {
     if (isAppInstalled() || isDismissedRecently()) {
-      setShowInstall(false);
       return;
     }
 

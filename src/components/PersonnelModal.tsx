@@ -15,7 +15,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import type { Personnel } from "@/data/organization";
 
@@ -566,6 +566,10 @@ export default function PersonnelModal({
 
           <motion.div
             onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${displayName} personnel profile`}
+            data-lenis-prevent
             initial={{ opacity: 0, scale: 0.98, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 10 }}

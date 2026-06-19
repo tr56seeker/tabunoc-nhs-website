@@ -12,9 +12,16 @@ import { motion } from "motion/react";
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import PopulationCountUp from "@/components/PopulationCountUp";
 
 const mapsHref =
   "https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu";
+
+const homepageStatistics = [
+  { label: "Learners", value: 1190, delayMs: 0 },
+  { label: "Teaching Personnel", value: 59, delayMs: 150 },
+  { label: "Non-Teaching Personnel", value: 4, delayMs: 300 },
+] as const;
 
 const quickAccessLinks = [
   {
@@ -50,67 +57,7 @@ const quickAccessLinks = [
   },
 ];
 
-const schoolServices = [
-  {
-    title: "Enrollment Assistance",
-    description:
-      "Guides parents, guardians, transferees, and learners on enrollment procedures and school requirements.",
-    href: "/enrollment",
-  },
-  {
-    title: "Senior High School Programs",
-    description:
-      "Provides information on available SHS learning pathways and program options for incoming Grade 11 learners.",
-    href: "/shs-offerings",
-  },
-  {
-    title: "Public Assistance and Records",
-    description:
-      "Supports school-related inquiries, document requests, and frontline service information.",
-    href: "/citizen-charter",
-  },
-  {
-    title: "Official Issuances",
-    description:
-      "Publishes school memoranda, advisories, public announcements, and important reminders.",
-    href: "/memos",
-  },
-];
-
-const programPriorities = [
-  {
-    title: "Junior High School",
-    description:
-      "Provides foundational secondary education for Grades 7 to 10 learners.",
-  },
-  {
-    title: "Senior High School",
-    description:
-      "Supports career pathway preparation for Grades 11 to 12 learners.",
-  },
-  {
-    title: "Learner Support",
-    description:
-      "Promotes guidance, learner welfare, parent coordination, and school-based support services.",
-  },
-  {
-    title: "School DRRM",
-    description:
-      "Strengthens preparedness, safety awareness, emergency response, and learning continuity.",
-  },
-];
-
 const contactChannels = [
-  {
-    title: "Facebook Page",
-    detail: "facebook.com/tabunocnatlhs",
-    href: "https://facebook.com/tabunocnatlhs",
-  },
-  {
-    title: "Messenger",
-    detail: "m.me/tabunocnatlhs",
-    href: "https://m.me/tabunocnatlhs",
-  },
   {
     title: "Email",
     detail: "303111@deped.gov.ph",
@@ -276,6 +223,56 @@ export default function Home() {
           </div>
         </section>
 
+        {/* SCHOOL STATISTICS */}
+        <section
+          id="homepage-statistics"
+          aria-labelledby="homepage-statistics-title"
+          className="border-y border-slate-200 bg-[#F8FAFC] px-6 py-10"
+        >
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-6 text-center">
+              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                School at a Glance
+              </p>
+              <h2
+                id="homepage-statistics-title"
+                className="mt-2 text-2xl font-black tracking-tight text-slate-950 md:text-3xl"
+              >
+                Tabunoc NHS in numbers
+              </h2>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {homepageStatistics.map((statistic) => (
+                <article
+                  key={statistic.label}
+                  className="border border-slate-200 border-t-[#ffdf20] border-t-4 bg-white p-5 text-center shadow-sm"
+                >
+                  <PopulationCountUp
+                    value={statistic.value}
+                    delayMs={statistic.delayMs}
+                    durationMs={900}
+                    triggerId="homepage-statistics"
+                    className="block min-h-[2.5rem] text-4xl font-black leading-none tabular-nums tracking-tight text-[#24313E] md:text-5xl"
+                  />
+                  <p className="mt-3 text-sm font-black uppercase tracking-[0.12em] text-slate-500">
+                    {statistic.label}
+                  </p>
+                </article>
+              ))}
+
+              <article className="border border-slate-200 border-t-[#0F4C5C] border-t-4 bg-white p-5 text-center shadow-sm">
+                <p className="min-h-[2.5rem] text-4xl font-black leading-none tabular-nums tracking-tight text-[#24313E] md:text-5xl">
+                  303111
+                </p>
+                <p className="mt-3 text-sm font-black uppercase tracking-[0.12em] text-slate-500">
+                  School ID
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
         {/* QUICK ACCESS */}
         <section className="bg-white px-6 py-16">
           <div className="mx-auto max-w-7xl">
@@ -330,40 +327,30 @@ export default function Home() {
         </section>
 
         {/* FEATURED ADVISORY */}
-        <section className="bg-[#F8FAFC] px-6 py-16">
+        <section className="bg-[#F8FAFC] px-6 py-12">
           <div className="mx-auto max-w-7xl">
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-10">
-              <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:items-center">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
+              <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
                 <div>
                   <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                     Latest Advisory
                   </p>
                   <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950 md:text-4xl">
-                    Official announcements are posted through school channels.
+                    Stay informed through official school announcements.
                   </h2>
                   <p className="mt-4 max-w-3xl leading-7 text-slate-600">
-                    Stay updated with enrollment notices, school memoranda,
-                    class opening reminders, DRRM advisories, and public
-                    announcements issued through the official website and school
-                    communication channels.
+                    Check current notices on enrollment, class schedules,
+                    safety, and school activities.
                   </p>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div>
                   <ActionLink
                     href="/memos"
                     className="bg-[#0F4C5C] text-white hover:bg-[#146577]"
                   >
-                    View School Memos
+                    Read Latest Advisories
                     <ArrowIcon />
-                  </ActionLink>
-
-                  <ActionLink
-                    href="https://facebook.com/tabunocnatlhs"
-                    external
-                    className="border border-slate-200 bg-white text-[#0F4C5C] hover:bg-slate-50"
-                  >
-                    Visit Facebook Page
                   </ActionLink>
                 </div>
               </div>
@@ -386,8 +373,8 @@ export default function Home() {
             <div className="rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm md:p-8">
               <p className="text-lg leading-8 text-slate-700">
                 Tabunoc National High School is a public secondary school under
-                the Department of Education, committed to accessible, inclusive,
-                safe, and quality basic education for learners in the community.
+                the Department of Education, serving Junior High School and
+                Senior High School learners in Tabunok, Talisay City, Cebu.
               </p>
 
               <div className="mt-6">
@@ -403,80 +390,23 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SERVICES */}
-        <section id="services" className="bg-[#F8FAFC] px-6 py-20">
-          <div className="mx-auto max-w-7xl">
-            <SectionHeading
-              eyebrow="School Services"
-              title="Public assistance and learner support"
-              description="These services help learners, parents, and stakeholders find the correct school information without crowding the homepage."
-            />
-
-            <div className="grid gap-5 md:grid-cols-2">
-              {schoolServices.map((service) => (
-                <Link key={service.title} href={service.href}>
-                  <div className="h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#0F4C5C]/30 hover:shadow-lg">
-                    <h3 className="text-xl font-black text-slate-950">
-                      {service.title}
-                    </h3>
-                    <p className="mt-3 leading-7 text-slate-600">
-                      {service.description}
-                    </p>
-                    <p className="mt-5 inline-flex items-center gap-2 text-sm font-black text-[#0F4C5C]">
-                      Open Service <ArrowIcon />
-                    </p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* PROGRAMS */}
-        <section className="bg-white px-6 py-20">
-          <div className="mx-auto max-w-7xl">
-            <SectionHeading
-              eyebrow="Programs and Priorities"
-              title="What the school supports"
-              description="A short overview of major school-level programs. Full details are placed on their dedicated pages."
-            />
-
-            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-              {programPriorities.map((program) => (
-                <div
-                  key={program.title}
-                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm"
-                >
-                  <h3 className="text-xl font-black text-slate-950">
-                    {program.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">
-                    {program.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* CONTACT */}
-        <section id="contact" className="bg-[#0F4C5C] px-6 py-20 text-white">
+        <section id="contact" className="bg-[#0F4C5C] px-6 py-14 text-white">
           <div className="mx-auto max-w-7xl">
-            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
               <div>
                 <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
                   Contact and Location
                 </p>
-                <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
+                <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
                   Reach the school through official channels.
                 </h2>
                 <p className="mt-4 leading-7 text-teal-50">
-                  For official school inquiries, visit or contact Tabunoc
-                  National High School during office hours through authorized
-                  communication channels.
+                  Visit the campus or use an official channel for school
+                  inquiries and assistance.
                 </p>
 
-                <div className="mt-6 rounded-2xl border border-white/10 bg-white/10 p-5">
+                <div className="mt-5 rounded-2xl border border-white/10 bg-white/10 p-4">
                   <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
                     School Address
                   </p>
@@ -490,7 +420,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
                 {contactChannels.map((channel) => (
                   <a
                     key={channel.title}
@@ -503,7 +433,7 @@ export default function Home() {
                         ? "noopener noreferrer"
                         : undefined
                     }
-                    className="rounded-2xl border border-white/10 bg-white p-5 text-slate-950 shadow-sm transition duration-300 hover:-translate-y-1 hover:bg-yellow-50"
+                    className="rounded-2xl border border-white/10 bg-white p-4 text-slate-950 shadow-sm transition duration-300 hover:bg-yellow-50"
                   >
                     <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                       {channel.title}

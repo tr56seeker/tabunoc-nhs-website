@@ -73,9 +73,12 @@ const routesDataPath = "/data/evacuation-map-routes.json";
 const legendItems = [
   { label: "You are here", sample: "pin" },
   { label: "Evacuation Route", sample: "route" },
-  { label: "Emergency Exit", sample: "exit" },
+  { label: "Exit Point", sample: "exit" },
   { label: "Assembly Area", sample: "assembly" },
 ] as const;
+
+const emergencyReminder =
+  "Follow teacher and SDRRM personnel instructions during emergencies.";
 
 function getRoutePath(points: MapPoint[]) {
   return points
@@ -96,6 +99,21 @@ function roundMapPoint(point: MapPoint) {
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
+}
+
+function getRouteGuidance(location: EvacuationLocation) {
+  const recommendedExit = location.recommendedExit.trim();
+
+  return recommendedExit
+    ? `Follow the highlighted route toward ${recommendedExit}.`
+    : "Follow the highlighted route to the marked exit point.";
+}
+
+function getAssemblyGuidance(location: EvacuationLocation) {
+  return (
+    location.assemblyArea.trim() ||
+    "Proceed to the marked assembly area and remain with your class for accounting."
+  );
 }
 
 function isValidMapPoint(point?: MapPoint | null): point is MapPoint {
@@ -697,10 +715,11 @@ export default function EvacuationMapPage() {
             className={
               isCalibrationMode
                 ? "grid gap-4 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-start"
-                : ""
+                : "grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start"
             }
           >
             <div
+              data-lenis-prevent
               onClick={handleMapEditorClick}
               className={`relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 ${
                 isCalibrationMode && editorMode !== "idle"
@@ -724,6 +743,19 @@ export default function EvacuationMapPage() {
                 preserveAspectRatio="none"
                 viewBox="0 0 100 100"
               >
+                <defs>
+                  <marker
+                    id="evacuation-route-arrow"
+                    markerHeight="7"
+                    markerWidth="10"
+                    orient="auto"
+                    refX="9"
+                    refY="3.5"
+                    viewBox="0 0 10 7"
+                  >
+                    <path d="M 0 0 L 10 3.5 L 0 7 Z" fill="#087EA4" />
+                  </marker>
+                </defs>
                 {selectedRoutePoints.length > 0 && (
                   <>
                     <path
@@ -744,6 +776,7 @@ export default function EvacuationMapPage() {
                       stroke="#087EA4"
                       strokeLinecap="round"
                       strokeLinejoin="round"
+                      markerEnd="url(#evacuation-route-arrow)"
                       style={{ strokeWidth: "var(--route-stroke)" }}
                       vectorEffect="non-scaling-stroke"
                     />
@@ -896,6 +929,15 @@ export default function EvacuationMapPage() {
               )}
             </div>
 
+            {!isCalibrationMode && (
+              <RouteGuidancePanel
+                locations={mapData.locations}
+                selectedId={selectedId}
+                selectedLocation={selectedLocation}
+                onSelectLocation={setSelectedId}
+              />
+            )}
+
             {isCalibrationMode && (
               <CalibrationPanel
                 data={mapData}
@@ -923,8 +965,15 @@ export default function EvacuationMapPage() {
             )}
           </div>
 
-          <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-            <div>
+          <div
+            className={`mt-5 grid gap-4 ${
+              isCalibrationMode
+                ? "lg:grid-cols-[1fr_auto] lg:items-end"
+                : "lg:justify-end"
+            }`}
+          >
+            {isCalibrationMode && (
+              <div>
               <label
                 htmlFor="current-location"
                 className="text-sm font-semibold text-slate-700"
@@ -949,7 +998,8 @@ export default function EvacuationMapPage() {
                   </option>
                 ))}
               </select>
-            </div>
+              </div>
+            )}
 
             <div className="flex flex-wrap gap-x-5 gap-y-3 rounded-2xl border border-slate-200 bg-[#F8FAFC] p-4 lg:max-w-[440px]">
               {legendItems.map((item) => (
@@ -966,58 +1016,6 @@ export default function EvacuationMapPage() {
             </div>
           </div>
         </div>
-
-        {selectedLocation && (
-          <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#2f6f4e]">
-              Recommended Route
-            </p>
-            <h2 className="mt-2 text-2xl font-bold text-slate-950">
-              {selectedLocation.label}
-            </h2>
-            <p className="mt-2 text-sm text-slate-500">
-              {selectedLocation.description}
-            </p>
-
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                <h3 className="text-sm font-bold text-[#0F4C5C]">
-                  Start
-                </h3>
-                <p className="mt-2 text-base font-semibold text-slate-900">
-                  {selectedLocation.label}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-white p-5">
-                <h3 className="text-sm font-bold text-[#0F4C5C]">
-                  Exit
-                </h3>
-                <p className="mt-2 text-base font-semibold text-slate-900">
-                  {selectedLocation.recommendedExit}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-[#ECFDF5] p-5">
-                <h3 className="text-sm font-bold text-[#0F4C5C]">
-                  Destination
-                </h3>
-                <p className="mt-2 text-base font-semibold text-slate-900">
-                  {selectedLocation.assemblyArea}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 md:col-span-3">
-                <h3 className="text-sm font-bold text-[#0F4C5C]">
-                  Short Evacuation Instruction
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-slate-700">
-                  {selectedLocation.instruction}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
 
         <p className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-950">
           This evacuation map is for guidance and emergency preparedness
@@ -1067,6 +1065,117 @@ export default function EvacuationMapPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+function RouteGuidanceDetails({
+  selectedLocation,
+}: {
+  selectedLocation: EvacuationLocation | null;
+}) {
+  if (!selectedLocation) {
+    return (
+      <div className="grid gap-4">
+        <p className="rounded-2xl border border-dashed border-slate-300 bg-white p-4 text-sm leading-6 text-slate-600">
+          Select your current location to view the highlighted evacuation
+          route, exit guidance, and assembly area.
+        </p>
+        <p className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-950">
+          {emergencyReminder}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div aria-live="polite" className="grid gap-4">
+      <div>
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6f4e]">
+          Selected Location
+        </p>
+        <h2 className="mt-2 text-xl font-bold leading-tight text-slate-950">
+          {selectedLocation.label}
+        </h2>
+        {selectedLocation.description ? (
+          <p className="mt-1 text-sm leading-6 text-slate-500">
+            {selectedLocation.description}
+          </p>
+        ) : null}
+      </div>
+
+      <dl className="grid gap-3 text-sm leading-6">
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <dt className="font-bold text-[#0F4C5C]">
+            Suggested Exit / Route
+          </dt>
+          <dd className="mt-1 text-slate-700">
+            {getRouteGuidance(selectedLocation)}
+          </dd>
+        </div>
+
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <dt className="font-bold text-[#0F4C5C]">Assembly Area</dt>
+          <dd className="mt-1 text-slate-700">
+            {getAssemblyGuidance(selectedLocation)}
+          </dd>
+        </div>
+      </dl>
+
+      {selectedLocation.instruction ? (
+        <div className="rounded-xl bg-[#ECFDF5] p-4 text-sm leading-6 text-[#174b37]">
+          <p className="font-bold">Location Guidance</p>
+          <p className="mt-1">{selectedLocation.instruction}</p>
+        </div>
+      ) : null}
+
+      <p className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-semibold leading-6 text-amber-950">
+        {emergencyReminder}
+      </p>
+    </div>
+  );
+}
+
+function RouteGuidancePanel({
+  locations,
+  selectedId,
+  selectedLocation,
+  onSelectLocation,
+}: {
+  locations: EvacuationLocation[];
+  selectedId: string;
+  selectedLocation: EvacuationLocation | null;
+  onSelectLocation: (locationId: string) => void;
+}) {
+  return (
+    <aside className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 lg:sticky lg:top-24">
+      <label
+        htmlFor="current-location"
+        className="text-xs font-bold uppercase tracking-[0.14em] text-slate-600"
+      >
+        Current Location
+      </label>
+      <select
+        id="current-location"
+        value={selectedId}
+        onChange={(event) => onSelectLocation(event.target.value)}
+        className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 outline-none focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#0F4C5C]/15"
+      >
+        <option value="">
+          {locations.length === 0
+            ? "No locations available"
+            : "Choose location..."}
+        </option>
+        {locations.map((location) => (
+          <option key={location.id} value={location.id}>
+            {location.label}
+          </option>
+        ))}
+      </select>
+
+      <div className="mt-5">
+        <RouteGuidanceDetails selectedLocation={selectedLocation} />
+      </div>
+    </aside>
   );
 }
 
@@ -1132,52 +1241,8 @@ function FullscreenMapViewer({
           </select>
         </label>
 
-        <section className="grid gap-3 border-t border-slate-200 pt-5 text-sm leading-6 text-slate-700">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#2f6f4e]">
-            Selected Location
-          </p>
-          <h2 className="text-xl font-bold leading-tight text-slate-950">
-            {selectedLocation?.label ?? "Select a location"}
-          </h2>
-          <p>
-            {data.locations.length === 0
-              ? "No locations available. Add a location in calibration mode."
-              : selectedLocation?.description ??
-                "Choose your current location to view the recommended route."}
-          </p>
-
-          {selectedLocation && (
-            <dl className="grid gap-3 rounded-2xl bg-[#F8FAFC] p-4 text-sm">
-              <div>
-                <dt className="font-bold text-[#0F4C5C]">Start</dt>
-                <dd className="mt-1 font-semibold text-slate-900">
-                  {selectedLocation.label}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-bold text-[#0F4C5C]">Exit</dt>
-                <dd className="mt-1 font-semibold text-slate-900">
-                  {selectedLocation.recommendedExit}
-                </dd>
-              </div>
-              <div>
-                <dt className="font-bold text-[#0F4C5C]">Destination</dt>
-                <dd className="mt-1 font-semibold text-slate-900">
-                  {selectedLocation.assemblyArea}
-                </dd>
-              </div>
-            </dl>
-          )}
-
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
-              Short Evacuation Instruction
-            </p>
-            <p className="mt-2">
-              {selectedLocation?.instruction ??
-                "Choose your current location to view the recommended route."}
-            </p>
-          </div>
+        <section className="grid gap-4 border-t border-slate-200 pt-5">
+          <RouteGuidanceDetails selectedLocation={selectedLocation} />
 
           {isCalibrationMode && editorLocation && editorMode !== "idle" && (
             <p className="rounded-2xl bg-[#ECFDF5] p-4 text-xs font-semibold text-[#0F4C5C]">
@@ -1267,10 +1332,11 @@ function FullscreenMapViewer({
     <div
       aria-modal="true"
       className="fixed inset-0 z-[9999] bg-[#071E29] text-slate-950"
+      data-lenis-prevent
       role="dialog"
     >
-      <div className="flex h-[100dvh] w-[100dvw] flex-row overflow-hidden">
-        <div className="min-w-0 flex-1">
+      <div className="flex h-[100dvh] w-[100dvw] flex-col overflow-hidden lg:flex-row">
+        <div className="min-h-0 min-w-0 flex-1">
           <TransformWrapper
             centerOnInit
             centerZoomedOut
@@ -1341,6 +1407,19 @@ function FullscreenMapViewer({
                   preserveAspectRatio="none"
                   viewBox="0 0 100 100"
                 >
+                  <defs>
+                    <marker
+                      id="fullscreen-evacuation-route-arrow"
+                      markerHeight="7"
+                      markerWidth="10"
+                      orient="auto"
+                      refX="9"
+                      refY="3.5"
+                      viewBox="0 0 10 7"
+                    >
+                      <path d="M 0 0 L 10 3.5 L 0 7 Z" fill="#087EA4" />
+                    </marker>
+                  </defs>
                   {selectedRoutePoints.length > 0 && (
                     <>
                       <path
@@ -1361,6 +1440,7 @@ function FullscreenMapViewer({
                         stroke="#087EA4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        markerEnd="url(#fullscreen-evacuation-route-arrow)"
                         style={{ strokeWidth: "var(--route-stroke)" }}
                         vectorEffect="non-scaling-stroke"
                       />
@@ -1548,7 +1628,7 @@ function FullscreenMapViewer({
         </div>
 
         <aside
-          className="w-[36vw] min-w-[240px] max-w-[340px] overflow-y-auto border-l border-white/10 bg-white p-5 text-[#24313E]"
+          className="max-h-[46dvh] w-full shrink-0 overflow-y-auto rounded-t-3xl border-t border-slate-200 bg-white p-5 text-[#24313E] lg:h-full lg:max-h-none lg:w-[36vw] lg:min-w-[280px] lg:max-w-[360px] lg:rounded-none lg:border-l lg:border-t-0 lg:border-white/10"
           onPointerDown={(event) => event.stopPropagation()}
         >
           <div className="mb-5 flex items-start justify-between gap-3">

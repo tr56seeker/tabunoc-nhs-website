@@ -14,7 +14,7 @@
  * - Retains teachingPhilosophy from Excel/CSV source
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import type { Personnel } from "@/data/organization";
@@ -448,14 +448,14 @@ export default function PersonnelModal({
     photoUrl: string;
   } | null>(null);
 
-  function requestClose() {
+  const requestClose = useCallback(() => {
     if (window.history.state?.personnelModal) {
       window.history.back();
       return;
     }
 
     onClose();
-  }
+  }, [onClose]);
 
   useEffect(() => {
     if (!person) return;
@@ -489,7 +489,7 @@ export default function PersonnelModal({
       window.removeEventListener("popstate", handlePopState);
       document.body.style.overflow = previousOverflow;
     };
-  }, [person, onClose]);
+  }, [person, onClose, requestClose]);
 
   const photoUrl = person ? getPhotoUrl(person) : "";
   const showPhoto = Boolean(

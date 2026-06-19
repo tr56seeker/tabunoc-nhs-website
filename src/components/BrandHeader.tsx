@@ -7,31 +7,53 @@ const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
 
 const depedLogo = "/images/deped-logo.png";
 
-export default function BrandHeader() {
+type BrandHeaderProps = {
+  compact?: boolean;
+};
+
+export default function BrandHeader({ compact = false }: BrandHeaderProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7 }}
-      className="mb-8 flex flex-col items-center justify-center gap-4"
+      className={`flex flex-col items-center justify-center ${
+        compact ? "mb-5 gap-2.5" : "mb-8 gap-4"
+      }`}
     >
-      <div className="flex items-center justify-center gap-4 sm:gap-5">
+      <div
+        className={`flex items-center justify-center ${
+          compact ? "gap-3 sm:gap-4" : "gap-4 sm:gap-5"
+        }`}
+      >
         <Image
           src={depedLogo}
           alt="Department of Education Logo"
           width={141}
           height={72}
-          className="h-14 w-auto object-contain sm:h-16 md:h-[72px]"
+          className={
+            compact
+              ? "h-12 w-auto object-contain sm:h-14 md:h-16"
+              : "h-14 w-auto object-contain sm:h-16 md:h-[72px]"
+          }
         />
 
-        <div className="h-12 w-px bg-slate-300 dark:bg-[#292624] sm:h-14" />
+        <div
+          className={`w-px bg-slate-300 dark:bg-[#292624] ${
+            compact ? "h-10 sm:h-12" : "h-12 sm:h-14"
+          }`}
+        />
 
         <Image
           src={schoolLogo}
           alt="Tabunoc National High School Logo"
           width={80}
           height={80}
-          className="h-16 w-16 object-contain sm:h-20 sm:w-20"
+          className={
+            compact
+              ? "h-14 w-14 object-contain sm:h-16 sm:w-16"
+              : "h-16 w-16 object-contain sm:h-20 sm:w-20"
+          }
         />
       </div>
 
@@ -39,7 +61,11 @@ export default function BrandHeader() {
         <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-stone-100">
           Department of Education
         </p>
-        <p className="mt-1 text-base font-bold text-slate-700 dark:text-stone-200 sm:text-lg">
+        <p
+          className={`${
+            compact ? "mt-0.5 text-sm sm:text-base" : "mt-1 text-base sm:text-lg"
+          } font-bold text-slate-700 dark:text-stone-200`}
+        >
           Tabunoc National High School - School ID: 303111
         </p>
       </div>

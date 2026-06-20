@@ -233,7 +233,11 @@ function DropdownLink({
             ? "bg-[#ffdf20] text-[#24313E]"
             : "text-slate-600 hover:bg-[#2f3c48] hover:text-white"
         }`
-      : "group/dropitem block rounded-2xl px-4 py-3 text-left transition hover:bg-[#ffdf20] hover:text-[#071E29]";
+      : `group/dropitem block rounded-2xl px-4 py-3 text-left transition ${
+          active
+            ? "bg-[#ffdf20] text-[#071E29]"
+            : "text-white hover:bg-[#ffdf20] hover:text-[#071E29] active:bg-[#ffdf20] active:text-[#071E29]"
+        }`;
 
   const labelClass =
     variant === "desktop"
@@ -247,7 +251,11 @@ function DropdownLink({
             ? "text-[#24313E]/70"
             : "text-slate-400 group-hover/dropitem:text-white/75"
         }`
-      : "mt-1 block text-xs font-semibold leading-5 text-white/60 group-hover/dropitem:text-[#071E29]/75";
+      : `mt-1 block text-xs font-semibold leading-5 ${
+          active
+            ? "text-[#071E29]/70"
+            : "text-white/60 group-hover/dropitem:text-[#071E29]/75"
+        }`;
 
   const content = (
     <>
@@ -487,7 +495,7 @@ export default function Navbar({
 
             const navItemClassName = `inline-flex items-center gap-1.5 px-3 text-[13px] font-black transition-all duration-200 xl:px-4 xl:text-sm 2xl:gap-2 2xl:px-6 ${
               active
-                ? "relative z-20 -mb-px h-[calc(5rem+1px)] bg-white text-[#24313E] after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-white"
+                ? "relative z-20 h-20 bg-white text-[#24313E] after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-white lg:-mb-px lg:h-[calc(5rem+1px)]"
                 : "navbar-cloth-hover h-20 text-white/90"
             }`;
 
@@ -601,7 +609,7 @@ export default function Navbar({
                   <div className="w-[250px] overflow-hidden border-t-4 border-[#ffdf20] bg-white p-2 text-[#24313E] shadow-2xl shadow-black/25">
                     <a
                       href={`mailto:${schoolContact.email}`}
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
                       <span aria-hidden="true" className="text-base">
                         ✉
@@ -611,7 +619,7 @@ export default function Navbar({
 
                     <a
                       href={`tel:${schoolContact.phone}`}
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
                       <span aria-hidden="true" className="text-base">
                         ☎
@@ -623,7 +631,7 @@ export default function Navbar({
                       href={schoolContact.facebook}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
                       <span
                         aria-hidden="true"
@@ -638,7 +646,7 @@ export default function Navbar({
                       href={schoolContact.messenger}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
                       <span aria-hidden="true" className="text-base">
                         💬
@@ -716,6 +724,7 @@ export default function Navbar({
                     {hasDropdown ? (
                       <button
                         type="button"
+                        aria-current={active ? "page" : undefined}
                         aria-expanded={openGroup}
                         onClick={() =>
                           setMobileOpenGroup(openGroup ? null : item.label)
@@ -731,6 +740,7 @@ export default function Navbar({
                     ) : (
                       <Link
                         href={item.href}
+                        aria-current={active ? "page" : undefined}
                         onClick={() => {
                           setMenuOpen(false);
                           setMobileOpenGroup(null);
@@ -775,6 +785,7 @@ export default function Navbar({
                             <DropdownLink
                               key={`${item.label}-${dropdownItem.label}`}
                               item={dropdownItem}
+                              active={isInternalActive(pathname, dropdownItem.href)}
                               onClick={() => {
                                 setMenuOpen(false);
                                 setMobileOpenGroup(null);

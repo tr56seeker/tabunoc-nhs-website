@@ -129,6 +129,7 @@ span.typewriter-text {
 .typewriter-text__reserve,
 .typewriter-text__output {
   grid-area: 1 / 1;
+  min-width: 0;
 }
 
 .typewriter-text__reserve {

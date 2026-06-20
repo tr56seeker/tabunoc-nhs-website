@@ -230,7 +230,7 @@ function DropdownLink({
     variant === "desktop"
       ? `group/dropitem flex items-center justify-between gap-4 px-5 py-4 text-left transition ${
           active
-            ? "bg-[#F8FAFC] text-[#24313E]"
+            ? "bg-[#ffdf20] text-[#24313E]"
             : "text-slate-600 hover:bg-[#2f3c48] hover:text-white"
         }`
       : "group/dropitem block rounded-2xl px-4 py-3 text-left transition hover:bg-[#ffdf20] hover:text-[#071E29]";
@@ -244,7 +244,7 @@ function DropdownLink({
     variant === "desktop"
       ? `mt-1 block line-clamp-2 text-xs font-semibold leading-5 ${
           active
-            ? "text-slate-500"
+            ? "text-[#24313E]/70"
             : "text-slate-400 group-hover/dropitem:text-white/75"
         }`
       : "mt-1 block text-xs font-semibold leading-5 text-white/60 group-hover/dropitem:text-[#071E29]/75";
@@ -291,7 +291,12 @@ function DropdownLink({
   }
 
   return (
-    <Link href={item.href} onClick={onClick} className={className}>
+    <Link
+      href={item.href}
+      aria-current={active ? "page" : undefined}
+      onClick={onClick}
+      className={className}
+    >
       {content}
     </Link>
   );
@@ -480,10 +485,10 @@ export default function Navbar({
             const hasDropdown = Boolean(item.items?.length);
             const desktopDropdownOpen = desktopOpenGroup === item.label;
 
-            const navItemClassName = `inline-flex h-20 items-center gap-1.5 px-3 text-[13px] font-black transition-all duration-200 xl:px-4 xl:text-sm 2xl:gap-2 2xl:px-6 ${
+            const navItemClassName = `inline-flex items-center gap-1.5 px-3 text-[13px] font-black transition-all duration-200 xl:px-4 xl:text-sm 2xl:gap-2 2xl:px-6 ${
               active
-                ? "bg-white text-[#24313E]"
-                : "navbar-cloth-hover text-white/90"
+                ? "relative z-20 -mb-px h-[calc(5rem+1px)] bg-white text-[#24313E] after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-white"
+                : "navbar-cloth-hover h-20 text-white/90"
             }`;
 
             return (

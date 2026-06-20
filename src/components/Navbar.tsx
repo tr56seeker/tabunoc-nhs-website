@@ -422,23 +422,19 @@ export default function Navbar({
         >
           {navItems.map((item) => {
             const active = isItemActive(pathname, item);
-            const highlighted =
-              hoveredHref === item.href ||
-              desktopOpenGroup === item.label ||
-              (!hoveredHref && !desktopOpenGroup && active);
             const hasDropdown = Boolean(item.items?.length);
             const desktopDropdownOpen = desktopOpenGroup === item.label;
 
             const navItemClassName = `inline-flex h-20 items-center gap-1.5 px-3 text-[13px] font-black transition-all duration-200 xl:px-4 xl:text-sm 2xl:gap-2 2xl:px-6 ${
-              highlighted
+              active
                 ? "bg-white text-[#24313E]"
-                : "text-white/90 hover:bg-white hover:text-[#24313E]"
+                : "navbar-cloth-hover text-white/90"
             }`;
 
             return (
               <div
                 key={item.label}
-                className="group/navitem relative"
+                className="navbar-menu-group group/navitem relative"
                 onMouseEnter={() => setHoveredHref(item.href)}
                 onMouseLeave={() => {
                   setHoveredHref(null);
@@ -457,14 +453,14 @@ export default function Navbar({
                     }
                     className={navItemClassName}
                   >
-                    {item.label}
-                    <span className="transition-transform duration-200 group-hover/navitem:rotate-180">
+                    <span className="relative z-10">{item.label}</span>
+                    <span className="relative z-10 transition-transform duration-200 group-hover/navitem:rotate-180">
                       <ChevronDownIcon open={desktopDropdownOpen} />
                     </span>
                   </button>
                 ) : (
                   <Link href={item.href} className={navItemClassName}>
-                    {item.label}
+                    <span className="relative z-10">{item.label}</span>
                   </Link>
                 )}
 

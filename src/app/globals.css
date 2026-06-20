@@ -117,3 +117,69 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+@media (hover: hover) and (pointer: fine) {
+  .navbar-cloth-hover {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    transition:
+      color 240ms ease,
+      background-color 240ms ease,
+      transform 180ms ease;
+  }
+
+  .navbar-cloth-hover::before {
+    content: "";
+    position: absolute;
+    left: -18%;
+    top: -42%;
+    z-index: 0;
+    width: 150%;
+    height: 165%;
+    border-radius: 9999px;
+    background: #ffdf20;
+    opacity: 0;
+    transform-origin: top left;
+    transform: translate3d(-42%, -36%, 0) scale(0.16, 0.22) rotate(12deg);
+    transition:
+      opacity 220ms ease,
+      transform 820ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-radius 820ms cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+
+  .navbar-menu-group:hover .navbar-cloth-hover::before {
+    opacity: 1;
+    border-radius: 0.85rem;
+    transform: translate3d(0, 0, 0) scale(1.04, 1.12) rotate(0deg);
+  }
+
+  .navbar-menu-group:hover .navbar-cloth-hover {
+    color: #24313E;
+  }
+
+  .navbar-cloth-hover:active {
+    background-color: #ffffff;
+    color: #24313E;
+    transform: translateY(1px);
+  }
+
+  .navbar-cloth-hover:active::before {
+    background: #ffffff;
+    opacity: 1;
+    border-radius: 0.85rem;
+    transform: translate3d(0, 0, 0) scale(1.04, 1.12) rotate(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar-cloth-hover,
+  .navbar-cloth-hover::before {
+    transition: none !important;
+  }
+
+  .navbar-cloth-hover:active {
+    transform: none;
+  }
+}

@@ -9,16 +9,26 @@
 
 html {
   color-scheme: light;
-  background: #ffffff;
+  background: #f8fafc;
 }
 
 body {
-  background: #ffffff;
+  background: #f8fafc;
   color: #0f172a;
 }
 
 :root {
-  --background: #ffffff;
+  --tnhs-navbar: #34495e;
+  --tnhs-deep: #24313E;
+  --tnhs-footer: #0f2324;
+  --tnhs-teal: #45b3c2;
+  --tnhs-gold: #f3b522;
+  --tnhs-yellow: #ffdf20;
+  --tnhs-orange: #d03f08;
+  --tnhs-green: #588e25;
+  --tnhs-bg: #f8fafc;
+
+  --background: var(--tnhs-bg);
   --foreground: #0f172a;
 
   --font-sans: "Segoe UI", -apple-system, BlinkMacSystemFont, "San Francisco",
@@ -43,7 +53,7 @@ body {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0908;
+    --background: #0f2324;
     --foreground: #f8fafc;
   }
 }

@@ -39,7 +39,7 @@ export default function BrandHeader({ compact = false }: BrandHeaderProps) {
         />
 
         <div
-          className={`w-px bg-slate-300 dark:bg-[#292624] ${
+          className={`w-px bg-[#45b3c2] dark:bg-[#45b3c2]/60 ${
             compact ? "h-10 sm:h-12" : "h-12 sm:h-14"
           }`}
         />
@@ -58,7 +58,7 @@ export default function BrandHeader({ compact = false }: BrandHeaderProps) {
       </div>
 
       <div className="text-center">
-        <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-stone-100">
+        <p className="text-sm font-black uppercase tracking-widest text-[#24313E] dark:text-stone-100">
           Department of Education
         </p>
         <p

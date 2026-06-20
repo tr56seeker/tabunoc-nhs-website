@@ -373,11 +373,11 @@ export default function Navbar({
           navbarVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-      <nav className="relative mx-auto flex h-20 w-full items-center px-5 md:px-8 xl:px-[90px] 2xl:px-[170px]">
+      <nav className="relative mx-auto flex h-20 w-full items-center px-4 md:px-6 lg:px-8 xl:px-12 2xl:px-[120px]">
         <Link
           href="/"
           aria-label="Tabunoc National High School Homepage"
-          className={`absolute left-5 top-1/2 flex -translate-y-1/2 items-center gap-3 transition-all duration-500 md:left-8 xl:left-[90px] 2xl:left-[170px] ${
+          className={`absolute left-4 top-1/2 flex -translate-y-1/2 items-center gap-3 transition-all duration-500 md:left-6 lg:left-8 xl:left-12 2xl:left-[120px] ${
             showBrand
               ? "pointer-events-auto translate-x-0 opacity-100"
               : "pointer-events-none -translate-x-5 opacity-0"
@@ -403,8 +403,8 @@ export default function Navbar({
             />
           </div>
 
-          <div className="hidden max-w-[250px] leading-tight sm:block xl:max-w-[300px]">
-            <p className="truncate text-base font-black tracking-tight 2xl:text-lg">
+          <div className="hidden max-w-[250px] leading-tight sm:block lg:max-w-[210px] xl:max-w-[250px] 2xl:max-w-[300px]">
+            <p className="truncate text-sm font-black tracking-tight xl:text-base 2xl:text-lg">
               Tabunoc National High School
             </p>
             <p className="truncate text-xs font-bold text-white/75">
@@ -414,10 +414,10 @@ export default function Navbar({
         </Link>
 
         <div
-          className={`absolute top-1/2 hidden -translate-y-1/2 items-center gap-1 transition-all duration-500 ease-out xl:flex 2xl:gap-2 ${
+          className={`absolute top-1/2 hidden -translate-y-1/2 items-center gap-1 transition-all duration-500 ease-out lg:flex 2xl:gap-2 ${
             centerMenu
               ? "left-1/2 -translate-x-1/2"
-              : "right-5 translate-x-0 xl:right-[90px] 2xl:right-[170px]"
+              : "right-4 translate-x-0 md:right-6 lg:right-8 xl:right-12 2xl:right-[120px]"
           }`}
         >
           {navItems.map((item) => {
@@ -429,7 +429,7 @@ export default function Navbar({
             const hasDropdown = Boolean(item.items?.length);
             const desktopDropdownOpen = desktopOpenGroup === item.label;
 
-            const navItemClassName = `inline-flex h-20 items-center gap-1.5 px-4 text-sm font-black transition-all duration-200 2xl:gap-2 2xl:px-6 ${
+            const navItemClassName = `inline-flex h-20 items-center gap-1.5 px-3 text-[13px] font-black transition-all duration-200 xl:px-4 xl:text-sm 2xl:gap-2 2xl:px-6 ${
               highlighted
                 ? "bg-white text-[#24313E]"
                 : "text-white/90 hover:bg-white hover:text-[#24313E]"
@@ -509,7 +509,7 @@ export default function Navbar({
           aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((current) => !current)}
-          className="relative z-[1001] ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white transition hover:bg-white/10 xl:hidden"
+          className="relative z-[1001] ml-auto inline-flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-white transition hover:bg-white/10 lg:hidden"
         >
           <span className="sr-only">Menu</span>
           <svg
@@ -545,7 +545,7 @@ export default function Navbar({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.18, ease: "easeOut" }}
-          className="fixed left-0 top-[calc(5rem+env(safe-area-inset-top))] z-[1000] max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] w-full overflow-y-auto border-t border-white/10 bg-[#34495e]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl xl:hidden"
+          className="fixed left-0 top-[calc(5rem+env(safe-area-inset-top))] z-[1000] max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] w-full overflow-y-auto border-t border-white/10 bg-[#34495e]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl lg:hidden"
         >
           <div className="mx-auto grid max-w-3xl gap-2">
             {navItems.map((item) => {

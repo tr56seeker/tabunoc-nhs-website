@@ -1791,10 +1791,25 @@ return (
                         transition={{ duration: 0.45 }}
                         className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5"
                       >
-                        <div className={stickyGroupHeaderClass}>
-                          <h3 className="line-clamp-1 text-base font-black text-slate-950 dark:text-white md:text-lg">
-                            {department}
-                          </h3>
+                        <div className="mb-5 mt-3">
+                          <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-white/10 dark:bg-[#24313E]">
+                            <div className="flex items-start gap-3">
+                              <span
+                                className="mt-1 h-10 w-1.5 shrink-0 rounded-full bg-[#ffdf20]"
+                                aria-hidden="true"
+                              />
+
+                              <div className="min-w-0">
+                                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#45b3c2]">
+                                  Subject Department
+                                </p>
+
+                                <h3 className="mt-1 text-xl font-black leading-snug text-[#24313E] dark:text-white md:text-2xl">
+                                  {department}
+                                </h3>
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
                         <div className={centeredPersonnelGridClass}>

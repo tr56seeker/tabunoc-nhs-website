@@ -12,6 +12,7 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import TypewriterText from "@/components/TypewriterText";
 
 type MapPoint = {
   x: number;
@@ -683,9 +684,13 @@ export default function EvacuationMapPage() {
           School DRRM
         </p>
 
-        <h1 className="mt-3 text-4xl font-bold tracking-tight">
-          Interactive Evacuation Map
-        </h1>
+        <TypewriterText
+          as="h1"
+          text="Interactive Evacuation Map"
+          className="mt-3 text-4xl font-bold tracking-tight"
+          speed={72}
+          startDelay={140}
+        />
 
         <p className="mt-4 max-w-2xl text-base text-slate-600">
           Select your current location inside Tabunoc National High School to

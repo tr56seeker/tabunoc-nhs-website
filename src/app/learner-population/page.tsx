@@ -11,6 +11,7 @@ import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
 import PopulationCountUp from "@/components/PopulationCountUp";
+import TypewriterText from "@/components/TypewriterText";
 
 type PopulationRow = {
   sortOrder: number;
@@ -241,9 +242,13 @@ export default function LearnerPopulationPage() {
                 {schoolYear}
               </p>
 
-              <h1 className="mt-4 text-4xl font-black tracking-tight text-[#24313E] md:text-6xl">
-                Learner Population
-              </h1>
+              <TypewriterText
+                as="h1"
+                text="Learner Population"
+                className="mt-4 text-4xl font-black tracking-tight text-[#24313E] md:text-6xl"
+                speed={72}
+                startDelay={150}
+              />
 
               <p className="mx-auto mt-3 max-w-2xl text-base font-semibold leading-7 text-slate-600 md:text-lg">
                 Official learner population statistics of Tabunoc National High

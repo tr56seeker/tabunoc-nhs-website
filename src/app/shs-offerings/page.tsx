@@ -7,6 +7,7 @@ import { motion } from "motion/react";
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import TypewriterText from "@/components/TypewriterText";
 
 const offerings = [
   {
@@ -140,14 +141,19 @@ export default function SHSOfferingsPage() {
               Senior High School
             </motion.p>
 
-            <motion.h1
+            <motion.div
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.15 }}
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
             >
-              Senior High School Offerings
-            </motion.h1>
+              <TypewriterText
+                as="h1"
+                text="Senior High School Offerings"
+                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
+                speed={72}
+                startDelay={140}
+              />
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 32 }}
@@ -211,9 +217,13 @@ export default function SHSOfferingsPage() {
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Available Offerings
               </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
-                Choose a Senior High School Track
-              </h2>
+              <TypewriterText
+                as="h2"
+                text="Choose a Senior High School Track"
+                className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl"
+                speed={58}
+                startDelay={120}
+              />
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
                 Use the filter below to view the Pure Academic Track and Tech
                 Pro Track offerings currently listed for the school.

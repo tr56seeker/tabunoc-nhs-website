@@ -12,6 +12,7 @@ import { motion } from "motion/react";
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import TypewriterText from "@/components/TypewriterText";
 
 const pagePadding = "px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]";
 
@@ -155,9 +156,13 @@ function SectionHeading({
         {eyebrow}
       </p>
 
-      <h2 className="mt-3 text-3xl font-black tracking-tight text-[#071E29] sm:text-4xl md:text-5xl">
-        {title}
-      </h2>
+      <TypewriterText
+        as="h2"
+        text={title}
+        className="mt-3 text-3xl font-black tracking-tight text-[#071E29] sm:text-4xl md:text-5xl"
+        speed={58}
+        startDelay={120}
+      />
 
       {description && (
         <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
@@ -191,14 +196,19 @@ export default function AlumniPage() {
               Alumni Community
             </motion.p>
 
-            <motion.h1
+            <motion.div
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-[#071E29] sm:text-5xl lg:text-6xl"
             >
-              Tabunoc NHS Alumni and Community
-            </motion.h1>
+              <TypewriterText
+                as="h1"
+                text="Tabunoc NHS Alumni and Community"
+                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-[#071E29] sm:text-5xl lg:text-6xl"
+                speed={72}
+                startDelay={140}
+              />
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 28 }}

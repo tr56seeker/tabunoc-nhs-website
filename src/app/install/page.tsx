@@ -1,3 +1,5 @@
+import TypewriterText from "@/components/TypewriterText";
+
 export const metadata = {
   title: "Install Tabunoc NHS App | Tabunoc National High School",
   description:
@@ -12,9 +14,13 @@ export default function InstallPage() {
           Official School Web App
         </p>
 
-        <h1 className="mb-4 text-3xl font-extrabold md:text-5xl">
-          Install Tabunoc NHS App
-        </h1>
+        <TypewriterText
+          as="h1"
+          text="Install Tabunoc NHS App"
+          className="mb-4 text-3xl font-extrabold md:text-5xl"
+          speed={72}
+          startDelay={140}
+        />
 
         <p className="mb-10 max-w-2xl text-base text-gray-600 md:text-lg">
           Add the official Tabunoc National High School website to your phone

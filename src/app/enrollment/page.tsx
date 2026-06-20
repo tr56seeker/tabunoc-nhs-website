@@ -14,6 +14,7 @@ import { motion } from "motion/react";
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import TypewriterText from "@/components/TypewriterText";
 
 const pagePadding = "px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]";
 
@@ -353,19 +354,31 @@ function SectionHeading({
   eyebrow,
   title,
   description,
+  animateTitle = true,
 }: {
   eyebrow: string;
   title: string;
   description?: string;
+  animateTitle?: boolean;
 }) {
   return (
     <motion.div {...fadeUp} className="mx-auto mb-10 max-w-3xl text-center">
       <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
         {eyebrow}
       </p>
-      <h2 className="mt-3 text-3xl font-black tracking-tight text-[#071E29] sm:text-4xl">
-        {title}
-      </h2>
+      {animateTitle ? (
+        <TypewriterText
+          as="h2"
+          text={title}
+          className="mt-3 text-3xl font-black tracking-tight text-[#071E29] sm:text-4xl"
+          speed={58}
+          startDelay={120}
+        />
+      ) : (
+        <h2 className="mt-3 text-3xl font-black tracking-tight text-[#071E29] sm:text-4xl">
+          {title}
+        </h2>
+      )}
       {description && (
         <p className="mt-4 leading-7 text-slate-600">{description}</p>
       )}
@@ -556,14 +569,19 @@ export default function EnrollmentPage() {
                 Enrollment Guide
               </motion.p>
 
-              <motion.h1
+              <motion.div
                 initial={{ opacity: 0, y: 28 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="mt-4 text-4xl font-black leading-tight tracking-tight text-[#071E29] sm:text-5xl lg:text-6xl"
               >
-                Enrollment Made Simple
-              </motion.h1>
+                <TypewriterText
+                  as="h1"
+                  text="Enrollment Made Simple"
+                  className="mt-4 text-4xl font-black leading-tight tracking-tight text-[#071E29] sm:text-5xl lg:text-6xl"
+                  speed={72}
+                  startDelay={140}
+                />
+              </motion.div>
 
               <motion.p
                 initial={{ opacity: 0, y: 28 }}
@@ -724,9 +742,13 @@ export default function EnrollmentPage() {
           Late Enrollment Concern
         </p>
 
-        <h2 className="mt-3 text-3xl font-black tracking-tight text-[#071E29]">
-          What if late ko magpa-enroll unya nagklase na?
-        </h2>
+        <TypewriterText
+          as="h2"
+          text="What if late ko magpa-enroll unya nagklase na?"
+          className="mt-3 text-3xl font-black tracking-tight text-[#071E29]"
+          speed={52}
+          startDelay={120}
+        />
 
         <p className="mt-4 leading-7 text-slate-700">
           Late enrollees learner must still follow the
@@ -808,9 +830,13 @@ export default function EnrollmentPage() {
               <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
                 Incoming Grade 11
               </p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight text-[#071E29]">
-                Review SHS offerings before enrollment.
-              </h2>
+              <TypewriterText
+                as="h2"
+                text="Review SHS offerings before enrollment."
+                className="mt-3 text-3xl font-black tracking-tight text-[#071E29]"
+                speed={52}
+                startDelay={120}
+              />
               <p className="mt-4 leading-7 text-slate-700">
                 Track, strand, or specialization placement may depend on
                 available programs, learner interest, and school capacity.
@@ -856,6 +882,7 @@ export default function EnrollmentPage() {
               eyebrow="Enrollment FAQs"
               title="Common questions"
               description="Quick answers to common enrollment concerns."
+              animateTitle={false}
             />
 
             <div className="mx-auto grid max-w-5xl gap-4">

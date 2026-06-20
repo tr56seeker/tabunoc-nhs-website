@@ -7,6 +7,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import TypewriterText from "@/components/TypewriterText";
 import { memoCategories, memos, type MemoCategory } from "@/data/memos";
 
 type MemoItem = (typeof memos)[number];
@@ -116,14 +117,19 @@ export default function MemosPage() {
                 Official School Repository
               </motion.p>
 
-              <motion.h1
+              <motion.div
                 initial={{ opacity: 0, y: 32 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.15 }}
-                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
               >
-                School Memos and Issuances
-              </motion.h1>
+                <TypewriterText
+                  as="h1"
+                  text="School Memos and Issuances"
+                  className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
+                  speed={72}
+                  startDelay={140}
+                />
+              </motion.div>
 
               <motion.p
                 initial={{ opacity: 0, y: 32 }}

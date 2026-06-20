@@ -9,6 +9,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import TypewriterText from "@/components/TypewriterText";
 
 const faqGroups = [
   {
@@ -213,9 +214,13 @@ export default function FAQPage() {
               Public Assistance
             </p>
 
-            <h1 className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight md:text-6xl">
-              Frequently Asked Questions
-            </h1>
+            <TypewriterText
+              as="h1"
+              text="Frequently Asked Questions"
+              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight md:text-6xl"
+              speed={72}
+              startDelay={140}
+            />
 
             <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-700">
               Quick answers to common concerns about enrollment, school
@@ -248,9 +253,13 @@ export default function FAQPage() {
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                 Quick Links
               </p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">
-                Common pages for school transactions
-              </h2>
+              <TypewriterText
+                as="h2"
+                text="Common pages for school transactions"
+                className="mt-3 text-3xl font-black tracking-tight md:text-4xl"
+                speed={58}
+                startDelay={120}
+              />
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -278,9 +287,13 @@ export default function FAQPage() {
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                 FAQ Directory
               </p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight md:text-5xl">
-                Questions and answers
-              </h2>
+              <TypewriterText
+                as="h2"
+                text="Questions and answers"
+                className="mt-3 text-3xl font-black tracking-tight md:text-5xl"
+                speed={58}
+                startDelay={120}
+              />
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
                 Select a question below to view the answer. For concerns not
                 listed here, please contact the school through official

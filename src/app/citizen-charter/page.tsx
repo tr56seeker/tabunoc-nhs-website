@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import TypewriterText from "@/components/TypewriterText";
 
 const frontlineServices = [
   {
@@ -216,14 +217,19 @@ export default function CitizenCharterPage() {
               Transparency and Public Service
             </motion.p>
 
-            <motion.h1
+            <motion.div
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.15 }}
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
             >
-              Citizen&apos;s Charter
-            </motion.h1>
+              <TypewriterText
+                as="h1"
+                text="Citizen's Charter"
+                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
+                speed={72}
+                startDelay={140}
+              />
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 32 }}
@@ -324,9 +330,13 @@ export default function CitizenCharterPage() {
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Frontline Services
               </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
-                Common School Services and Processes
-              </h2>
+              <TypewriterText
+                as="h2"
+                text="Common School Services and Processes"
+                className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl"
+                speed={58}
+                startDelay={120}
+              />
               <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600 dark:text-stone-300">
                 The following services are arranged for easy public reference.
                 Clients are encouraged to coordinate with the school office for

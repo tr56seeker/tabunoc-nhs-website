@@ -13,6 +13,7 @@ import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
 import PopulationCountUp from "@/components/PopulationCountUp";
+import TypewriterText from "@/components/TypewriterText";
 
 const mapsHref =
   "https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu";
@@ -136,9 +137,13 @@ function SectionHeading({
       <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
         {eyebrow}
       </p>
-      <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight text-slate-950 md:text-5xl">
-        {title}
-      </h2>
+      <TypewriterText
+        as="h2"
+        text={title}
+        className="mt-3 text-3xl font-black leading-tight tracking-tight text-slate-950 md:text-5xl"
+        speed={58}
+        startDelay={120}
+      />
       {description && (
         <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
           {description}
@@ -171,14 +176,19 @@ export default function Home() {
               Official School Website
             </motion.p>
 
-            <motion.h1
+            <motion.div
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, delay: 0.1 }}
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight md:text-6xl"
             >
-              Tabunoc National High School
-            </motion.h1>
+              <TypewriterText
+                as="h1"
+                text="Tabunoc National High School"
+                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight md:text-6xl"
+                speed={72}
+                startDelay={140}
+              />
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 32 }}
@@ -234,12 +244,14 @@ export default function Home() {
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                 School at a Glance
               </p>
-              <h2
+              <TypewriterText
+                as="h2"
+                text="Tabunoc NHS in numbers"
                 id="homepage-statistics-title"
                 className="mt-2 text-2xl font-black tracking-tight text-slate-950 md:text-3xl"
-              >
-                Tabunoc NHS in numbers
-              </h2>
+                speed={58}
+                startDelay={120}
+              />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -335,9 +347,13 @@ export default function Home() {
                   <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                     Latest Advisory
                   </p>
-                  <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950 md:text-4xl">
-                    Stay informed through official school announcements.
-                  </h2>
+                  <TypewriterText
+                    as="h2"
+                    text="Stay informed through official school announcements."
+                    className="mt-3 text-3xl font-black tracking-tight text-slate-950 md:text-4xl"
+                    speed={52}
+                    startDelay={120}
+                  />
                   <p className="mt-4 max-w-3xl leading-7 text-slate-600">
                     Check current notices on enrollment, class schedules,
                     safety, and school activities.
@@ -365,9 +381,13 @@ export default function Home() {
               <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
                 About the School
               </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl">
-                Public education rooted in service, safety, and learner growth.
-              </h2>
+              <TypewriterText
+                as="h2"
+                text="Public education rooted in service, safety, and learner growth."
+                className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl"
+                speed={52}
+                startDelay={120}
+              />
             </div>
 
             <div className="rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm md:p-8">

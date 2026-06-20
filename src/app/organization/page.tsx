@@ -8,6 +8,7 @@ import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
 import PersonnelCard from "@/components/PersonnelCard";
 import PersonnelModal from "@/components/PersonnelModal";
+import TypewriterText from "@/components/TypewriterText";
 
 import type { Personnel, PersonnelRole } from "@/data/organization";
 
@@ -1384,14 +1385,19 @@ return (
               Faculty and Staff Directory
             </motion.p>
 
-            <motion.h1
+            <motion.div
               initial={{ opacity: 0, y: 32 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.15 }}
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight text-slate-950 dark:text-white md:text-6xl"
             >
-              School Administration, Faculty, and Staff
-            </motion.h1>
+              <TypewriterText
+                as="h1"
+                text="School Administration, Faculty, and Staff"
+                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight text-slate-950 dark:text-white md:text-6xl"
+                speed={52}
+                startDelay={160}
+              />
+            </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 32 }}

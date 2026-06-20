@@ -12,7 +12,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 
@@ -37,6 +42,13 @@ type NavItem = {
 const depedLogo = "/images/deped-logo.png";
 
 const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
+
+const schoolContact = {
+  email: "303111@deped.gov.ph",
+  phone: "+63324020803",
+  facebook: "https://facebook.com/tabunocnatlhs",
+  messenger: "https://m.me/tabunocnatlhs",
+};
 
 const navItems: NavItem[] = [
   {
@@ -118,11 +130,6 @@ const navItems: NavItem[] = [
         description: "Public memoranda, advisories, and issuances",
       },
       {
-        label: "Enrollment Updates",
-        href: "/enrollment",
-        description: "Enrollment reminders and school-year information",
-      },
-      {
         label: "Frequently Asked Questions",
         href: "/faq",
         description: "Common questions about enrollment, services, and school information",
@@ -146,6 +153,26 @@ function isItemActive(pathname: string, item: NavItem) {
   );
 
   return parentActive || childActive;
+}
+
+function updateNavbarHoverOrigin(
+  event: ReactMouseEvent<HTMLElement>,
+  target?: HTMLElement
+) {
+  const element = target ?? event.currentTarget;
+  const rect = element.getBoundingClientRect();
+
+  const x = ((event.clientX - rect.left) / rect.width) * 100;
+  const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+  element.style.setProperty(
+    "--nav-hover-x",
+    `${Math.min(100, Math.max(0, x))}%`
+  );
+  element.style.setProperty(
+    "--nav-hover-y",
+    `${Math.min(100, Math.max(0, y))}%`
+  );
 }
 
 function ChevronDownIcon({ open = false }: { open?: boolean }) {
@@ -271,7 +298,7 @@ function DropdownLink({
 }
 
 export default function Navbar({
-  brandMode = "always",
+  brandMode = "afterScroll",
   autoHideOnMobileScroll = false,
 }: NavbarProps) {
   const pathname = usePathname();
@@ -282,6 +309,8 @@ export default function Navbar({
   const [mobileOpenGroup, setMobileOpenGroup] = useState<string | null>(null);
   const [desktopOpenGroup, setDesktopOpenGroup] = useState<string | null>(null);
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
+  const [contactOpen, setContactOpen] = useState(false);
+  const contactRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -358,13 +387,39 @@ export default function Navbar({
     const closeMenuTimer = window.setTimeout(() => {
       setMenuOpen(false);
       setMobileOpenGroup(null);
+      setContactOpen(false);
     }, 0);
 
     return () => window.clearTimeout(closeMenuTimer);
   }, [pathname]);
 
+  useEffect(() => {
+    if (!contactOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!contactRef.current?.contains(event.target as Node)) {
+        setContactOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setContactOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [contactOpen]);
+
   const showBrand = brandMode === "always" || hasScrolled;
   const centerMenu = brandMode === "afterScroll" && !hasScrolled;
+  const contactActive = pathname.startsWith("/contact");
 
   return (
     <>
@@ -436,7 +491,15 @@ export default function Navbar({
                 key={item.label}
                 className="navbar-menu-group group/navitem relative"
                 onMouseEnter={() => setHoveredHref(item.href)}
-                onMouseLeave={() => {
+                onMouseLeave={(event) => {
+                  const trigger = event.currentTarget.querySelector<HTMLElement>(
+                    ":scope > a, :scope > button"
+                  );
+
+                  if (trigger) {
+                    updateNavbarHoverOrigin(event, trigger);
+                  }
+
                   setHoveredHref(null);
                   setDesktopOpenGroup(null);
                 }}
@@ -451,6 +514,8 @@ export default function Navbar({
                         desktopDropdownOpen ? null : item.label
                       )
                     }
+                    onMouseEnter={(event) => updateNavbarHoverOrigin(event)}
+                    onMouseLeave={(event) => updateNavbarHoverOrigin(event)}
                     className={navItemClassName}
                   >
                     <span className="relative z-10">{item.label}</span>
@@ -459,7 +524,12 @@ export default function Navbar({
                     </span>
                   </button>
                 ) : (
-                  <Link href={item.href} className={navItemClassName}>
+                  <Link
+                    href={item.href}
+                    onMouseEnter={(event) => updateNavbarHoverOrigin(event)}
+                    onMouseLeave={(event) => updateNavbarHoverOrigin(event)}
+                    className={navItemClassName}
+                  >
                     <span className="relative z-10">{item.label}</span>
                   </Link>
                 )}
@@ -492,12 +562,98 @@ export default function Navbar({
             );
           })}
 
-          <Link
-            href="/contact"
-            className="ml-1 rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-black text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#146577] 2xl:ml-3 2xl:px-7"
+          <div
+            ref={contactRef}
+            className="navbar-menu-group group/contact relative ml-1 2xl:ml-3"
+            onMouseLeave={() => setContactOpen(false)}
           >
-            Contact
-          </Link>
+            <button
+              type="button"
+              aria-haspopup="true"
+              aria-expanded={contactOpen}
+              onClick={() => setContactOpen((open) => !open)}
+              onMouseEnter={(event) => updateNavbarHoverOrigin(event)}
+              onMouseLeave={(event) => updateNavbarHoverOrigin(event)}
+              className={`relative rounded-xl px-5 py-3 text-sm font-black transition-all duration-200 2xl:px-7 ${
+                contactActive
+                  ? "bg-white text-[#24313E]"
+                  : "navbar-cloth-hover bg-[#0F4C5C] text-white hover:-translate-y-0.5"
+              }`}
+            >
+              <span className="relative z-10">Contact</span>
+            </button>
+
+            <AnimatePresence>
+              {contactOpen && (
+                <motion.div
+                  key="desktop-contact-popover"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 6 }}
+                  transition={{ duration: 0.16, ease: "easeOut" }}
+                  className="absolute right-0 top-full z-[1001]"
+                >
+                  <div className="w-[250px] overflow-hidden border-t-4 border-[#ffdf20] bg-white p-2 text-[#24313E] shadow-2xl shadow-black/25">
+                    <a
+                      href={`mailto:${schoolContact.email}`}
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20]"
+                    >
+                      <span aria-hidden="true" className="text-base">
+                        ✉
+                      </span>
+                      <span>Email the School</span>
+                    </a>
+
+                    <a
+                      href={`tel:${schoolContact.phone}`}
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20]"
+                    >
+                      <span aria-hidden="true" className="text-base">
+                        ☎
+                      </span>
+                      <span>Call the School</span>
+                    </a>
+
+                    <a
+                      href={schoolContact.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20]"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#24313E] text-xs font-black text-white"
+                      >
+                        f
+                      </span>
+                      <span>Facebook Page</span>
+                    </a>
+
+                    <a
+                      href={schoolContact.messenger}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20]"
+                    >
+                      <span aria-hidden="true" className="text-base">
+                        💬
+                      </span>
+                      <span>Messenger</span>
+                    </a>
+
+                    <div className="mt-1 border-t border-slate-200 px-4 py-3">
+                      <p className="text-[11px] font-black uppercase tracking-[0.12em] text-slate-500">
+                        Office Hours
+                      </p>
+                      <p className="mt-1 text-xs font-semibold leading-5 text-slate-600">
+                        Monday to Friday, 8:00 AM – 5:00 PM
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         <button

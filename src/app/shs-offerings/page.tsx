@@ -7,7 +7,6 @@ import { motion } from "motion/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
-import TypewriterText from "@/components/TypewriterText";
 
 const offerings = [
   {
@@ -175,13 +174,9 @@ export default function SHSOfferingsPage() {
               <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Available Offerings
               </p>
-              <TypewriterText
-                as="h2"
-                text="Choose a Senior High School Track"
-                className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-5xl"
-                speed={58}
-                startDelay={120}
-              />
+              <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
+                Choose a Senior High School Track
+              </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
                 Use the filter below to view the Pure Academic Track and Tech
                 Pro Track offerings currently listed for the school.

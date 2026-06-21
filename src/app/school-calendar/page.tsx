@@ -18,7 +18,6 @@ export default function SchoolCalendarPage() {
         badge="SY 2026-2027"
         title="School Calendar"
         description="View upcoming school activities, academic schedules, enrollment dates, DRRM activities, and other public school events of Tabunoc National High School."
-        animateTitle
       />
       <SchoolCalendar />
       <Footer />

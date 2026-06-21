@@ -9,7 +9,6 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
-import TypewriterText from "@/components/TypewriterText";
 
 const faqGroups = [
   {
@@ -232,13 +231,9 @@ export default function FAQPage() {
               <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
                 Quick Links
               </p>
-              <TypewriterText
-                as="h2"
-                text="Common pages for school transactions"
-                className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl"
-                speed={58}
-                startDelay={120}
-              />
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
+                Common pages for school transactions
+              </h2>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -266,13 +261,9 @@ export default function FAQPage() {
               <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
                 FAQ Directory
               </p>
-              <TypewriterText
-                as="h2"
-                text="Questions and answers"
-                className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl"
-                speed={58}
-                startDelay={120}
-              />
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
+                Questions and answers
+              </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
                 Select a question below to view the answer. For concerns not
                 listed here, please contact the school through official

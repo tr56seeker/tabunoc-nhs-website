@@ -14,7 +14,6 @@ import { motion } from "motion/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
-import TypewriterText from "@/components/TypewriterText";
 
 const pagePadding = "px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]";
 
@@ -354,31 +353,19 @@ function SectionHeading({
   eyebrow,
   title,
   description,
-  animateTitle = true,
 }: {
   eyebrow: string;
   title: string;
   description?: string;
-  animateTitle?: boolean;
 }) {
   return (
     <motion.div {...fadeUp} className="mx-auto mb-10 max-w-3xl text-center">
       <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#0F4C5C]">
         {eyebrow}
       </p>
-      {animateTitle ? (
-        <TypewriterText
-          as="h2"
-          text={title}
-          className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29] sm:text-4xl"
-          speed={58}
-          startDelay={120}
-        />
-      ) : (
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29] sm:text-4xl">
-          {title}
-        </h2>
-      )}
+      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29] sm:text-4xl">
+        {title}
+      </h2>
       {description && (
         <p className="mt-4 leading-7 text-slate-600">{description}</p>
       )}
@@ -697,13 +684,9 @@ export default function EnrollmentPage() {
           Late Enrollment Concern
         </p>
 
-        <TypewriterText
-          as="h2"
-          text="What if late ko magpa-enroll unya nagklase na?"
-          className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]"
-          speed={52}
-          startDelay={120}
-        />
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]">
+          What if late ko magpa-enroll unya nagklase na?
+        </h2>
 
         <p className="mt-4 leading-7 text-slate-700">
           Late enrollees learner must still follow the
@@ -785,13 +768,9 @@ export default function EnrollmentPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
                 Incoming Grade 11
               </p>
-              <TypewriterText
-                as="h2"
-                text="Review SHS offerings before enrollment."
-                className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]"
-                speed={52}
-                startDelay={120}
-              />
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]">
+                Review SHS offerings before enrollment.
+              </h2>
               <p className="mt-4 leading-7 text-slate-700">
                 Track, strand, or specialization placement may depend on
                 available programs, learner interest, and school capacity.
@@ -837,7 +816,6 @@ export default function EnrollmentPage() {
               eyebrow="Enrollment FAQs"
               title="Common questions"
               description="Quick answers to common enrollment concerns."
-              animateTitle={false}
             />
 
             <div className="mx-auto grid max-w-5xl gap-4">

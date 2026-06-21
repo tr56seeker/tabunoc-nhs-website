@@ -1378,7 +1378,6 @@ return (
           eyebrow="Faculty and Staff Directory"
           title="School Administration, Faculty, and Staff"
           description="Meet the school administration, faculty members, advisers, program coordinators, and support personnel of Tabunoc National High School."
-          animateTitle
         >
             <div
               id="directory-search"

@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import TypewriterText from "@/components/TypewriterText";
 
 type PageHeaderProps = {
   eyebrow?: string;
@@ -9,7 +8,6 @@ type PageHeaderProps = {
   variant?: "standard" | "feature" | "minimal";
   align?: "center" | "left";
   children?: ReactNode;
-  animateTitle?: boolean;
 };
 
 export default function PageHeader({
@@ -20,7 +18,6 @@ export default function PageHeader({
   variant = "standard",
   align = "center",
   children,
-  animateTitle = false,
 }: PageHeaderProps) {
   const feature = variant === "feature";
   const minimal = variant === "minimal";
@@ -61,18 +58,9 @@ export default function PageHeader({
           </p>
         )}
 
-        {animateTitle ? (
-          <TypewriterText
-            as="h1"
-            text={title}
-            speed={58}
-            className={`${badge || eyebrow ? "mt-5" : ""} ${titleClass}`}
-          />
-        ) : (
-          <h1 className={`${badge || eyebrow ? "mt-5" : ""} ${titleClass}`}>
-            {title}
-          </h1>
-        )}
+        <h1 className={`${badge || eyebrow ? "mt-5" : ""} ${titleClass}`}>
+          {title}
+        </h1>
 
         {description && (
           <p

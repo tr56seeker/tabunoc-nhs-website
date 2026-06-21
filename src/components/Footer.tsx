@@ -1,175 +1,147 @@
-﻿import Image from "next/image";
-
-import PwaInstallButton from "@/components/PwaInstallButton";
+import Image from "next/image";
+import Link from "next/link";
 
 const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
-
 const depedLogo = "/images/deped-logo.png";
 
-const footerLinks = [
+const footerGroups = [
   {
-    title: "School",
+    title: "Explore",
     links: [
       { label: "Home", href: "/" },
       { label: "Faculty & Staff", href: "/organization" },
       { label: "Learner Population", href: "/learner-population" },
       { label: "Evacuation Map", href: "/evacuation-map" },
-      { label: "Citizen's Charter", href: "/citizen-charter" },
-      { label: "School Memos", href: "/memos" },
     ],
   },
   {
     title: "Services",
     links: [
-      { label: "Install App", href: "/install" },
       { label: "Enrollment Guide", href: "/enrollment" },
       { label: "SHS Offerings", href: "/shs-offerings" },
-      { label: "School DRRM", href: "/#drrm" },
-      { label: "Contact the School", href: "/#contact" },
       { label: "School MIS", href: "https://smis.tabunocnatlhs.com" },
-      { label: "Get Directions", href: "https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu" },
+      { label: "Install App", href: "/install" },
     ],
   },
   {
-    title: "Community",
+    title: "Updates",
     links: [
-      { label: "Alumni", href: "/alumni" },
+      { label: "School Calendar", href: "/school-calendar" },
+      { label: "School Memos", href: "/memos" },
+      { label: "Frequently Asked Questions", href: "/faq" },
+    ],
+  },
+  {
+    title: "Official Channels",
+    links: [
       { label: "Facebook Page", href: "https://facebook.com/tabunocnatlhs" },
       { label: "Messenger", href: "https://m.me/tabunocnatlhs" },
+      { label: "Email the School", href: "mailto:303111@deped.gov.ph" },
+      { label: "Website", href: "https://tabunocnatlhs.com" },
     ],
   },
 ];
 
-function isExternalLink(href: string) {
-  return href.startsWith("http");
+function FooterLink({ label, href }: { label: string; href: string }) {
+  const className =
+    "inline-flex text-sm font-medium leading-relaxed text-white/70 transition-colors duration-200 hover:text-white focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffdf20] focus-visible:ring-offset-2 focus-visible:ring-offset-[#24313e]";
+
+  if (href.startsWith("http")) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+      >
+        {label}
+      </a>
+    );
+  }
+
+  if (href.startsWith("mailto:")) {
+    return (
+      <a href={href} className={className}>
+        {label}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={href} className={className}>
+      {label}
+    </Link>
+  );
 }
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0f2324] text-slate-100">
-      <div className="border-b border-white/10 bg-[#24313E]/35 px-6 py-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#ffdf20]">
-              Official School Website
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white md:text-3xl">
-              Tabunoc National High School
-            </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              A learner-centered public secondary school serving Junior High
-              School and Senior High School learners in Tabunok, Talisay City,
-              Cebu.
-            </p>
+    <footer className="border-t border-white/10 bg-[#24313e] text-white">
+      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-12 lg:grid-cols-[1.15fr_2fr] lg:gap-16 lg:px-8 lg:py-14">
+        <div className="max-w-md">
+          <div className="flex items-center gap-4">
+            <Image
+              src={depedLogo}
+              alt="Department of Education logo"
+              width={82}
+              height={42}
+              className="h-10 w-auto object-contain"
+            />
+            <span className="h-10 w-px bg-white/20" aria-hidden="true" />
+            <Image
+              src={schoolLogo}
+              alt="Tabunoc National High School logo"
+              width={52}
+              height={52}
+              className="h-12 w-12 object-contain"
+            />
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <PwaInstallButton />
-
-            <a
-              href="/enrollment"
-              className="rounded-xl border border-[#ffdf20]/40 px-5 py-3 text-center text-sm font-semibold text-white transition-colors duration-200 hover:border-[#ffdf20]/70 hover:bg-white/5 hover:text-[#ffdf20]"
-            >
-              Enrollment Guide
-            </a>
-
-            <a
-              href="https://m.me/tabunocnatlhs"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-xl border border-white/10 px-5 py-3 text-center text-sm font-semibold text-white transition-colors duration-200 hover:border-white/20 hover:bg-white/5 hover:text-[#ffdf20]"
-            >
-              Contact the School
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <div className="px-6 py-14">
-        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.2fr_2fr]">
-          <div>
-            <div className="flex items-center gap-4">
-              <Image
-                src={depedLogo}
-                alt="Department of Education Logo"
-                width={78}
-                height={40}
-                className="h-10 w-auto object-contain"
-              />
-
-              <Image
-                src={schoolLogo}
-                alt="Tabunoc National High School Logo"
-                width={56}
-                height={56}
-                className="h-14 w-14 object-contain"
-              />
-            </div>
-
-            <div className="mt-6">
-              <p className="text-xl font-semibold tracking-tight text-white">
-                Tabunoc National High School
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-300">
-                Sangi Road, Tabunok, Talisay City, Cebu
-              </p>
-              <p className="mt-1 text-sm leading-6 text-slate-300">
-                School ID: 303111
-              </p>
-              <p className="mt-1 text-sm leading-6 text-slate-300">
-                Office Hours: Monday to Friday, 8:00 AM - 5:00 PM
-              </p>
-            </div>
-
-            <div className="mt-6 rounded-2xl border border-white/10 bg-[#24313E]/35 p-4">
-              <p className="text-sm font-semibold text-[#ffdf20]">
-                Data Privacy Reminder
-              </p>
-              <p className="mt-2 text-sm leading-6 text-slate-200">
-                Please avoid sending sensitive learner information through public comments. For records, enrollment, and confidential concerns, use the official school communication channels.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid gap-8 sm:grid-cols-3">
-            {footerLinks.map((group) => (
-              <div key={group.title}>
-                <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#ffdf20]">
-                  {group.title}
-                </h3>
-
-                <ul className="mt-4 space-y-3">
-                  {group.links.map((link) => (
-                    <li key={link.label}>
-                      <a
-                        href={link.href}
-                        target={isExternalLink(link.href) ? "_blank" : undefined}
-                        rel={
-                          isExternalLink(link.href)
-                            ? "noopener noreferrer"
-                            : undefined
-                        }
-                        className="text-sm font-semibold text-slate-300 transition hover:text-[#ffdf20]"
-                      >
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="border-t border-white/10 px-6 py-6">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 text-sm text-slate-400 md:flex-row md:items-center md:justify-between">
-          <p>
-            Copyright 2026 Tabunoc National High School. All rights reserved.
+          <h2 className="mt-5 text-xl font-semibold tracking-tight text-white">
+            Tabunoc National High School
+          </h2>
+          <p className="mt-2 text-sm font-medium text-[#ffdf20]">
+            School ID: 303111
           </p>
+          <p className="mt-1 text-sm text-white/65">
+            Division of Talisay City, Cebu
+          </p>
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/70">
+            A public secondary school serving Junior High School and Senior
+            High School learners in Tabunok, Talisay City, Cebu.
+          </p>
+        </div>
 
-          <p>
-            Maintained for official school information, public assistance, stakeholder coordination, and access to school services.
+        <nav
+          aria-label="Footer navigation"
+          className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          {footerGroups.map((group) => (
+            <div key={group.title}>
+              <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-white">
+                {group.title}
+              </h3>
+              <ul className="mt-4 space-y-3">
+                {group.links.map((link) => (
+                  <li key={`${group.title}-${link.label}`}>
+                    <FooterLink {...link} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      </div>
+
+      <div className="border-t border-white/10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-6 text-xs leading-relaxed text-white/55 sm:flex-row sm:items-start sm:justify-between lg:px-8">
+          <div>
+            <p>© 2026 Tabunoc National High School. All rights reserved.</p>
+            <p className="mt-1">School ID: 303111</p>
+          </div>
+          <p className="max-w-2xl sm:text-right">
+            Information posted on this website is for public information and
+            may be updated based on official DepEd and school issuances.
           </p>
         </div>
       </div>

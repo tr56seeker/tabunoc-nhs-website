@@ -140,58 +140,6 @@ textarea {
   scrollbar-width: none;
 }
 
-.typewriter-text {
-  display: grid;
-}
-
-span.typewriter-text {
-  display: inline-grid;
-}
-
-.typewriter-text__reserve,
-.typewriter-text__output {
-  grid-area: 1 / 1;
-  min-width: 0;
-}
-
-.typewriter-text__reserve {
-  visibility: hidden;
-}
-
-.typewriter-cursor::after {
-  content: "";
-  display: inline-block;
-  width: 0.08em;
-  height: 0.9em;
-  margin-left: 0.08em;
-  background: currentColor;
-  vertical-align: -0.08em;
-  animation: typewriter-cursor-blink 0.9s steps(2, start) infinite;
-}
-
-@keyframes typewriter-cursor-blink {
-  0%,
-  45% {
-    opacity: 1;
-  }
-
-  46%,
-  100% {
-    opacity: 0;
-  }
-}
-
-.typewriter-cursor-done::after {
-  display: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .typewriter-cursor::after {
-    display: none;
-    animation: none;
-  }
-}
-
 @media (hover: hover) and (pointer: fine) {
   .navbar-cloth-hover {
     position: relative;

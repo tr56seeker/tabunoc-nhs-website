@@ -12,7 +12,6 @@ import { motion } from "motion/react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
-import TypewriterText from "@/components/TypewriterText";
 
 const pagePadding = "px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]";
 
@@ -156,13 +155,9 @@ function SectionHeading({
         {eyebrow}
       </p>
 
-      <TypewriterText
-        as="h2"
-        text={title}
-        className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29] sm:text-4xl md:text-5xl"
-        speed={58}
-        startDelay={120}
-      />
+      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29] sm:text-4xl md:text-5xl">
+        {title}
+      </h2>
 
       {description && (
         <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">

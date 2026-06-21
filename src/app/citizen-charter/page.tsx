@@ -6,7 +6,6 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
-import TypewriterText from "@/components/TypewriterText";
 
 const frontlineServices = [
   {
@@ -288,13 +287,9 @@ export default function CitizenCharterPage() {
               <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Frontline Services
               </p>
-              <TypewriterText
-                as="h2"
-                text="Common School Services and Processes"
-                className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-5xl"
-                speed={58}
-                startDelay={120}
-              />
+              <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
+                Common School Services and Processes
+              </h2>
               <p className="mx-auto mt-4 max-w-3xl leading-7 text-slate-600 dark:text-stone-300">
                 The following services are arranged for easy public reference.
                 Clients are encouraged to coordinate with the school office for

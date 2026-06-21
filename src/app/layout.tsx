@@ -5,7 +5,6 @@ import ClientParallaxBackground from "@/components/ClientParallaxBackground";
 import InstallAppPrompt from "@/components/InstallAppPrompt";
 import MotionProvider from "@/components/MotionProvider";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
-import TypewriterQueueProvider from "@/components/TypewriterQueueProvider";
 import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
@@ -52,13 +51,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col overflow-x-hidden bg-white text-slate-950">
         <MotionProvider>
-          <TypewriterQueueProvider>
-            <SmoothScrollProvider />
-            <ClientParallaxBackground />
-            {children}
-            <Analytics />
-            <InstallAppPrompt />
-          </TypewriterQueueProvider>
+          <SmoothScrollProvider />
+          <ClientParallaxBackground />
+          {children}
+          <Analytics />
+          <InstallAppPrompt />
         </MotionProvider>
       </body>
     </html>

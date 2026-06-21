@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useState } from "react";
@@ -136,7 +136,7 @@ export default function SHSOfferingsPage() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
+              className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
             >
               Senior High School
             </motion.p>
@@ -149,7 +149,7 @@ export default function SHSOfferingsPage() {
               <TypewriterText
                 as="h1"
                 text="Senior High School Offerings"
-                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
+                className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
                 speed={72}
                 startDelay={140}
               />
@@ -174,14 +174,14 @@ export default function SHSOfferingsPage() {
             >
               <Link
                 href="/enrollment"
-                className="rounded-xl bg-yellow-300 px-8 py-3 font-black text-slate-950 shadow-lg shadow-yellow-300/30 dark:shadow-black/20 transition hover:-translate-y-1 hover:bg-yellow-200"
+                className="rounded-xl bg-yellow-300 px-8 py-3 font-semibold text-slate-950 shadow-lg shadow-yellow-300/30 dark:shadow-black/20 transition hover:-translate-y-1 hover:bg-yellow-200"
               >
                 Open Enrollment Guide
               </Link>
 
               <Link
                 href="/#contact"
-                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-8 py-3 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-8 py-3 font-semibold text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
               >
                 Ask for Assistance
               </Link>
@@ -201,7 +201,7 @@ export default function SHSOfferingsPage() {
                 transition={{ duration: 0.5, delay: index * 0.08 }}
                 className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-6 shadow-sm dark:shadow-black/20"
               >
-                <h2 className="text-2xl font-black text-[#0F4C5C] dark:text-yellow-300">
+                <h2 className="text-2xl font-semibold text-[#0F4C5C] dark:text-yellow-300">
                   {item.title}
                 </h2>
                 <p className="mt-3 leading-7 text-slate-600 dark:text-stone-300">{item.text}</p>
@@ -214,13 +214,13 @@ export default function SHSOfferingsPage() {
         <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-12">
           <div className="mx-auto max-w-7xl">
             <div className="mb-8 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Available Offerings
               </p>
               <TypewriterText
                 as="h2"
                 text="Choose a Senior High School Track"
-                className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl"
+                className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-5xl"
                 speed={58}
                 startDelay={120}
               />
@@ -236,7 +236,7 @@ export default function SHSOfferingsPage() {
                   key={category}
                   type="button"
                   onClick={() => setSelectedCategory(category)}
-                  className={`rounded-xl px-5 py-3 text-sm font-black transition ${
+                  className={`rounded-xl px-5 py-3 text-sm font-semibold transition ${
                     selectedCategory === category
                       ? "bg-[#0F4C5C] text-white"
                       : "border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] text-slate-700 dark:text-stone-200 hover:border-[#0F4C5C] hover:text-[#0F4C5C]"
@@ -261,11 +261,11 @@ export default function SHSOfferingsPage() {
                 transition={{ duration: 0.45, delay: index * 0.06 }}
                 className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01]"
               >
-                <span className="rounded-lg bg-[#ECFDF5] dark:bg-[#171614] px-3 py-2 text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+                <span className="rounded-lg bg-[#ECFDF5] dark:bg-[#171614] px-3 py-2 text-xs font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                   {offering.category}
                 </span>
 
-                <h3 className="mt-5 text-3xl font-black leading-tight text-slate-950 dark:text-white">
+                <h3 className="mt-5 text-3xl font-semibold leading-tight text-slate-950 dark:text-white">
                   {offering.title}
                 </h3>
 
@@ -274,15 +274,15 @@ export default function SHSOfferingsPage() {
                 </p>
 
                 <div className="mt-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#171614] p-5">
-                  <p className="text-sm font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-slate-500 dark:text-stone-400">
                     Subjects / Specializations
                   </p>
 
                   <ul className="mt-4 grid gap-3">
                     {offering.items.map((item) => (
                       <li key={item} className="flex gap-3 text-slate-700 dark:text-stone-200">
-                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
-                          ✓
+                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
+                          âœ“
                         </span>
                         <span className="font-semibold">{item}</span>
                       </li>
@@ -303,10 +303,10 @@ export default function SHSOfferingsPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
+              <p className="text-sm font-semibold uppercase tracking-widest text-yellow-300">
                 Enrollment Reminder
               </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight md:text-5xl">
+              <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-5xl">
                 Choose carefully based on learner interest and school
                 availability.
               </h2>
@@ -325,7 +325,7 @@ export default function SHSOfferingsPage() {
               transition={{ duration: 0.6 }}
               className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
             >
-              <h3 className="text-2xl font-black">Need Help Choosing?</h3>
+              <h3 className="text-2xl font-semibold">Need Help Choosing?</h3>
               <p className="mt-3 leading-7 text-teal-50">
                 For questions about tracks, specializations, and enrollment,
                 please coordinate through the official school communication
@@ -335,14 +335,14 @@ export default function SHSOfferingsPage() {
               <div className="mt-6 grid gap-4">
                 <Link
                   href="/enrollment"
-                  className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                  className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-semibold text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                 >
                   Open Enrollment Guide
                 </Link>
 
                 <Link
                   href="/#contact"
-                  className="rounded-xl border border-white/30 px-5 py-4 font-black text-white transition hover:-translate-y-1 hover:text-yellow-300"
+                  className="rounded-xl border border-white/30 px-5 py-4 font-semibold text-white transition hover:-translate-y-1 hover:text-yellow-300"
                 >
                   Contact the School
                 </Link>

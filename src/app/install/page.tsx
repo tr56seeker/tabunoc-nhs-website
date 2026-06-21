@@ -1,4 +1,4 @@
-import TypewriterText from "@/components/TypewriterText";
+﻿import TypewriterText from "@/components/TypewriterText";
 
 export const metadata = {
   title: "Install Tabunoc NHS App | Tabunoc National High School",
@@ -17,7 +17,7 @@ export default function InstallPage() {
         <TypewriterText
           as="h1"
           text="Install Tabunoc NHS App"
-          className="mb-4 text-3xl font-extrabold md:text-5xl"
+          className="mb-4 text-3xl font-semibold md:text-5xl"
           speed={72}
           startDelay={140}
         />
@@ -74,8 +74,8 @@ export default function InstallPage() {
               <li>1. Open Chrome on your phone.</li>
               <li>2. Visit https://tabunocnatlhs.com</li>
               <li>3. Tap the three-dot menu on the upper-right corner.</li>
-              <li>4. Tap “Add to Home screen” or “Install app”.</li>
-              <li>5. Tap “Install”.</li>
+              <li>4. Tap â€œAdd to Home screenâ€ or â€œInstall appâ€.</li>
+              <li>5. Tap â€œInstallâ€.</li>
             </ol>
           </div>
 
@@ -85,8 +85,8 @@ export default function InstallPage() {
               <li>1. Open Safari on your iPhone.</li>
               <li>2. Visit https://tabunocnatlhs.com</li>
               <li>3. Tap the Share button.</li>
-              <li>4. Tap “Add to Home Screen”.</li>
-              <li>5. Tap “Add”.</li>
+              <li>4. Tap â€œAdd to Home Screenâ€.</li>
+              <li>5. Tap â€œAddâ€.</li>
             </ol>
           </div>
         </div>

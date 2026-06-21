@@ -1,4 +1,4 @@
-/**
+﻿/**
  * FILE_ID: TABUNOC_FAQ_PAGE
  * PATH: src/app/faq/page.tsx
  * PURPOSE: Frequently Asked Questions page for Tabunoc National High School.
@@ -74,12 +74,12 @@ const faqGroups = [
       {
         question: "How can I request school documents?",
         answer:
-          "Requests for school records, certifications, or related documents should be coordinated with the school office or concerned personnel. Processing requirements and steps may be guided by the school’s Citizen’s Charter.",
+          "Requests for school records, certifications, or related documents should be coordinated with the school office or concerned personnel. Processing requirements and steps may be guided by the schoolâ€™s Citizenâ€™s Charter.",
       },
       {
-        question: "Where can I find the Citizen’s Charter?",
+        question: "Where can I find the Citizenâ€™s Charter?",
         answer:
-          "The Citizen’s Charter page provides information on frontline services, service standards, requirements, and public assistance processes of the school.",
+          "The Citizenâ€™s Charter page provides information on frontline services, service standards, requirements, and public assistance processes of the school.",
       },
       {
         question: "What are the school office hours?",
@@ -123,7 +123,7 @@ const faqGroups = [
       {
         question: "What should parents do during class suspensions or emergencies?",
         answer:
-          "Parents and learners should monitor official advisories from DepEd, the LGU, and the school’s official communication channels. During emergencies, the school follows its safety, DRRM, and learner accounting protocols.",
+          "Parents and learners should monitor official advisories from DepEd, the LGU, and the schoolâ€™s official communication channels. During emergencies, the school follows its safety, DRRM, and learner accounting protocols.",
       },
       {
         question: "How does the school communicate emergency advisories?",
@@ -165,7 +165,7 @@ const quickLinks = [
     href: "/memos",
   },
   {
-    label: "Citizen’s Charter",
+    label: "Citizenâ€™s Charter",
     href: "/citizen-charter",
   },
   {
@@ -210,14 +210,14 @@ export default function FAQPage() {
           <div className="relative mx-auto max-w-7xl text-center">
             <BrandHeader />
 
-            <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+            <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
               Public Assistance
             </p>
 
             <TypewriterText
               as="h1"
               text="Frequently Asked Questions"
-              className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight md:text-6xl"
+              className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-tight md:text-6xl"
               speed={72}
               startDelay={140}
             />
@@ -231,7 +231,7 @@ export default function FAQPage() {
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 href="/enrollment"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-black text-white transition duration-300 hover:-translate-y-1 hover:bg-[#146577]"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-[#146577]"
               >
                 Enrollment Guide
                 <ArrowIcon />
@@ -239,7 +239,7 @@ export default function FAQPage() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0F4C5C]/20 bg-white px-5 py-3 text-sm font-black text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0F4C5C]/20 bg-white px-5 py-3 text-sm font-semibold text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
               >
                 Contact the School
               </Link>
@@ -250,13 +250,13 @@ export default function FAQPage() {
         <section className="bg-white px-6 py-16">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
                 Quick Links
               </p>
               <TypewriterText
                 as="h2"
                 text="Common pages for school transactions"
-                className="mt-3 text-3xl font-black tracking-tight md:text-4xl"
+                className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl"
                 speed={58}
                 startDelay={120}
               />
@@ -270,7 +270,7 @@ export default function FAQPage() {
                   className="group rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#0F4C5C]/30 hover:bg-white hover:shadow-lg"
                 >
                   <div className="flex items-center justify-between gap-4">
-                    <p className="font-black text-slate-950">{link.label}</p>
+                    <p className="font-semibold text-slate-950">{link.label}</p>
                     <span className="rounded-full bg-[#0F4C5C]/10 p-2 text-[#0F4C5C] transition group-hover:bg-[#0F4C5C] group-hover:text-white">
                       <ArrowIcon />
                     </span>
@@ -284,13 +284,13 @@ export default function FAQPage() {
         <section className="bg-[#F8FAFC] px-6 py-20">
           <div className="mx-auto max-w-5xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
                 FAQ Directory
               </p>
               <TypewriterText
                 as="h2"
                 text="Questions and answers"
-                className="mt-3 text-3xl font-black tracking-tight md:text-5xl"
+                className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl"
                 speed={58}
                 startDelay={120}
               />
@@ -308,7 +308,7 @@ export default function FAQPage() {
                   className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-7"
                 >
                   <div className="mb-5">
-                    <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
                       {group.category}
                     </p>
                     <p className="mt-2 leading-7 text-slate-600">
@@ -322,7 +322,7 @@ export default function FAQPage() {
                         key={item.question}
                         className="group rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 transition open:bg-white open:shadow-sm"
                       >
-                        <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-black text-slate-950">
+                        <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-semibold text-slate-950">
                           <span>{item.question}</span>
                           <span className="mt-1 rounded-full bg-[#0F4C5C]/10 p-1 text-[#0F4C5C] transition group-open:rotate-90">
                             <ArrowIcon />
@@ -343,10 +343,10 @@ export default function FAQPage() {
 
         <section className="bg-[#0F4C5C] px-6 py-16 text-white">
           <div className="mx-auto max-w-5xl text-center">
-            <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
+            <p className="text-sm font-semibold uppercase tracking-widest text-yellow-300">
               Need further assistance?
             </p>
-            <h2 className="mt-3 text-3xl font-black tracking-tight md:text-4xl">
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
               Use official school communication channels.
             </h2>
             <p className="mx-auto mt-4 max-w-2xl leading-7 text-teal-50">
@@ -358,7 +358,7 @@ export default function FAQPage() {
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-black text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:bg-yellow-50"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:bg-yellow-50"
               >
                 Contact the School
                 <ArrowIcon />
@@ -368,7 +368,7 @@ export default function FAQPage() {
                 href="https://facebook.com/tabunocnatlhs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-black text-white transition duration-300 hover:-translate-y-1 hover:bg-white/20"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-white/20"
               >
                 Visit Facebook Page
               </a>

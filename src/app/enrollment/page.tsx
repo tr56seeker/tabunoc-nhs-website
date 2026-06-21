@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 /**
  * FILE_ID: TABUNOC_ENROLLMENT_PAGE_FUSED_CATEGORY_REQUIREMENTS
@@ -48,7 +48,7 @@ const learnerCategories: LearnerCategory[] = [
     ],
     reminders: [
       "Bring original documents for verification when requested.",
-      "Use the learner’s correct full name based on official records.",
+      "Use the learnerâ€™s correct full name based on official records.",
       "Proceed to the assigned enrollment area for Junior High School, if announced.",
     ],
   },
@@ -178,15 +178,15 @@ const enrollmentSteps = [
 const lateEnrollmentProcedure = [
   "Visit the school office during office hours.",
   "Inform the receiving personnel that the learner was not able to enroll during the announced enrollment schedule.",
-  "Bring the available documents based on the learner’s correct category, such as incoming Grade 7, incoming Grade 11, transferee, returning learner, ALS completer/passer, or continuing learner.",
+  "Bring the available documents based on the learnerâ€™s correct category, such as incoming Grade 7, incoming Grade 11, transferee, returning learner, ALS completer/passer, or continuing learner.",
   "Allow the enrollment team to verify learner records, LRN, grade level, available slots, and class sectioning.",
-  "Wait for the school’s advice or confirmation before assuming that enrollment is finalized.",
+  "Wait for the schoolâ€™s advice or confirmation before assuming that enrollment is finalized.",
 ];
 
 const reminders = [
   "Bring original documents for verification when requested.",
   "Submit clear photocopies of required documents.",
-  "Use the learner’s correct full name based on official records.",
+  "Use the learnerâ€™s correct full name based on official records.",
   "Provide active and reachable parent/guardian contact numbers.",
   "Follow official school announcements only.",
   "Observe proper conduct and school safety protocols while inside the campus.",
@@ -328,7 +328,7 @@ function ActionLink({
   external?: boolean;
   className?: string;
 }) {
-  const baseClassName = `inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-black transition duration-300 hover:-translate-y-1 ${className}`;
+  const baseClassName = `inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition duration-300 hover:-translate-y-1 ${className}`;
 
   if (external) {
     return (
@@ -363,19 +363,19 @@ function SectionHeading({
 }) {
   return (
     <motion.div {...fadeUp} className="mx-auto mb-10 max-w-3xl text-center">
-      <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+      <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#0F4C5C]">
         {eyebrow}
       </p>
       {animateTitle ? (
         <TypewriterText
           as="h2"
           text={title}
-          className="mt-3 text-3xl font-black tracking-tight text-[#071E29] sm:text-4xl"
+          className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29] sm:text-4xl"
           speed={58}
           startDelay={120}
         />
       ) : (
-        <h2 className="mt-3 text-3xl font-black tracking-tight text-[#071E29] sm:text-4xl">
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29] sm:text-4xl">
           {title}
         </h2>
       )}
@@ -410,10 +410,10 @@ function CategoryDetails({
     <div>
       {showHeader && (
         <>
-          <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
             Selected Category
           </p>
-          <h3 className="mt-3 text-3xl font-black tracking-tight text-[#071E29]">
+          <h3 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]">
             {category.title}
           </h3>
           <p className="mt-3 leading-7 text-slate-600">
@@ -424,7 +424,7 @@ function CategoryDetails({
 
       <div className={showHeader ? "mt-8 grid gap-8" : "grid gap-6"}>
         <div>
-          <h4 className="text-lg font-black text-[#071E29]">Requirements</h4>
+          <h4 className="text-lg font-semibold text-[#071E29]">Requirements</h4>
           <p className="mt-1 text-sm leading-6 text-slate-500">
             Prepare what is available and applicable. Original documents may be
             requested for verification.
@@ -437,7 +437,7 @@ function CategoryDetails({
 
         {category.procedure && category.procedure.length > 0 && (
           <div>
-            <h4 className="text-lg font-black text-[#071E29]">Procedure</h4>
+            <h4 className="text-lg font-semibold text-[#071E29]">Procedure</h4>
 
             <div className="mt-4 grid gap-3">
               {category.procedure.map((step, index) => (
@@ -445,7 +445,7 @@ function CategoryDetails({
                   key={step}
                   className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl bg-[#F8FAFC] p-4"
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
                     {index + 1}
                   </div>
                   <p className="text-sm font-semibold leading-6 text-slate-700">
@@ -459,7 +459,7 @@ function CategoryDetails({
 
         {category.reminders && category.reminders.length > 0 && (
           <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
-            <h4 className="text-lg font-black text-[#071E29]">
+            <h4 className="text-lg font-semibold text-[#071E29]">
               Important Notes
             </h4>
 
@@ -498,7 +498,7 @@ function CategoryButton({
         }`}
       >
         <h3
-          className={`text-lg font-black ${
+          className={`text-lg font-semibold ${
             active ? "text-white" : "text-[#071E29]"
           }`}
         >
@@ -514,7 +514,7 @@ function CategoryButton({
         </p>
 
         <div
-          className={`mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] ${
+          className={`mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] ${
             active ? "text-yellow-300" : "text-[#0F4C5C]"
           }`}
         >
@@ -564,7 +564,7 @@ export default function EnrollmentPage() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]"
+                className="text-sm font-semibold uppercase tracking-[0.22em] text-[#0F4C5C]"
               >
                 Enrollment Guide
               </motion.p>
@@ -577,7 +577,7 @@ export default function EnrollmentPage() {
                 <TypewriterText
                   as="h1"
                   text="Enrollment Made Simple"
-                  className="mt-4 text-4xl font-black leading-tight tracking-tight text-[#071E29] sm:text-5xl lg:text-6xl"
+                  className="mt-4 text-4xl font-semibold leading-tight tracking-tight text-[#071E29] sm:text-5xl lg:text-6xl"
                   speed={72}
                   startDelay={140}
                 />
@@ -640,7 +640,7 @@ export default function EnrollmentPage() {
                 </div>
 
                 <div>
-                  <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
                     Important Reminder
                   </p>
                   <p className="mt-2 leading-7 text-slate-700">
@@ -713,10 +713,10 @@ export default function EnrollmentPage() {
                   <CategoryDetails category={selectedCategory} showHeader />
                 ) : (
                   <div className="flex min-h-[360px] flex-col items-center justify-center text-center">
-                    <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
                       Enrollment Guide
                     </p>
-                    <h3 className="mt-3 text-3xl font-black tracking-tight text-[#071E29]">
+                    <h3 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]">
                       Select a learner category
                     </h3>
                     <p className="mt-3 max-w-md leading-7 text-slate-600">
@@ -738,14 +738,14 @@ export default function EnrollmentPage() {
       className="mx-auto grid max-w-6xl gap-6 rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm md:p-8 lg:grid-cols-[0.85fr_1.15fr]"
     >
       <div>
-        <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
           Late Enrollment Concern
         </p>
 
         <TypewriterText
           as="h2"
           text="What if late ko magpa-enroll unya nagklase na?"
-          className="mt-3 text-3xl font-black tracking-tight text-[#071E29]"
+          className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]"
           speed={52}
           startDelay={120}
         />
@@ -772,7 +772,7 @@ export default function EnrollmentPage() {
             key={step}
             className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl bg-white p-4 shadow-sm"
           >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
               {index + 1}
             </div>
 
@@ -804,7 +804,7 @@ export default function EnrollmentPage() {
                   className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-sm"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
+                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
                       {index + 1}
                     </div>
 
@@ -827,13 +827,13 @@ export default function EnrollmentPage() {
               {...fadeUp}
               className="rounded-3xl border border-slate-200 bg-[#ECFDF5] p-6 shadow-sm md:p-8"
             >
-              <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
                 Incoming Grade 11
               </p>
               <TypewriterText
                 as="h2"
                 text="Review SHS offerings before enrollment."
-                className="mt-3 text-3xl font-black tracking-tight text-[#071E29]"
+                className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]"
                 speed={52}
                 startDelay={120}
               />
@@ -857,7 +857,7 @@ export default function EnrollmentPage() {
               {...fadeUp}
               className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
             >
-              <p className="text-sm font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
                 Parent and Learner Reminders
               </p>
 
@@ -893,7 +893,7 @@ export default function EnrollmentPage() {
                   className="group rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 shadow-sm"
                 >
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
-                    <span className="font-black text-[#071E29]">
+                    <span className="font-semibold text-[#071E29]">
                       {faq.question}
                     </span>
                     <span className="rounded-full bg-[#0F4C5C]/10 p-2 text-[#0F4C5C] transition group-open:rotate-90">
@@ -925,10 +925,10 @@ export default function EnrollmentPage() {
             className={`mx-auto grid w-full gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center ${pagePadding}`}
           >
             <motion.div {...fadeUp}>
-              <p className="text-sm font-black uppercase tracking-[0.2em] text-yellow-300">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-yellow-300">
                 Need Help?
               </p>
-              <h2 className="mt-3 text-3xl font-black tracking-tight md:text-5xl">
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
                 Contact the school through official channels.
               </h2>
               <p className="mt-5 leading-7 text-teal-50">
@@ -937,7 +937,7 @@ export default function EnrollmentPage() {
                 or visit the school during office hours.
               </p>
               <p className="mt-4 text-sm leading-6 text-teal-50">
-                Office Hours: Monday to Friday, 8:00 AM – 5:00 PM, except
+                Office Hours: Monday to Friday, 8:00 AM â€“ 5:00 PM, except
                 holidays and declared class/work suspensions.
               </p>
             </motion.div>

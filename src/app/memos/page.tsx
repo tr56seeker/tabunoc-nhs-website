@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
@@ -112,7 +112,7 @@ export default function MemosPage() {
                 initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.1 }}
-                className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
+                className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
               >
                 Official School Repository
               </motion.p>
@@ -125,7 +125,7 @@ export default function MemosPage() {
                 <TypewriterText
                   as="h1"
                   text="School Memos and Issuances"
-                  className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
+                  className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
                   speed={72}
                   startDelay={140}
                 />
@@ -202,7 +202,7 @@ export default function MemosPage() {
                         setSelectedCategory("All");
                         setSelectedYear("All");
                       }}
-                      className="w-fit rounded-lg bg-slate-100 dark:bg-[#292624] py-2 pl-5 pr-4 text-sm font-black text-slate-700 dark:text-stone-200 transition hover:text-[#0F4C5C] dark:hover:text-yellow-300 md:px-4"
+                      className="w-fit rounded-lg bg-slate-100 dark:bg-[#292624] py-2 pl-5 pr-4 text-sm font-semibold text-slate-700 dark:text-stone-200 transition hover:text-[#0F4C5C] dark:hover:text-yellow-300 md:px-4"
                     >
                       Clear Search
                     </button>
@@ -219,11 +219,11 @@ export default function MemosPage() {
             {visibleMemos.length > 0 ? (
               <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] shadow-sm dark:shadow-black/20">
                 <div className="border-b border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] px-5 py-4">
-                  <h3 className="text-xl font-black text-slate-950 dark:text-white">
+                  <h3 className="text-xl font-semibold text-slate-950 dark:text-white">
                     Public Memo List
                   </h3>
                   <p className="mt-1 text-sm font-semibold text-slate-600 dark:text-stone-300">
-                    Click “View” or “Download” to access the available memo file.
+                    Click â€œViewâ€ or â€œDownloadâ€ to access the available memo file.
                   </p>
                 </div>
 
@@ -231,22 +231,22 @@ export default function MemosPage() {
                   <table className="min-w-[980px] w-full border-collapse text-left">
                     <thead className="bg-[#0F4C5C] text-white">
                       <tr>
-                        <th className="px-5 py-4 text-xs font-black uppercase tracking-widest">
+                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-widest">
                           Memo No.
                         </th>
-                        <th className="px-5 py-4 text-xs font-black uppercase tracking-widest">
+                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-widest">
                           Title
                         </th>
-                        <th className="px-5 py-4 text-xs font-black uppercase tracking-widest">
+                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-widest">
                           Category
                         </th>
-                        <th className="px-5 py-4 text-xs font-black uppercase tracking-widest">
+                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-widest">
                           Date Issued
                         </th>
-                        <th className="px-5 py-4 text-xs font-black uppercase tracking-widest">
+                        <th className="px-5 py-4 text-xs font-semibold uppercase tracking-widest">
                           Issuing Office
                         </th>
-                        <th className="px-5 py-4 text-center text-xs font-black uppercase tracking-widest">
+                        <th className="px-5 py-4 text-center text-xs font-semibold uppercase tracking-widest">
                           Action
                         </th>
                       </tr>
@@ -266,13 +266,13 @@ export default function MemosPage() {
                             className="bg-white transition hover:text-[#0F4C5C] dark:bg-[#171614] dark:hover:text-yellow-300"
                           >
                             <td className="whitespace-nowrap px-5 py-4 align-top">
-                              <p className="font-black text-[#0F4C5C] dark:text-yellow-300">
+                              <p className="font-semibold text-[#0F4C5C] dark:text-yellow-300">
                                 {memo.memoNumber}
                               </p>
                             </td>
 
                             <td className="px-5 py-4 align-top">
-                              <p className="font-black leading-snug text-slate-950 dark:text-white">
+                              <p className="font-semibold leading-snug text-slate-950 dark:text-white">
                                 {memo.title}
                               </p>
                               <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-600 dark:text-stone-300">
@@ -281,7 +281,7 @@ export default function MemosPage() {
                             </td>
 
                             <td className="whitespace-nowrap px-5 py-4 align-top">
-                              <span className="inline-flex rounded-lg bg-[#ECFDF5] dark:bg-[#171614] px-3 py-2 text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+                              <span className="inline-flex rounded-lg bg-[#ECFDF5] dark:bg-[#171614] px-3 py-2 text-xs font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                                 {memo.category}
                               </span>
                             </td>
@@ -306,7 +306,7 @@ export default function MemosPage() {
                                       href={memoLink}
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="rounded-lg bg-[#0F4C5C] px-4 py-2 text-sm font-black text-white transition duration-300 hover:-translate-y-1 hover:scale-[1.01]"
+                                      className="rounded-lg bg-[#0F4C5C] px-4 py-2 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:scale-[1.01]"
                                     >
                                       View
                                     </a>
@@ -314,7 +314,7 @@ export default function MemosPage() {
                                     <a
                                       href={memoLink}
                                       download
-                                      className="rounded-lg border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-4 py-2 text-sm font-black text-[#0F4C5C] dark:text-stone-100 transition hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                                      className="rounded-lg border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-4 py-2 text-sm font-semibold text-[#0F4C5C] dark:text-stone-100 transition hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                                     >
                                       Download
                                     </a>
@@ -335,7 +335,7 @@ export default function MemosPage() {
               </div>
             ) : (
               <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-10 text-center shadow-sm dark:shadow-black/20">
-                <h3 className="text-2xl font-black text-slate-950 dark:text-white">
+                <h3 className="text-2xl font-semibold text-slate-950 dark:text-white">
                   No public memo found.
                 </h3>
                 <p className="mx-auto mt-3 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
@@ -349,7 +349,7 @@ export default function MemosPage() {
                     setSearchTerm("");
                     setSelectedCategory("All");
                   }}
-                  className="mt-6 rounded-xl bg-yellow-300 px-6 py-3 font-black text-slate-950 transition hover:-translate-y-1 hover:bg-yellow-200"
+                  className="mt-6 rounded-xl bg-yellow-300 px-6 py-3 font-semibold text-slate-950 transition hover:-translate-y-1 hover:bg-yellow-200"
                 >
                   Show All Memos
                 </button>
@@ -367,10 +367,10 @@ export default function MemosPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
+              <p className="text-sm font-semibold uppercase tracking-widest text-yellow-300">
                 Document Access Reminder
               </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight md:text-5xl">
+              <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-5xl">
                 Public documents are shared for information and guidance.
               </h2>
               <p className="mt-5 max-w-2xl leading-7 text-teal-50">
@@ -388,7 +388,7 @@ export default function MemosPage() {
               transition={{ duration: 0.6 }}
               className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
             >
-              <h3 className="text-2xl font-black">Need Assistance?</h3>
+              <h3 className="text-2xl font-semibold">Need Assistance?</h3>
               <p className="mt-3 leading-7 text-teal-50">
                 For memo verification, records concerns, or school-related
                 inquiries, use the official school communication channels.
@@ -397,7 +397,7 @@ export default function MemosPage() {
               <div className="mt-6 grid gap-4">
                 <Link
                   href="/#contact"
-                  className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-black text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                  className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-semibold text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                 >
                   Contact the School
                 </Link>
@@ -406,7 +406,7 @@ export default function MemosPage() {
                   href="https://m.me/tabunocnatlhs"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-xl border border-white/30 px-5 py-4 font-black text-white transition hover:-translate-y-1 hover:text-yellow-300"
+                  className="rounded-xl border border-white/30 px-5 py-4 font-semibold text-white transition hover:-translate-y-1 hover:text-yellow-300"
                 >
                   Chat on Messenger
                 </a>

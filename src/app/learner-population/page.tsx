@@ -1,4 +1,4 @@
-/**
+﻿/**
  * FILE_ID: TABUNOC_LEARNER_POPULATION_PAGE
  * PATH: src/app/learner-population/page.tsx
  * PURPOSE: Public aggregate learner population page for Tabunoc National High School.
@@ -199,7 +199,7 @@ function formatDate(dateString: string) {
 function formatSchoolYear(schoolYear: string) {
   const yearRange = schoolYear
     .replace(/^(SY|School Year)\s*/i, "")
-    .replace(/(\d{4})-(\d{4})/, "$1–$2");
+    .replace(/(\d{4})-(\d{4})/, "$1â€“$2");
 
   return `School Year ${yearRange}`;
 }
@@ -238,14 +238,14 @@ export default function LearnerPopulationPage() {
             <BrandHeader compact />
 
             <div className="mx-auto max-w-3xl text-center">
-              <p className="inline-flex border-l-4 border-[#ffdf20] bg-white px-4 py-2 text-sm font-black uppercase tracking-[0.18em] text-[#24313E] shadow-sm">
+              <p className="inline-flex border-l-4 border-[#ffdf20] bg-white px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#24313E] shadow-sm">
                 {schoolYear}
               </p>
 
               <TypewriterText
                 as="h1"
                 text="Learner Population"
-                className="mt-4 text-4xl font-black tracking-tight text-[#24313E] md:text-6xl"
+                className="mt-4 text-4xl font-semibold tracking-tight text-[#24313E] md:text-6xl"
                 speed={72}
                 startDelay={150}
               />
@@ -275,7 +275,7 @@ export default function LearnerPopulationPage() {
                         <PopulationCardIcon type="total" />
                       </span>
 
-                      <p className="text-base font-black uppercase tracking-[0.14em] text-[#24313E]">
+                      <p className="text-base font-semibold uppercase tracking-[0.14em] text-[#24313E]">
                         Total Learners
                       </p>
                     </div>
@@ -286,7 +286,7 @@ export default function LearnerPopulationPage() {
                     value={totalRow.count}
                     delayMs={0}
                     triggerId="population-counts"
-                    className="mt-7 block text-[4.5rem] font-black leading-none tracking-tight text-[#24313E] md:text-[5.4rem]"
+                    className="mt-7 block text-[4.5rem] font-semibold leading-none tracking-tight text-[#24313E] md:text-[5.4rem]"
                   />
 
                   {lastUpdated ? (
@@ -324,7 +324,7 @@ export default function LearnerPopulationPage() {
                           </span>
                         ) : null}
 
-                        <p className="text-sm font-black uppercase tracking-[0.14em] text-slate-600">
+                        <p className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-600">
                           {item.category}
                         </p>
                       </div>
@@ -343,7 +343,7 @@ export default function LearnerPopulationPage() {
                                   item.category
                                 )}
                                 triggerId="population-counts"
-                                className="block text-5xl font-black tracking-tight text-[#24313E]"
+                                className="block text-5xl font-semibold tracking-tight text-[#24313E]"
                               />
                               <span className="text-sm font-bold text-slate-500">
                                 learners
@@ -351,7 +351,7 @@ export default function LearnerPopulationPage() {
                             </div>
 
                             {percentage ? (
-                              <p className="text-sm font-black text-slate-600">
+                              <p className="text-sm font-semibold text-slate-600">
                                 {percentage}
                                 <span className="ml-1 font-semibold text-slate-400">
                                   of total
@@ -381,7 +381,7 @@ export default function LearnerPopulationPage() {
                           ) : null}
                         </>
                       ) : (
-                        <p className="mt-5 text-5xl font-black tracking-tight text-[#24313E]">
+                        <p className="mt-5 text-5xl font-semibold tracking-tight text-[#24313E]">
                           {formatCount(item.count)}
                         </p>
                       )}
@@ -392,7 +392,7 @@ export default function LearnerPopulationPage() {
             </div>
 
             <section className="mt-8 border-t-4 border-[#ffdf20] bg-white p-6 shadow-sm md:p-8">
-              <h2 className="text-xl font-black text-[#24313E]">
+              <h2 className="text-xl font-semibold text-[#24313E]">
                 Population Summary
               </h2>
 

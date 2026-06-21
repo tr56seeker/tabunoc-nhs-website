@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   useEffect,
@@ -1795,7 +1795,7 @@ function CalibrationPanel({
     <aside className="rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 shadow-sm lg:sticky lg:top-24">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#0F4C5C]">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
             Map Calibration Mode
           </p>
           <p className="mt-1 text-xs text-slate-500">

@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 
 import PwaInstallButton from "@/components/PwaInstallButton";
 
@@ -50,10 +50,10 @@ export default function Footer() {
       <div className="border-b border-white/10 bg-[#24313E]/35 px-6 py-8">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.2em] text-[#ffdf20]">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#ffdf20]">
               Official School Website
             </p>
-            <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white md:text-3xl">
               Tabunoc National High School
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
@@ -68,7 +68,7 @@ export default function Footer() {
 
             <a
               href="/enrollment"
-              className="rounded-xl border border-[#ffdf20]/40 px-5 py-3 text-center text-sm font-black text-white transition duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:text-[#ffdf20]"
+              className="rounded-xl border border-[#ffdf20]/40 px-5 py-3 text-center text-sm font-semibold text-white transition-colors duration-200 hover:border-[#ffdf20]/70 hover:bg-white/5 hover:text-[#ffdf20]"
             >
               Enrollment Guide
             </a>
@@ -77,7 +77,7 @@ export default function Footer() {
               href="https://m.me/tabunocnatlhs"
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-xl border border-white/10 px-5 py-3 text-center text-sm font-black text-white transition duration-300 hover:-translate-y-1 hover:scale-[1.01] hover:text-[#ffdf20]"
+              className="rounded-xl border border-white/10 px-5 py-3 text-center text-sm font-semibold text-white transition-colors duration-200 hover:border-white/20 hover:bg-white/5 hover:text-[#ffdf20]"
             >
               Contact the School
             </a>
@@ -107,7 +107,7 @@ export default function Footer() {
             </div>
 
             <div className="mt-6">
-              <p className="text-xl font-black text-white">
+              <p className="text-xl font-semibold tracking-tight text-white">
                 Tabunoc National High School
               </p>
               <p className="mt-2 text-sm leading-6 text-slate-300">
@@ -122,7 +122,7 @@ export default function Footer() {
             </div>
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-[#24313E]/35 p-4">
-              <p className="text-sm font-black text-[#ffdf20]">
+              <p className="text-sm font-semibold text-[#ffdf20]">
                 Data Privacy Reminder
               </p>
               <p className="mt-2 text-sm leading-6 text-slate-200">
@@ -134,7 +134,7 @@ export default function Footer() {
           <div className="grid gap-8 sm:grid-cols-3">
             {footerLinks.map((group) => (
               <div key={group.title}>
-                <h3 className="text-sm font-black uppercase tracking-[0.18em] text-[#ffdf20]">
+                <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#ffdf20]">
                   {group.title}
                 </h3>
 

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 type GradientFeatureCardProps = {
   title: string;
@@ -31,7 +31,7 @@ export default function GradientFeatureCard({
     <>
       {eyebrow ? (
         <p
-          className={`text-xs font-black uppercase tracking-[0.18em] ${
+          className={`text-xs font-semibold uppercase tracking-[0.18em] ${
             accent === "teal"
               ? "text-stone-100"
               : "text-[#0F4C5C] dark:text-stone-100"
@@ -40,7 +40,7 @@ export default function GradientFeatureCard({
           {eyebrow}
         </p>
       ) : null}
-      <h3 className="mt-3 text-xl font-black leading-tight transition group-hover:text-[#0F4C5C] dark:group-hover:text-white">{title}</h3>
+      <h3 className="mt-3 text-xl font-semibold leading-tight transition group-hover:text-[#0F4C5C] dark:group-hover:text-white">{title}</h3>
       <p
         className={`mt-3 text-sm font-medium leading-6 ${
           accent === "teal" ? "text-teal-50" : "text-slate-600 dark:text-stone-300"
@@ -49,7 +49,7 @@ export default function GradientFeatureCard({
         {description}
       </p>
       <span
-        className={`mt-5 inline-flex text-sm font-black ${
+        className={`mt-5 inline-flex text-sm font-semibold ${
           accent === "teal"
             ? "text-stone-100"
             : "text-[#0F4C5C] dark:text-stone-100"

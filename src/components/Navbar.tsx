@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 /**
  * FILE_ID: TABUNOC_NAVBAR_COMPONENT
@@ -246,17 +246,17 @@ function DropdownLink({
 
   const labelClass =
     variant === "desktop"
-      ? "text-sm font-black"
-      : "flex items-center justify-between gap-3 text-sm font-black";
+      ? "text-sm font-medium tracking-tight"
+      : "flex items-center justify-between gap-3 text-sm font-medium tracking-tight";
 
   const descriptionClass =
     variant === "desktop"
-      ? `mt-1 block line-clamp-2 text-xs font-semibold leading-5 ${
+      ? `mt-1 block line-clamp-2 text-sm font-medium leading-snug ${
           active
             ? "text-[#24313E]/70"
             : "text-slate-400 group-hover/dropitem:text-white/75"
         }`
-      : `mt-1 block text-xs font-semibold leading-5 ${
+      : `mt-1 block text-sm font-medium leading-snug ${
           active
             ? "text-[#071E29]/70"
             : "text-white/60 group-hover/dropitem:text-[#071E29]/75"
@@ -276,8 +276,8 @@ function DropdownLink({
       </span>
 
       {variant === "desktop" && (
-        <span className="shrink-0 text-lg font-black opacity-0 transition group-hover/dropitem:translate-x-1 group-hover/dropitem:opacity-100">
-          ›
+        <span className="shrink-0 text-lg font-medium opacity-0 transition group-hover/dropitem:translate-x-1 group-hover/dropitem:opacity-100">
+          â€º
         </span>
       )}
 
@@ -477,7 +477,7 @@ export default function Navbar({
           </div>
 
           <div className="hidden max-w-[250px] leading-tight sm:block lg:max-w-[210px] xl:max-w-[250px] 2xl:max-w-[300px]">
-            <p className="truncate text-sm font-black tracking-tight xl:text-base 2xl:text-lg">
+            <p className="truncate text-sm font-medium tracking-tight xl:text-base 2xl:text-lg">
               Tabunoc National High School
             </p>
             <p className="truncate text-xs font-bold text-white/75">
@@ -498,7 +498,7 @@ export default function Navbar({
             const hasDropdown = Boolean(item.items?.length);
             const desktopDropdownOpen = desktopOpenGroup === item.label;
 
-            const navItemClassName = `inline-flex items-center gap-1.5 px-3 text-[13px] font-black transition-all duration-200 xl:px-4 xl:text-sm 2xl:gap-2 2xl:px-6 ${
+            const navItemClassName = `inline-flex items-center gap-1.5 px-3 text-[13px] font-medium tracking-tight transition-all duration-200 xl:px-4 xl:text-sm 2xl:gap-2 2xl:px-6 ${
               active
                 ? "relative z-20 h-20 bg-white text-[#24313E] after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-white lg:-mb-px lg:h-[calc(5rem+1px)]"
                 : "navbar-cloth-hover h-20 text-white/90"
@@ -592,7 +592,7 @@ export default function Navbar({
               onClick={() => setContactOpen((open) => !open)}
               onMouseEnter={(event) => updateNavbarHoverOrigin(event)}
               onMouseLeave={(event) => updateNavbarHoverOrigin(event)}
-              className={`relative rounded-xl px-5 py-3 text-sm font-black transition-all duration-200 2xl:px-7 ${
+              className={`relative rounded-xl px-5 py-3 text-sm font-medium tracking-tight transition-all duration-200 2xl:px-7 ${
                 contactActive
                   ? "bg-white text-[#24313E]"
                   : "navbar-cloth-hover bg-[#0F4C5C] text-white hover:-translate-y-0.5"
@@ -614,20 +614,20 @@ export default function Navbar({
                   <div className="w-[250px] overflow-hidden border-t-4 border-[#ffdf20] bg-white p-2 text-[#24313E] shadow-2xl shadow-black/25">
                     <a
                       href={`mailto:${schoolContact.email}`}
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
                       <span aria-hidden="true" className="text-base">
-                        ✉
+                        âœ‰
                       </span>
                       <span>Email the School</span>
                     </a>
 
                     <a
                       href={`tel:${schoolContact.phone}`}
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
                       <span aria-hidden="true" className="text-base">
-                        ☎
+                        â˜Ž
                       </span>
                       <span>Call the School</span>
                     </a>
@@ -636,11 +636,11 @@ export default function Navbar({
                       href={schoolContact.facebook}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
                       <span
                         aria-hidden="true"
-                        className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#24313E] text-xs font-black text-white"
+                        className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#24313E] text-xs font-medium text-white"
                       >
                         f
                       </span>
@@ -651,20 +651,20 @@ export default function Navbar({
                       href={schoolContact.messenger}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-black transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
                       <span aria-hidden="true" className="text-base">
-                        💬
+                        ðŸ’¬
                       </span>
                       <span>Messenger</span>
                     </a>
 
                     <div className="mt-1 border-t border-slate-200 px-4 py-3">
-                      <p className="text-[11px] font-black uppercase tracking-[0.12em] text-slate-500">
+                      <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-slate-500">
                         Office Hours
                       </p>
                       <p className="mt-1 text-xs font-semibold leading-5 text-slate-600">
-                        Monday to Friday, 8:00 AM – 5:00 PM
+                        Monday to Friday, 8:00 AM â€“ 5:00 PM
                       </p>
                     </div>
                   </div>
@@ -734,7 +734,7 @@ export default function Navbar({
                         onClick={() =>
                           setMobileOpenGroup(openGroup ? null : item.label)
                         }
-                        className={`flex-1 rounded-xl px-4 py-3 text-left text-sm font-black transition ${
+                        className={`flex-1 rounded-xl px-4 py-3 text-left text-sm font-medium tracking-tight transition ${
                           active
                             ? "bg-[#ffdf20] text-[#071E29]"
                             : "text-white/90 hover:bg-white/10"
@@ -750,7 +750,7 @@ export default function Navbar({
                           setMenuOpen(false);
                           setMobileOpenGroup(null);
                         }}
-                        className={`flex-1 rounded-xl px-4 py-3 text-sm font-black transition ${
+                        className={`flex-1 rounded-xl px-4 py-3 text-sm font-medium tracking-tight transition ${
                           active
                             ? "bg-[#ffdf20] text-[#071E29]"
                             : "text-white/90 hover:bg-white/10"
@@ -811,7 +811,7 @@ export default function Navbar({
                 setMenuOpen(false);
                 setMobileOpenGroup(null);
               }}
-              className="mt-2 rounded-xl bg-[#0F4C5C] px-4 py-3 text-center text-sm font-black text-white transition hover:bg-[#146577]"
+              className="mt-2 rounded-xl bg-[#0F4C5C] px-4 py-3 text-center text-sm font-medium tracking-tight text-white transition hover:bg-[#146577]"
             >
               Contact
             </Link>

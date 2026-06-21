@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "motion/react";
 import Link from "next/link";
@@ -26,7 +26,7 @@ const frontlineServices = [
     process: [
       "Proceed to the designated enrollment area or official enrollment channel.",
       "Submit available enrollment documents for checking and validation.",
-      "Fill out or confirm the learner’s enrollment information.",
+      "Fill out or confirm the learnerâ€™s enrollment information.",
       "Wait for verification, encoding, and confirmation of enrollment status.",
     ],
     office: "Enrollment Committee / Registrar-designated Personnel / Class Adviser",
@@ -65,7 +65,7 @@ const frontlineServices = [
       "Provides certification that a learner is officially enrolled in Tabunoc National High School for a specific school year.",
     whoMayAvail: "Currently enrolled learners, parents, or guardians.",
     requirements: [
-      "Learner’s complete name",
+      "Learnerâ€™s complete name",
       "Grade level and section",
       "Purpose of request",
       "Valid ID of requester, if required",
@@ -77,17 +77,17 @@ const frontlineServices = [
     ],
     office: "School Office / Records Personnel",
     fees: "None",
-    processingTime: "Usually within the school’s regular processing schedule.",
+    processingTime: "Usually within the schoolâ€™s regular processing schedule.",
   },
   {
     category: "School Records",
     title: "Request for Certificate of Good Moral Character",
     description:
-      "Provides certification of the learner’s conduct based on school records and adviser or guidance validation.",
+      "Provides certification of the learnerâ€™s conduct based on school records and adviser or guidance validation.",
     whoMayAvail:
       "Currently enrolled learners, former learners, parents, guardians, or authorized representatives.",
     requirements: [
-      "Learner’s complete name",
+      "Learnerâ€™s complete name",
       "Grade level and section or last school year attended",
       "Purpose of request",
       "Valid ID or authorization, if applicable",
@@ -212,7 +212,7 @@ export default function CitizenCharterPage() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
+              className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
             >
               Transparency and Public Service
             </motion.p>
@@ -225,7 +225,7 @@ export default function CitizenCharterPage() {
               <TypewriterText
                 as="h1"
                 text="Citizen's Charter"
-                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
+                className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
                 speed={72}
                 startDelay={140}
               />
@@ -252,7 +252,7 @@ export default function CitizenCharterPage() {
                 <a
                   key={item.label}
                   href={item.href}
-                  className="rounded-xl bg-white dark:bg-[#171614] px-6 py-3 font-black text-[#0F4C5C] dark:text-yellow-300 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                  className="rounded-xl bg-white dark:bg-[#171614] px-6 py-3 font-semibold text-[#0F4C5C] dark:text-yellow-300 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
                 >
                   {item.label}
                 </a>
@@ -271,10 +271,10 @@ export default function CitizenCharterPage() {
               transition={{ duration: 0.5 }}
               className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-6 shadow-sm dark:shadow-black/20"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Purpose
               </p>
-              <h2 className="mt-3 text-2xl font-black">
+              <h2 className="mt-3 text-2xl font-semibold">
                 Clear school service guide
               </h2>
               <p className="mt-3 leading-7 text-slate-600 dark:text-stone-300">
@@ -290,10 +290,10 @@ export default function CitizenCharterPage() {
               transition={{ duration: 0.5, delay: 0.08 }}
               className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#ECFDF5] dark:bg-[#171614] p-6 shadow-sm dark:shadow-black/20"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Scope
               </p>
-              <h2 className="mt-3 text-2xl font-black">
+              <h2 className="mt-3 text-2xl font-semibold">
                 Common public school services
               </h2>
               <p className="mt-3 leading-7 text-slate-600 dark:text-stone-300">
@@ -309,10 +309,10 @@ export default function CitizenCharterPage() {
               transition={{ duration: 0.5, delay: 0.16 }}
               className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-yellow-50 dark:bg-[#171614] p-6 shadow-sm dark:shadow-black/20"
             >
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Reminder
               </p>
-              <h2 className="mt-3 text-2xl font-black">
+              <h2 className="mt-3 text-2xl font-semibold">
                 Final validation is required
               </h2>
               <p className="mt-3 leading-7 text-slate-600 dark:text-stone-300">
@@ -327,13 +327,13 @@ export default function CitizenCharterPage() {
         <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-20">
           <div className="mx-auto max-w-7xl">
             <div className="mb-12 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                 Frontline Services
               </p>
               <TypewriterText
                 as="h2"
                 text="Common School Services and Processes"
-                className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl"
+                className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-5xl"
                 speed={58}
                 startDelay={120}
               />
@@ -357,11 +357,11 @@ export default function CitizenCharterPage() {
                   <div className="border-b border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-6">
                     <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
                       <div>
-                        <span className="inline-flex rounded-lg bg-[#ECFDF5] dark:bg-[#171614] px-3 py-2 text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+                        <span className="inline-flex rounded-lg bg-[#ECFDF5] dark:bg-[#171614] px-3 py-2 text-xs font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
                           {service.category}
                         </span>
 
-                        <h3 className="mt-4 text-2xl font-black leading-tight text-slate-950 dark:text-white md:text-3xl">
+                        <h3 className="mt-4 text-2xl font-semibold leading-tight text-slate-950 dark:text-white md:text-3xl">
                           {service.title}
                         </h3>
 
@@ -371,10 +371,10 @@ export default function CitizenCharterPage() {
                       </div>
 
                       <div className="rounded-2xl bg-yellow-50 dark:bg-[#171614] p-4 lg:min-w-[260px]">
-                        <p className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-stone-400">
                           Fees
                         </p>
-                        <p className="mt-1 text-lg font-black text-slate-950 dark:text-white">
+                        <p className="mt-1 text-lg font-semibold text-slate-950 dark:text-white">
                           {service.fees}
                         </p>
                       </div>
@@ -383,21 +383,21 @@ export default function CitizenCharterPage() {
 
                   <div className="grid gap-0 lg:grid-cols-2">
                     <div className="border-b border-slate-200 dark:border-[#292624] p-6 lg:border-b-0 lg:border-r">
-                      <p className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-stone-400">
                         Who May Avail
                       </p>
                       <p className="mt-3 leading-7 text-slate-700 dark:text-stone-200">
                         {service.whoMayAvail}
                       </p>
 
-                      <p className="mt-6 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
+                      <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-stone-400">
                         Processing Office
                       </p>
                       <p className="mt-3 font-bold leading-7 text-slate-800 dark:text-stone-100">
                         {service.office}
                       </p>
 
-                      <p className="mt-6 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
+                      <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-stone-400">
                         Processing Time
                       </p>
                       <p className="mt-3 leading-7 text-slate-700 dark:text-stone-200">
@@ -406,29 +406,29 @@ export default function CitizenCharterPage() {
                     </div>
 
                     <div className="p-6">
-                      <p className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-stone-400">
                         Basic Requirements
                       </p>
 
                       <ul className="mt-4 space-y-3">
                         {service.requirements.map((item) => (
                           <li key={item} className="flex gap-3 text-slate-700 dark:text-stone-200">
-                            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-black text-white">
-                              ✓
+                            <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
+                              âœ“
                             </span>
                             <span className="font-semibold">{item}</span>
                           </li>
                         ))}
                       </ul>
 
-                      <p className="mt-6 text-xs font-black uppercase tracking-widest text-slate-500 dark:text-stone-400">
+                      <p className="mt-6 text-xs font-semibold uppercase tracking-widest text-slate-500 dark:text-stone-400">
                         General Process
                       </p>
 
                       <ol className="mt-4 space-y-3">
                         {service.process.map((step, stepIndex) => (
                           <li key={step} className="flex gap-3 text-slate-700 dark:text-stone-200">
-                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow-300 text-xs font-black text-slate-950">
+                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow-300 text-xs font-semibold text-slate-950">
                               {stepIndex + 1}
                             </span>
                             <span className="font-semibold">{step}</span>
@@ -452,10 +452,10 @@ export default function CitizenCharterPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
+              <p className="text-sm font-semibold uppercase tracking-widest text-yellow-300">
                 Client Reminders
               </p>
-              <h2 className="mt-3 text-3xl font-black leading-tight md:text-5xl">
+              <h2 className="mt-3 text-3xl font-semibold leading-tight md:text-5xl">
                 Prepare complete documents and use official channels.
               </h2>
               <p className="mt-5 max-w-2xl leading-7 text-teal-50">
@@ -472,12 +472,12 @@ export default function CitizenCharterPage() {
               transition={{ duration: 0.6 }}
               className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
             >
-              <h3 className="text-2xl font-black">Important Reminders</h3>
+              <h3 className="text-2xl font-semibold">Important Reminders</h3>
 
               <ul className="mt-6 space-y-4">
                 {reminders.map((item) => (
                   <li key={item} className="flex gap-3 leading-7 text-teal-50">
-                    <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yellow-300 text-sm font-black text-slate-950">
+                    <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yellow-300 text-sm font-semibold text-slate-950">
                       !
                     </span>
                     <span>{item}</span>
@@ -491,10 +491,10 @@ export default function CitizenCharterPage() {
         {/* FEEDBACK */}
         <section className="bg-white dark:bg-[#0a0908] px-6 py-20">
           <div className="mx-auto max-w-5xl rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 text-center shadow-sm dark:shadow-black/20">
-            <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+            <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
               Feedback and Assistance
             </p>
-            <h2 className="mt-3 text-3xl font-black leading-tight text-slate-950 dark:text-white">
+            <h2 className="mt-3 text-3xl font-semibold leading-tight text-slate-950 dark:text-white">
               Need help with a school service?
             </h2>
             <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
@@ -506,7 +506,7 @@ export default function CitizenCharterPage() {
             <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
               <Link
                 href="/#contact"
-                className="rounded-xl bg-[#0F4C5C] px-6 py-3 font-black text-white transition hover:-translate-y-1 hover:scale-[1.01]"
+                className="rounded-xl bg-[#0F4C5C] px-6 py-3 font-semibold text-white transition hover:-translate-y-1 hover:scale-[1.01]"
               >
                 Contact the School
               </Link>
@@ -515,7 +515,7 @@ export default function CitizenCharterPage() {
                 href="https://m.me/tabunocnatlhs"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-6 py-3 font-black text-[#0F4C5C] dark:text-stone-100 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-6 py-3 font-semibold text-[#0F4C5C] dark:text-stone-100 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
               >
                 Chat on Messenger
               </a>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 /**
  * FILE_ID: TABUNOC_HOMEPAGE_PUBLIC_COMMAND_CENTER
@@ -41,7 +41,7 @@ const quickAccessLinks = [
     href: "/memos",
   },
   {
-    title: "Citizen’s Charter",
+    title: "Citizenâ€™s Charter",
     description: "Frontline service standards and public assistance information.",
     href: "/citizen-charter",
   },
@@ -101,7 +101,7 @@ function ActionLink({
   children: React.ReactNode;
   className?: string;
 }) {
-  const baseClassName = `inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-black transition duration-300 hover:-translate-y-1 ${className}`;
+  const baseClassName = `inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition duration-300 hover:-translate-y-1 ${className}`;
 
   if (external) {
     return (
@@ -134,13 +134,13 @@ function SectionHeading({
 }) {
   return (
     <div className="mx-auto mb-10 max-w-3xl text-center">
-      <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+      <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
         {eyebrow}
       </p>
       <TypewriterText
         as="h2"
         text={title}
-        className="mt-3 text-3xl font-black leading-tight tracking-tight text-slate-950 md:text-5xl"
+        className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-slate-950 md:text-5xl"
         speed={58}
         startDelay={120}
       />
@@ -171,7 +171,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65 }}
-              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]"
+              className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]"
             >
               Official School Website
             </motion.p>
@@ -184,7 +184,7 @@ export default function Home() {
               <TypewriterText
                 as="h1"
                 text="Tabunoc National High School"
-                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight tracking-tight md:text-6xl"
+                className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-tight md:text-6xl"
                 speed={72}
                 startDelay={140}
               />
@@ -241,14 +241,14 @@ export default function Home() {
         >
           <div className="mx-auto max-w-7xl">
             <div className="mb-6 text-center">
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
                 School at a Glance
               </p>
               <TypewriterText
                 as="h2"
                 text="Tabunoc NHS in numbers"
                 id="homepage-statistics-title"
-                className="mt-2 text-2xl font-black tracking-tight text-slate-950 md:text-3xl"
+                className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 md:text-3xl"
                 speed={58}
                 startDelay={120}
               />
@@ -265,19 +265,19 @@ export default function Home() {
                     delayMs={statistic.delayMs}
                     durationMs={900}
                     triggerId="homepage-statistics"
-                    className="block min-h-[2.5rem] text-4xl font-black leading-none tabular-nums tracking-tight text-[#24313E] md:text-5xl"
+                    className="block min-h-[2.5rem] text-4xl font-semibold leading-none tabular-nums tracking-tight text-[#24313E] md:text-5xl"
                   />
-                  <p className="mt-3 text-sm font-black uppercase tracking-[0.12em] text-slate-500">
+                  <p className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
                     {statistic.label}
                   </p>
                 </article>
               ))}
 
               <article className="border border-slate-200 border-t-[#0F4C5C] border-t-4 bg-white p-5 text-center shadow-sm">
-                <p className="min-h-[2.5rem] text-4xl font-black leading-none tabular-nums tracking-tight text-[#24313E] md:text-5xl">
+                <p className="min-h-[2.5rem] text-4xl font-semibold leading-none tabular-nums tracking-tight text-[#24313E] md:text-5xl">
                   303111
                 </p>
-                <p className="mt-3 text-sm font-black uppercase tracking-[0.12em] text-slate-500">
+                <p className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
                   School ID
                 </p>
               </article>
@@ -300,7 +300,7 @@ export default function Home() {
                   <div className="group h-full rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#0F4C5C]/30 hover:bg-white hover:shadow-lg">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-xl font-black text-slate-950">
+                        <h3 className="text-xl font-semibold text-slate-950">
                           {item.title}
                         </h3>
                         <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -344,13 +344,13 @@ export default function Home() {
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
               <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
                 <div>
-                  <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
                     Latest Advisory
                   </p>
                   <TypewriterText
                     as="h2"
                     text="Stay informed through official school announcements."
-                    className="mt-3 text-3xl font-black tracking-tight text-slate-950 md:text-4xl"
+                    className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl"
                     speed={52}
                     startDelay={120}
                   />
@@ -378,13 +378,13 @@ export default function Home() {
         <section className="bg-white px-6 py-20">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
-              <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
                 About the School
               </p>
               <TypewriterText
                 as="h2"
                 text="Public education rooted in service, safety, and learner growth."
-                className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-5xl"
+                className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-5xl"
                 speed={52}
                 startDelay={120}
               />
@@ -415,10 +415,10 @@ export default function Home() {
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
               <div>
-                <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
+                <p className="text-sm font-semibold uppercase tracking-widest text-yellow-300">
                   Contact and Location
                 </p>
-                <h2 className="mt-3 text-3xl font-black leading-tight tracking-tight md:text-4xl">
+                <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
                   Reach the school through official channels.
                 </h2>
                 <p className="mt-4 leading-7 text-teal-50">
@@ -427,14 +427,14 @@ export default function Home() {
                 </p>
 
                 <div className="mt-5 rounded-2xl border border-white/10 bg-white/10 p-4">
-                  <p className="text-sm font-black uppercase tracking-widest text-yellow-300">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-yellow-300">
                     School Address
                   </p>
                   <p className="mt-2 leading-7 text-white">
                     Sangi Road, Tabunok, Talisay City, Cebu
                   </p>
                   <p className="mt-3 text-sm leading-6 text-teal-50">
-                    Office Hours: Monday to Friday, 8:00 AM – 5:00 PM, except
+                    Office Hours: Monday to Friday, 8:00 AM â€“ 5:00 PM, except
                     holidays and declared class/work suspensions.
                   </p>
                 </div>
@@ -455,7 +455,7 @@ export default function Home() {
                     }
                     className="rounded-2xl border border-white/10 bg-white p-4 text-slate-950 shadow-sm transition duration-300 hover:bg-yellow-50"
                   >
-                    <p className="text-sm font-black uppercase tracking-widest text-[#0F4C5C]">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
                       {channel.title}
                     </p>
                     <p className="mt-2 text-sm font-semibold leading-6 text-slate-700">

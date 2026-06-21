@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
@@ -53,11 +53,11 @@ function SectionHeading({
 }) {
   return (
     <div className={sectionIntroClass}>
-      <p className="text-xs font-black uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20] sm:text-sm">
+      <p className="text-xs font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20] sm:text-sm">
         {eyebrow}
       </p>
 
-      <h2 className="mx-auto mt-1.5 max-w-4xl text-2xl font-black leading-tight text-slate-950 dark:text-white md:text-4xl">
+      <h2 className="mx-auto mt-1.5 max-w-4xl text-2xl font-semibold leading-tight text-slate-950 dark:text-white md:text-4xl">
         {title}
       </h2>
 
@@ -226,7 +226,7 @@ function extractSection(record: Record<string, string>) {
 function normalizeLeadershipText(value: string) {
   return safeText(value)
     .toLowerCase()
-    .replace(/[–—-]/g, " ")
+    .replace(/[â€“â€”-]/g, " ")
     .replace(/[()]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -235,7 +235,7 @@ function normalizeLeadershipText(value: string) {
 function isExactShsCoordinatorDesignation(value: string) {
   const text = safeText(value)
     .toLowerCase()
-    .replace(/[–—]/g, "-")
+    .replace(/[â€“â€”]/g, "-")
     .replace(/\s+/g, " ")
     .trim();
 
@@ -245,7 +245,7 @@ function isExactShsCoordinatorDesignation(value: string) {
 function isGradeLeaderDesignationText(value: string) {
   const text = safeText(value)
     .toLowerCase()
-    .replace(/[–—-]/g, " ")
+    .replace(/[â€“â€”-]/g, " ")
     .replace(/[()]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -685,7 +685,7 @@ function getGradeLeaderRank(person: Personnel) {
     .map((item) =>
       safeText(item)
         .toLowerCase()
-        .replace(/[–—-]/g, " ")
+        .replace(/[â€“â€”-]/g, " ")
         .replace(/[()]/g, " ")
         .replace(/\s+/g, " ")
         .trim()
@@ -844,7 +844,7 @@ function getCoordinatorBaseTitle(title?: string) {
     .toLowerCase()
     .replace(/\balternate\b/g, "")
     .replace(/\(.*?\)/g, "")
-    .replace(/[-–—]/g, " ")
+    .replace(/[-â€“â€”]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -1383,7 +1383,7 @@ return (
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-sm font-black uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20]"
+              className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20]"
             >
               Faculty and Staff Directory
             </motion.p>
@@ -1396,7 +1396,7 @@ return (
               <TypewriterText
                 as="h1"
                 text="School Administration, Faculty, and Staff"
-                className="mx-auto mt-4 max-w-5xl text-4xl font-black leading-tight text-slate-950 dark:text-white md:text-6xl"
+                className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight text-slate-950 dark:text-white md:text-6xl"
                 speed={52}
                 startDelay={160}
               />
@@ -1477,7 +1477,7 @@ return (
                           setSearchTerm("");
                           setSelectedRole("All");
                         }}
-                        className="w-fit rounded-full bg-[#ffdf20] px-4 py-2 text-sm font-black text-slate-950 transition hover:bg-[#0F4C5C] hover:text-white"
+                        className="w-fit rounded-full bg-[#ffdf20] px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-[#0F4C5C] hover:text-white"
                       >
                         Clear Search
                       </button>
@@ -1681,7 +1681,7 @@ return (
                   key={grade}
                   type="button"
                   onClick={() => scrollToAdvisoryGrade(grade)}
-                  className={`rounded-full px-4 py-2 text-sm font-black transition ${
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                     selectedGrade === grade
                       ? "bg-[#ffdf20] text-slate-950 shadow-sm"
                       : "bg-white text-slate-700 ring-1 ring-slate-200 hover:text-[#0F4C5C] dark:bg-[#171614] dark:text-stone-200 dark:ring-[#292624] dark:hover:text-[#ffdf20]"
@@ -1711,7 +1711,7 @@ return (
                     className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5"
                   >
                     <div className="mb-5 mt-6 border-b border-slate-200 pb-3">
-                      <h3 className="flex items-center gap-3 text-base font-black uppercase tracking-[0.14em] text-[#24313E]">
+                      <h3 className="flex items-center gap-3 text-base font-semibold uppercase tracking-[0.14em] text-[#24313E]">
                         <span
                           className="h-5 w-1.5 rounded-full bg-[#ffdf20]"
                           aria-hidden="true"
@@ -1809,11 +1809,11 @@ return (
                               />
 
                               <div className="min-w-0">
-                                <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#45b3c2]">
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#45b3c2]">
                                   Subject Department
                                 </p>
 
-                                <h3 className="mt-1 text-xl font-black leading-snug text-[#24313E] dark:text-white md:text-2xl">
+                                <h3 className="mt-1 text-xl font-semibold leading-snug text-[#24313E] dark:text-white md:text-2xl">
                                   {department}
                                 </h3>
                               </div>

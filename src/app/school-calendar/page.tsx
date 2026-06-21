@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 import SchoolCalendar from "@/components/SchoolCalendar";
 
 export const metadata: Metadata = {
@@ -7,5 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default function SchoolCalendarPage() {
-  return <SchoolCalendar />;
+  return (
+    <>
+      <Navbar />
+      <SchoolCalendar />
+      <Footer />
+    </>
+  );
 }

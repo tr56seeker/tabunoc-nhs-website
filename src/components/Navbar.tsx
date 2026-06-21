@@ -442,7 +442,7 @@ export default function Navbar({
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-0 z-[100] w-full border-b border-white/10 bg-[#34495e]/95 pt-[env(safe-area-inset-top)] text-white shadow-sm backdrop-blur-xl transition-transform duration-300 ease-out ${
+        className={`fixed left-0 right-0 top-0 z-[100] w-full border-b border-white/10 bg-[#24313e]/95 pt-[env(safe-area-inset-top)] text-white shadow-sm backdrop-blur-xl transition-transform duration-300 ease-out ${
           navbarVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -715,7 +715,7 @@ export default function Navbar({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.18, ease: "easeOut" }}
-          className="fixed left-0 top-[calc(5rem+env(safe-area-inset-top))] z-[1000] max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] w-full overflow-y-auto border-t border-white/10 bg-[#34495e]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl lg:hidden"
+          className="fixed left-0 top-[calc(5rem+env(safe-area-inset-top))] z-[1000] max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] w-full overflow-y-auto border-t border-white/10 bg-[#24313e]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl lg:hidden"
         >
           <div className="mx-auto grid max-w-3xl gap-2">
             {navItems.map((item) => {

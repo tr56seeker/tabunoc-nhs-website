@@ -1,0 +1,30 @@
+{
+  "schoolYear": "SY 2026-2027",
+  "schoolYearStart": "2026-06-08",
+  "schoolYearEnd": "2027-04-08",
+  "totalSchoolDays": 201,
+  "terms": [
+    {
+      "name": "Term 1",
+      "startDate": "2026-06-08",
+      "endDate": "2026-09-18"
+    },
+    {
+      "name": "Term 2",
+      "startDate": "2026-09-29",
+      "endDate": "2027-01-16"
+    },
+    {
+      "name": "Term 3",
+      "startDate": "2027-01-26",
+      "endDate": "2027-04-08"
+    }
+  ],
+  "nonClassDays": [
+    {
+      "date": "2026-06-12",
+      "label": "Independence Day"
+    }
+  ],
+  "note": "School year progress is based on the encoded school calendar and may be updated following DepEd issuances, school memoranda, class suspensions, and other official announcements."
+}

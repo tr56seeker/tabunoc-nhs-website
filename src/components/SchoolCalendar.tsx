@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 
 type CalendarView = "Day" | "Week" | "Month" | "Year";
 
-type CalendarEvent = {
+export type CalendarEvent = {
   id: string;
   title: string;
   startDate: string;
@@ -148,42 +148,49 @@ function ArrowIcon({ direction }: { direction: "left" | "right" }) {
 }
 
 function EventDots({ events }: { events: CalendarEvent[] }) {
-  const dots = Array.from(new Set(events.map((event) => event.category))).slice(0, 3);
-  return <span className="flex min-h-2 items-center justify-center gap-1" aria-label={events.length ? `${events.length} activities` : undefined}>{dots.map((category) => <span key={category} className={`h-1.5 w-1.5 rounded-full sm:h-2 sm:w-2 ${dotColors[category] ?? "bg-slate-400"}`} />)}</span>;
+  const visibleEvents = events.slice(0, 3);
+  const remaining = Math.max(0, events.length - visibleEvents.length);
+
+  return (
+    <span
+      className="flex min-h-2 items-center justify-center gap-1"
+      aria-label={events.length ? `${events.length} activities` : undefined}
+    >
+      {visibleEvents.map((event) => (
+        <span
+          key={event.id}
+          className={`h-1.5 w-1.5 rounded-full sm:h-2 sm:w-2 ${dotColors[event.category] ?? "bg-slate-400"}`}
+        />
+      ))}
+      {remaining > 0 && (
+        <span className="text-[8px] font-medium leading-none text-slate-500 sm:text-[9px]">
+          +{remaining}
+        </span>
+      )}
+    </span>
+  );
 }
 
 function EventRow({ event, selected, onSelect }: { event: CalendarEvent; selected: boolean; onSelect: (event: CalendarEvent) => void }) {
   return (
-    <button type="button" onClick={() => onSelect(event)} className={`relative w-full overflow-hidden rounded-xl border bg-white p-4 pl-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] ${selected ? "border-[#e0c400] shadow-[0_0_0_4px_rgba(255,223,32,0.18)]" : "border-slate-200 hover:border-slate-300"}`}>
+    <button type="button" onClick={() => onSelect(event)} className={`relative w-full overflow-hidden rounded-xl border bg-white/80 p-4 pl-5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] ${selected ? "border-[#d4bc00] bg-yellow-50/40 shadow-[0_0_0_3px_rgba(255,223,32,0.12)]" : "border-slate-200/80 hover:border-slate-300 hover:bg-white"}`}>
       <span className={`absolute inset-y-3 left-0 w-1 rounded-r-full ${dotColors[event.category] ?? "bg-slate-400"}`} aria-hidden="true" />
-      <span className="block font-semibold leading-5 text-[#24313E]">{event.title}</span>
-      <span className="mt-1 block text-xs font-semibold leading-5 text-slate-500">{formatDateRange(event)} Â· {formatEventTime(event)}</span>
+      <span className="block font-semibold leading-5 tracking-tight text-[#24313E]">{event.title}</span>
+      <span className="mt-1 block text-xs font-medium leading-relaxed text-slate-500">{formatDateRange(event)} Â· {formatEventTime(event)}</span>
       <span className="mt-2 flex flex-wrap items-center gap-2">
         <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${categoryStyles[event.category] ?? "border-slate-200 bg-slate-50 text-slate-700"}`}>{event.category}</span>
-        <span className="text-[11px] font-bold text-slate-500">{event.status} Â· {event.audience}</span>
+        <span className="text-[11px] font-medium text-slate-500">{event.status} Â· {event.audience}</span>
       </span>
     </button>
   );
 }
 
-export default function SchoolCalendar() {
+export default function SchoolCalendar({ events }: { events: CalendarEvent[] }) {
   const today = useMemo(() => new Date(), []);
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [loading, setLoading] = useState(true);
   const [view, setView] = useState<CalendarView>("Month");
   const [selectedDate, setSelectedDate] = useState(() => new Date(today.getFullYear(), today.getMonth(), today.getDate()));
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
-
-  useEffect(() => {
-    let active = true;
-    fetch("/data/school-calendar-events.json")
-      .then((response) => { if (!response.ok) throw new Error("Unable to load calendar events"); return response.json() as Promise<CalendarEvent[]>; })
-      .then((data) => { if (active) setEvents([...data].sort((a, b) => parseLocalDate(a.startDate).getTime() - parseLocalDate(b.startDate).getTime())); })
-      .catch(() => { if (active) setEvents([]); })
-      .finally(() => { if (active) setLoading(false); });
-    return () => { active = false; };
-  }, []);
 
   useEffect(() => {
     if (!selectedEvent) return;
@@ -192,7 +199,8 @@ export default function SchoolCalendar() {
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, [selectedEvent]);
 
-  const filteredEvents = useMemo(() => selectedCategory === "All" ? events : events.filter((event) => event.category === selectedCategory), [events, selectedCategory]);
+  const sortedEvents = useMemo(() => [...events].sort((a, b) => parseLocalDate(a.startDate).getTime() - parseLocalDate(b.startDate).getTime()), [events]);
+  const filteredEvents = useMemo(() => selectedCategory === "All" ? sortedEvents : sortedEvents.filter((event) => event.category === selectedCategory), [sortedEvents, selectedCategory]);
   const selectedDateEvents = useMemo(() => getEventsForDate(filteredEvents, selectedDate), [filteredEvents, selectedDate]);
   const panelEvents = useMemo(() => selectedDateEvents.length ? selectedDateEvents : getUpcomingEvents(filteredEvents, selectedDate), [filteredEvents, selectedDate, selectedDateEvents]);
 
@@ -212,28 +220,28 @@ export default function SchoolCalendar() {
   };
 
   return (
-    <main className="min-h-screen bg-[#f7f3ea] text-slate-900">
-      <section className="mx-auto max-w-7xl px-3 py-7 sm:px-6 lg:px-8 lg:py-12">
-        <div className="mb-6">
+    <main className="min-h-screen bg-[#f5f5f7] text-slate-900">
+      <section className="mx-auto max-w-7xl px-3 pb-8 pt-4 sm:px-6 lg:px-8 lg:pb-10 lg:pt-5">
+        <div className="mb-4">
           <p className="mb-3 px-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Filter by category</p>
           <div className="no-scrollbar flex gap-2 overflow-x-auto px-1 pb-2" role="group" aria-label="Calendar category filters">
             {categories.map((category) => <button key={category} type="button" aria-pressed={selectedCategory === category} onClick={() => setSelectedCategory(category)} className={`shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] ${selectedCategory === category ? "border-[#24313E] bg-[#24313E] text-white shadow-sm" : "border-slate-200 bg-white/80 text-slate-600 hover:bg-white"}`}>{category}</button>)}
           </div>
         </div>
 
-        <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
-          <div className="overflow-hidden rounded-2xl bg-white/85 p-3 shadow-[0_18px_45px_rgba(15,23,42,0.08)] ring-1 ring-slate-200/70 backdrop-blur sm:p-6">
-            <div className="flex flex-col gap-4 border-b border-slate-200/80 pb-5">
-              <div className="flex items-center rounded-xl bg-[#ede9e0] p-1" role="group" aria-label="Calendar view">
-                {views.map((item) => <button key={item} type="button" aria-pressed={view === item} onClick={() => setView(item)} className={`min-w-0 flex-1 rounded-lg px-2 py-2 text-xs font-semibold transition sm:text-sm ${view === item ? "bg-white text-[#24313E] shadow-sm" : "text-slate-500 hover:text-[#24313E]"}`}>{item}</button>)}
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start xl:grid-cols-[minmax(0,760px)_360px] xl:justify-center 2xl:grid-cols-[minmax(0,820px)_380px]">
+          <div className="overflow-hidden rounded-2xl border border-white/70 bg-white/85 p-3 shadow-[0_18px_50px_rgba(15,23,42,0.08)] ring-1 ring-slate-200/50 backdrop-blur sm:p-5">
+            <div className="flex flex-col gap-3 border-b border-slate-200/80 pb-4">
+              <div className="flex items-center rounded-xl bg-slate-100 p-1" role="group" aria-label="Calendar view">
+                {views.map((item) => <button key={item} type="button" aria-pressed={view === item} onClick={() => setView(item)} className={`min-w-0 flex-1 rounded-lg px-2 py-2 text-xs font-medium transition-colors sm:text-sm ${view === item ? "bg-[#24313E] text-white shadow-sm" : "text-slate-500 hover:bg-white/70 hover:text-[#24313E]"}`}>{item}</button>)}
               </div>
               <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2">
                 <div className="flex gap-1">
-                  <button type="button" onClick={() => movePeriod(-1)} aria-label={`Previous ${view.toLowerCase()}`} className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#24313E] hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]"><ArrowIcon direction="left" /></button>
-                  <button type="button" onClick={() => movePeriod(1)} aria-label={`Next ${view.toLowerCase()}`} className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#24313E] hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]"><ArrowIcon direction="right" /></button>
+                  <button type="button" onClick={() => movePeriod(-1)} aria-label={`Previous ${view.toLowerCase()}`} className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-[#24313E] transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]"><ArrowIcon direction="left" /></button>
+                  <button type="button" onClick={() => movePeriod(1)} aria-label={`Next ${view.toLowerCase()}`} className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-[#24313E] transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]"><ArrowIcon direction="right" /></button>
                 </div>
-                <h2 className="px-1 text-center text-base font-semibold leading-tight text-[#24313E] sm:text-2xl">{periodTitle(view, selectedDate)}</h2>
-                <button type="button" onClick={() => setSelectedDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()))} className="rounded-xl bg-[#ffdf20] px-3 py-2.5 text-xs font-semibold text-[#24313E] hover:bg-[#f1d200] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] sm:px-4 sm:text-sm">Today</button>
+                <h2 className="px-1 text-center text-base font-semibold leading-tight tracking-tight text-[#24313E] sm:text-xl">{periodTitle(view, selectedDate)}</h2>
+                <button type="button" onClick={() => setSelectedDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()))} className="rounded-full bg-slate-100 px-3 py-2.5 text-xs font-medium text-[#24313E] ring-1 ring-slate-200 transition-colors hover:bg-[#ffdf20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] sm:px-4 sm:text-sm">Today</button>
               </div>
             </div>
 
@@ -243,10 +251,10 @@ export default function SchoolCalendar() {
             {view === "Year" && <YearView year={selectedDate.getFullYear()} events={filteredEvents} onSelectMonth={(month) => { setSelectedDate(month); setView("Month"); }} />}
           </div>
 
-          <aside aria-labelledby="upcoming-heading" className="rounded-2xl bg-white/90 p-5 shadow-[0_18px_45px_rgba(15,23,42,0.08)] ring-1 ring-slate-200/70 backdrop-blur sm:p-6 lg:sticky lg:top-28">
-            <div className="mb-5 flex items-start justify-between gap-3"><div><h2 id="upcoming-heading" className="text-2xl font-semibold text-[#24313E]">Upcoming Activities</h2><p className="mt-1 text-sm leading-5 text-slate-500">{selectedDateEvents.length ? `Activities on ${formatFullDate(selectedDate)}` : "Public school events and important dates"}</p></div><span className="rounded-full bg-[#ffdf20] px-3 py-1 text-xs font-semibold text-[#24313E]">{panelEvents.length}</span></div>
-            <div className="max-h-[680px] space-y-3 overflow-y-auto pr-1">
-              {loading ? <p className="rounded-xl bg-slate-50 p-6 text-sm font-semibold text-slate-500">Loading activitiesâ€¦</p> : panelEvents.length ? panelEvents.map((event) => <EventRow key={event.id} event={event} selected={selectedEvent?.id === event.id} onSelect={setSelectedEvent} />) : <p className="rounded-xl border border-dashed border-slate-300 p-7 text-center text-sm font-semibold leading-6 text-slate-500">No public school activities listed for this date.</p>}
+          <aside aria-labelledby="upcoming-heading" className="rounded-2xl border border-white/70 bg-white/85 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] ring-1 ring-slate-200/50 backdrop-blur sm:p-6 lg:sticky lg:top-28">
+            <div className="mb-5 flex items-start justify-between gap-3"><div><h2 id="upcoming-heading" className="text-2xl font-semibold tracking-tight text-[#24313E]">Upcoming Activities</h2><p className="mt-1 text-sm leading-relaxed text-slate-500">{selectedDateEvents.length ? `Activities on ${formatFullDate(selectedDate)}` : "Public school events and important dates"}</p></div><span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-[#24313E]">{panelEvents.length}</span></div>
+            <div className="max-h-[620px] space-y-3 overflow-y-auto pr-1">
+              {panelEvents.length ? panelEvents.map((event) => <EventRow key={event.id} event={event} selected={selectedEvent?.id === event.id} onSelect={setSelectedEvent} />) : <p className="rounded-xl bg-slate-50 p-5 text-center text-sm font-medium leading-relaxed text-slate-500">No public school activities listed for this date.</p>}
             </div>
           </aside>
         </div>
@@ -260,17 +268,17 @@ export default function SchoolCalendar() {
 }
 
 function MonthView({ month, today, selectedDate, events, onSelectDate }: { month: Date; today: Date; selectedDate: Date; events: CalendarEvent[]; onSelectDate: (date: Date, events: CalendarEvent[]) => void }) {
-  return <div className="pt-5"><div className="grid grid-cols-7 gap-1.5 sm:gap-2">{weekdays.map((day, index) => <div key={`${day}-${index}`} className="pb-2 text-center text-[22px] font-semibold leading-none text-[#0d0907] sm:text-[26px]">{day.charAt(0)}</div>)}{getMonthDays(month).map((date) => { const dateEvents = getEventsForDate(events, date); const selected = isSameDay(date, selectedDate); const currentMonth = date.getMonth() === month.getMonth(); const currentDay = isSameDay(date, today); const tileTone = currentDay ? "bg-[#f1d200] text-[#0d0907] ring-2 ring-[#f1d200]/40 shadow-md" : currentMonth ? "bg-[#d3cfc6] text-[#0d0907]" : "bg-[#e4e3df] text-[#9c9b97]"; const selectedStyle = selected && !currentDay ? "ring-2 ring-[#24313E]/30 shadow-md" : ""; return <button key={`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`} type="button" onClick={() => onSelectDate(date, dateEvents)} aria-label={`${formatFullDate(date)}${dateEvents.length ? `, ${dateEvents.length} activities` : ""}`} aria-pressed={selected} className={`relative flex aspect-square min-h-11 flex-col items-center justify-between rounded-lg p-1.5 hover:brightness-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] sm:p-2.5 ${tileTone} ${selectedStyle}`}><span className="pt-0.5 text-[22px] font-semibold leading-none sm:text-[26px]">{date.getDate()}</span><EventDots events={dateEvents} /><span className="sr-only">{selected ? "Selected date" : ""}</span></button>; })}</div></div>;
+  return <div className="pt-5"><div className="grid grid-cols-7 gap-1 sm:gap-2">{weekdays.map((day, index) => <div key={`${day}-${index}`} className="pb-2 text-center text-sm font-semibold leading-none text-[#0d0907] sm:text-base">{day.charAt(0)}</div>)}{getMonthDays(month).map((date) => { const dateEvents = getEventsForDate(events, date); const selected = isSameDay(date, selectedDate); const currentMonth = date.getMonth() === month.getMonth(); const currentDay = isSameDay(date, today); const tileTone = currentDay ? "bg-[#f1d200] text-[#0d0907] ring-2 ring-[#f1d200]/40 shadow-md" : currentMonth ? "bg-[#d3cfc6] text-[#0d0907]" : "bg-[#e4e3df] text-[#9c9b97]"; const selectedStyle = selected && !currentDay ? "ring-2 ring-[#24313E]/30 shadow-md" : ""; return <button key={`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`} type="button" onClick={() => onSelectDate(date, dateEvents)} aria-label={`${formatFullDate(date)}${dateEvents.length ? `, ${dateEvents.length} activities` : ""}`} aria-pressed={selected} className={`relative flex h-16 flex-col items-center justify-between rounded-lg p-1.5 sm:h-[72px] lg:h-20 lg:p-2 hover:brightness-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] sm:p-2.5 ${tileTone} ${selectedStyle}`}><span className="pt-0.5 text-xl font-semibold leading-none sm:text-[24px]">{date.getDate()}</span><EventDots events={dateEvents} /><span className="sr-only">{selected ? "Selected date" : ""}</span></button>; })}</div></div>;
 }
 
 function WeekView({ date, today, selectedDate, events, onSelectDate, onSelectEvent }: { date: Date; today: Date; selectedDate: Date; events: CalendarEvent[]; onSelectDate: (date: Date, events: CalendarEvent[]) => void; onSelectEvent: (event: CalendarEvent) => void }) {
   const start = getStartOfWeek(date);
   const days = Array.from({ length: 7 }, (_, index) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + index));
-  return <div className="grid gap-3 pt-5 sm:grid-cols-2 xl:grid-cols-7">{days.map((day) => { const dayEvents = getEventsForDate(events, day); const selected = isSameDay(day, selectedDate); return <div key={day.toISOString()} className={`rounded-xl border p-3 ${selected ? "border-[#e0c400] bg-yellow-50/50 shadow-[0_0_0_3px_rgba(255,223,32,0.16)]" : "border-slate-200 bg-[#f7f5ef]"}`}><button type="button" onClick={() => onSelectDate(day, [])} className="w-full rounded-xl text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]"><span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400">{weekdays[day.getDay()]}</span><span className={`mx-auto mt-1 flex h-10 w-10 items-center justify-center rounded-full text-xl font-semibold ${isSameDay(day, today) ? "bg-[#24313E] text-[#ffdf20]" : "text-[#24313E]"}`}>{day.getDate()}</span><EventDots events={dayEvents} /></button><div className="mt-3 space-y-2">{dayEvents.map((event) => <button key={event.id} type="button" onClick={() => onSelectEvent(event)} className="w-full rounded-lg bg-white px-2 py-2 text-left text-[11px] font-bold leading-4 text-[#24313E] shadow-sm hover:ring-1 hover:ring-slate-300">{event.title}</button>)}</div></div>; })}</div>;
+  return <div className="grid gap-3 pt-5 sm:grid-cols-2 xl:grid-cols-7">{days.map((day) => { const dayEvents = getEventsForDate(events, day); const selected = isSameDay(day, selectedDate); return <div key={day.toISOString()} className={`rounded-xl border p-3 ${selected ? "border-[#e0c400] bg-yellow-50/50 shadow-[0_0_0_3px_rgba(255,223,32,0.16)]" : "border-slate-200 bg-[#f7f5ef]"}`}><button type="button" onClick={() => onSelectDate(day, [])} className="w-full rounded-xl text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]"><span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{weekdays[day.getDay()]}</span><span className={`mx-auto mt-1 flex h-10 w-10 items-center justify-center rounded-full text-xl font-semibold ${isSameDay(day, today) ? "bg-[#24313E] text-[#ffdf20]" : "text-[#24313E]"}`}>{day.getDate()}</span><EventDots events={dayEvents} /></button><div className="mt-3 space-y-2">{dayEvents.map((event) => <button key={event.id} type="button" onClick={() => onSelectEvent(event)} className="w-full rounded-lg bg-white px-2 py-2 text-left text-[11px] font-medium leading-4 text-[#24313E] shadow-sm hover:ring-1 hover:ring-slate-300">{event.title}</button>)}</div></div>; })}</div>;
 }
 
 function DayView({ date, events, onSelectEvent }: { date: Date; events: CalendarEvent[]; onSelectEvent: (event: CalendarEvent) => void }) {
-  return <div className="pt-6"><div className="mb-5 rounded-xl bg-[#24313E] p-5 text-white"><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#ffdf20]">Daily agenda</p><h3 className="mt-2 text-2xl font-semibold">{formatFullDate(date)}</h3></div>{events.length ? <div className="space-y-3">{events.map((event) => <EventRow key={event.id} event={event} selected={false} onSelect={onSelectEvent} />)}</div> : <div className="rounded-xl border border-dashed border-slate-300 bg-[#f7f5ef] p-10 text-center"><p className="font-semibold text-[#24313E]">No public school activities listed for this date.</p><p className="mt-2 text-sm text-slate-500">Use the calendar controls to check another day.</p></div>}</div>;
+  return <div className="pt-6"><div className="mb-5 rounded-xl bg-[#24313E] p-5 text-white"><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#ffdf20]">Daily agenda</p><h3 className="mt-2 text-2xl font-semibold">{formatFullDate(date)}</h3></div>{events.length ? <div className="space-y-3">{events.map((event) => <EventRow key={event.id} event={event} selected={false} onSelect={onSelectEvent} />)}</div> : <div className="rounded-xl bg-slate-50 p-6 sm:p-8 text-center"><p className="font-semibold text-[#24313E]">No public school activities listed for this date.</p><p className="mt-2 text-sm text-slate-500">Use the calendar controls to check another day.</p></div>}</div>;
 }
 
 function YearView({ year, events, onSelectMonth }: { year: number; events: CalendarEvent[]; onSelectMonth: (month: Date) => void }) {
@@ -278,5 +286,5 @@ function YearView({ year, events, onSelectMonth }: { year: number; events: Calen
 }
 
 function EventModal({ event, onClose }: { event: CalendarEvent; onClose: () => void }) {
-  return <div className="fixed inset-0 z-[1200] flex items-end justify-center bg-[#111A22]/70 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(mouseEvent) => { if (mouseEvent.target === mouseEvent.currentTarget) onClose(); }}><div role="dialog" aria-modal="true" aria-labelledby="event-dialog-title" className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-white p-6 shadow-[0_24px_70px_rgba(15,23,42,0.18)] sm:max-w-xl sm:rounded-2xl sm:p-8"><div className="flex items-start justify-between gap-4"><div><span className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${categoryStyles[event.category] ?? "border-slate-200 bg-slate-50 text-slate-700"}`}>{event.category}</span><h2 id="event-dialog-title" className="mt-4 text-2xl font-semibold leading-tight text-[#24313E] sm:text-3xl">{event.title}</h2></div><button type="button" onClick={onClose} aria-label="Close event details" autoFocus className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-slate-200 text-xl text-slate-500 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]">Ã—</button></div><dl className="mt-6 grid gap-4 rounded-xl bg-[#f7f5ef] p-5 sm:grid-cols-2"><div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Date</dt><dd className="mt-1 text-sm font-bold text-[#24313E]">{formatDateRange(event)}</dd></div>{event.startTime && <div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Time</dt><dd className="mt-1 text-sm font-bold text-[#24313E]">{formatEventTime(event)}</dd></div>}<div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Status</dt><dd className="mt-1"><span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${statusStyles[event.status]}`}>{event.status}</span></dd></div><div><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Audience</dt><dd className="mt-1 text-sm font-bold text-[#24313E]">{event.audience}</dd></div>{event.location && <div className="sm:col-span-2"><dt className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Location</dt><dd className="mt-1 text-sm font-bold text-[#24313E]">{event.location}</dd></div>}</dl><div className="mt-6"><h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">About this activity</h3><p className="mt-2 leading-7 text-slate-600">{event.description}</p></div><button type="button" onClick={onClose} className="mt-7 w-full rounded-xl bg-[#24313E] px-5 py-3 font-semibold text-white hover:bg-[#34495e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] focus-visible:ring-offset-2">Close details</button></div></div>;
+  return <div className="fixed inset-0 z-[1200] flex items-end justify-center bg-[#111A22]/45 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(mouseEvent) => { if (mouseEvent.target === mouseEvent.currentTarget) onClose(); }}><div role="dialog" aria-modal="true" aria-labelledby="event-dialog-title" className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl border border-white/70 bg-white/95 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.16)] sm:max-w-xl sm:rounded-2xl sm:p-8"><div className="flex items-start justify-between gap-4"><div><span className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${categoryStyles[event.category] ?? "border-slate-200 bg-slate-50 text-slate-700"}`}>{event.category}</span><h2 id="event-dialog-title" className="mt-4 text-2xl font-semibold leading-tight tracking-tight text-[#24313E] sm:text-3xl">{event.title}</h2></div><button type="button" onClick={onClose} aria-label="Close event details" autoFocus className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl text-slate-500 transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]">Ã—</button></div><dl className="mt-6 grid gap-4 rounded-xl bg-slate-50 p-5 sm:grid-cols-2"><div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Date</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{formatDateRange(event)}</dd></div>{event.startTime && <div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Time</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{formatEventTime(event)}</dd></div>}<div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Status</dt><dd className="mt-1"><span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${statusStyles[event.status]}`}>{event.status}</span></dd></div><div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Audience</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{event.audience}</dd></div>{event.location && <div className="sm:col-span-2"><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Location</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{event.location}</dd></div>}</dl><div className="mt-6"><h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">About this activity</h3><p className="mt-2 leading-relaxed text-slate-600">{event.description}</p></div><button type="button" onClick={onClose} className="mt-7 w-full rounded-xl bg-[#24313E] px-5 py-3 font-semibold text-white hover:bg-[#34495e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] focus-visible:ring-offset-2">Close details</button></div></div>;
 }

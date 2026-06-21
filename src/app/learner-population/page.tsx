@@ -8,10 +8,9 @@ import fs from "fs";
 import path from "path";
 
 import Navbar from "@/components/Navbar";
-import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import PopulationCountUp from "@/components/PopulationCountUp";
-import TypewriterText from "@/components/TypewriterText";
 
 type PopulationRow = {
   sortOrder: number;
@@ -233,30 +232,11 @@ export default function LearnerPopulationPage() {
       <Navbar />
 
       <main className="min-h-screen bg-[#F8FAFC] text-[#24313E]">
-        <section className="px-6 pb-10 pt-28 md:pt-32">
-          <div className="mx-auto max-w-6xl">
-            <BrandHeader compact />
-
-            <div className="mx-auto max-w-3xl text-center">
-              <p className="inline-flex border-l-4 border-[#ffdf20] bg-white px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] text-[#24313E] shadow-sm">
-                {schoolYear}
-              </p>
-
-              <TypewriterText
-                as="h1"
-                text="Learner Population"
-                className="mt-4 text-4xl font-semibold tracking-tight text-[#24313E] md:text-6xl"
-                speed={72}
-                startDelay={150}
-              />
-
-              <p className="mx-auto mt-3 max-w-2xl text-base font-semibold leading-7 text-slate-600 md:text-lg">
-                Official learner population statistics of Tabunoc National High
-                School for {formatSchoolYear(schoolYear)}.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHeader
+          eyebrow="School Profile"
+          title="Learner Population"
+          description={`View the current school-level enrollment summary of Tabunoc National High School for ${formatSchoolYear(schoolYear)} public information and school profile reference.`}
+        />
 
         <section className="px-6 pb-20">
           <div className="mx-auto max-w-6xl">

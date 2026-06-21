@@ -4,11 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 
 import Navbar from "@/components/Navbar";
-import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import PersonnelCard from "@/components/PersonnelCard";
 import PersonnelModal from "@/components/PersonnelModal";
-import TypewriterText from "@/components/TypewriterText";
 
 import type { Personnel, PersonnelRole } from "@/data/organization";
 
@@ -53,16 +52,16 @@ function SectionHeading({
 }) {
   return (
     <div className={sectionIntroClass}>
-      <p className="text-xs font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20] sm:text-sm">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#0F4C5C] dark:text-[#ffdf20] sm:text-sm">
         {eyebrow}
       </p>
 
-      <h2 className="mx-auto mt-1.5 max-w-4xl text-2xl font-semibold leading-tight text-slate-950 dark:text-white md:text-4xl">
+      <h2 className="mx-auto mt-1.5 max-w-4xl text-2xl font-semibold leading-tight tracking-tight text-slate-950 dark:text-white md:text-4xl">
         {title}
       </h2>
 
       {description ? (
-        <p className="mx-auto mt-2 max-w-3xl text-sm leading-6 text-slate-600 dark:text-stone-300 md:text-base md:leading-7">
+        <p className="mx-auto mt-2 max-w-3xl text-sm leading-relaxed text-slate-600 dark:text-stone-300 md:text-base">
           {description}
         </p>
       ) : null}
@@ -1375,73 +1374,35 @@ return (
     <Navbar autoHideOnMobileScroll />
 
     <main className="min-h-screen w-full overflow-x-hidden bg-[#F8FAFC] text-slate-950 dark:bg-[#0a0908] dark:text-white">
-        <section className="border-b border-slate-200 bg-white px-5 pb-12 pt-32 text-slate-950 dark:border-[#292624] dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10">
-          <div className="mx-auto max-w-6xl text-center">
-            <BrandHeader />
-
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-[#ffdf20]"
-            >
-              Faculty and Staff Directory
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.15 }}
-            >
-              <TypewriterText
-                as="h1"
-                text="School Administration, Faculty, and Staff"
-                className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight text-slate-950 dark:text-white md:text-6xl"
-                speed={52}
-                startDelay={160}
-              />
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.25 }}
-              className="mx-auto mt-5 max-w-3xl text-base leading-7 text-slate-700 dark:text-stone-200 md:text-lg"
-            >
-              Meet the school administration, faculty members, advisers,
-              program coordinators, and support personnel of Tabunoc National
-              High School.
-            </motion.p>
-          </div>
-        </section>
-
-        <section
-          id="directory-search"
-          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+        <PageHeader
+          eyebrow="Faculty and Staff Directory"
+          title="School Administration, Faculty, and Staff"
+          description="Meet the school administration, faculty members, advisers, program coordinators, and support personnel of Tabunoc National High School."
+          animateTitle
         >
-          <div className="mx-auto max-w-6xl">
-            <SectionHeading
-              eyebrow="School Personnel Directory"
-              title="Search the Personnel Directory"
-              description="Search by name, role, subject taught, advisory section, position, designation, or program handled."
-            />
-
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5">
-              <div className="grid gap-4 lg:grid-cols-[1fr_260px]">
+            <div
+              id="directory-search"
+              role="search"
+              aria-label="Search personnel directory"
+              className="mx-auto w-full max-w-5xl rounded-2xl border border-slate-200/80 bg-white/90 p-4 text-left shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur dark:border-[#292624] dark:bg-[#171614]/95 dark:shadow-black/20 md:p-5"
+            >
+              <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_240px]">
                 <input
                   type="text"
+                  aria-label="Search personnel directory"
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   placeholder="Search by name, section, subject, designation, or program..."
-                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-semibold text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white dark:placeholder:text-slate-500"
                 />
 
                 <select
+                  aria-label="Filter personnel by role"
                   value={selectedRole}
                   onChange={(event) =>
                     setSelectedRole(event.target.value as "All" | PersonnelRole)
                   }
-                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-bold text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-medium text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white"
                 >
                   {roleFilters.map((role) => (
                     <option key={role} value={role}>
@@ -1457,7 +1418,7 @@ return (
 
               {isLoading && (
                 <div className="mt-6 rounded-xl bg-slate-100 p-8 text-center dark:bg-[#292624]">
-                  <p className="font-bold text-slate-700 dark:text-stone-200">
+                  <p className="font-semibold tracking-tight text-slate-700 dark:text-stone-200">
                     Loading personnel roster...
                   </p>
                 </div>
@@ -1467,7 +1428,7 @@ return (
                 (searchTerm.trim() !== "" || selectedRole !== "All") && (
                   <div className="mt-6">
                     <div className="mb-4 flex flex-col justify-between gap-3 md:flex-row md:items-center">
-                      <p className="text-sm font-bold text-slate-600 dark:text-stone-300">
+                      <p className="text-sm font-medium text-slate-600 dark:text-stone-300">
                         {searchResults.length} result
                         {searchResults.length !== 1 ? "s" : ""} found
                       </p>
@@ -1496,7 +1457,7 @@ return (
                       </div>
                     ) : (
                       <div className="rounded-xl bg-slate-100 p-8 text-center dark:bg-[#292624]">
-                        <p className="font-bold text-slate-700 dark:text-stone-200">
+                        <p className="font-semibold tracking-tight text-slate-700 dark:text-stone-200">
                           No matching personnel found.
                         </p>
                         <p className="mt-2 text-sm text-slate-500 dark:text-stone-400">
@@ -1508,8 +1469,7 @@ return (
                   </div>
                 )}
             </div>
-          </div>
-        </section>
+        </PageHeader>
 
         {/* SCHOOL HEAD */}
         <section
@@ -1608,7 +1568,7 @@ return (
               </div>
             ) : !isLoading ? (
               <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center">
-                <p className="font-bold text-slate-600 dark:text-stone-300">
+                <p className="font-medium leading-relaxed text-slate-600 dark:text-stone-300">
                   Program coordinator profiles will be added soon.
                 </p>
               </div>
@@ -1756,7 +1716,7 @@ return (
                     <button
                       key={department}
                       onClick={() => setSelectedSubjectDepartment(department)}
-                      className={`rounded-full px-5 py-2 text-sm font-bold transition ${
+                      className={`rounded-full px-5 py-2 text-sm font-medium transition ${
                         selectedSubjectDepartment === department
                           ? "bg-[#ffdf20] text-slate-950 shadow-sm"
                           : "bg-[#F8FAFC] text-slate-700 shadow-sm ring-1 ring-slate-200 hover:text-[#0F4C5C] dark:bg-[#171614] dark:text-stone-200 dark:ring-[#292624] dark:hover:text-[#ffdf20]"
@@ -1843,7 +1803,7 @@ return (
               </>
             ) : !isLoading ? (
               <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 text-center">
-                <p className="font-bold text-slate-600 dark:text-stone-300">
+                <p className="font-medium leading-relaxed text-slate-600 dark:text-stone-300">
                   Subject teacher profiles will be added soon.
                 </p>
               </div>
@@ -1876,7 +1836,7 @@ return (
               </div>
             ) : !isLoading ? (
               <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center">
-                <p className="font-bold text-slate-600 dark:text-stone-300">
+                <p className="font-medium leading-relaxed text-slate-600 dark:text-stone-300">
                   School support personnel profiles will be added soon.
                 </p>
               </div>

@@ -7,8 +7,8 @@
 import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
-import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import TypewriterText from "@/components/TypewriterText";
 
 const faqGroups = [
@@ -203,32 +203,12 @@ export default function FAQPage() {
       <Navbar />
 
       <main className="min-h-screen bg-white text-slate-950">
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-36">
-          <div className="absolute left-10 top-28 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
-          <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
-
-          <div className="relative mx-auto max-w-7xl text-center">
-            <BrandHeader />
-
-            <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
-              Public Assistance
-            </p>
-
-            <TypewriterText
-              as="h1"
-              text="Frequently Asked Questions"
-              className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-tight md:text-6xl"
-              speed={72}
-              startDelay={140}
-            />
-
-            <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-700">
-              Quick answers to common concerns about enrollment, school
-              programs, public assistance, announcements, safety, and official
-              communication channels of Tabunoc National High School.
-            </p>
-
-            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+        <PageHeader
+          eyebrow="Help and Information"
+          title="Frequently Asked Questions"
+          description="Find answers to common questions about school services, enrollment, schedules, and official channels of Tabunoc National High School."
+        >
+            <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 href="/enrollment"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-[#146577]"
@@ -244,8 +224,7 @@ export default function FAQPage() {
                 Contact the School
               </Link>
             </div>
-          </div>
-        </section>
+        </PageHeader>
 
         <section className="bg-white px-6 py-16">
           <div className="mx-auto max-w-7xl">

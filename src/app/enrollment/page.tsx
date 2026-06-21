@@ -12,8 +12,8 @@ import Link from "next/link";
 import { motion } from "motion/react";
 
 import Navbar from "@/components/Navbar";
-import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import TypewriterText from "@/components/TypewriterText";
 
 const pagePadding = "px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]";
@@ -551,55 +551,12 @@ export default function EnrollmentPage() {
       <Navbar />
 
       <main className="min-h-screen bg-white text-slate-950">
-        {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 pb-16 pt-32">
-          <div className="absolute left-10 top-24 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
-          <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
-
-          <div className={`relative mx-auto w-full ${pagePadding}`}>
-            <div className="mx-auto max-w-5xl text-center">
-              <BrandHeader />
-
-              <motion.p
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="text-sm font-semibold uppercase tracking-[0.22em] text-[#0F4C5C]"
-              >
-                Enrollment Guide
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 28 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.1 }}
-              >
-                <TypewriterText
-                  as="h1"
-                  text="Enrollment Made Simple"
-                  className="mt-4 text-4xl font-semibold leading-tight tracking-tight text-[#071E29] sm:text-5xl lg:text-6xl"
-                  speed={72}
-                  startDelay={140}
-                />
-              </motion.div>
-
-              <motion.p
-                initial={{ opacity: 0, y: 28 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.2 }}
-                className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-700"
-              >
-                Basic enrollment information for incoming learners,
-                transferees, returning learners, ALS passers, parents, and
-                guardians of Tabunoc National High School.
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.3 }}
-                className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"
-              >
+        <PageHeader
+          eyebrow="Enrollment Guide"
+          title="Enrollment Information"
+          description="View enrollment reminders, requirements, and important guidance for incoming and returning learners of Tabunoc National High School."
+        >
+              <div className="flex flex-col justify-center gap-3 sm:flex-row">
                 <ActionLink
                   href="#learner-category"
                   className="bg-[#0F4C5C] text-white hover:bg-[#146577]"
@@ -622,10 +579,8 @@ export default function EnrollmentPage() {
                 >
                   Contact the School
                 </ActionLink>
-              </motion.div>
-            </div>
-          </div>
-        </section>
+              </div>
+        </PageHeader>
 
         {/* ADVISORY */}
         <section className="bg-white py-10">

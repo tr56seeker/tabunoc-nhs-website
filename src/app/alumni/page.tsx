@@ -10,8 +10,8 @@ import Link from "next/link";
 import { motion } from "motion/react";
 
 import Navbar from "@/components/Navbar";
-import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import TypewriterText from "@/components/TypewriterText";
 
 const pagePadding = "px-6 md:px-10 xl:px-[120px] 2xl:px-[190px]";
@@ -179,54 +179,12 @@ export default function AlumniPage() {
       <Navbar />
 
       <main className="min-h-screen bg-white text-slate-950">
-        {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 pb-20 pt-36">
-          <div className="absolute left-10 top-28 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
-          <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
-
-          <div className={`relative mx-auto w-full text-center ${pagePadding}`}>
-            <BrandHeader />
-
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="text-sm font-semibold uppercase tracking-[0.22em] text-[#0F4C5C]"
-            >
-              Alumni Community
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-            >
-              <TypewriterText
-                as="h1"
-                text="Tabunoc NHS Alumni and Community"
-                className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-tight text-[#071E29] sm:text-5xl lg:text-6xl"
-                speed={72}
-                startDelay={140}
-              />
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-700"
-            >
-              A space for graduates, former learners, and partners to
-              reconnect, celebrate milestones, and support meaningful
-              school-community initiatives.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"
-            >
+        <PageHeader
+          eyebrow="Alumni Community"
+          title="Tabunoc NHS Alumni and Community"
+          description="A space for graduates, former learners, and partners to reconnect, celebrate milestones, and support meaningful school-community initiatives."
+        >
+            <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <a
                 href={facebookGroupUrl}
                 target="_blank"
@@ -251,9 +209,8 @@ export default function AlumniPage() {
               >
                 Contact the School
               </Link>
-            </motion.div>
-          </div>
-        </section>
+            </div>
+        </PageHeader>
 
         {/* PURPOSE */}
         <section className="bg-white py-20">

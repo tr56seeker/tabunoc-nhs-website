@@ -421,9 +421,9 @@ function SocialIcon({ icon }: { icon: SocialLink["icon"] }) {
 function DetailFieldCard({ label, value }: DetailField) {
   return (
     <div className="grid gap-1 py-0.5 sm:grid-cols-[170px_minmax(0,1fr)] sm:gap-5 md:py-1">
-      <p className="text-sm font-bold leading-6 text-slate-950">{label}</p>
+      <p className="text-xs font-semibold uppercase leading-relaxed tracking-[0.16em] text-slate-500">{label}</p>
 
-      <p className="min-w-0 whitespace-pre-line break-words text-sm font-medium leading-6 text-slate-800 md:text-[16px]">
+      <p className="min-w-0 whitespace-pre-line break-words text-sm font-medium leading-relaxed text-slate-700 md:text-[16px]">
         {value}
       </p>
     </div>
@@ -433,7 +433,7 @@ function DetailFieldCard({ label, value }: DetailField) {
 function SectionTitle({ title }: { title: string }) {
   return (
     <div className="mb-3 md:mb-4">
-      <h3 className="text-2xl font-bold tracking-[-0.02em] text-slate-950 md:text-[30px] md:leading-tight">
+      <h3 className="text-2xl font-semibold tracking-tight text-slate-950 md:text-[30px] md:leading-tight">
         {title}
       </h3>
     </div>
@@ -618,7 +618,7 @@ export default function PersonnelModal({
                         className="h-full w-full object-cover object-[50%_20%]"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#ffdf20] via-[#f59e0b] to-[#b45309] text-4xl font-black text-white md:text-6xl">
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#ffdf20] via-[#f59e0b] to-[#b45309] text-4xl font-semibold text-white md:text-6xl">
                         {getInitials(displayName)}
                       </div>
                     )}
@@ -627,25 +627,25 @@ export default function PersonnelModal({
                   <div className="min-w-0 flex-1 pb-1 md:pt-0">
                     <h2
                           title={displayName}
-                          className="line-clamp-2 text-2xl font-bold leading-tight tracking-[-0.02em] text-slate-950 sm:text-[26px] md:mt-10 md:text-[30px] md:leading-tight"
+                          className="line-clamp-2 text-2xl font-semibold leading-tight tracking-tight text-[#1d1d1f] sm:text-[26px] md:mt-10 md:text-[30px] md:leading-tight"
                         >
                           {displayName}
                         </h2>
 
                         {positionText && (
-                          <p className="mt-2 text-base font-semibold leading-5 text-[#024253] sm:text-[17px] md:mt-6 md:text-lg md:leading-6">
+                          <p className="mt-2 text-base font-medium leading-relaxed text-[#024253] sm:text-[17px] md:mt-6 md:text-lg">
                             {positionText}
                           </p>
                         )}
 
                         {teachingDepartmentText && (
-                          <p className="mt-1 text-sm font-bold uppercase leading-5 tracking-[0.12em] text-slate-500 sm:text-[15px] md:text-base">
+                          <p className="mt-1 text-xs font-semibold uppercase leading-relaxed tracking-[0.16em] text-slate-500 sm:text-sm md:text-base">
                             {teachingDepartmentText}
                           </p>
                         )}
 
                         {designationText && (
-                          <p className="mt-2 line-clamp-3 text-sm font-semibold leading-5 text-slate-700 sm:text-[15px] md:mx-auto md:max-w-[280px] md:text-base md:leading-6">
+                          <p className="mt-2 line-clamp-3 text-sm font-medium leading-relaxed text-slate-600 sm:text-[15px] md:mx-auto md:max-w-[280px] md:text-base">
                             {designationText}
                           </p>
                         )}
@@ -659,7 +659,7 @@ export default function PersonnelModal({
                   <section className="mb-8 md:mb-10">
                     <SectionTitle title="Professional Belief in Teaching" />
 
-                    <p className="max-w-[660px] text-sm font-medium leading-7 tracking-[-0.01em] text-slate-800 md:text-[16px]">
+                    <p className="max-w-[660px] text-sm font-medium leading-relaxed text-slate-600 md:text-[16px]">
                       &ldquo;{teachingPhilosophy}&rdquo;
                     </p>
                   </section>
@@ -727,7 +727,7 @@ export default function PersonnelModal({
                           href={link.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 py-3 text-sm font-black text-[#0F4C5C] shadow-sm ring-1 ring-slate-200 transition hover:bg-[#0F4C5C] hover:text-white"
+                          className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 py-3 text-sm font-medium text-[#0F4C5C] shadow-sm ring-1 ring-slate-200 transition hover:bg-[#0F4C5C] hover:text-white"
                         >
                           <SocialIcon icon={link.icon} />
                           {link.label}
@@ -743,7 +743,7 @@ export default function PersonnelModal({
                   contactFields.length === 0 &&
                   socialLinks.length === 0 && (
                     <div className="bg-white/70 p-6 text-center ring-1 ring-black/10 md:p-8">
-                      <p className="font-bold text-slate-600">
+                      <p className="font-medium leading-relaxed text-slate-600">
                         Public profile details will be added soon.
                       </p>
                     </div>

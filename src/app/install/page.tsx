@@ -1,4 +1,4 @@
-﻿import TypewriterText from "@/components/TypewriterText";
+﻿import PageHeader from "@/components/PageHeader";
 
 export const metadata = {
   title: "Install Tabunoc NHS App | Tabunoc National High School",
@@ -8,25 +8,15 @@ export const metadata = {
 
 export default function InstallPage() {
   return (
-    <main className="min-h-screen bg-[#F8FAFC] px-6 py-24 text-[#24313E]">
-      <section className="mx-auto max-w-4xl">
-        <p className="mb-3 text-sm font-bold uppercase tracking-wide text-[#24313E]">
-          Official School Web App
-        </p>
-
-        <TypewriterText
-          as="h1"
-          text="Install Tabunoc NHS App"
-          className="mb-4 text-3xl font-semibold md:text-5xl"
-          speed={72}
-          startDelay={140}
-        />
-
-        <p className="mb-10 max-w-2xl text-base text-gray-600 md:text-lg">
-          Add the official Tabunoc National High School website to your phone
-          home screen for quick access to announcements, enrollment information,
-          SHS offerings, school contacts, and online services.
-        </p>
+    <>
+      <PageHeader
+        variant="minimal"
+        eyebrow="Website App"
+        title="Install Tabunoc NHS App"
+        description="Add the official school website to your device for faster access to announcements, enrollment updates, and online services."
+      />
+      <main className="min-h-screen bg-[#F8FAFC] px-6 py-12 text-[#24313E]">
+        <section className="mx-auto max-w-4xl">
 
         <div className="mb-6 rounded-3xl border border-[#24313E]/10 bg-white p-6 shadow-sm">
           <div className="mb-5 border-l-4 border-[#ffdf20] pl-4">
@@ -99,7 +89,8 @@ export default function InstallPage() {
             and online services.
           </p>
         </div>
-      </section>
-    </main>
+        </section>
+      </main>
+    </>
   );
 }

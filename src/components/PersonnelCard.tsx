@@ -285,7 +285,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-2 break-words text-[15px] font-black leading-snug text-slate-950 transition group-hover:text-slate-900 dark:text-white sm:text-base"
+        className="line-clamp-2 break-words text-[15px] font-semibold leading-snug tracking-tight text-[#1d1d1f] transition group-hover:text-slate-900 dark:text-white sm:text-base"
       >
         {value}
       </p>
@@ -296,7 +296,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-1 break-words text-[12px] font-semibold leading-5 text-slate-600 dark:text-stone-300 sm:text-[13px]"
+        className="line-clamp-1 break-words text-[12px] font-medium leading-snug text-slate-600 dark:text-stone-300 sm:text-[13px]"
       >
         {value}
       </p>
@@ -307,7 +307,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="line-clamp-1 break-words text-[12px] font-semibold leading-5 text-slate-500 dark:text-stone-400 sm:text-[13px]"
+        className="line-clamp-1 break-words text-[12px] font-medium leading-snug text-slate-500 dark:text-stone-400 sm:text-[13px]"
       >
         {value}
       </p>
@@ -318,7 +318,7 @@ function PreviewLine({
     return (
       <p
         title={title || value}
-        className="truncate text-[12px] font-semibold leading-5 text-slate-600 dark:text-stone-300 sm:text-[13px]"
+        className="truncate text-[12px] font-medium leading-snug text-slate-600 dark:text-stone-300 sm:text-[13px]"
       >
         {value}
       </p>
@@ -328,7 +328,7 @@ function PreviewLine({
   return (
     <p
       title={title || value}
-      className="line-clamp-1 break-words text-[12px] font-semibold leading-5 text-slate-600 dark:text-stone-300 sm:text-[13px]"
+      className="line-clamp-1 break-words text-[12px] font-medium leading-snug text-slate-600 dark:text-stone-300 sm:text-[13px]"
     >
       {value}
     </p>
@@ -384,7 +384,7 @@ export default function PersonnelCard({
               className="h-full w-full object-cover object-top"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-lg font-black text-slate-600 dark:bg-[#292624] dark:text-stone-300 sm:text-xl">
+            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-lg font-semibold text-slate-600 dark:bg-[#292624] dark:text-stone-300 sm:text-xl">
               {initials}
             </div>
           )}
@@ -413,7 +413,7 @@ export default function PersonnelCard({
             />
           </div>
 
-          <span className="mt-2 inline-flex w-fit shrink-0 items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-bold leading-none text-slate-700 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:bg-[#24313E] group-hover:text-[#ffdf20] group-hover:shadow-md dark:bg-[#292624] dark:text-stone-200 dark:group-hover:bg-[#24313E] dark:group-hover:text-[#ffdf20]">
+          <span className="mt-2 inline-flex w-fit shrink-0 items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-medium leading-none text-slate-700 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:bg-[#24313E] group-hover:text-[#ffdf20] group-hover:shadow-md dark:bg-[#292624] dark:text-stone-200 dark:group-hover:bg-[#24313E] dark:group-hover:text-[#ffdf20]">
             View Details
           </span>
         </div>

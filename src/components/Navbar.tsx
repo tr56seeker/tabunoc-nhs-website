@@ -316,7 +316,7 @@ function DropdownLink({
 }
 
 export default function Navbar({
-  brandMode = "afterScroll",
+  brandMode,
   autoHideOnMobileScroll = false,
 }: NavbarProps) {
   const pathname = usePathname();
@@ -435,8 +435,12 @@ export default function Navbar({
     };
   }, [contactOpen]);
 
-  const showBrand = brandMode === "always" || hasScrolled;
-  const centerMenu = brandMode === "afterScroll" && !hasScrolled;
+  const effectiveBrandMode =
+    brandMode ?? (pathname === "/" ? "afterScroll" : "always");
+  const showBrand =
+    effectiveBrandMode === "always" ||
+    (effectiveBrandMode === "afterScroll" && hasScrolled);
+  const centerMenu = effectiveBrandMode === "afterScroll" && !hasScrolled;
   const contactActive = pathname.startsWith("/contact");
 
   return (

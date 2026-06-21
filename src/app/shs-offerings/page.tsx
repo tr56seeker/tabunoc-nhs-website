@@ -5,8 +5,8 @@ import { useState } from "react";
 import { motion } from "motion/react";
 
 import Navbar from "@/components/Navbar";
-import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
 import TypewriterText from "@/components/TypewriterText";
 
 const offerings = [
@@ -125,53 +125,12 @@ export default function SHSOfferingsPage() {
 
       <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
         {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 pb-20 pt-36">
-          <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
-          <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
-
-          <div className="relative mx-auto max-w-7xl text-center">
-            <BrandHeader />
-
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
-            >
-              Senior High School
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.15 }}
-            >
-              <TypewriterText
-                as="h1"
-                text="Senior High School Offerings"
-                className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
-                speed={72}
-                startDelay={140}
-              />
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.25 }}
-              className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200"
-            >
-              Explore the Pure Academic Track and Tech Pro Track offerings
-              available for Senior High School learners of Tabunoc National High
-              School.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.35 }}
-              className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
-            >
+        <PageHeader
+          eyebrow="Senior High School"
+          title="Senior High School Offerings"
+          description="Explore the Pure Academic Track and Tech Pro Track offerings available for Senior High School learners of Tabunoc National High School."
+        >
+            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
                 href="/enrollment"
                 className="rounded-xl bg-yellow-300 px-8 py-3 font-semibold text-slate-950 shadow-lg shadow-yellow-300/30 dark:shadow-black/20 transition hover:-translate-y-1 hover:bg-yellow-200"
@@ -185,9 +144,8 @@ export default function SHSOfferingsPage() {
               >
                 Ask for Assistance
               </Link>
-            </motion.div>
-          </div>
-        </section>
+            </div>
+        </PageHeader>
 
         {/* QUICK GUIDE */}
         <section className="bg-white dark:bg-[#0a0908] px-6 py-16">

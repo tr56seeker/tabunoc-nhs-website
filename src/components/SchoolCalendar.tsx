@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
-import TypewriterText from "@/components/TypewriterText";
 
 type CalendarView = "Day" | "Week" | "Month" | "Year";
 
@@ -148,10 +147,6 @@ function ArrowIcon({ direction }: { direction: "left" | "right" }) {
   return <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true"><path d={direction === "left" ? "M15 18l-6-6 6-6" : "M9 6l6 6-6 6"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
 
-function CalendarIcon() {
-  return <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden="true"><path d="M7 3v3m10-3v3M4.5 9.5h15M6 5h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V7a2 2 0 012-2z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>;
-}
-
 function EventDots({ events }: { events: CalendarEvent[] }) {
   const dots = Array.from(new Set(events.map((event) => event.category))).slice(0, 3);
   return <span className="flex min-h-2 items-center justify-center gap-1" aria-label={events.length ? `${events.length} activities` : undefined}>{dots.map((category) => <span key={category} className={`h-1.5 w-1.5 rounded-full sm:h-2 sm:w-2 ${dotColors[category] ?? "bg-slate-400"}`} />)}</span>;
@@ -218,16 +213,6 @@ export default function SchoolCalendar() {
 
   return (
     <main className="min-h-screen bg-[#f7f3ea] text-slate-900">
-      <section className="relative overflow-hidden bg-[#24313E] px-5 pb-14 pt-32 text-white sm:px-8 lg:pb-16 lg:pt-36">
-        <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full border-[56px] border-white/[0.04]" aria-hidden="true" />
-        <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[#ffdf20]" aria-hidden="true" />
-        <div className="relative mx-auto max-w-7xl">
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#ffdf20]"><CalendarIcon /> SY 2026-2027</span>
-          <TypewriterText as="h1" text="School Calendar" speed={58} className="mt-6 text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl" />
-          <p className="mt-5 max-w-3xl text-base font-medium leading-7 text-slate-200 sm:text-lg sm:leading-8">View upcoming school activities, academic schedules, enrollment dates, DRRM activities, and other public school events of Tabunoc National High School.</p>
-        </div>
-      </section>
-
       <section className="mx-auto max-w-7xl px-3 py-7 sm:px-6 lg:px-8 lg:py-12">
         <div className="mb-6">
           <p className="mb-3 px-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Filter by category</p>

@@ -5,9 +5,8 @@ import { motion } from "motion/react";
 import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
-import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
-import TypewriterText from "@/components/TypewriterText";
+import PageHeader from "@/components/PageHeader";
 import { memoCategories, memos, type MemoCategory } from "@/data/memos";
 
 type MemoItem = (typeof memos)[number];
@@ -101,53 +100,12 @@ export default function MemosPage() {
 
       <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
         {/* HERO */}
-          <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 dark:from-[#071E29] dark:via-slate-950 dark:to-[#0B2A36] px-6 pb-20 pt-36 text-slate-950 dark:text-white">
-            <div className="absolute left-10 top-32 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
-            <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
-
-            <div className="relative mx-auto max-w-7xl text-center">
-              <BrandHeader />
-
-              <motion.p
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.1 }}
-                className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300"
-              >
-                Official School Repository
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 32 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.15 }}
-              >
-                <TypewriterText
-                  as="h1"
-                  text="School Memos and Issuances"
-                  className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-tight text-slate-950 dark:text-white md:text-6xl"
-                  speed={72}
-                  startDelay={140}
-                />
-              </motion.div>
-
-              <motion.p
-                initial={{ opacity: 0, y: 32 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.25 }}
-                className="mx-auto mt-5 max-w-3xl text-lg leading-7 text-slate-700 dark:text-stone-200"
-              >
-                Search, view, and access public school memoranda, advisories, and
-                issuances of Tabunoc National High School.
-              </motion.p>
-
-              {/* SEARCH AND FILTER */}
-              <motion.div
-                initial={{ opacity: 0, y: 32 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.35 }}
-                className="mx-auto mt-12 max-w-7xl rounded-2xl border border-slate-200 dark:border-[#292624] bg-white/95 dark:bg-[#171614]/95 p-5 text-left shadow-xl dark:shadow-black/20 md:p-6"
-              >
+          <PageHeader
+            eyebrow="Official School Repository"
+            title="School Memos and Issuances"
+            description="Search, view, and access public school memoranda, advisories, and issuances of Tabunoc National High School."
+          >
+              <div className="mx-auto max-w-7xl rounded-2xl border border-slate-200 bg-white/95 p-5 text-left shadow-[0_18px_45px_rgba(15,23,42,0.08)] md:p-6">
                 <div className="grid gap-4 lg:grid-cols-[1fr_220px_180px]">
                   <input
                     type="text"
@@ -208,9 +166,8 @@ export default function MemosPage() {
                     </button>
                   )}
                 </div>
-              </motion.div>
-            </div>
-          </section>
+              </div>
+          </PageHeader>
 
 
         {/* MEMO LIST */}

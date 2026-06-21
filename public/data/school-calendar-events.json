@@ -1,0 +1,532 @@
+[
+  {
+    "id": "brigada-eskwela-2026",
+    "title": "Brigada Eskwela",
+    "startDate": "2026-06-01",
+    "endDate": "2026-06-05",
+    "category": "Brigada Eskwela",
+    "audience": "Stakeholders, Parents, Teachers, Learners",
+    "status": "Confirmed",
+    "description": "School maintenance, preparation, and stakeholder partnership activities before the opening of classes."
+  },
+  {
+    "id": "enrollment-period-2026",
+    "title": "Enrollment Period",
+    "startDate": "2026-06-01",
+    "endDate": "2026-06-05",
+    "category": "Enrollment",
+    "audience": "Learners and Parents",
+    "status": "Confirmed",
+    "description": "Official school enrollment period for incoming and returning learners."
+  },
+  {
+    "id": "school-year-opening-2026",
+    "title": "Opening of School Year 2026-2027",
+    "startDate": "2026-06-08",
+    "endDate": "2026-06-08",
+    "category": "Academic",
+    "audience": "Learners, Parents, Teachers",
+    "status": "Confirmed",
+    "description": "Official opening of School Year 2026-2027 under the DepEd three-term school calendar."
+  },
+  {
+    "id": "opening-block-2026",
+    "title": "Opening Block",
+    "startDate": "2026-06-08",
+    "endDate": "2026-06-11",
+    "category": "Academic",
+    "audience": "Learners, Parents, Teachers",
+    "status": "Confirmed",
+    "description": "Beginning-of-school-year activities such as orientation, health-related activities, class organization, and school opening routines."
+  },
+  {
+    "id": "regular-classes-begin-2026",
+    "title": "Start of Regular Classes",
+    "startDate": "2026-06-15",
+    "endDate": "2026-06-15",
+    "category": "Academic",
+    "audience": "Learners and Teachers",
+    "status": "Confirmed",
+    "description": "Start of regular instructional activities after the opening block and weekend/holiday interval."
+  },
+  {
+    "id": "term-1-2026",
+    "title": "Term 1",
+    "startDate": "2026-06-08",
+    "endDate": "2026-09-15",
+    "category": "Academic",
+    "audience": "Learners, Parents, Teachers",
+    "status": "Confirmed",
+    "description": "First academic term of School Year 2026-2027."
+  },
+  {
+    "id": "term-1-first-summative-test",
+    "title": "Term 1: First Teacher-Made Summative Test",
+    "startDate": "2026-07-06",
+    "endDate": "2026-07-06",
+    "category": "Examination",
+    "audience": "Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for the first teacher-made summative test for Term 1. Final implementation shall follow school-level instructions."
+  },
+  {
+    "id": "term-1-second-summative-test",
+    "title": "Term 1: Second Teacher-Made Summative Test",
+    "startDate": "2026-07-28",
+    "endDate": "2026-07-28",
+    "category": "Examination",
+    "audience": "Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for the second teacher-made summative test for Term 1. Final implementation shall follow school-level instructions."
+  },
+  {
+    "id": "term-1-examination",
+    "title": "Term 1 Examination",
+    "startDate": "2026-08-28",
+    "endDate": "2026-09-01",
+    "category": "Examination",
+    "audience": "Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for Term 1 examination. Final schedule shall follow official school memorandum."
+  },
+  {
+    "id": "national-teachers-month-start-2026",
+    "title": "Start of National Teachers' Month",
+    "startDate": "2026-09-05",
+    "endDate": "2026-09-05",
+    "category": "DepEd Activity",
+    "audience": "Teachers, Learners, Parents",
+    "status": "Confirmed",
+    "description": "Opening of the National Teachers' Month celebration."
+  },
+  {
+    "id": "term-1-end-of-term-block",
+    "title": "Term 1 End-of-Term Block",
+    "startDate": "2026-09-02",
+    "endDate": "2026-09-15",
+    "category": "Academic",
+    "audience": "Learners and Teachers",
+    "status": "Confirmed",
+    "description": "End-of-term period for assessment-related activities, grading, school activities, INSET, and report card distribution."
+  },
+  {
+    "id": "term-1-report-cards",
+    "title": "PTA Meeting and Distribution of Report Cards",
+    "startDate": "2026-09-09",
+    "endDate": "2026-09-09",
+    "category": "School Program",
+    "audience": "Parents, Learners, Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for PTA meeting and distribution of Term 1 report cards. Final schedule shall be confirmed by the school."
+  },
+  {
+    "id": "term-1-inset",
+    "title": "INSET",
+    "startDate": "2026-09-10",
+    "endDate": "2026-09-11",
+    "category": "DepEd Activity",
+    "audience": "Teachers",
+    "status": "For Confirmation",
+    "description": "In-Service Training period within the Term 1 end-of-term block."
+  },
+  {
+    "id": "term-1-learner-wellness-break",
+    "title": "Learners' Wellness Break",
+    "startDate": "2026-09-10",
+    "endDate": "2026-09-15",
+    "category": "Academic",
+    "audience": "Learners",
+    "status": "Confirmed",
+    "description": "Guided wellness and asynchronous learning period for learners under the three-term calendar."
+  },
+  {
+    "id": "term-1-teacher-wellness-break",
+    "title": "Teachers' Wellness Break",
+    "startDate": "2026-09-14",
+    "endDate": "2026-09-15",
+    "category": "DepEd Activity",
+    "audience": "Teachers",
+    "status": "Confirmed",
+    "description": "Wellness break for teachers following the INSET period."
+  },
+  {
+    "id": "term-1-end",
+    "title": "End of Term 1",
+    "startDate": "2026-09-15",
+    "endDate": "2026-09-15",
+    "category": "Academic",
+    "audience": "Learners, Parents, Teachers",
+    "status": "Confirmed",
+    "description": "Official end of Term 1."
+  },
+  {
+    "id": "term-2-2026",
+    "title": "Term 2",
+    "startDate": "2026-09-16",
+    "endDate": "2026-12-18",
+    "category": "Academic",
+    "audience": "Learners, Parents, Teachers",
+    "status": "Confirmed",
+    "description": "Second academic term of School Year 2026-2027."
+  },
+  {
+    "id": "term-2-start",
+    "title": "Start of Term 2",
+    "startDate": "2026-09-16",
+    "endDate": "2026-09-16",
+    "category": "Academic",
+    "audience": "Learners and Teachers",
+    "status": "Confirmed",
+    "description": "Official start of Term 2."
+  },
+  {
+    "id": "world-teachers-day-2026",
+    "title": "World Teachers' Day and Culmination of National Teachers' Month",
+    "startDate": "2026-10-05",
+    "endDate": "2026-10-05",
+    "category": "DepEd Activity",
+    "audience": "Teachers, Learners, Parents",
+    "status": "Confirmed",
+    "description": "Culminating activity for National Teachers' Month and observance of World Teachers' Day."
+  },
+  {
+    "id": "nat-grade-10-2026",
+    "title": "National Achievement Test for Grade 10",
+    "startDate": "2026-10-05",
+    "endDate": "2026-10-09",
+    "category": "Examination",
+    "audience": "Grade 10 Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for the National Achievement Test for Grade 10. Final implementation shall follow official DepEd and school advisories."
+  },
+  {
+    "id": "term-2-first-summative-test",
+    "title": "Term 2: First Teacher-Made Summative Test",
+    "startDate": "2026-10-07",
+    "endDate": "2026-10-07",
+    "category": "Examination",
+    "audience": "Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for the first teacher-made summative test for Term 2."
+  },
+  {
+    "id": "term-2-second-summative-test",
+    "title": "Term 2: Second Teacher-Made Summative Test",
+    "startDate": "2026-10-29",
+    "endDate": "2026-10-29",
+    "category": "Examination",
+    "audience": "Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for the second teacher-made summative test for Term 2."
+  },
+  {
+    "id": "all-saints-day-2026",
+    "title": "All Saints' Day",
+    "startDate": "2026-11-01",
+    "endDate": "2026-11-01",
+    "category": "Holiday",
+    "audience": "School Community",
+    "status": "Confirmed",
+    "description": "Special non-working holiday."
+  },
+  {
+    "id": "all-souls-day-2026",
+    "title": "All Souls' Day",
+    "startDate": "2026-11-02",
+    "endDate": "2026-11-02",
+    "category": "Holiday",
+    "audience": "School Community",
+    "status": "Confirmed",
+    "description": "Special non-working holiday."
+  },
+  {
+    "id": "pept-2026",
+    "title": "Philippine Educational Placement Test",
+    "startDate": "2026-11-15",
+    "endDate": "2026-11-15",
+    "category": "Examination",
+    "audience": "Concerned Learners",
+    "status": "For Confirmation",
+    "description": "Target schedule for PEPT. Implementation shall follow official DepEd advisories."
+  },
+  {
+    "id": "araw-ng-pagbasa-2026",
+    "title": "Araw ng Pagbasa",
+    "startDate": "2026-11-27",
+    "endDate": "2026-11-27",
+    "category": "DepEd Activity",
+    "audience": "Learners and Teachers",
+    "status": "Confirmed",
+    "description": "Reading-related observance supporting literacy development."
+  },
+  {
+    "id": "bonifacio-day-2026",
+    "title": "Bonifacio Day",
+    "startDate": "2026-11-30",
+    "endDate": "2026-11-30",
+    "category": "Holiday",
+    "audience": "School Community",
+    "status": "Confirmed",
+    "description": "Regular holiday."
+  },
+  {
+    "id": "term-2-examination",
+    "title": "Term 2 Examination",
+    "startDate": "2026-12-03",
+    "endDate": "2026-12-04",
+    "category": "Examination",
+    "audience": "Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for Term 2 examination. Final schedule shall follow official school memorandum."
+  },
+  {
+    "id": "term-2-end-of-term-block",
+    "title": "Term 2 End-of-Term Block",
+    "startDate": "2026-12-07",
+    "endDate": "2026-12-18",
+    "category": "Academic",
+    "audience": "Learners and Teachers",
+    "status": "Confirmed",
+    "description": "End-of-term period for assessment-related activities, grading, school activities, INSET, and report card distribution."
+  },
+  {
+    "id": "immaculate-conception-2026",
+    "title": "Feast of the Immaculate Conception of Mary",
+    "startDate": "2026-12-08",
+    "endDate": "2026-12-08",
+    "category": "Holiday",
+    "audience": "School Community",
+    "status": "Confirmed",
+    "description": "Special non-working holiday."
+  },
+  {
+    "id": "term-2-report-cards",
+    "title": "PTA Meeting and Distribution of Report Cards",
+    "startDate": "2026-12-15",
+    "endDate": "2026-12-15",
+    "category": "School Program",
+    "audience": "Parents, Learners, Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for PTA meeting and distribution of Term 2 report cards. Final schedule shall be confirmed by the school."
+  },
+  {
+    "id": "year-end-activity-2026",
+    "title": "Year-End Activity",
+    "startDate": "2026-12-16",
+    "endDate": "2026-12-16",
+    "category": "School Program",
+    "audience": "School Community",
+    "status": "For Confirmation",
+    "description": "Target schedule for school year-end activity. Final conduct shall follow school memorandum."
+  },
+  {
+    "id": "term-2-inset-wellness",
+    "title": "INSET and Learners' Wellness Break",
+    "startDate": "2026-12-17",
+    "endDate": "2026-12-18",
+    "category": "DepEd Activity",
+    "audience": "Teachers and Learners",
+    "status": "For Confirmation",
+    "description": "INSET for teachers and wellness/asynchronous learning period for learners within the Term 2 end-of-term block."
+  },
+  {
+    "id": "term-2-end",
+    "title": "End of Term 2",
+    "startDate": "2026-12-18",
+    "endDate": "2026-12-18",
+    "category": "Academic",
+    "audience": "Learners, Parents, Teachers",
+    "status": "Confirmed",
+    "description": "Official end of Term 2."
+  },
+  {
+    "id": "year-end-break-2026",
+    "title": "Year-End Break",
+    "startDate": "2026-12-19",
+    "endDate": "2026-12-31",
+    "category": "Academic",
+    "audience": "Learners and Teachers",
+    "status": "Confirmed",
+    "description": "Year-end break and wellness interval for learners and teachers."
+  },
+  {
+    "id": "term-3-2027",
+    "title": "Term 3",
+    "startDate": "2027-01-04",
+    "endDate": "2027-04-08",
+    "category": "Academic",
+    "audience": "Learners, Parents, Teachers",
+    "status": "Confirmed",
+    "description": "Third academic term of School Year 2026-2027."
+  },
+  {
+    "id": "term-3-start",
+    "title": "Start of Term 3",
+    "startDate": "2027-01-04",
+    "endDate": "2027-01-04",
+    "category": "Academic",
+    "audience": "Learners and Teachers",
+    "status": "Confirmed",
+    "description": "Official start of Term 3."
+  },
+  {
+    "id": "term-3-first-summative-test",
+    "title": "Term 3: First Teacher-Made Summative Test",
+    "startDate": "2027-01-25",
+    "endDate": "2027-01-25",
+    "category": "Examination",
+    "audience": "Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for the first teacher-made summative test for Term 3."
+  },
+  {
+    "id": "early-registration-start-2027",
+    "title": "Start of Early Registration",
+    "startDate": "2027-01-30",
+    "endDate": "2027-01-30",
+    "category": "Enrollment",
+    "audience": "Incoming Grade 7, Grade 11, OSCYA, Transferees, and Parents",
+    "status": "For Confirmation",
+    "description": "Target start of early registration for incoming learners and transferees. Final implementation shall follow DepEd and school advisories."
+  },
+  {
+    "id": "nat-grade-12-2027",
+    "title": "National Achievement Test for Grade 12",
+    "startDate": "2027-02-15",
+    "endDate": "2027-02-19",
+    "category": "Examination",
+    "audience": "Grade 12 Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for the National Achievement Test for Grade 12. Final implementation shall follow official DepEd and school advisories."
+  },
+  {
+    "id": "term-3-second-summative-test",
+    "title": "Term 3: Second Teacher-Made Summative Test",
+    "startDate": "2027-02-16",
+    "endDate": "2027-02-16",
+    "category": "Examination",
+    "audience": "Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for the second teacher-made summative test for Term 3."
+  },
+  {
+    "id": "early-registration-end-2027",
+    "title": "End of Early Registration",
+    "startDate": "2027-02-26",
+    "endDate": "2027-02-26",
+    "category": "Enrollment",
+    "audience": "Incoming Grade 7, Grade 11, OSCYA, Transferees, and Parents",
+    "status": "For Confirmation",
+    "description": "Target end of early registration for incoming learners and transferees. Final implementation shall follow DepEd and school advisories."
+  },
+  {
+    "id": "term-3-exam-moving-up-graduating",
+    "title": "Term 3 Examination for Moving-Up and Graduating Learners",
+    "startDate": "2027-03-15",
+    "endDate": "2027-03-16",
+    "category": "Examination",
+    "audience": "Grade 10 and Grade 12 Learners",
+    "status": "For Confirmation",
+    "description": "Target schedule for Term 3 examination for moving-up and graduating learners. Final schedule shall follow official school memorandum."
+  },
+  {
+    "id": "term-3-exam-other-grades",
+    "title": "Term 3 Examination for Other Grade Levels",
+    "startDate": "2027-03-22",
+    "endDate": "2027-03-23",
+    "category": "Examination",
+    "audience": "Learners and Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for Term 3 examination for other grade levels. Final schedule shall follow official school memorandum."
+  },
+  {
+    "id": "academic-excellence-awardees-2027",
+    "title": "Announcement of Academic Excellence Awardees",
+    "startDate": "2027-03-24",
+    "endDate": "2027-03-24",
+    "category": "Academic",
+    "audience": "Learners, Parents, Teachers",
+    "status": "For Confirmation",
+    "description": "Target date for the announcement of academic excellence awardees for moving-up and graduating learners."
+  },
+  {
+    "id": "term-3-end-of-term-block",
+    "title": "Term 3 End-of-Term Block",
+    "startDate": "2027-03-24",
+    "endDate": "2027-04-08",
+    "category": "Academic",
+    "audience": "Learners and Teachers",
+    "status": "Confirmed",
+    "description": "End-of-term period for final school activities, grading, INSET, report card distribution, and end-of-school-year preparations."
+  },
+  {
+    "id": "term-3-inset-2027",
+    "title": "INSET",
+    "startDate": "2027-04-02",
+    "endDate": "2027-04-05",
+    "category": "DepEd Activity",
+    "audience": "Teachers",
+    "status": "For Confirmation",
+    "description": "Target INSET schedule within the Term 3 end-of-term block. Final schedule shall follow official school memorandum."
+  },
+  {
+    "id": "eosy-rites-2027",
+    "title": "End-of-School-Year Rites",
+    "startDate": "2027-04-06",
+    "endDate": "2027-04-07",
+    "category": "School Program",
+    "audience": "Learners, Parents, Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for moving-up and graduation ceremonies. Final schedule shall follow DepEd and school memoranda."
+  },
+  {
+    "id": "term-3-report-cards",
+    "title": "PTA Meeting and Distribution of Report Cards",
+    "startDate": "2027-04-08",
+    "endDate": "2027-04-08",
+    "category": "School Program",
+    "audience": "Parents, Learners, Teachers",
+    "status": "For Confirmation",
+    "description": "Target schedule for PTA meeting and distribution of final report cards. Final schedule shall be confirmed by the school."
+  },
+  {
+    "id": "end-of-school-year-2027",
+    "title": "End of School Year 2026-2027",
+    "startDate": "2027-04-08",
+    "endDate": "2027-04-08",
+    "category": "Academic",
+    "audience": "Learners, Parents, Teachers",
+    "status": "Confirmed",
+    "description": "Official end of School Year 2026-2027 under the DepEd three-term school calendar."
+  },
+  {
+    "id": "day-of-valor-2027",
+    "title": "The Day of Valor",
+    "startDate": "2027-04-09",
+    "endDate": "2027-04-09",
+    "category": "Holiday",
+    "audience": "School Community",
+    "status": "Confirmed",
+    "description": "Regular holiday."
+  },
+  {
+    "id": "teachers-eosy-break-start-2027",
+    "title": "Start of Teachers' EOSY Break",
+    "startDate": "2027-04-09",
+    "endDate": "2027-04-09",
+    "category": "DepEd Activity",
+    "audience": "Teachers",
+    "status": "Confirmed",
+    "description": "Start of the 30-day teachers' end-of-school-year break, subject to DepEd and school-level guidance."
+  },
+  {
+    "id": "nspc-2027",
+    "title": "National Schools Press Conference",
+    "startDate": "2027-04-19",
+    "endDate": "2027-04-23",
+    "category": "DepEd Activity",
+    "audience": "Campus Journalists, Coaches, and Concerned Personnel",
+    "status": "For Confirmation",
+    "description": "Target schedule for the National Schools Press Conference. Participation shall follow official qualification, invitation, and DepEd issuance."
+  }
+]

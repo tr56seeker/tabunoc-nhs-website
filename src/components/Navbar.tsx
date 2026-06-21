@@ -130,6 +130,11 @@ const navItems: NavItem[] = [
         description: "Public memoranda, advisories, and issuances",
       },
       {
+        label: "School Calendar",
+        href: "/school-calendar",
+        description: "View public school activities and important dates",
+      },
+      {
         label: "Frequently Asked Questions",
         href: "/faq",
         description: "Common questions about enrollment, services, and school information",

@@ -19,6 +19,7 @@ export type Personnel = {
   id: string;
   name: string;
   displayName?: string;
+  positionSuffix?: string;
   firstName?: string;
   position: string;
   designation?: string[];

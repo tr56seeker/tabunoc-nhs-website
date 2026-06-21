@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { formatPersonnelDisplayName } from "@/utils/personnel";
 
 type Personnel = {
   order: number;
@@ -11,6 +12,7 @@ type Personnel = {
   middleName: string;
   middleInitial: string;
   suffix: string;
+  positionSuffix: string;
   name: string;
   position: string;
   designation1: string;
@@ -281,6 +283,8 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       middleName: record.middleName || "",
       middleInitial: record.middleInitial || "",
       suffix: record.suffix || "",
+      positionSuffix:
+        record.positionSuffix?.trim() || record.positionSuffex?.trim() || "",
       name: displayName || "Unnamed Personnel",
       position: record.position || "",
       designation1: record.designation1 || record.primaryDesignation || "",
@@ -374,6 +378,7 @@ function ProfileImage({
   size?: "small" | "large";
 }) {
   const [imageFailed, setImageFailed] = useState(false);
+  const displayName = formatPersonnelDisplayName(person);
 
   const sizeClass =
     size === "large"
@@ -387,7 +392,7 @@ function ProfileImage({
       {!imageFailed && person.photoUrl ? (
         <Image
           src={person.photoUrl}
-          alt={`${person.name} profile photo`}
+          alt={`${displayName} profile photo`}
           fill
           sizes={size === "large" ? "(max-width: 768px) 100vw, 280px" : "56px"}
           className="object-cover"
@@ -399,7 +404,7 @@ function ProfileImage({
             size === "large" ? "text-4xl" : "text-sm"
           }`}
         >
-          {getInitials(person.name)}
+          {getInitials(displayName)}
         </span>
       )}
     </div>
@@ -409,6 +414,7 @@ function ProfileImage({
 function PersonCard({ entry }: { entry: PersonnelEntry }) {
   const { person } = entry;
   const [isSelected, setIsSelected] = useState(false);
+  const displayName = formatPersonnelDisplayName(person);
 
   const designations = getAllDesignations(person);
   const extraRolesCount = Math.max(designations.length - 1, 0);
@@ -428,7 +434,7 @@ function PersonCard({ entry }: { entry: PersonnelEntry }) {
 
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-lg font-black text-[#071E29]">
-            {person.name}
+            {displayName}
           </h3>
 
           <p className="mt-1 truncate text-sm font-bold text-[#0F4C5C]">
@@ -493,7 +499,7 @@ function PersonCard({ entry }: { entry: PersonnelEntry }) {
                 </p>
 
                 <h3 className="mt-2 text-3xl font-black text-[#071E29]">
-                  {person.name}
+                  {displayName}
                 </h3>
 
                 <p className="mt-2 text-lg font-black text-[#0F4C5C]">

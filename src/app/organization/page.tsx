@@ -591,6 +591,9 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       id: profileId,
       name,
       displayName: name,
+      positionSuffix: safeText(
+        record.positionSuffix || record.positionSuffex
+      ),
       firstName: safeText(record.firstName),
       position: safeText(record.position),
       group: safeText(record.displayGroup) || safeText(record.category),

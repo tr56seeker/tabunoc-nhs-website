@@ -18,6 +18,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import type { Personnel } from "@/data/organization";
+import { formatPersonnelDisplayName } from "@/utils/personnel";
 
 type PersonnelModalProps = {
   person: Personnel | null;
@@ -159,7 +160,7 @@ function getInitials(name: string) {
 }
 
 function getDisplayName(person: Personnel) {
-  return safeText((person as ExtendedPersonnel).displayName) || person.name;
+  return formatPersonnelDisplayName(person);
 }
 
 function getPhotoUrl(person: Personnel) {

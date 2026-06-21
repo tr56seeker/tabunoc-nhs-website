@@ -15,6 +15,7 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import type { Personnel } from "@/data/organization";
+import { formatPersonnelDisplayName } from "@/utils/personnel";
 
 type PersonnelCardProps = {
   person: Personnel;
@@ -209,8 +210,7 @@ function getCardSummary(
   person: Personnel,
   displayContext: NonNullable<PersonnelCardProps["displayContext"]>
 ) {
-  const extendedPerson = person as ExtendedPersonnel;
-  const name = safeText(extendedPerson.displayName) || safeText(person.name);
+  const name = formatPersonnelDisplayName(person);
   const defaultSummary = {
     name,
     line2: safeText(person.position),

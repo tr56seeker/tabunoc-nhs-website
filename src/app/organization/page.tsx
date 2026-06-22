@@ -1271,36 +1271,16 @@ const visibleSubjectDepartments = useMemo(() => {
     return gradeLevels.filter((grade) => grade === selectedGrade);
   }, [gradeLevels, selectedGrade]);
 
-  useEffect(() => {
-    const gradeSections = gradeLevels
-      .map((grade) => document.getElementById(getAdvisoryGradeSectionId(grade)))
-      .filter((section): section is HTMLElement => Boolean(section));
-
-    if (gradeSections.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntries = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-
-        const activeGrade = (visibleEntries[0]?.target as HTMLElement | undefined)
-          ?.dataset.grade;
-
-        if (activeGrade) {
-          setSelectedGrade(activeGrade);
-        }
-      },
-      {
-        rootMargin: "-220px 0px -55% 0px",
-        threshold: [0.1, 0.25, 0.5],
-      }
-    );
-
-    gradeSections.forEach((section) => observer.observe(section));
-
-    return () => observer.disconnect();
-  }, [gradeLevels]);
+  const visibleAdviserGroups = useMemo(() => {
+    return visibleGradeLevels
+      .map((grade) => ({
+        grade,
+        advisers: classAdvisers.filter((person) =>
+          person.advisory?.some((item) => item.gradeLevel === grade)
+        ),
+      }))
+      .filter((group) => group.advisers.length > 0);
+  }, [classAdvisers, visibleGradeLevels]);
 
   const sortedGradeLeaders = useMemo(() => {
     return [...gradeLeaders].sort(
@@ -1623,41 +1603,37 @@ return (
           </div>
         </section>
 
-        <section
-          id="class-advisory"
-          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
-        >
-          <div className="mx-auto max-w-6xl">
-            <SectionHeading
-              eyebrow="Class Advisers"
-              title="Class Adviser Directory"
-              description="Select a grade level to view assigned class adviser profiles."
-            />
+        {visibleAdviserGroups.length > 0 && (
+          <section
+            id="class-advisory"
+            className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+          >
+            <div className="mx-auto max-w-6xl">
+              <SectionHeading
+                eyebrow="Class Advisers"
+                title="Class Adviser Directory"
+                description="Select a grade level to view assigned class adviser profiles."
+              />
 
-            <div className="mb-8 flex flex-wrap justify-center gap-2">
-              {["All", ...gradeLevels].map((grade) => (
-                <button
-                  key={grade}
-                  type="button"
-                  onClick={() => scrollToAdvisoryGrade(grade)}
-                  className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                    selectedGrade === grade
-                      ? "bg-[#ffdf20] text-slate-950 shadow-sm"
-                      : "bg-white text-slate-700 ring-1 ring-slate-200 hover:text-[#0F4C5C] dark:bg-[#171614] dark:text-stone-200 dark:ring-[#292624] dark:hover:text-[#ffdf20]"
-                  }`}
-                >
-                  {grade}
-                </button>
-              ))}
-            </div>
+              <div className="mb-8 flex flex-wrap justify-center gap-2">
+                {["All", ...gradeLevels].map((grade) => (
+                  <button
+                    key={grade}
+                    type="button"
+                    onClick={() => scrollToAdvisoryGrade(grade)}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                      selectedGrade === grade
+                        ? "bg-[#ffdf20] text-slate-950 shadow-sm"
+                        : "bg-white text-slate-700 ring-1 ring-slate-200 hover:text-[#0F4C5C] dark:bg-[#171614] dark:text-stone-200 dark:ring-[#292624] dark:hover:text-[#ffdf20]"
+                    }`}
+                  >
+                    {grade}
+                  </button>
+                ))}
+              </div>
 
-            <div className="grid gap-6">
-              {visibleGradeLevels.map((grade) => {
-                const advisers = classAdvisers.filter((person) =>
-                  person.advisory?.some((item) => item.gradeLevel === grade)
-                );
-
-                return (
+              <div className="grid gap-6">
+                {visibleAdviserGroups.map(({ grade, advisers }) => (
                   <motion.div
                     id={getAdvisoryGradeSectionId(grade)}
                     key={grade}
@@ -1691,11 +1667,11 @@ return (
                       ))}
                     </div>
                   </motion.div>
-                );
-              })}
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <section
           id="subject-teachers"

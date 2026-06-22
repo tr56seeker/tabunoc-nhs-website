@@ -47,7 +47,7 @@ const learnerCategories: LearnerCategory[] = [
     ],
     reminders: [
       "Bring original documents for verification when requested.",
-      "Use the learnerâ€™s correct full name based on official records.",
+      "Use the learner’s correct full name based on official records.",
       "Proceed to the assigned enrollment area for Junior High School, if announced.",
     ],
   },
@@ -177,15 +177,15 @@ const enrollmentSteps = [
 const lateEnrollmentProcedure = [
   "Visit the school office during office hours.",
   "Inform the receiving personnel that the learner was not able to enroll during the announced enrollment schedule.",
-  "Bring the available documents based on the learnerâ€™s correct category, such as incoming Grade 7, incoming Grade 11, transferee, returning learner, ALS completer/passer, or continuing learner.",
+  "Bring the available documents based on the learner’s correct category, such as incoming Grade 7, incoming Grade 11, transferee, returning learner, ALS completer/passer, or continuing learner.",
   "Allow the enrollment team to verify learner records, LRN, grade level, available slots, and class sectioning.",
-  "Wait for the schoolâ€™s advice or confirmation before assuming that enrollment is finalized.",
+  "Wait for the school’s advice or confirmation before assuming that enrollment is finalized.",
 ];
 
 const reminders = [
   "Bring original documents for verification when requested.",
   "Submit clear photocopies of required documents.",
-  "Use the learnerâ€™s correct full name based on official records.",
+  "Use the learner’s correct full name based on official records.",
   "Provide active and reachable parent/guardian contact numbers.",
   "Follow official school announcements only.",
   "Observe proper conduct and school safety protocols while inside the campus.",
@@ -870,7 +870,7 @@ export default function EnrollmentPage() {
                 or visit the school during office hours.
               </p>
               <p className="mt-4 text-sm leading-6 text-teal-50">
-                Office Hours: Monday to Friday, 8:00 AM â€“ 5:00 PM, except
+                Office Hours: Monday to Friday, 8:00 AM – 5:00 PM, except
                 holidays and declared class/work suspensions.
               </p>
             </motion.div>

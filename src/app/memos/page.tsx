@@ -180,7 +180,7 @@ export default function MemosPage() {
                     Public Memo List
                   </h3>
                   <p className="mt-1 text-sm font-semibold text-slate-600 dark:text-stone-300">
-                    Click â€œViewâ€ or â€œDownloadâ€ to access the available memo file.
+                    Click “View” or “Download” to access the available memo file.
                   </p>
                 </div>
 

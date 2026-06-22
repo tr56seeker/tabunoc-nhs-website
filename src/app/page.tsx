@@ -40,7 +40,7 @@ const quickAccessLinks = [
     href: "/memos",
   },
   {
-    title: "Citizenâ€™s Charter",
+    title: "Citizen’s Charter",
     description: "Frontline service standards and public assistance information.",
     href: "/citizen-charter",
   },
@@ -415,7 +415,7 @@ export default function Home() {
                     Sangi Road, Tabunok, Talisay City, Cebu
                   </p>
                   <p className="mt-3 text-sm leading-6 text-teal-50">
-                    Office Hours: Monday to Friday, 8:00 AM â€“ 5:00 PM, except
+                    Office Hours: Monday to Friday, 8:00 AM – 5:00 PM, except
                     holidays and declared class/work suspensions.
                   </p>
                 </div>

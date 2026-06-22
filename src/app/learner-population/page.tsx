@@ -198,7 +198,7 @@ function formatDate(dateString: string) {
 function formatSchoolYear(schoolYear: string) {
   const yearRange = schoolYear
     .replace(/^(SY|School Year)\s*/i, "")
-    .replace(/(\d{4})-(\d{4})/, "$1â€“$2");
+    .replace(/(\d{4})-(\d{4})/, "$1\u2013$2");
 
   return `School Year ${yearRange}`;
 }

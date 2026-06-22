@@ -73,12 +73,12 @@ const faqGroups = [
       {
         question: "How can I request school documents?",
         answer:
-          "Requests for school records, certifications, or related documents should be coordinated with the school office or concerned personnel. Processing requirements and steps may be guided by the schoolâ€™s Citizenâ€™s Charter.",
+          "Requests for school records, certifications, or related documents should be coordinated with the school office or concerned personnel. Processing requirements and steps may be guided by the school’s Citizen’s Charter.",
       },
       {
-        question: "Where can I find the Citizenâ€™s Charter?",
+        question: "Where can I find the Citizen’s Charter?",
         answer:
-          "The Citizenâ€™s Charter page provides information on frontline services, service standards, requirements, and public assistance processes of the school.",
+          "The Citizen’s Charter page provides information on frontline services, service standards, requirements, and public assistance processes of the school.",
       },
       {
         question: "What are the school office hours?",
@@ -122,7 +122,7 @@ const faqGroups = [
       {
         question: "What should parents do during class suspensions or emergencies?",
         answer:
-          "Parents and learners should monitor official advisories from DepEd, the LGU, and the schoolâ€™s official communication channels. During emergencies, the school follows its safety, DRRM, and learner accounting protocols.",
+          "Parents and learners should monitor official advisories from DepEd, the LGU, and the school’s official communication channels. During emergencies, the school follows its safety, DRRM, and learner accounting protocols.",
       },
       {
         question: "How does the school communicate emergency advisories?",
@@ -164,7 +164,7 @@ const quickLinks = [
     href: "/memos",
   },
   {
-    label: "Citizenâ€™s Charter",
+    label: "Citizen’s Charter",
     href: "/citizen-charter",
   },
   {

@@ -20,6 +20,7 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
+import { ExternalLink, Mail, MessageCircle, Phone } from "lucide-react";
 
 type NavbarProps = {
   brandMode?: "always" | "afterScroll";
@@ -277,7 +278,7 @@ function DropdownLink({
 
       {variant === "desktop" && (
         <span className="shrink-0 text-lg font-medium opacity-0 transition group-hover/dropitem:translate-x-1 group-hover/dropitem:opacity-100">
-          â€º
+          ›
         </span>
       )}
 
@@ -620,9 +621,7 @@ export default function Navbar({
                       href={`mailto:${schoolContact.email}`}
                       className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
-                      <span aria-hidden="true" className="text-base">
-                        âœ‰
-                      </span>
+                      <Mail className="h-5 w-5" aria-hidden="true" />
                       <span>Email the School</span>
                     </a>
 
@@ -630,9 +629,7 @@ export default function Navbar({
                       href={`tel:${schoolContact.phone}`}
                       className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
-                      <span aria-hidden="true" className="text-base">
-                        â˜Ž
-                      </span>
+                      <Phone className="h-5 w-5" aria-hidden="true" />
                       <span>Call the School</span>
                     </a>
 
@@ -642,12 +639,7 @@ export default function Navbar({
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
-                      <span
-                        aria-hidden="true"
-                        className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#24313E] text-xs font-medium text-white"
-                      >
-                        f
-                      </span>
+                      <ExternalLink className="h-5 w-5" aria-hidden="true" />
                       <span>Facebook Page</span>
                     </a>
 
@@ -657,9 +649,7 @@ export default function Navbar({
                       rel="noopener noreferrer"
                       className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
                     >
-                      <span aria-hidden="true" className="text-base">
-                        ðŸ’¬
-                      </span>
+                      <MessageCircle className="h-5 w-5" aria-hidden="true" />
                       <span>Messenger</span>
                     </a>
 
@@ -668,7 +658,7 @@ export default function Navbar({
                         Office Hours
                       </p>
                       <p className="mt-1 text-xs font-semibold leading-5 text-slate-600">
-                        Monday to Friday, 8:00 AM â€“ 5:00 PM
+                        Monday to Friday, 8:00 AM – 5:00 PM
                       </p>
                     </div>
                   </div>

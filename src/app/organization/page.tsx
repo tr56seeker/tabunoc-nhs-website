@@ -225,7 +225,7 @@ function extractSection(record: Record<string, string>) {
 function normalizeLeadershipText(value: string) {
   return safeText(value)
     .toLowerCase()
-    .replace(/[â€“â€”-]/g, " ")
+    .replace(/[–—-]/g, " ")
     .replace(/[()]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -234,7 +234,7 @@ function normalizeLeadershipText(value: string) {
 function isExactShsCoordinatorDesignation(value: string) {
   const text = safeText(value)
     .toLowerCase()
-    .replace(/[â€“â€”]/g, "-")
+    .replace(/[–—]/g, "-")
     .replace(/\s+/g, " ")
     .trim();
 
@@ -244,7 +244,7 @@ function isExactShsCoordinatorDesignation(value: string) {
 function isGradeLeaderDesignationText(value: string) {
   const text = safeText(value)
     .toLowerCase()
-    .replace(/[â€“â€”-]/g, " ")
+    .replace(/[–—-]/g, " ")
     .replace(/[()]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -684,7 +684,7 @@ function getGradeLeaderRank(person: Personnel) {
     .map((item) =>
       safeText(item)
         .toLowerCase()
-        .replace(/[â€“â€”-]/g, " ")
+        .replace(/[–—-]/g, " ")
         .replace(/[()]/g, " ")
         .replace(/\s+/g, " ")
         .trim()
@@ -843,7 +843,7 @@ function getCoordinatorBaseTitle(title?: string) {
     .toLowerCase()
     .replace(/\balternate\b/g, "")
     .replace(/\(.*?\)/g, "")
-    .replace(/[-â€“â€”]/g, " ")
+    .replace(/[-–—]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }

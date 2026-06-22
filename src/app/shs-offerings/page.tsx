@@ -235,7 +235,7 @@ export default function SHSOfferingsPage() {
                     {offering.items.map((item) => (
                       <li key={item} className="flex gap-3 text-slate-700 dark:text-stone-200">
                         <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
-                          âœ“
+                          ✓
                         </span>
                         <span className="font-semibold">{item}</span>
                       </li>

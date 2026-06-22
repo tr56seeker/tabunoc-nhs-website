@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { cleanText } from "@/lib/cleanText";
 
 type CalendarView = "Day" | "Week" | "Month" | "Year";
 
@@ -21,6 +22,8 @@ export type CalendarEvent = {
 const categories = ["All", "Academic", "Enrollment", "Examination", "DRRM", "Brigada Eskwela", "School Program", "Holiday", "DepEd Activity"];
 const views: CalendarView[] = ["Day", "Week", "Month", "Year"];
 const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const EN_DASH = "\u2013";
+const MIDDLE_DOT = "\u00B7";
 
 const dotColors: Record<string, string> = {
   Academic: "bg-[#24313E]",
@@ -68,10 +71,10 @@ function formatDateRange(event: CalendarEvent) {
   const end = parseLocalDate(event.endDate);
   if (isSameDay(start, end)) return formatFullDate(start);
   if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
-    return `${new Intl.DateTimeFormat("en-PH", { month: "long" }).format(start)} ${start.getDate()}â€“${end.getDate()}, ${start.getFullYear()}`;
+    return `${new Intl.DateTimeFormat("en-PH", { month: "long" }).format(start)} ${start.getDate()}${EN_DASH}${end.getDate()}, ${start.getFullYear()}`;
   }
   const short = new Intl.DateTimeFormat("en-PH", { month: "short", day: "numeric", year: "numeric" });
-  return `${short.format(start)} â€“ ${short.format(end)}`;
+  return `${short.format(start)} ${EN_DASH} ${short.format(end)}`;
 }
 
 function formatEventTime(event: CalendarEvent) {
@@ -80,7 +83,7 @@ function formatEventTime(event: CalendarEvent) {
     const [hours, minutes] = value.split(":").map(Number);
     return new Intl.DateTimeFormat("en-PH", { hour: "numeric", minute: "2-digit" }).format(new Date(2000, 0, 1, hours, minutes));
   };
-  return event.endTime ? `${format(event.startTime)} â€“ ${format(event.endTime)}` : format(event.startTime);
+  return event.endTime ? `${format(event.startTime)} ${EN_DASH} ${format(event.endTime)}` : format(event.startTime);
 }
 
 function getStartOfWeek(date: Date) {
@@ -139,8 +142,8 @@ function periodTitle(view: CalendarView, date: Date) {
   if (view === "Year") return String(date.getFullYear());
   const start = getStartOfWeek(date);
   const end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
-  if (start.getMonth() === end.getMonth()) return `${new Intl.DateTimeFormat("en-PH", { month: "long" }).format(start)} ${start.getDate()}â€“${end.getDate()}, ${end.getFullYear()}`;
-  return `${new Intl.DateTimeFormat("en-PH", { month: "short", day: "numeric" }).format(start)} â€“ ${new Intl.DateTimeFormat("en-PH", { month: "short", day: "numeric", year: "numeric" }).format(end)}`;
+  if (start.getMonth() === end.getMonth()) return `${new Intl.DateTimeFormat("en-PH", { month: "long" }).format(start)} ${start.getDate()}${EN_DASH}${end.getDate()}, ${end.getFullYear()}`;
+  return `${new Intl.DateTimeFormat("en-PH", { month: "short", day: "numeric" }).format(start)} ${EN_DASH} ${new Intl.DateTimeFormat("en-PH", { month: "short", day: "numeric", year: "numeric" }).format(end)}`;
 }
 
 function ArrowIcon({ direction }: { direction: "left" | "right" }) {
@@ -175,11 +178,11 @@ function EventRow({ event, selected, onSelect }: { event: CalendarEvent; selecte
   return (
     <button type="button" onClick={() => onSelect(event)} className={`relative w-full overflow-hidden rounded-xl border bg-white/80 p-4 pl-5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] ${selected ? "border-[#d4bc00] bg-yellow-50/40 shadow-[0_0_0_3px_rgba(255,223,32,0.12)]" : "border-slate-200/80 hover:border-slate-300 hover:bg-white"}`}>
       <span className={`absolute inset-y-3 left-0 w-1 rounded-r-full ${dotColors[event.category] ?? "bg-slate-400"}`} aria-hidden="true" />
-      <span className="block font-semibold leading-5 tracking-tight text-[#24313E]">{event.title}</span>
-      <span className="mt-1 block text-xs font-medium leading-relaxed text-slate-500">{formatDateRange(event)} Â· {formatEventTime(event)}</span>
+      <span className="block font-semibold leading-5 tracking-tight text-[#24313E]">{cleanText(event.title)}</span>
+      <span className="mt-1 block text-xs font-medium leading-relaxed text-slate-500">{formatDateRange(event)} {MIDDLE_DOT} {formatEventTime(event)}</span>
       <span className="mt-2 flex flex-wrap items-center gap-2">
-        <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${categoryStyles[event.category] ?? "border-slate-200 bg-slate-50 text-slate-700"}`}>{event.category}</span>
-        <span className="text-[11px] font-medium text-slate-500">{event.status} Â· {event.audience}</span>
+        <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${categoryStyles[event.category] ?? "border-slate-200 bg-slate-50 text-slate-700"}`}>{cleanText(event.category)}</span>
+        <span className="text-[11px] font-medium text-slate-500">{cleanText(event.status)} {MIDDLE_DOT} {cleanText(event.audience)}</span>
       </span>
     </button>
   );
@@ -274,7 +277,7 @@ function MonthView({ month, today, selectedDate, events, onSelectDate }: { month
 function WeekView({ date, today, selectedDate, events, onSelectDate, onSelectEvent }: { date: Date; today: Date; selectedDate: Date; events: CalendarEvent[]; onSelectDate: (date: Date, events: CalendarEvent[]) => void; onSelectEvent: (event: CalendarEvent) => void }) {
   const start = getStartOfWeek(date);
   const days = Array.from({ length: 7 }, (_, index) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + index));
-  return <div className="grid gap-3 pt-5 sm:grid-cols-2 xl:grid-cols-7">{days.map((day) => { const dayEvents = getEventsForDate(events, day); const selected = isSameDay(day, selectedDate); return <div key={day.toISOString()} className={`rounded-xl border p-3 ${selected ? "border-[#e0c400] bg-yellow-50/50 shadow-[0_0_0_3px_rgba(255,223,32,0.16)]" : "border-slate-200 bg-[#f7f5ef]"}`}><button type="button" onClick={() => onSelectDate(day, [])} className="w-full rounded-xl text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]"><span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{weekdays[day.getDay()]}</span><span className={`mx-auto mt-1 flex h-10 w-10 items-center justify-center rounded-full text-xl font-semibold ${isSameDay(day, today) ? "bg-[#24313E] text-[#ffdf20]" : "text-[#24313E]"}`}>{day.getDate()}</span><EventDots events={dayEvents} /></button><div className="mt-3 space-y-2">{dayEvents.map((event) => <button key={event.id} type="button" onClick={() => onSelectEvent(event)} className="w-full rounded-lg bg-white px-2 py-2 text-left text-[11px] font-medium leading-4 text-[#24313E] shadow-sm hover:ring-1 hover:ring-slate-300">{event.title}</button>)}</div></div>; })}</div>;
+  return <div className="grid gap-3 pt-5 sm:grid-cols-2 xl:grid-cols-7">{days.map((day) => { const dayEvents = getEventsForDate(events, day); const selected = isSameDay(day, selectedDate); return <div key={day.toISOString()} className={`rounded-xl border p-3 ${selected ? "border-[#e0c400] bg-yellow-50/50 shadow-[0_0_0_3px_rgba(255,223,32,0.16)]" : "border-slate-200 bg-[#f7f5ef]"}`}><button type="button" onClick={() => onSelectDate(day, [])} className="w-full rounded-xl text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]"><span className="block text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">{weekdays[day.getDay()]}</span><span className={`mx-auto mt-1 flex h-10 w-10 items-center justify-center rounded-full text-xl font-semibold ${isSameDay(day, today) ? "bg-[#24313E] text-[#ffdf20]" : "text-[#24313E]"}`}>{day.getDate()}</span><EventDots events={dayEvents} /></button><div className="mt-3 space-y-2">{dayEvents.map((event) => <button key={event.id} type="button" onClick={() => onSelectEvent(event)} className="w-full rounded-lg bg-white px-2 py-2 text-left text-[11px] font-medium leading-4 text-[#24313E] shadow-sm hover:ring-1 hover:ring-slate-300">{cleanText(event.title)}</button>)}</div></div>; })}</div>;
 }
 
 function DayView({ date, events, onSelectEvent }: { date: Date; events: CalendarEvent[]; onSelectEvent: (event: CalendarEvent) => void }) {
@@ -286,5 +289,5 @@ function YearView({ year, events, onSelectMonth }: { year: number; events: Calen
 }
 
 function EventModal({ event, onClose }: { event: CalendarEvent; onClose: () => void }) {
-  return <div className="fixed inset-0 z-[1200] flex items-end justify-center bg-[#111A22]/45 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(mouseEvent) => { if (mouseEvent.target === mouseEvent.currentTarget) onClose(); }}><div role="dialog" aria-modal="true" aria-labelledby="event-dialog-title" className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl border border-white/70 bg-white/95 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.16)] sm:max-w-xl sm:rounded-2xl sm:p-8"><div className="flex items-start justify-between gap-4"><div><span className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${categoryStyles[event.category] ?? "border-slate-200 bg-slate-50 text-slate-700"}`}>{event.category}</span><h2 id="event-dialog-title" className="mt-4 text-2xl font-semibold leading-tight tracking-tight text-[#24313E] sm:text-3xl">{event.title}</h2></div><button type="button" onClick={onClose} aria-label="Close event details" autoFocus className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl text-slate-500 transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]">Ã—</button></div><dl className="mt-6 grid gap-4 rounded-xl bg-slate-50 p-5 sm:grid-cols-2"><div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Date</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{formatDateRange(event)}</dd></div>{event.startTime && <div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Time</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{formatEventTime(event)}</dd></div>}<div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Status</dt><dd className="mt-1"><span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${statusStyles[event.status]}`}>{event.status}</span></dd></div><div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Audience</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{event.audience}</dd></div>{event.location && <div className="sm:col-span-2"><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Location</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{event.location}</dd></div>}</dl><div className="mt-6"><h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">About this activity</h3><p className="mt-2 leading-relaxed text-slate-600">{event.description}</p></div><button type="button" onClick={onClose} className="mt-7 w-full rounded-xl bg-[#24313E] px-5 py-3 font-semibold text-white hover:bg-[#34495e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] focus-visible:ring-offset-2">Close details</button></div></div>;
+  return <div className="fixed inset-0 z-[1200] flex items-end justify-center bg-[#111A22]/45 p-0 backdrop-blur-sm sm:items-center sm:p-5" onMouseDown={(mouseEvent) => { if (mouseEvent.target === mouseEvent.currentTarget) onClose(); }}><div role="dialog" aria-modal="true" aria-labelledby="event-dialog-title" className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl border border-white/70 bg-white/95 p-6 shadow-[0_24px_70px_rgba(15,23,42,0.16)] sm:max-w-xl sm:rounded-2xl sm:p-8"><div className="flex items-start justify-between gap-4"><div><span className={`inline-flex rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${categoryStyles[event.category] ?? "border-slate-200 bg-slate-50 text-slate-700"}`}>{cleanText(event.category)}</span><h2 id="event-dialog-title" className="mt-4 text-2xl font-semibold leading-tight tracking-tight text-[#24313E] sm:text-3xl">{cleanText(event.title)}</h2></div><button type="button" onClick={onClose} aria-label="Close event details" autoFocus className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl text-slate-500 transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E]">×</button></div><dl className="mt-6 grid gap-4 rounded-xl bg-slate-50 p-5 sm:grid-cols-2"><div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Date</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{formatDateRange(event)}</dd></div>{event.startTime && <div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Time</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{formatEventTime(event)}</dd></div>}<div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Status</dt><dd className="mt-1"><span className={`inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${statusStyles[event.status]}`}>{cleanText(event.status)}</span></dd></div><div><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Audience</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{cleanText(event.audience)}</dd></div>{event.location && <div className="sm:col-span-2"><dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Location</dt><dd className="mt-1 text-sm font-medium text-[#24313E]">{cleanText(event.location)}</dd></div>}</dl><div className="mt-6"><h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">About this activity</h3><p className="mt-2 leading-relaxed text-slate-600">{cleanText(event.description)}</p></div><button type="button" onClick={onClose} className="mt-7 w-full rounded-xl bg-[#24313E] px-5 py-3 font-semibold text-white hover:bg-[#34495e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#24313E] focus-visible:ring-offset-2">Close details</button></div></div>;
 }

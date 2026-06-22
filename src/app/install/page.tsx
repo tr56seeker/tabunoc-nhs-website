@@ -64,8 +64,8 @@ export default function InstallPage() {
               <li>1. Open Chrome on your phone.</li>
               <li>2. Visit https://tabunocnatlhs.com</li>
               <li>3. Tap the three-dot menu on the upper-right corner.</li>
-              <li>4. Tap â€œAdd to Home screenâ€ or â€œInstall appâ€.</li>
-              <li>5. Tap â€œInstallâ€.</li>
+              <li>4. Tap “Add to Home screen” or “Install app”.</li>
+              <li>5. Tap “Install”.</li>
             </ol>
           </div>
 
@@ -75,8 +75,8 @@ export default function InstallPage() {
               <li>1. Open Safari on your iPhone.</li>
               <li>2. Visit https://tabunocnatlhs.com</li>
               <li>3. Tap the Share button.</li>
-              <li>4. Tap â€œAdd to Home Screenâ€.</li>
-              <li>5. Tap â€œAddâ€.</li>
+              <li>4. Tap “Add to Home Screen”.</li>
+              <li>5. Tap “Add”.</li>
             </ol>
           </div>
         </div>

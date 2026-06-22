@@ -25,7 +25,7 @@ const frontlineServices = [
     process: [
       "Proceed to the designated enrollment area or official enrollment channel.",
       "Submit available enrollment documents for checking and validation.",
-      "Fill out or confirm the learnerâ€™s enrollment information.",
+      "Fill out or confirm the learner’s enrollment information.",
       "Wait for verification, encoding, and confirmation of enrollment status.",
     ],
     office: "Enrollment Committee / Registrar-designated Personnel / Class Adviser",
@@ -64,7 +64,7 @@ const frontlineServices = [
       "Provides certification that a learner is officially enrolled in Tabunoc National High School for a specific school year.",
     whoMayAvail: "Currently enrolled learners, parents, or guardians.",
     requirements: [
-      "Learnerâ€™s complete name",
+      "Learner’s complete name",
       "Grade level and section",
       "Purpose of request",
       "Valid ID of requester, if required",
@@ -76,17 +76,17 @@ const frontlineServices = [
     ],
     office: "School Office / Records Personnel",
     fees: "None",
-    processingTime: "Usually within the schoolâ€™s regular processing schedule.",
+    processingTime: "Usually within the school’s regular processing schedule.",
   },
   {
     category: "School Records",
     title: "Request for Certificate of Good Moral Character",
     description:
-      "Provides certification of the learnerâ€™s conduct based on school records and adviser or guidance validation.",
+      "Provides certification of the learner’s conduct based on school records and adviser or guidance validation.",
     whoMayAvail:
       "Currently enrolled learners, former learners, parents, guardians, or authorized representatives.",
     requirements: [
-      "Learnerâ€™s complete name",
+      "Learner’s complete name",
       "Grade level and section or last school year attended",
       "Purpose of request",
       "Valid ID or authorization, if applicable",
@@ -367,7 +367,7 @@ export default function CitizenCharterPage() {
                         {service.requirements.map((item) => (
                           <li key={item} className="flex gap-3 text-slate-700 dark:text-stone-200">
                             <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
-                              âœ“
+                              ✓
                             </span>
                             <span className="font-semibold">{item}</span>
                           </li>

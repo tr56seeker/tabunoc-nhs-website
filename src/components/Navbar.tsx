@@ -467,7 +467,7 @@ export default function Navbar({
               alt="Department of Education logo"
               width={141}
               height={72}
-              className="h-9 w-auto object-contain 2xl:h-10"
+              className="h-9 w-auto object-contain sm:h-10 lg:h-11"
             />
 
             <div className="h-9 w-px bg-white/30" />
@@ -477,7 +477,7 @@ export default function Navbar({
               alt="Tabunoc National High School logo"
               width={44}
               height={44}
-              className="h-10 w-10 rounded-full object-contain 2xl:h-11 2xl:w-11"
+              className="h-10 w-10 rounded-full object-contain sm:h-11 sm:w-11"
             />
           </div>
 

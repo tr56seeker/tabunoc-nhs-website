@@ -2,6 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const AUTO_SCROLL_SPEED = 0.28;
+const DRAG_THRESHOLD = 8;
+
+type PauseReason = "hover" | "pointer" | "focus" | "modal";
+
 type Highlight = {
   id: string;
   title: string;
@@ -25,8 +30,20 @@ function formatEventDate(value: string | null) {
 export default function HomeHighlightsCarousel() {
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [selected, setSelected] = useState<Highlight | null>(null);
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const drag = useRef({ active: false, moved: false, startX: 0, scrollLeft: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  const trackRef = useRef<HTMLDivElement>(null);
+  const setRef = useRef<HTMLDivElement>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const offsetRef = useRef(0);
+  const setWidthRef = useRef(0);
+  const pauseReasonsRef = useRef<Set<PauseReason>>(new Set());
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartOffsetRef = useRef(0);
+  const hasDraggedRef = useRef(false);
+  const clearDragTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -58,102 +75,240 @@ export default function HomeHighlightsCarousel() {
     };
   }, [selected]);
 
+  useEffect(() => {
+    if (selected) {
+      pauseReasonsRef.current.add("modal");
+    } else {
+      pauseReasonsRef.current.delete("modal");
+    }
+  }, [selected]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
+    updatePreference();
+    mediaQuery.addEventListener("change", updatePreference);
+    return () => mediaQuery.removeEventListener("change", updatePreference);
+  }, []);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    const repeatedSet = setRef.current;
+    if (!track || !repeatedSet || highlights.length === 0) return;
+
+    const updateSetWidth = () => {
+      setWidthRef.current = repeatedSet.getBoundingClientRect().width;
+      offsetRef.current = normalizeOffset(offsetRef.current, setWidthRef.current);
+    };
+
+    updateSetWidth();
+    const resizeObserver = new ResizeObserver(updateSetWidth);
+    resizeObserver.observe(repeatedSet);
+
+    let previousTime: number | null = null;
+    const frameDuration = 1000 / 60;
+    const animate = (time: number) => {
+      const elapsed = previousTime === null ? frameDuration : Math.min(time - previousTime, 50);
+      previousTime = time;
+
+      if (
+        !prefersReducedMotion &&
+        !isDraggingRef.current &&
+        pauseReasonsRef.current.size === 0
+      ) {
+        offsetRef.current -= AUTO_SCROLL_SPEED * (elapsed / frameDuration);
+      }
+
+      offsetRef.current = normalizeOffset(offsetRef.current, setWidthRef.current);
+      track.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
+      animationFrameRef.current = window.requestAnimationFrame(animate);
+    };
+
+    animationFrameRef.current = window.requestAnimationFrame(animate);
+    return () => {
+      resizeObserver.disconnect();
+      if (animationFrameRef.current !== null) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+    };
+  }, [highlights.length, prefersReducedMotion]);
+
+  useEffect(() => {
+    return () => {
+      if (clearDragTimerRef.current !== null) {
+        window.clearTimeout(clearDragTimerRef.current);
+      }
+    };
+  }, []);
+
   if (highlights.length === 0) return null;
 
-  function beginDrag(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "mouse" && event.button !== 0) return;
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-    drag.current = {
-      active: true,
-      moved: false,
-      startX: event.clientX,
-      scrollLeft: scroller.scrollLeft,
-    };
+  const repetitionCount = Math.max(4, Math.ceil(10 / highlights.length));
+  const repeatedHighlights = Array.from({ length: repetitionCount }).flatMap(
+    () => highlights,
+  );
+
+  function normalizeOffset(offset: number, setWidth: number) {
+    if (setWidth <= 0) return offset;
+    let normalized = offset;
+    while (normalized <= -setWidth) normalized += setWidth;
+    while (normalized > 0) normalized -= setWidth;
+    return normalized;
   }
 
-  function moveDrag(event: React.PointerEvent<HTMLDivElement>) {
-    if (!drag.current.active || !scrollerRef.current) return;
-    const distance = event.clientX - drag.current.startX;
+  function pauseMarquee(reason: PauseReason) {
+    pauseReasonsRef.current.add(reason);
+  }
 
-    if (Math.abs(distance) <= 5) return;
+  function resumeMarquee(reason: PauseReason) {
+    pauseReasonsRef.current.delete(reason);
+  }
 
-    if (!drag.current.moved) {
-      drag.current.moved = true;
-      scrollerRef.current.setPointerCapture(event.pointerId);
+  function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    if (clearDragTimerRef.current !== null) {
+      window.clearTimeout(clearDragTimerRef.current);
+      clearDragTimerRef.current = null;
+    }
+    pauseMarquee("pointer");
+    isDraggingRef.current = true;
+    setIsDragging(true);
+    dragStartXRef.current = event.clientX;
+    dragStartOffsetRef.current = offsetRef.current;
+    hasDraggedRef.current = false;
+  }
+
+  function handlePointerMove(event: React.PointerEvent<HTMLDivElement>) {
+    if (!isDraggingRef.current) return;
+    const deltaX = event.clientX - dragStartXRef.current;
+    if (Math.abs(deltaX) <= DRAG_THRESHOLD) return;
+
+    if (!hasDraggedRef.current) {
+      hasDraggedRef.current = true;
+      event.currentTarget.setPointerCapture(event.pointerId);
     }
 
-    scrollerRef.current.scrollLeft = drag.current.scrollLeft - distance;
+    offsetRef.current = normalizeOffset(
+      dragStartOffsetRef.current + deltaX,
+      setWidthRef.current,
+    );
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
+    }
   }
 
   function endDrag(event: React.PointerEvent<HTMLDivElement>) {
-    drag.current.active = false;
-    if (scrollerRef.current?.hasPointerCapture(event.pointerId)) {
-      scrollerRef.current.releasePointerCapture(event.pointerId);
-    }
-  }
+    if (!isDraggingRef.current) return;
+    const wasDragged = hasDraggedRef.current;
+    isDraggingRef.current = false;
+    setIsDragging(false);
 
-  function scroll(direction: number) {
-    scrollerRef.current?.scrollBy({
-      left: direction * Math.min(scrollerRef.current.clientWidth * 0.85, 520),
-      behavior: "smooth",
-    });
+    try {
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    } catch {
+      // Pointer capture may already have been released by the browser.
+    }
+
+    if (wasDragged) {
+      pauseReasonsRef.current.delete("hover");
+      pauseReasonsRef.current.delete("focus");
+      const activeElement = document.activeElement;
+      if (
+        activeElement instanceof HTMLElement &&
+        event.currentTarget.contains(activeElement)
+      ) {
+        activeElement.blur();
+      }
+    } else {
+      resumeMarquee("pointer");
+    }
+
+    clearDragTimerRef.current = window.setTimeout(() => {
+      hasDraggedRef.current = false;
+      if (wasDragged) {
+        resumeMarquee("pointer");
+      }
+      clearDragTimerRef.current = null;
+    }, 120);
   }
 
   return (
     <section className="overflow-hidden bg-[#f5f7f9] py-16 sm:py-20" aria-labelledby="school-highlights-title">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#0F4C5C]">Campus life</p>
-            <h2 id="school-highlights-title" className="mt-2 text-3xl font-semibold tracking-tight text-[#24313e] sm:text-4xl">
-              School Highlights
-            </h2>
-            <p className="mt-3 max-w-2xl leading-7 text-slate-600">
-              Stories, activities, and milestones from Tabunoc National High School.
-            </p>
-          </div>
-          <div className="hidden gap-2 sm:flex">
-            <button type="button" onClick={() => scroll(-1)} aria-label="Show previous highlights" className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white text-xl text-[#24313e] shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">←</button>
-            <button type="button" onClick={() => scroll(1)} aria-label="Show next highlights" className="grid h-11 w-11 place-items-center rounded-full bg-[#24313e] text-xl text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">→</button>
-          </div>
-        </div>
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#0F4C5C]">Campus life</p>
+        <h2 id="school-highlights-title" className="mt-2 text-3xl font-semibold tracking-tight text-[#24313e] sm:text-4xl">
+          School Highlights
+        </h2>
+        <p className="mt-3 max-w-2xl leading-7 text-slate-600">
+          Stories, activities, and milestones from Tabunoc National High School.
+        </p>
       </div>
 
       <div
-        ref={scrollerRef}
-        onPointerDown={beginDrag}
-        onPointerMove={moveDrag}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
-        className="mx-auto mt-9 flex max-w-[100rem] touch-pan-y items-stretch cursor-grab snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-7 [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden sm:px-[max(1.5rem,calc((100vw-80rem)/2))]"
+        onPointerLeave={(event) => {
+          if (
+            isDraggingRef.current &&
+            !event.currentTarget.hasPointerCapture(event.pointerId)
+          ) {
+            endDrag(event);
+          }
+        }}
+        onMouseEnter={() => pauseMarquee("hover")}
+        onMouseLeave={() => resumeMarquee("hover")}
+        onFocusCapture={() => pauseMarquee("focus")}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+            resumeMarquee("focus");
+          }
+        }}
+        className={`mx-auto mt-9 max-w-[100rem] touch-pan-y overflow-hidden px-6 pb-7 select-none sm:px-[max(1.5rem,calc((100vw-80rem)/2))] ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
       >
-        {highlights.map((highlight) => {
-          const date = formatEventDate(highlight.event_date);
-          return (
-            <button
-              key={highlight.id}
-              type="button"
-              onClick={(event) => {
-                if (event.detail === 0 || !drag.current.moved) {
-                  setSelected(highlight);
-                }
-              }}
-              className="group flex w-[82vw] max-w-[27rem] flex-none snap-start flex-col self-stretch overflow-hidden rounded-2xl bg-white text-left shadow-[0_12px_35px_rgba(36,49,62,0.10)] outline-none transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(36,49,62,0.16)] focus-visible:ring-4 focus-visible:ring-[#ffdf20] sm:w-[25rem]"
-              aria-label={`View ${highlight.title}`}
+        <div ref={trackRef} className="flex w-max will-change-transform">
+          {[0, 1].map((groupIndex) => (
+            <div
+              key={groupIndex}
+              ref={groupIndex === 0 ? setRef : undefined}
+              className="flex shrink-0 items-stretch gap-5 pr-5"
+              aria-hidden={groupIndex === 1 ? true : undefined}
             >
-              <div className="relative aspect-[16/10] w-full flex-none overflow-hidden rounded-t-2xl bg-slate-100">
-                <img src={highlight.image_url} alt={highlight.alt_text || highlight.title} loading="lazy" draggable={false} className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]" />
-              </div>
-              <div className="flex min-h-28 flex-1 flex-col border-t-4 border-[#ffdf20] p-5">
-                <p className="min-h-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#0F4C5C]">
-                  {[highlight.category, date].filter(Boolean).join(" · ")}
-                </p>
-                <h3 className="mt-2 line-clamp-2 text-xl font-semibold leading-snug text-[#24313e]">{highlight.title}</h3>
-              </div>
-            </button>
-          );
-        })}
+              {repeatedHighlights.map((highlight, index) => {
+                const date = formatEventDate(highlight.event_date);
+                const isKeyboardDuplicate = groupIndex === 1 || index >= highlights.length;
+                return (
+                  <button
+                    key={`${groupIndex}-${highlight.id}-${index}`}
+                    type="button"
+                    tabIndex={isKeyboardDuplicate ? -1 : undefined}
+                    onClick={(event) => {
+                      if (event.detail === 0 || !hasDraggedRef.current) {
+                        setSelected(highlight);
+                      }
+                    }}
+                    className="group flex w-[82vw] shrink-0 flex-col self-stretch overflow-hidden rounded-2xl bg-white text-left shadow-[0_12px_35px_rgba(36,49,62,0.10)] outline-none transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(36,49,62,0.16)] focus-visible:ring-4 focus-visible:ring-[#ffdf20] sm:w-[420px] lg:w-[460px]"
+                    aria-label={`View ${highlight.title}`}
+                  >
+                    <div className="relative aspect-[16/10] w-full flex-none overflow-hidden rounded-t-2xl bg-slate-100">
+                      <img src={highlight.image_url} alt={highlight.alt_text || highlight.title} loading="lazy" draggable={false} className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]" />
+                    </div>
+                    <div className="flex min-h-28 flex-1 flex-col border-t-4 border-[#ffdf20] p-5">
+                      <p className="min-h-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#0F4C5C]">
+                        {[highlight.category, date].filter(Boolean).join(" · ")}
+                      </p>
+                      <h3 className="mt-2 line-clamp-2 text-xl font-semibold leading-snug text-[#24313e]">{highlight.title}</h3>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </div>
       </div>
 
       {selected && (

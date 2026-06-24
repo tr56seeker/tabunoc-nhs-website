@@ -212,3 +212,25 @@ textarea {
     transform: none;
   }
 }
+
+@keyframes home-highlights-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-home-highlights-marquee {
+  animation: home-highlights-marquee var(--home-highlights-marquee-duration, 110s) linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-home-highlights-marquee {
+    animation: none;
+    transform: none;
+  }
+}

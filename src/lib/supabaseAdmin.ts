@@ -35,6 +35,40 @@ type Database = {
         Update: Partial<Database["public"]["Tables"]["faq_community_questions"]["Row"]>;
         Relationships: [];
       };
+      homepage_highlights: {
+        Row: {
+          id: string;
+          title: string;
+          description: string | null;
+          category: string | null;
+          image_path: string;
+          image_url: string;
+          alt_text: string | null;
+          facebook_url: string | null;
+          status: string;
+          display_order: number;
+          event_date: string | null;
+          created_at: string;
+          updated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          title: string;
+          description?: string | null;
+          category?: string | null;
+          image_path: string;
+          image_url: string;
+          alt_text?: string | null;
+          facebook_url?: string | null;
+          status?: string;
+          display_order?: number;
+          event_date?: string | null;
+          created_at?: string;
+          updated_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["homepage_highlights"]["Row"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

@@ -13,6 +13,7 @@ import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
 import Footer from "@/components/Footer";
 import PopulationCountUp from "@/components/PopulationCountUp";
+import HomeHighlightsCarousel from "@/components/HomeHighlightsCarousel";
 
 const mapsHref =
   "https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu";
@@ -326,6 +327,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        <HomeHighlightsCarousel />
 
         {/* FEATURED ADVISORY */}
         <section className="bg-[#F8FAFC] px-6 py-12">

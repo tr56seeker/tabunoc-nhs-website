@@ -26,6 +26,7 @@ type PersonnelCardProps = {
     | "gradeLeader"
     | "classAdviser"
     | "subjectTeacher"
+    | "position"
     | "guidance"
     | "default";
   onClick?: (person: Personnel) => void;
@@ -47,6 +48,9 @@ type ExtendedPersonnel = Personnel & {
   subjectArea?: string | string[];
   primarySubjectDepartment?: string;
   subjectDepartment?: string;
+  subGroup?: string;
+  displayGroup?: string;
+  category?: string;
   teachingLevel?: string;
 };
 
@@ -236,6 +240,44 @@ function getGuidanceDepartment(person: Personnel) {
   );
 }
 
+function isTeachingPersonnel(person: Personnel) {
+  return person.roles.some((role) =>
+    [
+      "Subject Teacher",
+      "Class Adviser",
+      "Master Teacher",
+      "Grade Leader",
+      "SHS Coordinator",
+    ].includes(role)
+  );
+}
+
+function getPositionViewThirdLine(person: Personnel) {
+  const extendedPerson = person as ExtendedPersonnel;
+
+  if (isTeachingPersonnel(person)) {
+    const teachingDepartment =
+      getFirstMeaningfulText(extendedPerson.subjectArea) ||
+      getFirstMeaningfulText(person.subjectTaught) ||
+      safeText(extendedPerson.primarySubjectDepartment) ||
+      safeText(extendedPerson.subjectDepartment);
+
+    if (isMeaningfulText(teachingDepartment)) {
+      return teachingDepartment;
+    }
+  }
+
+  return (
+    getFirstMeaningfulText(extendedPerson.subjectArea) ||
+    getFirstMeaningfulText(person.subjectTaught) ||
+    safeText(person.department) ||
+    safeText(extendedPerson.subGroup) ||
+    safeText(extendedPerson.displayGroup) ||
+    safeText(extendedPerson.category) ||
+    "School Operations Support"
+  );
+}
+
 function getCardSummary(
   person: Personnel,
   displayContext: NonNullable<PersonnelCardProps["displayContext"]>
@@ -304,6 +346,15 @@ function getCardSummary(
       name,
       line2: getGuidanceDesignation(person),
       line3: getGuidanceDepartment(person),
+      line4: "",
+    };
+  }
+
+  if (displayContext === "position") {
+    return {
+      name,
+      line2: safeText(person.position),
+      line3: getPositionViewThirdLine(person),
       line4: "",
     };
   }

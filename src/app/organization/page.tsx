@@ -17,6 +17,18 @@ type SubjectDepartmentEntry = {
   isPrimaryDepartment: boolean;
 };
 
+type BrowseMode = "group" | "position";
+
+type ExtendedPersonnel = Personnel & {
+  designation1?: string;
+  designation2?: string;
+  designation3?: string;
+  designation4?: string;
+  subjectArea?: string;
+  subGroup?: string;
+  displayGroup?: string;
+};
+
 const roleFilters: Array<"All" | PersonnelRole> = [
   "All",
   "Principal",
@@ -651,11 +663,20 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
 }
 
 function getSearchableText(person: Personnel) {
+  const extended = person as ExtendedPersonnel;
+
   return [
     person.name,
     person.position,
     person.group,
     person.department,
+    extended.subGroup,
+    extended.displayGroup,
+    extended.subjectArea,
+    extended.designation1,
+    extended.designation2,
+    extended.designation3,
+    extended.designation4,
     person.bio,
     person.description,
     ...(person.roles || []),
@@ -747,6 +768,75 @@ function getTeacherPositionRank(position: string) {
   );
 
   return rankIndex === -1 ? 999 : rankIndex + 1;
+}
+
+function getCleanPosition(position?: string) {
+  return safeText(position) || "Other Personnel";
+}
+
+function getPositionFamilyRank(position?: string) {
+  const value = safeText(position)
+    .toLowerCase()
+    .replace(/\./g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!value) return 999;
+
+  if (value.includes("assistant") && value.includes("principal")) {
+    return 20;
+  }
+
+  if (value.includes("school principal") || value.includes("principal")) {
+    return 10;
+  }
+  if (value.includes("head teacher")) return 30;
+  if (value.includes("master teacher")) return 40;
+  if (
+    value.includes("teacher") ||
+    /\btch-?0?\d+\b/.test(value) ||
+    /\bt-?\d+\b/.test(value)
+  ) {
+    return 50;
+  }
+  if (value.includes("guidance counselor")) return 60;
+  if (value.includes("administrative officer")) return 70;
+  if (value.includes("administrative assistant")) return 80;
+  if (value.includes("administrative aide")) return 90;
+  if (value.includes("job order")) return 100;
+  if (value.includes("utility")) return 110;
+  if (value.includes("guard")) return 120;
+
+  return 999;
+}
+
+function getPositionRomanRank(position?: string) {
+  const value = safeText(position);
+  const romanMatch = value.match(/\b(VII|VI|IV|V|III|II|I)\b/i);
+
+  if (romanMatch) {
+    return romanToNumber(romanMatch[1]);
+  }
+
+  const shorthandMatch = value
+    .toLowerCase()
+    .match(/\b(?:tch|t)-?0?(\d+)\b/);
+
+  return shorthandMatch ? Number(shorthandMatch[1]) : 0;
+}
+
+function sortPositionsByRank(a: string, b: string) {
+  const familyA = getPositionFamilyRank(a);
+  const familyB = getPositionFamilyRank(b);
+
+  if (familyA !== familyB) return familyA - familyB;
+
+  const romanA = getPositionRomanRank(a);
+  const romanB = getPositionRomanRank(b);
+
+  if (romanA !== romanB) return romanB - romanA;
+
+  return a.localeCompare(b, "en", { sensitivity: "base" });
 }
 
 function romanToNumber(value?: string) {
@@ -1074,6 +1164,9 @@ export default function OrganizationPage() {
   const [selectedPerson, setSelectedPerson] = useState<Personnel | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRole, setSelectedRole] = useState<"All" | PersonnelRole>("All");
+  const [browseMode, setBrowseMode] = useState<BrowseMode>("group");
+  const [selectedPositionGroup, setSelectedPositionGroup] =
+    useState("All");
   const [allPersonnel, setAllPersonnel] = useState<Personnel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -1318,6 +1411,44 @@ const visibleSubjectDepartments = useMemo(() => {
     });
   }, [allPersonnel, searchTerm, selectedRole]);
 
+  const positionFilterOptions = useMemo(() => {
+    return Array.from(
+      new Set(allPersonnel.map((person) => getCleanPosition(person.position)))
+    ).sort(sortPositionsByRank);
+  }, [allPersonnel]);
+
+  const positionViewPersonnel = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+
+    return allPersonnel.filter((person) => {
+      const positionGroup = getCleanPosition(person.position);
+      const matchesPosition =
+        selectedPositionGroup === "All" ||
+        positionGroup === selectedPositionGroup;
+      const matchesSearch =
+        query === "" || getSearchableText(person).includes(query);
+
+      return matchesPosition && matchesSearch;
+    });
+  }, [allPersonnel, searchTerm, selectedPositionGroup]);
+
+  const positionViewSections = useMemo(() => {
+    return positionFilterOptions
+      .map((positionGroup) => ({
+        positionGroup,
+        personnel: positionViewPersonnel
+          .filter(
+            (person) => getCleanPosition(person.position) === positionGroup
+          )
+          .sort((a, b) => {
+            return a.name.localeCompare(b.name, "en", {
+              sensitivity: "base",
+            });
+          }),
+      }))
+      .filter((section) => section.personnel.length > 0);
+  }, [positionFilterOptions, positionViewPersonnel]);
+
   const centeredPersonnelGridClass =
   "grid grid-cols-[repeat(auto-fit,minmax(min(100%,22rem),24rem))] justify-center gap-3 lg:grid-cols-[repeat(auto-fit,minmax(min(100%,20rem),22rem))]";
 
@@ -1365,7 +1496,7 @@ return (
               aria-label="Search personnel directory"
               className="mx-auto w-full max-w-5xl rounded-2xl border border-slate-200/80 bg-white/90 p-4 text-left shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur dark:border-[#292624] dark:bg-[#171614]/95 dark:shadow-black/20 md:p-5"
             >
-              <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_240px]">
+              <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_180px_240px]">
                 <input
                   type="text"
                   aria-label="Search personnel directory"
@@ -1376,24 +1507,97 @@ return (
                 />
 
                 <select
-                  aria-label="Filter personnel by role"
-                  value={selectedRole}
-                  onChange={(event) =>
-                    setSelectedRole(event.target.value as "All" | PersonnelRole)
-                  }
+                  aria-label="Browse personnel by"
+                  value={browseMode}
+                  onChange={(event) => {
+                    setBrowseMode(event.target.value as BrowseMode);
+                  }}
                   className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-medium text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white"
                 >
-                  {roleFilters.map((role) => (
-                    <option key={role} value={role}>
-                      {role === "All"
-                        ? "All Roles"
-                        : role === "Program Implementer"
-                          ? "Program Coordinator"
-                          : role}
-                    </option>
-                  ))}
+                  <option value="group">Group</option>
+                  <option value="position">Position</option>
+                </select>
+
+                <select
+                  aria-label={
+                    browseMode === "group"
+                      ? "Filter personnel by role"
+                      : "Filter personnel by position"
+                  }
+                  value={
+                    browseMode === "group"
+                      ? selectedRole
+                      : selectedPositionGroup
+                  }
+                  onChange={(event) => {
+                    if (browseMode === "group") {
+                      setSelectedRole(
+                        event.target.value as "All" | PersonnelRole
+                      );
+                      return;
+                    }
+
+                    setSelectedPositionGroup(event.target.value);
+                  }}
+                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-medium text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white"
+                >
+                  {browseMode === "group" ? (
+                    roleFilters.map((role) => (
+                      <option key={role} value={role}>
+                        {role === "All"
+                          ? "All Roles"
+                          : role === "Program Implementer"
+                            ? "Program Coordinator"
+                            : role}
+                      </option>
+                    ))
+                  ) : (
+                    <>
+                      <option value="All">All Positions</option>
+                      {positionFilterOptions.map((positionGroup) => (
+                        <option key={positionGroup} value={positionGroup}>
+                          {positionGroup}
+                        </option>
+                      ))}
+                    </>
+                  )}
                 </select>
               </div>
+
+              {!isLoading &&
+                browseMode === "position" &&
+                (searchTerm.trim() !== "" || selectedPositionGroup !== "All") && (
+                  <div className="mt-6">
+                    <div className="mb-4 flex flex-col justify-between gap-3 md:flex-row md:items-center">
+                      <p className="text-sm font-medium text-slate-600 dark:text-stone-300">
+                        {positionViewPersonnel.length} result
+                        {positionViewPersonnel.length !== 1 ? "s" : ""} found
+                      </p>
+
+                      <button
+                        onClick={() => {
+                          setSearchTerm("");
+                          setSelectedPositionGroup("All");
+                        }}
+                        className="w-fit rounded-full bg-[#ffdf20] px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-[#0F4C5C] hover:text-white"
+                      >
+                        Clear Search
+                      </button>
+                    </div>
+
+                    {positionViewPersonnel.length === 0 && (
+                      <div className="rounded-xl bg-slate-100 p-8 text-center dark:bg-[#292624]">
+                        <p className="font-semibold tracking-tight text-slate-700 dark:text-stone-200">
+                          No matching personnel found.
+                        </p>
+                        <p className="mt-2 text-sm text-slate-500 dark:text-stone-400">
+                          Try searching by surname, grade level, section,
+                          subject, designation, or role.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
 
               {isLoading && (
                 <div className="mt-6 rounded-xl bg-slate-100 p-8 text-center dark:bg-[#292624]">
@@ -1404,6 +1608,7 @@ return (
               )}
 
               {!isLoading &&
+                browseMode === "group" &&
                 (searchTerm.trim() !== "" || selectedRole !== "All") && (
                   <div className="mt-6">
                     <div className="mb-4 flex flex-col justify-between gap-3 md:flex-row md:items-center">
@@ -1450,6 +1655,67 @@ return (
             </div>
         </PageHeader>
 
+        {browseMode === "position" && (
+          <section
+            id="position-directory"
+            className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+          >
+            <div className="mx-auto max-w-6xl">
+              <SectionHeading
+                eyebrow="Browse by Position"
+                title="Personnel by Position"
+                description="View personnel grouped according to position or rank."
+              />
+
+              {positionViewSections.length > 0 ? (
+                <div className="grid gap-6">
+                  {positionViewSections.map(({ positionGroup, personnel }) => (
+                    <motion.div
+                      key={positionGroup}
+                      layout
+                      initial={{ opacity: 0, y: 24 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.45 }}
+                      className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5"
+                    >
+                      <div className="mb-5 mt-6 border-b border-slate-200 pb-3">
+                        <h3 className="flex items-center gap-3 text-base font-semibold uppercase tracking-[0.14em] text-[#24313E]">
+                          <span
+                            className="h-5 w-1.5 rounded-full bg-[#ffdf20]"
+                            aria-hidden="true"
+                          />
+                          {positionGroup}
+                        </h3>
+                      </div>
+
+                      <div className={centeredPersonnelGridClass}>
+                        {personnel.map((person) => (
+                          <PersonnelCard
+                            key={`${positionGroup}-${person.id}`}
+                            person={person}
+                            compact
+                            displayContext="position"
+                            onClick={setSelectedPerson}
+                          />
+                        ))}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              ) : !isLoading ? (
+                <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center">
+                  <p className="font-medium leading-relaxed text-slate-600 dark:text-stone-300">
+                    No matching personnel found.
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </section>
+        )}
+
+        {browseMode === "group" && (
+          <>
         {/* SCHOOL HEAD */}
         <section
           id="school-head"
@@ -1819,6 +2085,8 @@ return (
             ) : null}
           </div>
         </section>
+          </>
+        )}
 
         <Footer />
       </main>

@@ -204,23 +204,11 @@ function getDesignationItems(person: Personnel) {
 
   return uniqueList([
     ...(person.designation || []),
+    ...(person.coordinatorship || []),
     extended.designation1,
     extended.designation2,
     extended.designation3,
   ]);
-}
-
-function getSummaryDesignationText(person: Personnel) {
-  const position = getPositionText(person).toLowerCase();
-  const advisory = getAdvisorySections(person);
-
-  const designations = getDesignationItems(person)
-    .filter((designation) => designation.toLowerCase() !== position)
-    .filter((designation) => designation.toLowerCase() !== "class adviser");
-
-  const advisoryText = advisory ? `Class Adviser, ${advisory}` : "";
-
-  return uniqueList([...designations, advisoryText]).join(" / ");
 }
 
 function getTeachingDepartment(person: Personnel) {
@@ -266,10 +254,28 @@ function getTeachingProfileFields(person: Personnel): DetailField[] {
     displayList(person.subjectTaught) ||
     displayFlexibleList(extended.subjectTaught) ||
     safeText(extended.subjectArea);
+  const subjectDepartments = getSubjectDepartments(person);
+  const hasTeachingRole = person.roles.some((role) =>
+    [
+      "Subject Teacher",
+      "Class Adviser",
+      "Master Teacher",
+      "Grade Leader",
+      "SHS Coordinator",
+    ].includes(role)
+  );
+  const hasTeachingProfileValue =
+    isMeaningfulText(subjectTaught) ||
+    isMeaningfulText(extended.track) ||
+    isMeaningfulText(subjectDepartments);
+
+  if (!hasTeachingRole && !hasTeachingProfileValue) {
+    return [];
+  }
 
   const trackOrDepartment =
     safeText(extended.track) ||
-    getSubjectDepartments(person) ||
+    subjectDepartments ||
     safeText(person.department) ||
     getTeachingDepartment(person);
 
@@ -281,10 +287,6 @@ function getTeachingProfileFields(person: Personnel): DetailField[] {
     {
       label: "Track or Department",
       value: trackOrDepartment,
-    },
-    {
-      label: "Advisory",
-      value: getAdvisorySections(person),
     },
   ].filter((field) => isMeaningfulText(field.value));
 }
@@ -505,7 +507,6 @@ export default function PersonnelModal({
   const teachingDepartmentText = person
     ? getTeachingDepartment(person) || departmentText
     : "";
-  const designationText = person ? getSummaryDesignationText(person) : "";
   const teachingPhilosophy = person ? getTeachingPhilosophy(person) : "";
 
   const teachingProfile = useMemo<DetailField[]>(() => {
@@ -644,12 +645,6 @@ export default function PersonnelModal({
                           </p>
                         )}
 
-                        {designationText && (
-                          <p className="mt-2 line-clamp-3 text-sm font-medium leading-relaxed text-slate-600 sm:text-[15px] md:mx-auto md:max-w-[280px] md:text-base">
-                            {designationText}
-                          </p>
-                        )}
-
                   </div>
                 </div>
               </aside>
@@ -684,7 +679,7 @@ export default function PersonnelModal({
 
                 {additionalTasks.length > 0 && (
                   <section className="mb-8 md:mb-10">
-                    <SectionTitle title="Task" />
+                    <SectionTitle title="Roles and Designations" />
 
                     <div className="space-y-0.5 md:space-y-1">
                       {additionalTasks.map((field) => (

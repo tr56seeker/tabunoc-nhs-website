@@ -1488,6 +1488,7 @@ return (
                   key={person.id}
                   person={person}
                   compact
+                  displayContext="administrative"
                   onClick={setSelectedPerson}
                 />
               ))}

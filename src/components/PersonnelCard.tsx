@@ -21,6 +21,7 @@ type PersonnelCardProps = {
   person: Personnel;
   compact?: boolean;
   displayContext?:
+    | "administrative"
     | "programCoordinator"
     | "gradeLeader"
     | "classAdviser"
@@ -42,6 +43,7 @@ type ExtendedPersonnel = Personnel & {
   designation1?: string;
   designation2?: string;
   designation3?: string;
+  designation4?: string;
   subjectArea?: string | string[];
   primarySubjectDepartment?: string;
   subjectDepartment?: string;
@@ -103,6 +105,20 @@ function uniqueList(items: Array<string | undefined | null>) {
   );
 }
 
+function uniqueListByNormalizedText(items: Array<string | undefined | null>) {
+  const seen = new Set<string>();
+
+  return items.map((item) => safeText(item)).filter((item) => {
+    if (!isMeaningfulText(item)) return false;
+
+    const key = item.toLowerCase();
+    if (seen.has(key)) return false;
+
+    seen.add(key);
+    return true;
+  });
+}
+
 function getDepartmentPreview(person: Personnel) {
   const extendedPerson = person as ExtendedPersonnel;
 
@@ -159,6 +175,26 @@ function getDesignationItems(person: Personnel) {
   );
 }
 
+function getAllDesignationItems(person: Personnel) {
+  const extendedPerson = person as ExtendedPersonnel;
+  const position = safeText(person.position).toLowerCase();
+
+  return uniqueListByNormalizedText([
+    extendedPerson.designation1,
+    extendedPerson.designation2,
+    extendedPerson.designation3,
+    extendedPerson.designation4,
+    ...(person.designation || []),
+  ]).filter((designation) => designation.toLowerCase() !== position);
+}
+
+function formatNaturalList(items: string[]) {
+  if (items.length <= 1) return items[0] ?? "";
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+
+  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
+}
+
 function getDesignation1(person: Personnel) {
   const extendedPerson = person as ExtendedPersonnel;
 
@@ -166,13 +202,7 @@ function getDesignation1(person: Personnel) {
 }
 
 function getProgramCoordinatorPreview(person: Personnel) {
-  const coordinatorText = uniqueList(person.coordinatorship || []).join(", ");
-
-  if (coordinatorText) {
-    return coordinatorText;
-  }
-
-  return getDesignationItems(person).join(", ");
+  return formatNaturalList(getAllDesignationItems(person));
 }
 
 function getGradeLeaderPreview(person: Personnel) {
@@ -227,6 +257,17 @@ function getCardSummary(
     };
   }
 
+  if (displayContext === "administrative") {
+    const extendedPerson = person as ExtendedPersonnel;
+
+    return {
+      name,
+      line2: safeText(person.position),
+      line3: safeText(extendedPerson.designation1),
+      line4: "",
+    };
+  }
+
   if (displayContext === "gradeLeader") {
     return {
       name,
@@ -276,7 +317,13 @@ function PreviewLine({
   title,
 }: {
   value: string;
-  variant?: "name" | "normal" | "muted" | "designation" | "subjectTeacher";
+  variant?:
+    | "name"
+    | "normal"
+    | "muted"
+    | "designation"
+    | "multilineDesignation"
+    | "subjectTeacher";
   title?: string;
 }) {
   if (!isMeaningfulText(value)) return null;
@@ -308,6 +355,17 @@ function PreviewLine({
       <p
         title={title || value}
         className="line-clamp-1 break-words text-[12px] font-medium leading-snug text-slate-500 dark:text-stone-400 sm:text-[13px]"
+      >
+        {value}
+      </p>
+    );
+  }
+
+  if (variant === "multilineDesignation") {
+    return (
+      <p
+        title={title || value}
+        className="line-clamp-4 break-words text-[12px] font-medium leading-snug text-slate-600 dark:text-stone-300 sm:text-[13px]"
       >
         {value}
       </p>
@@ -348,6 +406,7 @@ export default function PersonnelCard({
   const showPhoto = photoUrl && failedPhoto !== photoUrl;
   const initials = getInitials(cardSummary.name);
   const isSubjectTeacher = displayContext === "subjectTeacher";
+  const isProgramCoordinator = displayContext === "programCoordinator";
 
   const cardSize = compact
     ? "mx-auto h-[8.5rem] w-full max-w-[24rem] sm:h-[9rem] sm:w-[23.5rem] sm:max-w-none md:h-[9.75rem] md:w-[24rem] lg:h-[10.5rem] lg:w-[22rem]"
@@ -396,7 +455,13 @@ export default function PersonnelCard({
 
             <PreviewLine
               value={cardSummary.line2}
-              variant={isSubjectTeacher ? "subjectTeacher" : "designation"}
+              variant={
+                isSubjectTeacher
+                  ? "subjectTeacher"
+                  : isProgramCoordinator
+                    ? "multilineDesignation"
+                    : "designation"
+              }
               title={cardSummary.line2}
             />
 

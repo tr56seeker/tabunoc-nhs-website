@@ -419,6 +419,8 @@ export default function Home() {
           </div>
         </section>
 
+        <HomeHighlightsCarousel />
+
         {/* SCHOOL STATISTICS */}
         <section
           id="homepage-statistics"
@@ -521,8 +523,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        <HomeHighlightsCarousel />
 
         {/* FEATURED ADVISORY */}
         <section className="bg-[#F8FAFC] px-6 py-12">

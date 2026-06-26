@@ -24,9 +24,19 @@ type ExtendedPersonnel = Personnel & {
   designation2?: string;
   designation3?: string;
   designation4?: string;
+  designation?: string[];
   subjectArea?: string;
+  primarySubjectDepartment?: string;
+  subjectDepartment?: string;
+  subjectDepartment1?: string;
+  subjectDepartment2?: string;
+  subjectDepartment3?: string;
+  subjectDepartment4?: string;
+  subjectDepartment5?: string;
   subGroup?: string;
   displayGroup?: string;
+  category?: string;
+  status?: string;
 };
 
 const roleFilters: Array<"All" | PersonnelRole> = [
@@ -298,14 +308,41 @@ function isGradeLeaderOrShsCoordinatorDesignation(value: string) {
   );
 }
 
+function isProgramDesignationText(value: string) {
+  const text = safeText(value)
+    .toLowerCase()
+    .replace(/[–—-]/g, " ")
+    .replace(/[()]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (!text || text === "class adviser") return false;
+
+  return (
+    text.includes("coordinator") ||
+    text.includes("designate") ||
+    text.includes("registrar") ||
+    text.includes("focal") ||
+    text.includes("chairperson") ||
+    text.includes("chairman") ||
+    text.includes("chair") ||
+    text.includes("in charge") ||
+    text.includes("pio") ||
+    text.includes("manager") ||
+    text.includes("property custodian") ||
+    text.includes("school paper adviser") ||
+    text.includes("sslg adviser") ||
+    text.includes("yes o adviser") ||
+    text.includes("bkd adviser")
+  );
+}
+
 function inferRoles(record: Record<string, string>): PersonnelRole[] {
   const position = safeText(record.position).toLowerCase();
   const category = safeText(record.category).toLowerCase();
   const department = safeText(record.department).toLowerCase();
   const displayGroup = safeText(record.displayGroup).toLowerCase();
   const subGroup = safeText(record.subGroup).toLowerCase();
-  const designation1Text = safeText(record.designation1).toLowerCase();
-
   const designationText = getAllDesignationsFromRecord(record)
     .join(" ")
     .toLowerCase();
@@ -438,20 +475,8 @@ function inferRoles(record: Record<string, string>): PersonnelRole[] {
     roles.push("Subject Teacher");
   }
 
-  const hasCoordinatorDesignation =
-    designation1Text.includes("coordinator") ||
-    designationText.includes("coordinator");
-
   const isProgramImplementer =
-    hasCoordinatorDesignation ||
-    designationText.includes("focal") ||
-    designationText.includes("pio") ||
-    designationText.includes("manager") ||
-    designationText.includes("property custodian") ||
-    designationText.includes("school paper adviser") ||
-    designationText.includes("sslg adviser") ||
-    designationText.includes("yes-o adviser") ||
-    designationText.includes("bkd adviser") ||
+    designationItems.some((item) => isProgramDesignationText(item)) ||
     displayGroup.includes("program coordinator") ||
     displayGroup.includes("program implementer") ||
     subGroup.includes("program coordinator");
@@ -572,15 +597,7 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
         : uniqueList([...splitList(record.subjectArea)]);
 
     const coordinatorship = designation.filter((item) => {
-      const text = item.toLowerCase();
-
-      return (
-        text.includes("coordinator") ||
-        text.includes("focal") ||
-        text.includes("pio") ||
-        text.includes("manager") ||
-        text.includes("property custodian")
-      );
+      return isProgramDesignationText(item);
     });
 
     const gradeLevelTaught = uniqueList([
@@ -612,6 +629,10 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       designation1: safeText(record.designation1),
       designation2: safeText(record.designation2),
       designation3: safeText(record.designation3),
+      designation4: safeText(record.designation4),
+      displayGroup: safeText(record.displayGroup),
+      subGroup: safeText(record.subGroup),
+      category: safeText(record.category),
       bio: safeText(record.bio),
       description:
         safeText(record.description) ||
@@ -630,6 +651,11 @@ function parsePersonnelCsv(csvText: string): Personnel[] {
       advisory,
 
       subjectDepartment,
+      subjectDepartment1,
+      subjectDepartment2,
+      subjectDepartment3,
+      subjectDepartment4,
+      subjectDepartment5,
       teachingPhilosophy:
         safeText(record.teachingPhilosophy) || safeText(record.philosophy),
       philosophy:
@@ -1007,13 +1033,20 @@ function isSchoolSupportPersonnel(person: Personnel) {
 }
 
 function isAdministrativeOnlyPersonnel(person: Personnel) {
+  const extendedPerson = person as ExtendedPersonnel;
+  const position = safeText(person.position).toLowerCase();
+  const category = safeText(extendedPerson.category).toLowerCase();
+  const group = safeText(person.group).toLowerCase();
+  const department = safeText(person.department).toLowerCase();
+  const displayGroup = safeText(extendedPerson.displayGroup).toLowerCase();
+  const subGroup = safeText(extendedPerson.subGroup).toLowerCase();
   const text = [
-    person.name,
-    person.position,
-    person.group,
-    person.department,
-    person.description,
-    ...(person.designation || []),
+    position,
+    category,
+    group,
+    department,
+    displayGroup,
+    subGroup,
   ]
     .join(" ")
     .toLowerCase();
@@ -1025,35 +1058,28 @@ function isAdministrativeOnlyPersonnel(person: Personnel) {
     text.includes("guidance counselor") ||
     text.includes("guidance personnel") ||
     text.includes("guidance") ||
-    text.includes("registrar")
+    position.includes("registrar") ||
+    category.includes("administrative") ||
+    category.includes("non-teaching") ||
+    displayGroup.includes("administrative staff")
   );
 }
 
 function isAcademicTeacherPersonnel(person: Personnel) {
-  const text = [
-    person.name,
-    person.position,
-    person.group,
-    person.department,
-    person.description,
-    ...(person.designation || []),
-  ]
+  const extendedPerson = person as ExtendedPersonnel;
+  const position = safeText(person.position).toLowerCase();
+  const category = safeText(extendedPerson.category).toLowerCase();
+  const group = safeText(person.group).toLowerCase();
+  const displayGroup = safeText(extendedPerson.displayGroup).toLowerCase();
+  const subGroup = safeText(extendedPerson.subGroup).toLowerCase();
+  const designationText = (person.designation || [])
+    .map((item) => safeText(item))
     .join(" ")
     .toLowerCase();
 
-  const extendedPerson = person as Personnel & {
-    primarySubjectDepartment?: string;
-    subjectArea?: string;
-    subjectDepartment?: string;
-    subjectDepartment1?: string;
-    subjectDepartment2?: string;
-    subjectDepartment3?: string;
-    subjectDepartment4?: string;
-    subjectDepartment5?: string;
-  };
-
   const hasHandledSubject =
     (person.subjectTaught || []).some((subject) => isMeaningfulText(subject)) ||
+    isMeaningfulText(person.department) ||
     isMeaningfulText(extendedPerson.subjectArea) ||
     isMeaningfulText(extendedPerson.primarySubjectDepartment) ||
     isMeaningfulText(extendedPerson.subjectDepartment) ||
@@ -1064,10 +1090,14 @@ function isAcademicTeacherPersonnel(person: Personnel) {
     isMeaningfulText(extendedPerson.subjectDepartment5);
 
   const isTeacher =
-    text.includes("teacher") ||
-    text.includes("master teacher") ||
-    text.includes("class adviser") ||
-    text.includes("subject teacher");
+    position.includes("teacher") ||
+    /\btch-?0?\d+\b/.test(position) ||
+    /\bt-?\d+\b/.test(position) ||
+    (category.includes("teaching") && !category.includes("non-teaching")) ||
+    group.includes("subject teacher") ||
+    displayGroup.includes("subject teacher") ||
+    subGroup.includes("subject teacher") ||
+    designationText.includes("class adviser");
 
   return (
     isTeacher &&
@@ -1109,16 +1139,7 @@ function getSchoolSupportRank(person: Personnel) {
 }
 
 function getSubjectDepartmentsForPerson(person: Personnel) {
-  const extendedPerson = person as Personnel & {
-    primarySubjectDepartment?: string;
-    subjectArea?: string;
-    subjectDepartment?: string;
-    subjectDepartment1?: string;
-    subjectDepartment2?: string;
-    subjectDepartment3?: string;
-    subjectDepartment4?: string;
-    subjectDepartment5?: string;
-  };
+  const extendedPerson = person as ExtendedPersonnel;
 
   const rawPrimaryDepartment =
     safeText(extendedPerson.primarySubjectDepartment) ||
@@ -1429,6 +1450,48 @@ const visibleSubjectDepartments = useMemo(() => {
       });
     });
   }, [programImplementers]);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production" || allPersonnel.length === 0) {
+      return;
+    }
+
+    const groupedPersonIds = new Set(
+      [
+        ...leadership,
+        ...administrativePersonnel,
+        ...guidancePersonnel,
+        ...schoolSupportPersonnel,
+        ...masterTeachers,
+        ...gradeLeaders,
+        ...classAdvisers,
+        ...subjectTeachers,
+        ...programImplementers,
+      ].map((person) => person.id)
+    );
+
+    const ungroupedPersonnel = allPersonnel.filter(
+      (person) => !groupedPersonIds.has(person.id)
+    );
+
+    if (ungroupedPersonnel.length > 0) {
+      console.warn(
+        "Browse by Group has active personnel without a group:",
+        ungroupedPersonnel.map((person) => person.name)
+      );
+    }
+  }, [
+    allPersonnel,
+    leadership,
+    administrativePersonnel,
+    guidancePersonnel,
+    schoolSupportPersonnel,
+    masterTeachers,
+    gradeLeaders,
+    classAdvisers,
+    subjectTeachers,
+    programImplementers,
+  ]);
 
   const searchResults = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -1841,7 +1904,7 @@ return (
           <div className="mx-auto max-w-6xl">
             <SectionHeading
               eyebrow="Program Coordination"
-              title="Program Coordinators"
+              title="Program Coordinators/Designates"
               description="Program coordinators support school programs, committees, initiatives, and special assignments aligned with school operations, learner support, and DepEd priority programs."
             />
 

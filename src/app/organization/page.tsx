@@ -774,6 +774,39 @@ function getCleanPosition(position?: string) {
   return safeText(position) || "Other Personnel";
 }
 
+function getNormalizedPositionGroup(position?: string) {
+  const cleanPosition = getCleanPosition(position);
+  const normalizedPosition = cleanPosition
+    .replace(/^(?:shs|jhs)\s*[-–—]?\s*/i, "")
+    .replace(/^(?:senior high school|junior high school)\s+/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return normalizedPosition || cleanPosition;
+}
+
+function getPositionPrefixPriority(position?: string) {
+  const value = safeText(position).toLowerCase();
+
+  if (
+    value.startsWith("shs-") ||
+    value.startsWith("shs ") ||
+    value.includes("senior high school")
+  ) {
+    return 0;
+  }
+
+  if (
+    value.startsWith("jhs-") ||
+    value.startsWith("jhs ") ||
+    value.includes("junior high school")
+  ) {
+    return 1;
+  }
+
+  return 2;
+}
+
 function getPositionFamilyRank(position?: string) {
   const value = safeText(position)
     .toLowerCase()
@@ -1413,7 +1446,11 @@ const visibleSubjectDepartments = useMemo(() => {
 
   const positionFilterOptions = useMemo(() => {
     return Array.from(
-      new Set(allPersonnel.map((person) => getCleanPosition(person.position)))
+      new Set(
+        allPersonnel.map((person) =>
+          getNormalizedPositionGroup(person.position)
+        )
+      )
     ).sort(sortPositionsByRank);
   }, [allPersonnel]);
 
@@ -1421,7 +1458,7 @@ const visibleSubjectDepartments = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
     return allPersonnel.filter((person) => {
-      const positionGroup = getCleanPosition(person.position);
+      const positionGroup = getNormalizedPositionGroup(person.position);
       const matchesPosition =
         selectedPositionGroup === "All" ||
         positionGroup === selectedPositionGroup;
@@ -1438,9 +1475,17 @@ const visibleSubjectDepartments = useMemo(() => {
         positionGroup,
         personnel: positionViewPersonnel
           .filter(
-            (person) => getCleanPosition(person.position) === positionGroup
+            (person) =>
+              getNormalizedPositionGroup(person.position) === positionGroup
           )
           .sort((a, b) => {
+            const prefixPriorityA = getPositionPrefixPriority(a.position);
+            const prefixPriorityB = getPositionPrefixPriority(b.position);
+
+            if (prefixPriorityA !== prefixPriorityB) {
+              return prefixPriorityA - prefixPriorityB;
+            }
+
             return a.name.localeCompare(b.name, "en", {
               sensitivity: "base",
             });

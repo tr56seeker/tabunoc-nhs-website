@@ -7,6 +7,7 @@
  */
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 
 import Navbar from "@/components/Navbar";
@@ -19,10 +20,130 @@ const mapsHref =
   "https://www.google.com/maps/search/?api=1&query=Tabunoc%20National%20High%20School%20Sangi%20Road%20Tabunok%20Talisay%20City%20Cebu";
 
 const homepageStatistics = [
-  { label: "Learners", value: 1190, delayMs: 0 },
+  { label: "Learners", value: 1247, delayMs: 0 },
   { label: "Teaching Personnel", value: 59, delayMs: 150 },
-  { label: "Non-Teaching Personnel", value: 4, delayMs: 300 },
+  { label: "Non-Teaching Personnel", value: 5, delayMs: 300 },
 ] as const;
+
+type PersonnelStats = {
+  teaching: number;
+  nonTeaching: number;
+};
+
+type PersonnelRow = Record<string, string>;
+
+function parseCsvLine(line: string) {
+  const values: string[] = [];
+  let current = "";
+  let insideQuotes = false;
+
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index];
+    const nextCharacter = line[index + 1];
+
+    if (character === '"' && nextCharacter === '"') {
+      current += '"';
+      index += 1;
+    } else if (character === '"') {
+      insideQuotes = !insideQuotes;
+    } else if (character === "," && !insideQuotes) {
+      values.push(current);
+      current = "";
+    } else {
+      current += character;
+    }
+  }
+
+  values.push(current);
+  return values;
+}
+
+function readTotalLearnersFromCsv(csvText: string) {
+  const [headerLine, ...lines] = csvText.trim().split(/\r?\n/);
+  const headers = parseCsvLine(headerLine);
+
+  for (const line of lines) {
+    const values = parseCsvLine(line);
+    const record = headers.reduce<Record<string, string>>(
+      (row, header, index) => {
+        row[header] = values[index] ?? "";
+        return row;
+      },
+      {}
+    );
+
+    if (record.category === "Total Learners") {
+      const total = Number(record.count);
+      return Number.isFinite(total) ? total : null;
+    }
+  }
+
+  return null;
+}
+
+function includesAny(value: string, keywords: string[]) {
+  const normalized = value.toLowerCase();
+
+  return keywords.some((keyword) =>
+    normalized.includes(keyword.toLowerCase())
+  );
+}
+
+function isNonDepEdPaidPersonnel(row: PersonnelRow) {
+  const combined = [
+    row.position,
+    row.category,
+    row.displayGroup,
+    row.subGroup,
+    row.designation1,
+    row.designation2,
+    row.designation3,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  return (
+    includesAny(combined, ["job order", "utility", "guard"]) ||
+    /\bJO\b/i.test(combined)
+  );
+}
+
+function readPersonnelStatsFromCsv(csvText: string): PersonnelStats {
+  const [headerLine, ...lines] = csvText.trim().split(/\r?\n/);
+  const headers = parseCsvLine(headerLine);
+  const stats: PersonnelStats = { teaching: 0, nonTeaching: 0 };
+
+  for (const line of lines) {
+    const values = parseCsvLine(line);
+    const record = headers.reduce<PersonnelRow>(
+      (row, header, index) => {
+        row[header] = values[index] ?? "";
+        return row;
+      },
+      {}
+    );
+    const category = (record.category || "").trim().toLowerCase();
+    const status = (record.status || "").trim().toLowerCase();
+
+    if (!category || (status && status !== "active")) {
+      continue;
+    }
+
+    const isNonTeachingCategory =
+      category === "non-teaching personnel" ||
+      category === "administrative staff" ||
+      category === "administrative personnel" ||
+      category === "administration";
+
+    if (category === "teaching personnel") {
+      stats.teaching += 1;
+    } else if (isNonTeachingCategory && !isNonDepEdPaidPersonnel(record)) {
+      stats.nonTeaching += 1;
+    }
+  }
+
+  return stats;
+}
 
 const quickAccessLinks = [
   {
@@ -150,6 +271,79 @@ function SectionHeading({
 }
 
 export default function Home() {
+  const [learnerCount, setLearnerCount] = useState<number>(
+    homepageStatistics[0].value
+  );
+  const [personnelStats, setPersonnelStats] = useState<PersonnelStats>({
+    teaching: homepageStatistics[1].value,
+    nonTeaching: homepageStatistics[2].value,
+  });
+  const statistics = homepageStatistics.map((statistic) => {
+    if (statistic.label === "Learners") {
+      return { ...statistic, value: learnerCount };
+    }
+
+    if (statistic.label === "Teaching Personnel") {
+      return { ...statistic, value: personnelStats.teaching };
+    }
+
+    if (statistic.label === "Non-Teaching Personnel") {
+      return { ...statistic, value: personnelStats.nonTeaching };
+    }
+
+    return statistic;
+  });
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    void fetch("/data/learner-population-summary.csv", {
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Unable to load learner population summary.");
+        }
+
+        return response.text();
+      })
+      .then((csvText) => {
+        const totalLearners = readTotalLearnersFromCsv(csvText);
+
+        if (totalLearners !== null) {
+          setLearnerCount(totalLearners);
+        }
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error && error.name !== "AbortError") {
+          console.error(error.message);
+        }
+      });
+
+    void fetch("/data/personnel.csv", {
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Unable to load personnel summary.");
+        }
+
+        return response.text();
+      })
+      .then((csvText) => {
+        setPersonnelStats(readPersonnelStatsFromCsv(csvText));
+      })
+      .catch((error: unknown) => {
+        if (error instanceof Error && error.name !== "AbortError") {
+          console.error(error.message);
+        }
+      });
+
+    return () => controller.abort();
+  }, []);
+
   return (
     <>
       <Navbar brandMode="afterScroll" />
@@ -245,7 +439,7 @@ export default function Home() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {homepageStatistics.map((statistic) => (
+              {statistics.map((statistic) => (
                 <article
                   key={statistic.label}
                   className="border border-slate-200 border-t-[#ffdf20] border-t-4 bg-white p-5 text-center shadow-sm"

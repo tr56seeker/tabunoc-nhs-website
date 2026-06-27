@@ -26,9 +26,9 @@ const homepageStatistics = [
 ] as const;
 
 const COUNTER_DURATIONS = {
-  learners: 3800,
-  teachingPersonnel: 2100,
-  nonTeachingPersonnel: 1900,
+  learners: 4200,
+  teachingPersonnel: 2200,
+  nonTeachingPersonnel: 1500,
 } as const;
 
 const FINAL_REVEAL_DELAYS = {

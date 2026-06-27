@@ -25,6 +25,18 @@ const homepageStatistics = [
   { label: "Non-Teaching Personnel", value: 5, delayMs: 300 },
 ] as const;
 
+const COUNTER_DURATIONS = {
+  learners: 3800,
+  teachingPersonnel: 2100,
+  nonTeachingPersonnel: 1900,
+} as const;
+
+const FINAL_REVEAL_DELAYS = {
+  learners: 500,
+  teachingPersonnel: 300,
+  nonTeachingPersonnel: 300,
+} as const;
+
 type PersonnelStats = {
   teaching: number;
   nonTeaching: number;
@@ -106,6 +118,42 @@ function isNonDepEdPaidPersonnel(row: PersonnelRow) {
     includesAny(combined, ["job order", "utility", "guard"]) ||
     /\bJO\b/i.test(combined)
   );
+}
+
+function getCounterDuration(label: string) {
+  const normalizedLabel = label.toLowerCase();
+
+  if (normalizedLabel.includes("learner")) {
+    return COUNTER_DURATIONS.learners;
+  }
+
+  if (normalizedLabel.includes("non-teaching personnel")) {
+    return COUNTER_DURATIONS.nonTeachingPersonnel;
+  }
+
+  if (normalizedLabel.includes("teaching personnel")) {
+    return COUNTER_DURATIONS.teachingPersonnel;
+  }
+
+  return COUNTER_DURATIONS.teachingPersonnel;
+}
+
+function getFinalRevealDelay(label: string) {
+  const normalizedLabel = label.toLowerCase();
+
+  if (normalizedLabel.includes("learner")) {
+    return FINAL_REVEAL_DELAYS.learners;
+  }
+
+  if (normalizedLabel.includes("non-teaching personnel")) {
+    return FINAL_REVEAL_DELAYS.nonTeachingPersonnel;
+  }
+
+  if (normalizedLabel.includes("teaching personnel")) {
+    return FINAL_REVEAL_DELAYS.teachingPersonnel;
+  }
+
+  return FINAL_REVEAL_DELAYS.teachingPersonnel;
 }
 
 function readPersonnelStatsFromCsv(csvText: string): PersonnelStats {
@@ -449,7 +497,8 @@ export default function Home() {
                   <PopulationCountUp
                     value={statistic.value}
                     delayMs={statistic.delayMs}
-                    durationMs={900}
+                    durationMs={getCounterDuration(statistic.label)}
+                    finalRevealDelayMs={getFinalRevealDelay(statistic.label)}
                     triggerId="homepage-statistics"
                     className="block min-h-[2.5rem] text-4xl font-semibold leading-none tabular-nums tracking-tight text-[#24313E] md:text-5xl"
                   />

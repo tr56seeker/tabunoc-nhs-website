@@ -4,38 +4,38 @@
       "id": "g-f-shs-rm02",
       "label": "G/F SHS, RM02",
       "description": "EIM Shop (SHS, RM02)",
-      "x": 19,
-      "y": 82.1,
+      "x": 18,
+      "y": 78.5,
       "recommendedExit": "Main Gate (Elem Office)",
       "assemblyArea": "Open area fronting Elementary Conference Room.",
       "emergencyExit": {
-        "x": 18.4,
-        "y": 45.6
+        "x": 18.9,
+        "y": 41.7
       },
       "assemblyAreaPoint": {
-        "x": 18.2,
-        "y": 17.2
+        "x": 18.8,
+        "y": 12.7
       },
       "routePoints": [
         {
-          "x": 21.6,
-          "y": 82.1
+          "x": 18.1,
+          "y": 78.6
         },
         {
-          "x": 26.3,
-          "y": 82
+          "x": 27.5,
+          "y": 78.6
         },
         {
-          "x": 26.3,
-          "y": 79.1
+          "x": 27.3,
+          "y": 74.7
         },
         {
-          "x": 18.8,
-          "y": 78
+          "x": 19.1,
+          "y": 73.4
         },
         {
-          "x": 18.3,
-          "y": 18.2
+          "x": 18.9,
+          "y": 13
         }
       ],
       "instruction": "At the assembly area, never fall outside your group for proper accounting."
@@ -44,34 +44,34 @@
       "id": "g-f-shs-rm01",
       "label": "G/F SHS, RM01",
       "description": "Lecture Room",
-      "x": 28.5,
-      "y": 83.1,
+      "x": 28.7,
+      "y": 79.5,
       "recommendedExit": "",
       "assemblyArea": "",
       "emergencyExit": {
-        "x": 18.5,
-        "y": 45.7
+        "x": 19.1,
+        "y": 42.5
       },
       "assemblyAreaPoint": {
-        "x": 18.4,
-        "y": 20.6
+        "x": 19,
+        "y": 14.9
       },
       "routePoints": [
         {
-          "x": 28.2,
-          "y": 82.6
+          "x": 28.8,
+          "y": 79
         },
         {
-          "x": 26.8,
-          "y": 79.3
+          "x": 28.6,
+          "y": 75.4
         },
         {
-          "x": 18.7,
-          "y": 77.5
+          "x": 19.4,
+          "y": 73.5
         },
         {
-          "x": 18.5,
-          "y": 21.3
+          "x": 19.1,
+          "y": 15.5
         }
       ],
       "instruction": ""
@@ -80,46 +80,46 @@
       "id": "faculty-room-near-canteen",
       "label": "Faculty Room (near Canteen)",
       "description": "",
-      "x": 88.2,
-      "y": 56.9,
+      "x": 89.6,
+      "y": 46,
       "recommendedExit": "",
       "assemblyArea": "",
       "emergencyExit": {
-        "x": 75.6,
-        "y": 36.1
+        "x": 76.7,
+        "y": 30.8
       },
       "assemblyAreaPoint": {
-        "x": 32.1,
-        "y": 27.4
+        "x": 29.9,
+        "y": 24.9
       },
       "routePoints": [
         {
-          "x": 87.9,
-          "y": 57.5
+          "x": 89.6,
+          "y": 46.7
         },
         {
-          "x": 87.9,
-          "y": 65.9
+          "x": 89.6,
+          "y": 62.3
         },
         {
-          "x": 78.3,
-          "y": 66.1
+          "x": 80.2,
+          "y": 62.1
         },
         {
-          "x": 78.3,
-          "y": 62.4
+          "x": 80,
+          "y": 58.8
         },
         {
-          "x": 75.6,
-          "y": 59.7
+          "x": 77.1,
+          "y": 56
         },
         {
-          "x": 75.6,
-          "y": 27.3
+          "x": 76.8,
+          "y": 24.6
         },
         {
-          "x": 32.7,
-          "y": 27.6
+          "x": 30.4,
+          "y": 25
         }
       ],
       "instruction": ""
@@ -128,42 +128,38 @@
       "id": "bl-2-rm01",
       "label": "BL-2, RM01",
       "description": "Bagong Lipunan RM01",
-      "x": 51.1,
-      "y": 67.7,
+      "x": 53.6,
+      "y": 64.3,
       "recommendedExit": "",
       "assemblyArea": "",
       "emergencyExit": {
-        "x": 18.4,
-        "y": 45.6
+        "x": 17.8,
+        "y": 42.1
       },
       "assemblyAreaPoint": {
-        "x": 32,
-        "y": 29.3
+        "x": 17.6,
+        "y": 18.7
       },
       "routePoints": [
         {
-          "x": 50.4,
-          "y": 67.6
+          "x": 53.3,
+          "y": 63.9
         },
         {
-          "x": 33.9,
-          "y": 67.5
+          "x": 35.6,
+          "y": 63.9
         },
         {
-          "x": 29.7,
-          "y": 65.4
+          "x": 31.3,
+          "y": 61.2
         },
         {
-          "x": 18.3,
-          "y": 52.1
+          "x": 18.1,
+          "y": 49.4
         },
         {
-          "x": 18,
-          "y": 29.6
-        },
-        {
-          "x": 31.9,
-          "y": 29.1
+          "x": 17.6,
+          "y": 19.7
         }
       ],
       "instruction": ""
@@ -356,6 +352,46 @@
         {
           "x": 31.4,
           "y": 27.2
+        }
+      ],
+      "instruction": ""
+    },
+    {
+      "id": "bl-2-rm02",
+      "label": "BL-2, RM02",
+      "description": "",
+      "x": 44.6,
+      "y": 64.4,
+      "recommendedExit": "",
+      "assemblyArea": "",
+      "emergencyExit": {
+        "x": 18.4,
+        "y": 42.3
+      },
+      "assemblyAreaPoint": {
+        "x": 18,
+        "y": 19.4
+      },
+      "routePoints": [
+        {
+          "x": 44.2,
+          "y": 64.1
+        },
+        {
+          "x": 35,
+          "y": 64.3
+        },
+        {
+          "x": 31.9,
+          "y": 61.5
+        },
+        {
+          "x": 18.5,
+          "y": 46.6
+        },
+        {
+          "x": 18.2,
+          "y": 20.3
         }
       ],
       "instruction": ""

@@ -240,10 +240,10 @@ const contactChannels = [
   },
 ];
 
-function ArrowIcon() {
+function ArrowIcon({ className = "h-4 w-4" }: { className?: string }) {
   return (
     <svg
-      className="h-4 w-4"
+      className={className}
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"
@@ -439,29 +439,32 @@ export default function Home() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, delay: 0.3 }}
-              className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"
+              className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:flex sm:flex-row sm:justify-center"
             >
               <ActionLink
                 href="/enrollment"
-                className="bg-[#0F4C5C] text-white hover:bg-[#146577]"
+                className="h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight bg-[#0F4C5C] text-white hover:bg-[#146577] sm:h-auto sm:gap-2 sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
               >
-                Enrollment Guide
-                <ArrowIcon />
+                <span className="sm:hidden">Enrollment Guide</span>
+                <span className="hidden sm:inline">Enrollment Guide</span>
+                <ArrowIcon className="hidden h-4 w-4 sm:block" />
               </ActionLink>
 
               <ActionLink
                 href="/shs-offerings"
-                className="bg-[#ffdf20] text-[#071E29] hover:bg-yellow-300"
+                className="h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight bg-[#ffdf20] text-[#071E29] hover:bg-yellow-300 sm:h-auto sm:gap-2 sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
               >
-                View SHS Offerings
-                <ArrowIcon />
+                <span className="sm:hidden">SHS Offerings</span>
+                <span className="hidden sm:inline">View SHS Offerings</span>
+                <ArrowIcon className="hidden h-4 w-4 sm:block" />
               </ActionLink>
 
               <ActionLink
                 href="/contact"
-                className="border border-[#0F4C5C]/20 bg-white text-[#0F4C5C] hover:bg-slate-50"
+                className="col-span-2 h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight border border-[#0F4C5C]/20 bg-white text-[#0F4C5C] hover:bg-slate-50 sm:col-auto sm:h-auto sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
               >
-                Contact the School
+                <span className="sm:hidden">Contact the School</span>
+                <span className="hidden sm:inline">Contact the School</span>
               </ActionLink>
             </motion.div>
           </div>
@@ -473,7 +476,7 @@ export default function Home() {
         <section
           id="homepage-statistics"
           aria-labelledby="homepage-statistics-title"
-          className="border-y border-slate-200 bg-[#F8FAFC] px-6 py-10"
+          className="border-y border-slate-200 bg-[#F8FAFC] px-4 py-8 sm:px-6 sm:py-10"
         >
           <div className="mx-auto max-w-7xl">
             <div className="mb-6 text-center">
@@ -488,11 +491,11 @@ export default function Home() {
               </h2>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
               {statistics.map((statistic) => (
                 <article
                   key={statistic.label}
-                  className="border border-slate-200 border-t-[#ffdf20] border-t-4 bg-white p-5 text-center shadow-sm"
+                  className="flex min-h-[108px] flex-col items-center justify-center border border-slate-200 border-t-4 border-t-[#ffdf20] bg-white p-3 text-center shadow-sm sm:min-h-[136px] sm:p-5"
                 >
                   <PopulationCountUp
                     value={statistic.value}
@@ -500,19 +503,19 @@ export default function Home() {
                     durationMs={getCounterDuration(statistic.label)}
                     finalRevealDelayMs={getFinalRevealDelay(statistic.label)}
                     triggerId="homepage-statistics"
-                    className="block min-h-[2.5rem] text-4xl font-semibold leading-none tabular-nums tracking-tight text-[#24313E] md:text-5xl"
+                    className="block min-h-[2.1rem] text-[1.9rem] font-semibold leading-none tabular-nums tracking-tight text-[#24313E] sm:min-h-[2.5rem] sm:text-4xl md:text-5xl"
                   />
-                  <p className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  <p className="mt-2 text-[10px] font-semibold uppercase leading-tight tracking-[0.08em] text-slate-500 sm:mt-3 sm:text-sm sm:tracking-[0.12em]">
                     {statistic.label}
                   </p>
                 </article>
               ))}
 
-              <article className="border border-slate-200 border-t-[#0F4C5C] border-t-4 bg-white p-5 text-center shadow-sm">
-                <p className="min-h-[2.5rem] text-4xl font-semibold leading-none tabular-nums tracking-tight text-[#24313E] md:text-5xl">
+              <article className="flex min-h-[108px] flex-col items-center justify-center border border-slate-200 border-t-4 border-t-[#0F4C5C] bg-white p-3 text-center shadow-sm sm:min-h-[136px] sm:p-5">
+                <p className="min-h-[2.1rem] text-[1.9rem] font-semibold leading-none tabular-nums tracking-tight text-[#24313E] sm:min-h-[2.5rem] sm:text-4xl md:text-5xl">
                   303111
                 </p>
-                <p className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+                <p className="mt-2 text-[10px] font-semibold uppercase leading-tight tracking-[0.08em] text-slate-500 sm:mt-3 sm:text-sm sm:tracking-[0.12em]">
                   School ID
                 </p>
               </article>

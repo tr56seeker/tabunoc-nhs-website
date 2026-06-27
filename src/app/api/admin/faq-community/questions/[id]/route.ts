@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { isFaqAdminAuthorized } from "@/lib/faqAdminAuth";
+import { requireAdminApi } from "@/lib/adminAuth";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 const allowedStatuses = new Set(["pending", "approved", "rejected"]);
@@ -13,9 +13,8 @@ type RouteContext = {
 
 export async function PATCH(request: Request, context: RouteContext) {
   try {
-    if (!(await isFaqAdminAuthorized())) {
-      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-    }
+    const { adminUser, response } = await requireAdminApi();
+    if (response) return response;
 
     const { id } = await context.params;
 
@@ -154,7 +153,7 @@ export async function PATCH(request: Request, context: RouteContext) {
           : null;
       updates.reviewed_by =
         body.status === "approved" || body.status === "rejected"
-          ? "FAQ Admin"
+          ? adminUser?.fullName || adminUser?.email || "Admin"
           : null;
     }
 

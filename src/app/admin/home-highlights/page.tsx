@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-
-import HomeHighlightsAdminClient from "./HomeHighlightsAdminClient";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Homepage Highlights Admin",
@@ -8,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function HomeHighlightsAdminPage() {
-  return <HomeHighlightsAdminClient />;
+  redirect("/admin/highlights");
 }

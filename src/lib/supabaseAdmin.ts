@@ -69,6 +69,110 @@ type Database = {
         Update: Partial<Database["public"]["Tables"]["homepage_highlights"]["Row"]>;
         Relationships: [];
       };
+      profiles: {
+        Row: {
+          id: string;
+          role: string | null;
+          full_name: string | null;
+          email: string | null;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["profiles"]["Row"]> & {
+          id: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
+        Relationships: [];
+      };
+      faq_items: {
+        Row: {
+          id: string;
+          question: string;
+          answer: string;
+          category: string | null;
+          is_published: boolean;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          question: string;
+          answer: string;
+          category?: string | null;
+          is_published?: boolean;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["faq_items"]["Row"]>;
+        Relationships: [];
+      };
+      community_questions: {
+        Row: {
+          id: string;
+          name: string | null;
+          contact: string | null;
+          question: string;
+          category: string | null;
+          status: string;
+          admin_answer: string | null;
+          is_public: boolean;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: {
+          id?: string;
+          name?: string | null;
+          contact?: string | null;
+          question: string;
+          category?: string | null;
+          status?: string;
+          admin_answer?: string | null;
+          is_public?: boolean;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: Partial<Database["public"]["Tables"]["community_questions"]["Row"]>;
+        Relationships: [];
+      };
+      map_locations: {
+        Row: {
+          id: string;
+          name: string;
+          description: string | null;
+          latitude: number | null;
+          longitude: number | null;
+          x: number | null;
+          y: number | null;
+          type: string | null;
+          is_published: boolean;
+          sort_order: number | null;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["map_locations"]["Row"]> & {
+          name: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["map_locations"]["Row"]>;
+        Relationships: [];
+      };
+      map_routes: {
+        Row: {
+          id: string;
+          name: string;
+          route_data: unknown;
+          description: string | null;
+          is_published: boolean;
+          sort_order: number | null;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: Partial<Database["public"]["Tables"]["map_routes"]["Row"]> & {
+          name: string;
+          route_data?: unknown;
+        };
+        Update: Partial<Database["public"]["Tables"]["map_routes"]["Row"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

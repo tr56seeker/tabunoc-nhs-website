@@ -253,7 +253,7 @@ export async function POST(request: NextRequest) {
       displayName,
       audienceType,
       submittedAt: new Date().toISOString(),
-      adminUrl: `${siteUrl}/admin/faq-community`,
+      adminUrl: `${siteUrl}/admin/community-questions`,
     }),
   );
 

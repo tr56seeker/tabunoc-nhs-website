@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { isFaqAdminAuthorized } from "@/lib/faqAdminAuth";
+import { requireAdminApi } from "@/lib/adminAuth";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 const allowedStatuses = new Set(["pending", "approved", "rejected", "all"]);
 
 export async function GET(request: NextRequest) {
   try {
-    if (!(await isFaqAdminAuthorized())) {
-      return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
-    }
+    const { response } = await requireAdminApi();
+    if (response) return response;
 
     const status = request.nextUrl.searchParams.get("status") ?? "pending";
 

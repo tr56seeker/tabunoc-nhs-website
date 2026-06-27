@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 
-import { isFaqAdminAuthorized } from "@/lib/faqAdminAuth";
+import { requireAdminApi } from "@/lib/adminAuth";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
@@ -49,9 +49,8 @@ function validFacebookUrl(value: string | null) {
 }
 
 export async function GET() {
-  if (!(await isFaqAdminAuthorized())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { response } = await requireAdminApi();
+  if (response) return response;
 
   try {
     const { data, error } = await getSupabaseAdmin()
@@ -72,9 +71,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  if (!(await isFaqAdminAuthorized())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { response } = await requireAdminApi();
+  if (response) return response;
 
   try {
     const formData = await request.formData();

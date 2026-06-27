@@ -12,6 +12,7 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { sortLocationsByLabel } from "@/lib/mapLocationSort";
 
 type MapPoint = {
   x: number;
@@ -992,7 +993,7 @@ export default function EvacuationMapPage() {
                     ? "No locations available. Add a location in calibration mode."
                     : "Choose location..."}
                 </option>
-                {mapData.locations.map((location) => (
+                {sortLocationsByLabel(mapData.locations).map((location) => (
                   <option key={location.id} value={location.id}>
                     {location.label}
                   </option>
@@ -1165,7 +1166,7 @@ function RouteGuidancePanel({
             ? "No locations available"
             : "Choose location..."}
         </option>
-        {locations.map((location) => (
+        {sortLocationsByLabel(locations).map((location) => (
           <option key={location.id} value={location.id}>
             {location.label}
           </option>
@@ -1233,7 +1234,7 @@ function FullscreenMapViewer({
                 ? "No locations available. Add a location in calibration mode."
                 : "Choose location..."}
             </option>
-            {data.locations.map((location) => (
+            {sortLocationsByLabel(data.locations).map((location) => (
               <option key={location.id} value={location.id}>
                 {location.label}
               </option>
@@ -1820,7 +1821,7 @@ function CalibrationPanel({
         onChange={(event) => handleSelectLocation(event.target.value)}
         className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#0F4C5C]/15"
       >
-        {data.locations.map((location) => (
+        {sortLocationsByLabel(data.locations).map((location) => (
           <option key={location.id} value={location.id}>
             {location.label}
           </option>

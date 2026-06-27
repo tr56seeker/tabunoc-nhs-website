@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { isFaqAdminAuthorized } from "@/lib/faqAdminAuth";
+import { requireAdminApi } from "@/lib/adminAuth";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 const statuses = new Set(["draft", "published", "archived"]);
@@ -29,9 +29,8 @@ function validFacebookUrl(value: string) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  if (!(await isFaqAdminAuthorized())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { response } = await requireAdminApi();
+  if (response) return response;
 
   const { id } = await context.params;
   let body: Record<string, unknown>;
@@ -131,9 +130,8 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 export async function DELETE(_request: Request, context: RouteContext) {
-  if (!(await isFaqAdminAuthorized())) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { response } = await requireAdminApi();
+  if (response) return response;
   const { id } = await context.params;
   try {
     const { data, error } = await getSupabaseAdmin()

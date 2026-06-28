@@ -6,6 +6,7 @@ import {
   useState,
   type MouseEvent,
   type PointerEvent,
+  type Ref,
 } from "react";
 import Image from "next/image";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
@@ -114,6 +115,66 @@ function getAssemblyGuidance(location: EvacuationLocation) {
   return (
     location.assemblyArea.trim() ||
     "Proceed to the marked assembly area and remain with your class for accounting."
+  );
+}
+
+function RouteOverlay({
+  markerId,
+  overlayRef,
+  points,
+}: {
+  markerId: string;
+  overlayRef?: Ref<SVGSVGElement>;
+  points: MapPoint[];
+}) {
+  return (
+    <svg
+      ref={overlayRef}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 h-full w-full [--route-stroke:4px] md:[--route-stroke:5px]"
+      preserveAspectRatio="none"
+      viewBox="0 0 100 100"
+    >
+      <defs>
+        <marker
+          id={markerId}
+          markerHeight="7"
+          markerWidth="10"
+          orient="auto"
+          refX="9"
+          refY="3.5"
+          viewBox="0 0 10 7"
+        >
+          <path d="M 0 0 L 10 3.5 L 0 7 Z" fill="#087EA4" />
+        </marker>
+      </defs>
+      {points.length > 0 && (
+        <>
+          <path
+            d={getRoutePath(points)}
+            fill="none"
+            stroke="rgba(255,255,255,0.9)"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              filter: "drop-shadow(0 1px 2px rgb(15 23 42 / 0.35))",
+              strokeWidth: "calc(var(--route-stroke) + 6px)",
+            }}
+            vectorEffect="non-scaling-stroke"
+          />
+          <path
+            d={getRoutePath(points)}
+            fill="none"
+            stroke="#087EA4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            markerEnd={`url(#${markerId})`}
+            style={{ strokeWidth: "var(--route-stroke)" }}
+            vectorEffect="non-scaling-stroke"
+          />
+        </>
+      )}
+    </svg>
   );
 }
 
@@ -738,52 +799,10 @@ export default function EvacuationMapPage() {
                 className="block w-full rounded-2xl"
               />
 
-              <svg
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 h-full w-full [--route-stroke:4px] md:[--route-stroke:5px]"
-                preserveAspectRatio="none"
-                viewBox="0 0 100 100"
-              >
-                <defs>
-                  <marker
-                    id="evacuation-route-arrow"
-                    markerHeight="7"
-                    markerWidth="10"
-                    orient="auto"
-                    refX="9"
-                    refY="3.5"
-                    viewBox="0 0 10 7"
-                  >
-                    <path d="M 0 0 L 10 3.5 L 0 7 Z" fill="#087EA4" />
-                  </marker>
-                </defs>
-                {selectedRoutePoints.length > 0 && (
-                  <>
-                    <path
-                      d={getRoutePath(selectedRoutePoints)}
-                      fill="none"
-                      stroke="rgba(255,255,255,0.9)"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      style={{
-                        filter: "drop-shadow(0 1px 2px rgb(15 23 42 / 0.35))",
-                        strokeWidth: "calc(var(--route-stroke) + 6px)",
-                      }}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                    <path
-                      d={getRoutePath(selectedRoutePoints)}
-                      fill="none"
-                      stroke="#087EA4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      markerEnd="url(#evacuation-route-arrow)"
-                      style={{ strokeWidth: "var(--route-stroke)" }}
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  </>
-                )}
-              </svg>
+              <RouteOverlay
+                markerId="evacuation-route-arrow"
+                points={selectedRoutePoints}
+              />
 
               {selectedExitPoint && (
                 <button
@@ -1218,6 +1237,28 @@ function FullscreenMapViewer({
   onUpdateSelectedMarker: (markerType: MarkerType, point: MapPoint) => void;
 }) {
   const suppressClickRef = useRef(false);
+  const fullscreenStageRef = useRef<HTMLDivElement | null>(null);
+  const fullscreenImageRef = useRef<HTMLImageElement | null>(null);
+  const fullscreenOverlayRef = useRef<SVGSVGElement | null>(null);
+
+  useEffect(() => {
+    const frameId = window.requestAnimationFrame(() => {
+      const image = fullscreenImageRef.current;
+      const overlay = fullscreenOverlayRef.current;
+      const stage = fullscreenStageRef.current;
+
+      if (!image || !overlay || !stage) {
+        return;
+      }
+
+      console.log("image rect", image.getBoundingClientRect());
+      console.log("overlay rect", overlay.getBoundingClientRect());
+      console.log("stage rect", stage.getBoundingClientRect());
+      console.log("natural size", image.naturalWidth, image.naturalHeight);
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [selectedRoutePoints]);
 
   function renderRouteDetails() {
     return (
@@ -1384,8 +1425,9 @@ function FullscreenMapViewer({
                   contentClass="!h-full !w-fit"
                 >
               <div
+                ref={fullscreenStageRef}
                 onClick={handleMapClick}
-                className={`relative aspect-[26247/18508] h-full w-auto max-w-none select-none overflow-hidden bg-white shadow-sm ${
+                className={`relative inline-block aspect-[26247/18508] h-full w-auto max-w-none select-none overflow-hidden bg-white shadow-sm ${
                   isCalibrationMode && editorMode !== "idle"
                     ? "cursor-crosshair"
                     : ""
@@ -1393,6 +1435,7 @@ function FullscreenMapViewer({
                 draggable={false}
               >
                 <Image
+                  ref={fullscreenImageRef}
                   src="/images/drrm/school-map.png"
                   alt="Tabunoc National High School Evacuation Map"
                   width={26247}
@@ -1402,52 +1445,11 @@ function FullscreenMapViewer({
                   draggable={false}
                 />
 
-                <svg
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 h-full w-full [--route-stroke:4px] md:[--route-stroke:5px]"
-                  preserveAspectRatio="none"
-                  viewBox="0 0 100 100"
-                >
-                  <defs>
-                    <marker
-                      id="fullscreen-evacuation-route-arrow"
-                      markerHeight="7"
-                      markerWidth="10"
-                      orient="auto"
-                      refX="9"
-                      refY="3.5"
-                      viewBox="0 0 10 7"
-                    >
-                      <path d="M 0 0 L 10 3.5 L 0 7 Z" fill="#087EA4" />
-                    </marker>
-                  </defs>
-                  {selectedRoutePoints.length > 0 && (
-                    <>
-                      <path
-                        d={getRoutePath(selectedRoutePoints)}
-                        fill="none"
-                        stroke="rgba(255,255,255,0.9)"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{
-                          filter: "drop-shadow(0 1px 2px rgb(15 23 42 / 0.35))",
-                          strokeWidth: "calc(var(--route-stroke) + 6px)",
-                        }}
-                        vectorEffect="non-scaling-stroke"
-                      />
-                      <path
-                        d={getRoutePath(selectedRoutePoints)}
-                        fill="none"
-                        stroke="#087EA4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        markerEnd="url(#fullscreen-evacuation-route-arrow)"
-                        style={{ strokeWidth: "var(--route-stroke)" }}
-                        vectorEffect="non-scaling-stroke"
-                      />
-                    </>
-                  )}
-                </svg>
+                <RouteOverlay
+                  markerId="fullscreen-evacuation-route-arrow"
+                  overlayRef={fullscreenOverlayRef}
+                  points={selectedRoutePoints}
+                />
 
             {selectedExitPoint && (
               <button

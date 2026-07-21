@@ -27,7 +27,7 @@ function getRoomNumber(label: string) {
   return 999;
 }
 
-function getBuildingKey(label: string) {
+export function getBuildingKey(label: string) {
   const upper = label.toUpperCase();
 
   if (upper.includes("SHS BLDG")) return "SHS BLDG";
@@ -43,7 +43,7 @@ function getBuildingKey(label: string) {
     .trim();
 }
 
-function getBuildingOrder(buildingKey: string) {
+export function getBuildingOrder(buildingKey: string) {
   const knownOrder = ["SHS BLDG", "SEDP", "BL-1", "BL-2"];
   const index = knownOrder.indexOf(buildingKey);
 

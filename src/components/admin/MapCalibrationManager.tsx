@@ -620,8 +620,8 @@ export default function MapCalibrationManager() {
             <Image
               src={mapImagePath}
               alt="Tabunoc National High School Evacuation Map"
-              width={26247}
-              height={18508}
+              width={1448}
+              height={1086}
               priority
               sizes="(max-width: 1280px) 100vw, 900px"
               className="block w-full"

@@ -1,19 +1,26 @@
-﻿"use client";
+"use client";
 
 import {
   useEffect,
+  useMemo,
   useRef,
   useState,
-  type MouseEvent,
-  type PointerEvent,
-  type Ref,
+  type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
 import Image from "next/image";
-import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
+import {
+  TransformComponent,
+  TransformWrapper,
+  type ReactZoomPanPinchRef,
+} from "react-zoom-pan-pinch";
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import { sortLocationsByLabel } from "@/lib/mapLocationSort";
+import {
+  getBuildingKey,
+  getBuildingOrder,
+  sortLocationsByLabel,
+} from "@/lib/mapLocationSort";
 
 type MapPoint = {
   x: number;
@@ -34,17 +41,8 @@ type EvacuationLocation = {
   instruction: string;
 };
 
-type MapMarker = {
-  id: string;
-  label: string;
-  x: number;
-  y: number;
-};
-
 type EvacuationMapData = {
   locations: EvacuationLocation[];
-  emergencyExits: MapMarker[];
-  assemblyAreas: MapMarker[];
 };
 
 type LockableScreenOrientation = ScreenOrientation & {
@@ -52,22 +50,8 @@ type LockableScreenOrientation = ScreenOrientation & {
   unlock?: () => void;
 };
 
-type MarkerType = "room" | "exit" | "assembly";
-
-type EditorMode = "idle" | "room-pin" | "exit-pin" | "assembly-pin" | "route";
-
-type LocationFormState = {
-  label: string;
-  description: string;
-  recommendedExit: string;
-  assemblyArea: string;
-  instruction: string;
-};
-
 const emptyMapData: EvacuationMapData = {
   locations: [],
-  emergencyExits: [],
-  assemblyAreas: [],
 };
 
 const routesDataPath = "/data/evacuation-map-routes.json";
@@ -88,21 +72,6 @@ function getRoutePath(points: MapPoint[]) {
     .join(" ");
 }
 
-function formatCoordinate(point: MapPoint) {
-  return `{ x: ${point.x.toFixed(1)}, y: ${point.y.toFixed(1)} }`;
-}
-
-function roundMapPoint(point: MapPoint) {
-  return {
-    x: Number(point.x.toFixed(1)),
-    y: Number(point.y.toFixed(1)),
-  };
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
 function getRouteGuidance(location: EvacuationLocation) {
   const recommendedExit = location.recommendedExit.trim();
 
@@ -120,16 +89,13 @@ function getAssemblyGuidance(location: EvacuationLocation) {
 
 function RouteOverlay({
   markerId,
-  overlayRef,
   points,
 }: {
   markerId: string;
-  overlayRef?: Ref<SVGSVGElement>;
   points: MapPoint[];
 }) {
   return (
     <svg
-      ref={overlayRef}
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 h-full w-full [--route-stroke:4px] md:[--route-stroke:5px]"
       preserveAspectRatio="none"
@@ -191,37 +157,6 @@ function getValidRoutePoints(points?: MapPoint[]) {
   return (points ?? []).filter(isValidMapPoint);
 }
 
-function slugifyLocationName(name: string) {
-  return name
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-function getLocationFormState(location?: EvacuationLocation | null) {
-  return {
-    label: location?.label ?? "",
-    description: location?.description ?? "",
-    recommendedExit: location?.recommendedExit ?? "",
-    assemblyArea: location?.assemblyArea ?? "",
-    instruction: location?.instruction ?? "",
-  };
-}
-
-function updateLocation(
-  data: EvacuationMapData,
-  locationId: string,
-  updater: (location: EvacuationLocation) => EvacuationLocation,
-) {
-  return {
-    ...data,
-    locations: data.locations.map((location) =>
-      location.id === locationId ? updater(location) : location,
-    ),
-  };
-}
-
 async function requestLandscapeFullscreen(element: HTMLElement) {
   try {
     await element.requestFullscreen?.();
@@ -260,28 +195,13 @@ async function exitLandscapeFullscreen() {
 
 export default function EvacuationMapPage() {
   const [mapData, setMapData] = useState<EvacuationMapData>(emptyMapData);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedId, setSelectedId] = useState("");
-  const [editorSelectedId, setEditorSelectedId] = useState("");
-  const [editorMode, setEditorMode] = useState<EditorMode>("idle");
-  const [latestPoint, setLatestPoint] = useState<MapPoint | null>(null);
-  const [editorStatus, setEditorStatus] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-  const [isCalibrationMode] = useState(
-    () =>
-      typeof window !== "undefined" &&
-      new URLSearchParams(window.location.search).get("calibrate") === "1",
-  );
-  const [isCalibrationPanelMinimized, setIsCalibrationPanelMinimized] =
-    useState(false);
   const [isFullscreenMapOpen, setIsFullscreenMapOpen] = useState(false);
-  const [selectedMarkerType, setSelectedMarkerType] =
-    useState<MarkerType>("room");
+  const hasAutoOpenedFullscreenRef = useRef(false);
 
   const selectedLocation =
     mapData.locations.find((location) => location.id === selectedId) ?? null;
-  const editorLocation =
-    mapData.locations.find((location) => location.id === editorSelectedId) ??
-    null;
   const selectedLocationPoint =
     selectedLocation && isValidMapPoint(selectedLocation)
       ? selectedLocation
@@ -296,12 +216,6 @@ export default function EvacuationMapPage() {
       : null;
   const selectedRoutePoints = selectedLocation
     ? getValidRoutePoints(selectedLocation.routePoints)
-    : [];
-  const routePointMarkers =
-    isCalibrationMode &&
-    editorMode === "route" &&
-    editorLocation?.id === selectedLocation?.id
-    ? getValidRoutePoints(editorLocation?.routePoints)
     : [];
 
   useEffect(() => {
@@ -321,16 +235,11 @@ export default function EvacuationMapPage() {
       }
 
       setMapData(data);
-
-      const firstLocation = data.locations[0];
-      if (firstLocation) {
-        setEditorSelectedId(firstLocation.id);
-      }
     }
 
-    void loadRoutes().catch(() => {
+    void loadRoutes().finally(() => {
       if (isMounted) {
-        setEditorStatus("Unable to load evacuation route data.");
+        setIsLoading(false);
       }
     });
 
@@ -338,6 +247,20 @@ export default function EvacuationMapPage() {
       isMounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (isLoading || hasAutoOpenedFullscreenRef.current) {
+      return;
+    }
+
+    hasAutoOpenedFullscreenRef.current = true;
+
+    const isMobileViewport = window.matchMedia("(max-width: 768px)").matches;
+
+    if (isMobileViewport) {
+      handleOpenFullscreenMap();
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     if (!isFullscreenMapOpen) {
@@ -371,376 +294,11 @@ export default function EvacuationMapPage() {
     void exitLandscapeFullscreen();
   }
 
-  useEffect(() => {
-    if (mapData.locations.length > 0) {
-      return;
-    }
-
-    const resetSelectionTimer = window.setTimeout(() => {
-      setSelectedId("");
-      setEditorSelectedId("");
-      setLatestPoint(null);
-      setEditorMode("idle");
-      setSelectedMarkerType("room");
-    }, 0);
-
-    return () => window.clearTimeout(resetSelectionTimer);
-  }, [mapData.locations.length]);
-
-  function getClickedPoint(event: MouseEvent<HTMLDivElement>) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
-
-    return roundMapPoint({
-      x: Math.min(100, Math.max(0, x)),
-      y: Math.min(100, Math.max(0, y)),
-    });
-  }
-
-  function updateSelectedMarker(markerType: MarkerType, point: MapPoint) {
-    if (!editorLocation) {
-      return;
-    }
-
-    setMapData((currentData) =>
-      updateLocation(currentData, editorLocation.id, (location) => {
-        if (markerType === "room") {
-          return {
-            ...location,
-            x: point.x,
-            y: point.y,
-          };
-        }
-
-        if (markerType === "exit") {
-          return {
-            ...location,
-            emergencyExit: point,
-          };
-        }
-
-        return {
-          ...location,
-          assemblyAreaPoint: point,
-        };
-      }),
-    );
-    setSelectedMarkerType(markerType);
-    setLatestPoint(point);
-  }
-
-  function nudgeSelectedMarker(deltaX: number, deltaY: number) {
-    if (!editorLocation) {
-      return;
-    }
-
-    const currentPoint =
-      selectedMarkerType === "room"
-        ? { x: editorLocation.x, y: editorLocation.y }
-        : selectedMarkerType === "exit"
-          ? editorLocation.emergencyExit
-          : editorLocation.assemblyAreaPoint;
-
-    if (!currentPoint) {
-      return;
-    }
-
-    updateSelectedMarker(
-      selectedMarkerType,
-      roundMapPoint({
-        x: clamp(currentPoint.x + deltaX, 0, 100),
-        y: clamp(currentPoint.y + deltaY, 0, 100),
-      }),
-    );
-  }
-
-  function handleMarkerPointerDown(
-    event: PointerEvent<HTMLButtonElement>,
-    markerType: MarkerType,
-  ) {
-    if (!isCalibrationMode || !editorLocation) {
-      return;
-    }
-
-    event.stopPropagation();
-    event.currentTarget.setPointerCapture(event.pointerId);
-    setSelectedMarkerType(markerType);
-  }
-
-  function handleMarkerPointerMove(
-    event: PointerEvent<HTMLButtonElement>,
-    markerType: MarkerType,
-  ) {
-    if (
-      !isCalibrationMode ||
-      !editorLocation ||
-      !event.currentTarget.hasPointerCapture(event.pointerId)
-    ) {
-      return;
-    }
-
-    const mapContainer = event.currentTarget.parentElement;
-
-    if (!mapContainer) {
-      return;
-    }
-
-    const rect = mapContainer.getBoundingClientRect();
-    const point = roundMapPoint({
-      x: clamp(((event.clientX - rect.left) / rect.width) * 100, 0, 100),
-      y: clamp(((event.clientY - rect.top) / rect.height) * 100, 0, 100),
-    });
-
-    updateSelectedMarker(markerType, point);
-  }
-
-  function handleMapEditorClick(event: MouseEvent<HTMLDivElement>) {
-    if (!isCalibrationMode || !editorLocation || editorMode === "idle") {
-      return;
-    }
-
-    const point = getClickedPoint(event);
-    setLatestPoint(point);
-    setSelectedId(editorLocation.id);
-
-    if (editorMode === "room-pin") {
-      updateSelectedMarker("room", point);
-      setEditorMode("idle");
-      setEditorStatus(`Room pin updated for ${editorLocation.label}.`);
-      return;
-    }
-
-    if (editorMode === "exit-pin") {
-      updateSelectedMarker("exit", point);
-      setEditorMode("idle");
-      setEditorStatus(`Emergency exit pin updated for ${editorLocation.label}.`);
-      return;
-    }
-
-    if (editorMode === "assembly-pin") {
-      updateSelectedMarker("assembly", point);
-      setEditorMode("idle");
-      setEditorStatus(`Assembly area pin updated for ${editorLocation.label}.`);
-      return;
-    }
-
-    setMapData((currentData) =>
-      updateLocation(currentData, editorLocation.id, (location) => ({
-        ...location,
-        routePoints: [...location.routePoints, point],
-      })),
-    );
-    setEditorStatus(`Added route point ${formatCoordinate(point)}.`);
-  }
-
-  async function copyText(text: string, label: string) {
-    await navigator.clipboard.writeText(text);
-    setEditorStatus(`Copied ${label}.`);
-  }
-
-  async function persistMapData(nextData: EvacuationMapData, savingMessage: string) {
-    setIsSaving(true);
-    setEditorStatus(savingMessage);
-
-    try {
-      const response = await fetch("/api/evacuation-map/save-routes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(nextData),
-      });
-
-      const result = (await response.json()) as { message?: string };
-
-      if (!response.ok) {
-        throw new Error(result.message ?? "Unable to save evacuation routes.");
-      }
-
-      setEditorStatus(result.message ?? "Evacuation routes saved.");
-      return true;
-    } catch (error) {
-      setEditorStatus(
-        error instanceof Error
-          ? error.message
-          : "Unable to save evacuation routes.",
-      );
-      return false;
-    } finally {
-      setIsSaving(false);
-    }
-  }
-
-  async function saveRoutes() {
-    await persistMapData(mapData, "Saving evacuation route data...");
-  }
-
-  async function addLocation(form: LocationFormState) {
-    const label = form.label.trim();
-    const id = slugifyLocationName(label);
-
-    if (!label) {
-      return "Location Name / Room Name is required.";
-    }
-
-    if (!id) {
-      return "Use at least one letter or number in the location name.";
-    }
-
-    if (mapData.locations.some((location) => location.id === id)) {
-      return "A location with this name already exists.";
-    }
-
-    const newLocation: EvacuationLocation = {
-      id,
-      label,
-      description: form.description.trim(),
-      x: 50,
-      y: 50,
-      recommendedExit: form.recommendedExit.trim(),
-      assemblyArea: form.assemblyArea.trim(),
-      emergencyExit: null,
-      assemblyAreaPoint: null,
-      routePoints: [],
-      instruction: form.instruction.trim(),
-    };
-    const nextData = {
-      ...mapData,
-      locations: [...mapData.locations, newLocation],
-    };
-
-    setMapData(nextData);
-    setSelectedId(id);
-    setEditorSelectedId(id);
-    setEditorMode("idle");
-    setLatestPoint(null);
-    await persistMapData(nextData, `Saving ${label}...`);
-    return "";
-  }
-
-  async function editLocationDetails(form: LocationFormState) {
-    if (!editorLocation) {
-      return "Select a location to edit.";
-    }
-
-    const label = form.label.trim();
-    const nextId = slugifyLocationName(label);
-
-    if (!label) {
-      return "Location Name / Room Name is required.";
-    }
-
-    if (!nextId) {
-      return "Use at least one letter or number in the location name.";
-    }
-
-    if (
-      mapData.locations.some(
-        (location) => location.id === nextId && location.id !== editorLocation.id,
-      )
-    ) {
-      return "A location with this name already exists.";
-    }
-
-    const nextData = {
-      ...mapData,
-      locations: mapData.locations.map((location) =>
-        location.id === editorLocation.id
-          ? {
-              ...location,
-              id: nextId,
-              label,
-              description: form.description.trim(),
-              recommendedExit: form.recommendedExit.trim(),
-              assemblyArea: form.assemblyArea.trim(),
-              instruction: form.instruction.trim(),
-            }
-          : location,
-      ),
-    };
-
-    setMapData(nextData);
-    setSelectedId(nextId);
-    setEditorSelectedId(nextId);
-    await persistMapData(nextData, `Saving ${label}...`);
-    return "";
-  }
-
-  async function deleteLocation() {
-    if (!editorLocation) {
-      return "Select a location to delete.";
-    }
-
-    const shouldDelete = window.confirm(
-      "Are you sure you want to delete this location and its saved route?",
-    );
-
-    if (!shouldDelete) {
-      return "";
-    }
-
-    const nextLocations = mapData.locations.filter(
-      (location) => location.id !== editorLocation.id,
-    );
-    const nextSelectedId = nextLocations[0]?.id ?? "";
-    const nextData = {
-      ...mapData,
-      locations: nextLocations,
-    };
-
-    setMapData(nextData);
-    setSelectedId(nextSelectedId);
-    setEditorSelectedId(nextSelectedId);
-    setEditorMode("idle");
-    setLatestPoint(null);
-    await persistMapData(nextData, `Deleting ${editorLocation.label}...`);
-    return "";
-  }
-
-  function selectEditorLocation(locationId: string) {
-    setEditorSelectedId(locationId);
-    setSelectedId(locationId);
-    setEditorMode("idle");
-    setEditorStatus("");
-  }
-
-  function undoLastRoutePoint() {
-    if (!editorLocation || editorLocation.routePoints.length === 0) {
-      return;
-    }
-
-    setMapData((currentData) =>
-      updateLocation(currentData, editorLocation.id, (location) => ({
-        ...location,
-        routePoints: location.routePoints.slice(0, -1),
-      })),
-    );
-    setEditorStatus(`Removed last route point for ${editorLocation.label}.`);
-  }
-
-  function clearRoute() {
-    if (!editorLocation) {
-      return;
-    }
-
-    setMapData((currentData) =>
-      updateLocation(currentData, editorLocation.id, (location) => ({
-        ...location,
-        routePoints: [],
-      })),
-    );
-    setLatestPoint(null);
-    setEditorStatus(`Cleared route for ${editorLocation.label}.`);
-  }
-
   return (
     <>
       <Navbar />
       <main className="min-h-screen bg-[#f7f8f5] px-5 py-24 text-[#1f2933]">
-      <section
-        className={`mx-auto ${isCalibrationMode ? "max-w-7xl" : "max-w-5xl"}`}
-      >
+      <section className="mx-auto max-w-5xl">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-green">
           School DRRM
         </p>
@@ -773,27 +331,19 @@ export default function EvacuationMapPage() {
             </button>
           </div>
 
-          <div
-            className={
-              isCalibrationMode
-                ? "grid gap-4 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-start"
-                : "grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start"
-            }
-          >
-            <div
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+            <button
+              type="button"
+              onClick={handleOpenFullscreenMap}
+              aria-label="Open fullscreen evacuation map"
               data-lenis-prevent
-              onClick={handleMapEditorClick}
-              className={`relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 ${
-                isCalibrationMode && editorMode !== "idle"
-                  ? "cursor-crosshair"
-                  : ""
-              }`}
+              className="group relative block w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 text-left outline-none focus-visible:ring-4 focus-visible:ring-brand-teal/30"
             >
               <Image
                 src="/images/drrm/school-map.png"
                 alt="Tabunoc National High School Evacuation Map"
-                width={26247}
-                height={18508}
+                width={1448}
+                height={1086}
                 priority
                 sizes="(max-width: 1024px) 100vw, 960px"
                 className="block w-full rounded-2xl"
@@ -805,26 +355,9 @@ export default function EvacuationMapPage() {
               />
 
               {selectedExitPoint && (
-                <button
-                  type="button"
-                  aria-label="Selected emergency exit marker"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    if (isCalibrationMode) {
-                      setSelectedMarkerType("exit");
-                    }
-                  }}
-                  onPointerDown={(event) =>
-                    handleMarkerPointerDown(event, "exit")
-                  }
-                  onPointerMove={(event) =>
-                    handleMarkerPointerMove(event, "exit")
-                  }
-                  className={`absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-[3px] border border-white bg-[#dc2626] shadow outline-none ${
-                    isCalibrationMode && selectedMarkerType === "exit"
-                      ? "ring-4 ring-brand-yellow/80"
-                      : ""
-                  }`}
+                <span
+                  aria-hidden="true"
+                  className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-[3px] border border-white bg-[#dc2626] shadow"
                   style={{
                     left: `${selectedExitPoint.x}%`,
                     top: `${selectedExitPoint.y}%`,
@@ -833,26 +366,9 @@ export default function EvacuationMapPage() {
               )}
 
               {selectedAssemblyAreaPoint && (
-                <button
-                  type="button"
-                  aria-label="Selected assembly area marker"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    if (isCalibrationMode) {
-                      setSelectedMarkerType("assembly");
-                    }
-                  }}
-                  onPointerDown={(event) =>
-                    handleMarkerPointerDown(event, "assembly")
-                  }
-                  onPointerMove={(event) =>
-                    handleMarkerPointerMove(event, "assembly")
-                  }
-                  className={`absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#facc15] shadow outline-none ${
-                    isCalibrationMode && selectedMarkerType === "assembly"
-                      ? "ring-4 ring-brand-teal/50"
-                      : ""
-                  }`}
+                <span
+                  aria-hidden="true"
+                  className="absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#facc15] shadow"
                   style={{
                     left: `${selectedAssemblyAreaPoint.x}%`,
                     top: `${selectedAssemblyAreaPoint.y}%`,
@@ -861,53 +377,17 @@ export default function EvacuationMapPage() {
               )}
 
               {selectedLocationPoint && (
-                  <button
-                    type="button"
-                    aria-label={`Select ${selectedLocationPoint.label}`}
-                    aria-pressed="true"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setSelectedId(selectedLocationPoint.id);
-                      if (isCalibrationMode) {
-                        setEditorSelectedId(selectedLocationPoint.id);
-                        setSelectedMarkerType("room");
-                      }
-                    }}
-                    onPointerDown={(event) => {
-                      if (selectedLocationPoint.id === editorLocation?.id) {
-                        handleMarkerPointerDown(event, "room");
-                      }
-                    }}
-                    onPointerMove={(event) => {
-                      if (selectedLocationPoint.id === editorLocation?.id) {
-                        handleMarkerPointerMove(event, "room");
-                      }
-                    }}
-                    className={`absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-brand-teal text-white shadow-lg outline-none focus:ring-4 focus:ring-brand-teal/25 sm:h-9 sm:w-9 ${
-                      isCalibrationMode && selectedMarkerType === "room"
-                        ? "ring-4 ring-brand-yellow/80"
-                        : "ring-4 ring-brand-yellow/70"
-                    }`}
-                    style={{
-                      left: `${selectedLocationPoint.x}%`,
-                      top: `${selectedLocationPoint.y}%`,
-                    }}
-                    title={selectedLocationPoint.label}
-                  >
-                    <span className="h-3 w-3 rounded-full bg-current" />
-                  </button>
-              )}
-
-              {routePointMarkers.map((point, index) => (
-                <div
-                  key={`${point.x}-${point.y}-${index}`}
+                <span
                   aria-hidden="true"
-                  className="absolute z-20 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-slate-950 text-[10px] font-bold leading-none text-white shadow"
-                  style={{ left: `${point.x}%`, top: `${point.y}%` }}
+                  className="absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-brand-teal text-white shadow-lg ring-4 ring-brand-yellow/70 sm:h-9 sm:w-9"
+                  style={{
+                    left: `${selectedLocationPoint.x}%`,
+                    top: `${selectedLocationPoint.y}%`,
+                  }}
                 >
-                  {index + 1}
-                </div>
-              ))}
+                  <span className="h-3 w-3 rounded-full bg-current" />
+                </span>
+              )}
 
               {selectedLocationPoint && (
                 <span
@@ -947,80 +427,36 @@ export default function EvacuationMapPage() {
                   Assembly Area
                 </span>
               )}
-            </div>
 
-            {!isCalibrationMode && (
-              <RouteGuidancePanel
-                locations={mapData.locations}
-                selectedId={selectedId}
-                selectedLocation={selectedLocation}
-                onSelectLocation={setSelectedId}
-              />
-            )}
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-3 right-3 z-10 flex items-center gap-1.5 rounded-full bg-slate-950/75 px-3 py-1.5 text-[11px] font-bold text-white shadow-sm backdrop-blur-sm transition-transform duration-200 group-hover:scale-105"
+              >
+                <svg
+                  className="h-3 w-3"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+                </svg>
+                Tap to expand
+              </span>
+            </button>
 
-            {isCalibrationMode && (
-              <CalibrationPanel
-                data={mapData}
-                editorLocation={editorLocation}
-                editorMode={editorMode}
-                editorSelectedId={editorSelectedId}
-                editorStatus={editorStatus}
-                isMinimized={isCalibrationPanelMinimized}
-                isSaving={isSaving}
-                latestPoint={latestPoint}
-                onAddLocation={addLocation}
-                onClearRoute={clearRoute}
-                onCopy={copyText}
-                onDeleteLocation={deleteLocation}
-                onEditLocation={editLocationDetails}
-                onNudgeSelectedMarker={nudgeSelectedMarker}
-                onSave={saveRoutes}
-                onSelectLocation={selectEditorLocation}
-                onSetEditorMode={setEditorMode}
-                onSetSelectedMarkerType={setSelectedMarkerType}
-                onSetMinimized={setIsCalibrationPanelMinimized}
-                onUndoLastPoint={undoLastRoutePoint}
-                selectedMarkerType={selectedMarkerType}
-              />
-            )}
+            <RouteGuidancePanel
+              locations={mapData.locations}
+              isLoading={isLoading}
+              selectedId={selectedId}
+              selectedLocation={selectedLocation}
+              onSelectLocation={setSelectedId}
+            />
           </div>
 
-          <div
-            className={`mt-5 grid gap-4 ${
-              isCalibrationMode
-                ? "lg:grid-cols-[1fr_auto] lg:items-end"
-                : "lg:justify-end"
-            }`}
-          >
-            {isCalibrationMode && (
-              <div>
-              <label
-                htmlFor="current-location"
-                className="text-sm font-semibold text-slate-700"
-              >
-                Select your current location
-              </label>
-
-              <select
-                id="current-location"
-                value={selectedId}
-                onChange={(event) => setSelectedId(event.target.value)}
-                className="mt-3 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/20"
-              >
-                <option value="">
-                  {mapData.locations.length === 0
-                    ? "No locations available. Add a location in calibration mode."
-                    : "Choose location..."}
-                </option>
-                {sortLocationsByLabel(mapData.locations).map((location) => (
-                  <option key={location.id} value={location.id}>
-                    {location.label}
-                  </option>
-                ))}
-              </select>
-              </div>
-            )}
-
+          <div className="mt-5 grid gap-4 lg:justify-end">
             <div className="flex flex-wrap gap-x-5 gap-y-3 rounded-2xl border border-slate-200 bg-brand-slate p-4 lg:max-w-[440px]">
               {legendItems.map((item) => (
                 <div
@@ -1059,27 +495,15 @@ export default function EvacuationMapPage() {
       {isFullscreenMapOpen && (
         <FullscreenMapViewer
           data={mapData}
-          editorLocation={editorLocation}
-          editorMode={editorMode}
-          isCalibrationMode={isCalibrationMode}
-          routePointMarkers={routePointMarkers}
+          isLoading={isLoading}
           selectedAssemblyAreaPoint={selectedAssemblyAreaPoint}
           selectedExitPoint={selectedExitPoint}
           selectedId={selectedId}
           selectedLocation={selectedLocation}
           selectedLocationPoint={selectedLocationPoint}
-          selectedMarkerType={selectedMarkerType}
           selectedRoutePoints={selectedRoutePoints}
           onClose={handleCloseFullscreenMap}
-          onMapEditorClick={handleMapEditorClick}
-          onSelectLocation={(locationId) => {
-            setSelectedId(locationId);
-            if (isCalibrationMode) {
-              setEditorSelectedId(locationId);
-            }
-          }}
-          onSetSelectedMarkerType={setSelectedMarkerType}
-          onUpdateSelectedMarker={updateSelectedMarker}
+          onSelectLocation={setSelectedId}
         />
       )}
       </main>
@@ -1155,42 +579,265 @@ function RouteGuidanceDetails({
   );
 }
 
+function LocationFinder({
+  id,
+  label,
+  locations,
+  selectedId,
+  isLoading,
+  onSelectLocation,
+}: {
+  id: string;
+  label: string;
+  locations: EvacuationLocation[];
+  selectedId: string;
+  isLoading: boolean;
+  onSelectLocation: (locationId: string) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedBuilding, setSelectedBuilding] = useState("All");
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const listboxId = `${id}-listbox`;
+  const selectedLabel =
+    locations.find((location) => location.id === selectedId)?.label ?? "";
+  const inputValue = isOpen ? query : selectedLabel;
+
+  const buildingOptions = useMemo(() => {
+    const keys = new Set<string>();
+
+    for (const location of locations) {
+      keys.add(getBuildingKey(location.label));
+    }
+
+    return Array.from(keys).sort((a, b) => {
+      const orderDifference = getBuildingOrder(a) - getBuildingOrder(b);
+
+      if (orderDifference !== 0) {
+        return orderDifference;
+      }
+
+      return a.localeCompare(b);
+    });
+  }, [locations]);
+
+  const filteredLocations = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    return sortLocationsByLabel(locations).filter((location) => {
+      const matchesBuilding =
+        selectedBuilding === "All" ||
+        getBuildingKey(location.label) === selectedBuilding;
+      const matchesQuery =
+        normalizedQuery === "" ||
+        location.label.toLowerCase().includes(normalizedQuery);
+
+      return matchesBuilding && matchesQuery;
+    });
+  }, [locations, query, selectedBuilding]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    function handlePointerDown(event: PointerEvent) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [isOpen]);
+
+  function selectLocation(locationId: string) {
+    onSelectLocation(locationId);
+    setIsOpen(false);
+    setActiveIndex(0);
+  }
+
+  function handleKeyDown(event: ReactKeyboardEvent<HTMLInputElement>) {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setIsOpen(true);
+      setActiveIndex((index) =>
+        Math.min(index + 1, filteredLocations.length - 1),
+      );
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveIndex((index) => Math.max(index - 1, 0));
+      return;
+    }
+
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const active = filteredLocations[activeIndex];
+
+      if (active) {
+        selectLocation(active.id);
+      }
+
+      return;
+    }
+
+    if (event.key === "Escape") {
+      setIsOpen(false);
+    }
+  }
+
+  const placeholder = isLoading
+    ? "Loading locations..."
+    : locations.length === 0
+      ? "No locations available"
+      : "Search room or building...";
+
+  return (
+    <div ref={containerRef} className="relative">
+      <label
+        htmlFor={id}
+        className="text-xs font-bold uppercase tracking-[0.14em] text-slate-600"
+      >
+        {label}
+      </label>
+
+      <div className="relative mt-2">
+        <input
+          id={id}
+          type="text"
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-controls={listboxId}
+          aria-autocomplete="list"
+          autoComplete="off"
+          disabled={isLoading}
+          placeholder={placeholder}
+          value={inputValue}
+          onFocus={() => {
+            setQuery(selectedLabel);
+            setIsOpen(true);
+          }}
+          onChange={(event) => {
+            setQuery(event.target.value);
+            setIsOpen(true);
+            setActiveIndex(0);
+          }}
+          onKeyDown={handleKeyDown}
+          className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 pr-9 text-sm font-semibold text-slate-900 outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/15 disabled:cursor-not-allowed disabled:opacity-60"
+        />
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+
+        {isOpen && !isLoading && locations.length > 0 && (
+          <ul
+            id={listboxId}
+            role="listbox"
+            className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg"
+          >
+            {filteredLocations.length === 0 ? (
+              <li className="px-3 py-2 text-sm text-slate-500">
+                No matching locations
+              </li>
+            ) : (
+              filteredLocations.map((location, index) => (
+                <li
+                  key={location.id}
+                  role="option"
+                  aria-selected={location.id === selectedId}
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                    selectLocation(location.id);
+                  }}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  className={`cursor-pointer rounded-lg px-3 py-2 text-sm ${
+                    index === activeIndex
+                      ? "bg-brand-mint text-brand-teal"
+                      : "text-slate-700"
+                  } ${location.id === selectedId ? "font-bold" : "font-medium"}`}
+                >
+                  {location.label}
+                </li>
+              ))
+            )}
+          </ul>
+        )}
+      </div>
+
+      {buildingOptions.length > 1 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setSelectedBuilding("All")}
+            className={`rounded-full px-3 py-1 text-xs font-bold outline-none focus:ring-4 focus:ring-brand-teal/20 ${
+              selectedBuilding === "All"
+                ? "bg-brand-teal text-white"
+                : "border border-slate-300 bg-white text-slate-600 hover:bg-brand-mint"
+            }`}
+          >
+            All
+          </button>
+          {buildingOptions.map((building) => (
+            <button
+              key={building}
+              type="button"
+              onClick={() => setSelectedBuilding(building)}
+              className={`rounded-full px-3 py-1 text-xs font-bold outline-none focus:ring-4 focus:ring-brand-teal/20 ${
+                selectedBuilding === building
+                  ? "bg-brand-teal text-white"
+                  : "border border-slate-300 bg-white text-slate-600 hover:bg-brand-mint"
+              }`}
+            >
+              {building}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function RouteGuidancePanel({
   locations,
+  isLoading,
   selectedId,
   selectedLocation,
   onSelectLocation,
 }: {
   locations: EvacuationLocation[];
+  isLoading: boolean;
   selectedId: string;
   selectedLocation: EvacuationLocation | null;
   onSelectLocation: (locationId: string) => void;
 }) {
   return (
     <aside className="rounded-2xl border border-slate-200 bg-brand-slate p-5 lg:sticky lg:top-24">
-      <label
-        htmlFor="current-location"
-        className="text-xs font-bold uppercase tracking-[0.14em] text-slate-600"
-      >
-        Current Location
-      </label>
-      <select
+      <LocationFinder
         id="current-location"
-        value={selectedId}
-        onChange={(event) => onSelectLocation(event.target.value)}
-        className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/15"
-      >
-        <option value="">
-          {locations.length === 0
-            ? "No locations available"
-            : "Choose location..."}
-        </option>
-        {sortLocationsByLabel(locations).map((location) => (
-          <option key={location.id} value={location.id}>
-            {location.label}
-          </option>
-        ))}
-      </select>
+        label="Current Location"
+        locations={locations}
+        selectedId={selectedId}
+        isLoading={isLoading}
+        onSelectLocation={onSelectLocation}
+      />
 
       <div className="mt-5">
         <RouteGuidanceDetails selectedLocation={selectedLocation} />
@@ -1201,104 +848,64 @@ function RouteGuidancePanel({
 
 function FullscreenMapViewer({
   data,
-  editorLocation,
-  editorMode,
-  isCalibrationMode,
-  routePointMarkers,
+  isLoading,
   selectedAssemblyAreaPoint,
   selectedExitPoint,
   selectedId,
   selectedLocation,
   selectedLocationPoint,
-  selectedMarkerType,
   selectedRoutePoints,
   onClose,
-  onMapEditorClick,
   onSelectLocation,
-  onSetSelectedMarkerType,
-  onUpdateSelectedMarker,
 }: {
   data: EvacuationMapData;
-  editorLocation: EvacuationLocation | null;
-  editorMode: EditorMode;
-  isCalibrationMode: boolean;
-  routePointMarkers: MapPoint[];
+  isLoading: boolean;
   selectedAssemblyAreaPoint: MapPoint | null;
   selectedExitPoint: MapPoint | null;
   selectedId: string;
   selectedLocation: EvacuationLocation | null;
   selectedLocationPoint: EvacuationLocation | null;
-  selectedMarkerType: MarkerType;
   selectedRoutePoints: MapPoint[];
   onClose: () => void;
-  onMapEditorClick: (event: MouseEvent<HTMLDivElement>) => void;
   onSelectLocation: (locationId: string) => void;
-  onSetSelectedMarkerType: (markerType: MarkerType) => void;
-  onUpdateSelectedMarker: (markerType: MarkerType, point: MapPoint) => void;
 }) {
-  const suppressClickRef = useRef(false);
-  const fullscreenStageRef = useRef<HTMLDivElement | null>(null);
-  const fullscreenImageRef = useRef<HTMLImageElement | null>(null);
-  const fullscreenOverlayRef = useRef<SVGSVGElement | null>(null);
+  const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
+  const focusScale = 2.4;
 
   useEffect(() => {
+    const context = transformRef.current;
+
+    if (!context || !selectedLocationPoint) {
+      return;
+    }
+
     const frameId = window.requestAnimationFrame(() => {
-      const image = fullscreenImageRef.current;
-      const overlay = fullscreenOverlayRef.current;
-      const stage = fullscreenStageRef.current;
-
-      if (!image || !overlay || !stage) {
-        return;
-      }
-
-      console.log("image rect", image.getBoundingClientRect());
-      console.log("overlay rect", overlay.getBoundingClientRect());
-      console.log("stage rect", stage.getBoundingClientRect());
-      console.log("natural size", image.naturalWidth, image.naturalHeight);
+      context.zoomToElement(
+        "fullscreen-selected-marker",
+        focusScale,
+        450,
+        "easeOutCubic",
+      );
     });
 
     return () => window.cancelAnimationFrame(frameId);
-  }, [selectedRoutePoints]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId]);
 
   function renderRouteDetails() {
     return (
       <div className="grid gap-5">
-        <label className="grid gap-2 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
-          Choose your location
-          <select
-            value={selectedId}
-            onChange={(event) => onSelectLocation(event.target.value)}
-            className="rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-semibold normal-case tracking-normal text-slate-900 outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/15"
-          >
-            <option value="">
-              {data.locations.length === 0
-                ? "No locations available. Add a location in calibration mode."
-                : "Choose location..."}
-            </option>
-            {sortLocationsByLabel(data.locations).map((location) => (
-              <option key={location.id} value={location.id}>
-                {location.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        <LocationFinder
+          id="fullscreen-current-location"
+          label="Choose your location"
+          locations={data.locations}
+          selectedId={selectedId}
+          isLoading={isLoading}
+          onSelectLocation={onSelectLocation}
+        />
 
         <section className="grid gap-4 border-t border-slate-200 pt-5">
           <RouteGuidanceDetails selectedLocation={selectedLocation} />
-
-          {isCalibrationMode && editorLocation && editorMode !== "idle" && (
-            <p className="rounded-2xl bg-brand-mint p-4 text-xs font-semibold text-brand-teal">
-              Calibration: click the map to{" "}
-              {editorMode === "room-pin"
-                ? "set the room pin"
-                : editorMode === "exit-pin"
-                  ? "set the emergency exit pin"
-                  : editorMode === "assembly-pin"
-                    ? "set the assembly area pin"
-                    : "add route points"}
-              .
-            </p>
-          )}
         </section>
 
         <section className="grid gap-3 border-t border-slate-200 pt-5">
@@ -1320,56 +927,6 @@ function FullscreenMapViewer({
     );
   }
 
-  function handleMapClick(event: MouseEvent<HTMLDivElement>) {
-    if (suppressClickRef.current) {
-      suppressClickRef.current = false;
-      return;
-    }
-
-    onMapEditorClick(event);
-  }
-
-  function handleFullscreenMarkerPointerDown(
-    event: PointerEvent<HTMLButtonElement>,
-    markerType: MarkerType,
-  ) {
-    if (!isCalibrationMode || !editorLocation) {
-      return;
-    }
-
-    event.stopPropagation();
-    event.currentTarget.setPointerCapture(event.pointerId);
-    onSetSelectedMarkerType(markerType);
-  }
-
-  function handleFullscreenMarkerPointerMove(
-    event: PointerEvent<HTMLButtonElement>,
-    markerType: MarkerType,
-  ) {
-    if (
-      !isCalibrationMode ||
-      !editorLocation ||
-      !event.currentTarget.hasPointerCapture(event.pointerId)
-    ) {
-      return;
-    }
-
-    const mapContainer = event.currentTarget.parentElement;
-
-    if (!mapContainer) {
-      return;
-    }
-
-    const rect = mapContainer.getBoundingClientRect();
-    onUpdateSelectedMarker(
-      markerType,
-      roundMapPoint({
-        x: clamp(((event.clientX - rect.left) / rect.width) * 100, 0, 100),
-        y: clamp(((event.clientY - rect.top) / rect.height) * 100, 0, 100),
-      }),
-    );
-  }
-
   return (
     <div
       aria-modal="true"
@@ -1380,14 +937,15 @@ function FullscreenMapViewer({
       <div className="flex h-[100dvh] w-[100dvw] flex-col overflow-hidden lg:flex-row">
         <div className="min-h-0 min-w-0 flex-1">
           <TransformWrapper
+            ref={transformRef}
             centerOnInit
             centerZoomedOut
             limitToBounds
             smooth
             minScale={1}
             maxScale={5}
-            wheel={{ disabled: false, step: 0.12 }}
-            pinch={{ disabled: false, allowPanning: true, step: 6 }}
+            wheel={{ disabled: false, step: 0.1 }}
+            pinch={{ disabled: false, allowPanning: true, step: 4 }}
             panning={{
               disabled: false,
               velocityDisabled: false,
@@ -1397,25 +955,25 @@ function FullscreenMapViewer({
               disabled: false,
               mode: "zoomIn",
               step: 0.7,
-              animationTime: 160,
+              animationTime: 300,
+              animationType: "easeOutCubic",
               excluded: ["button", "select", "input", "textarea"],
             }}
+            zoomAnimation={{
+              disabled: false,
+              animationTime: 300,
+              animationType: "easeOutCubic",
+            }}
             velocityAnimation={{
-              animationTime: 180,
-              maxAnimationTime: 220,
+              disabled: false,
+              animationTime: 350,
+              maxAnimationTime: 450,
+              animationType: "easeOutCubic",
             }}
             onInit={({ resetTransform }) => {
               requestAnimationFrame(() => {
                 resetTransform(0);
               });
-            }}
-            onPanningStart={() => {
-              suppressClickRef.current = true;
-            }}
-            onPanningStop={() => {
-              window.setTimeout(() => {
-                suppressClickRef.current = false;
-              }, 100);
             }}
           >
             {({ zoomIn, zoomOut, resetTransform }) => (
@@ -1424,22 +982,12 @@ function FullscreenMapViewer({
                   wrapperClass="!h-full !w-full overflow-hidden cursor-grab touch-none active:cursor-grabbing"
                   contentClass="!h-full !w-fit"
                 >
-              <div
-                ref={fullscreenStageRef}
-                onClick={handleMapClick}
-                className={`relative inline-block aspect-[26247/18508] h-full w-auto max-w-none select-none overflow-hidden bg-white shadow-sm ${
-                  isCalibrationMode && editorMode !== "idle"
-                    ? "cursor-crosshair"
-                    : ""
-                }`}
-                draggable={false}
-              >
+              <div className="relative inline-block aspect-[4/3] h-full w-auto max-w-none select-none overflow-hidden bg-white shadow-sm">
                 <Image
-                  ref={fullscreenImageRef}
                   src="/images/drrm/school-map.png"
                   alt="Tabunoc National High School Evacuation Map"
-                  width={26247}
-                  height={18508}
+                  width={1448}
+                  height={1086}
                   sizes="100vw"
                   className="block h-full w-full max-w-none select-none object-contain"
                   draggable={false}
@@ -1447,31 +995,13 @@ function FullscreenMapViewer({
 
                 <RouteOverlay
                   markerId="fullscreen-evacuation-route-arrow"
-                  overlayRef={fullscreenOverlayRef}
                   points={selectedRoutePoints}
                 />
 
             {selectedExitPoint && (
-              <button
-                type="button"
-                aria-label="Selected emergency exit marker"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  if (isCalibrationMode) {
-                    onSetSelectedMarkerType("exit");
-                  }
-                }}
-                onPointerDown={(event) =>
-                  handleFullscreenMarkerPointerDown(event, "exit")
-                }
-                onPointerMove={(event) =>
-                  handleFullscreenMarkerPointerMove(event, "exit")
-                }
-                className={`absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-[3px] border border-white bg-[#dc2626] shadow outline-none ${
-                  isCalibrationMode && selectedMarkerType === "exit"
-                    ? "ring-4 ring-brand-yellow/80"
-                    : ""
-                }`}
+              <span
+                aria-hidden="true"
+                className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-[3px] border border-white bg-[#dc2626] shadow"
                 style={{
                   left: `${selectedExitPoint.x}%`,
                   top: `${selectedExitPoint.y}%`,
@@ -1480,26 +1010,9 @@ function FullscreenMapViewer({
             )}
 
             {selectedAssemblyAreaPoint && (
-              <button
-                type="button"
-                aria-label="Selected assembly area marker"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  if (isCalibrationMode) {
-                    onSetSelectedMarkerType("assembly");
-                  }
-                }}
-                onPointerDown={(event) =>
-                  handleFullscreenMarkerPointerDown(event, "assembly")
-                }
-                onPointerMove={(event) =>
-                  handleFullscreenMarkerPointerMove(event, "assembly")
-                }
-                className={`absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#facc15] shadow outline-none ${
-                  isCalibrationMode && selectedMarkerType === "assembly"
-                    ? "ring-4 ring-brand-teal/50"
-                    : ""
-                }`}
+              <span
+                aria-hidden="true"
+                className="absolute h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[#facc15] shadow"
                 style={{
                   left: `${selectedAssemblyAreaPoint.x}%`,
                   top: `${selectedAssemblyAreaPoint.y}%`,
@@ -1508,52 +1021,18 @@ function FullscreenMapViewer({
             )}
 
             {selectedLocationPoint && (
-                <button
-                  type="button"
-                  aria-label={`Select ${selectedLocationPoint.label}`}
-                  aria-pressed="true"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onSelectLocation(selectedLocationPoint.id);
-                    if (isCalibrationMode) {
-                      onSetSelectedMarkerType("room");
-                    }
-                  }}
-                  onPointerDown={(event) => {
-                    if (selectedLocationPoint.id === editorLocation?.id) {
-                      handleFullscreenMarkerPointerDown(event, "room");
-                    }
-                  }}
-                  onPointerMove={(event) => {
-                    if (selectedLocationPoint.id === editorLocation?.id) {
-                      handleFullscreenMarkerPointerMove(event, "room");
-                    }
-                  }}
-                  className={`absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-brand-teal text-white shadow-lg outline-none focus:ring-4 focus:ring-brand-teal/25 sm:h-9 sm:w-9 ${
-                    isCalibrationMode && selectedMarkerType === "room"
-                      ? "ring-4 ring-brand-yellow/80"
-                      : "ring-4 ring-brand-yellow/70"
-                  }`}
-                  style={{
-                    left: `${selectedLocationPoint.x}%`,
-                    top: `${selectedLocationPoint.y}%`,
-                  }}
-                  title={selectedLocationPoint.label}
-                >
-                  <span className="h-3 w-3 rounded-full bg-current" />
-                </button>
-            )}
-
-            {routePointMarkers.map((point, index) => (
-              <div
-                key={`${point.x}-${point.y}-fullscreen-${index}`}
+              <span
+                id="fullscreen-selected-marker"
                 aria-hidden="true"
-                className="absolute z-20 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-slate-950 text-[10px] font-bold leading-none text-white shadow"
-                style={{ left: `${point.x}%`, top: `${point.y}%` }}
+                className="absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-brand-teal text-white shadow-lg ring-4 ring-brand-yellow/70 sm:h-9 sm:w-9"
+                style={{
+                  left: `${selectedLocationPoint.x}%`,
+                  top: `${selectedLocationPoint.y}%`,
+                }}
               >
-                {index + 1}
-              </div>
-            ))}
+                <span className="h-3 w-3 rounded-full bg-current" />
+              </span>
+            )}
 
             {selectedLocationPoint && (
               <span
@@ -1603,7 +1082,7 @@ function FullscreenMapViewer({
               <button
                 type="button"
                 aria-label="Zoom in"
-                onClick={() => zoomIn(0.35, 160)}
+                onClick={() => zoomIn(0.4, 300, "easeOutCubic")}
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-brand-teal/20"
               >
                 +
@@ -1611,7 +1090,7 @@ function FullscreenMapViewer({
               <button
                 type="button"
                 aria-label="Zoom out"
-                onClick={() => zoomOut(0.35, 160)}
+                onClick={() => zoomOut(0.4, 300, "easeOutCubic")}
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-brand-teal/20"
               >
                 -
@@ -1619,7 +1098,7 @@ function FullscreenMapViewer({
               <button
                 type="button"
                 aria-label="Reset map view"
-                onClick={() => resetTransform(180)}
+                onClick={() => resetTransform(350, "easeOutCubic")}
                 className="rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-950 shadow-lg outline-none focus:ring-4 focus:ring-brand-teal/20"
               >
                 Reset
@@ -1655,499 +1134,6 @@ function FullscreenMapViewer({
 
           {renderRouteDetails()}
         </aside>
-      </div>
-    </div>
-  );
-}
-
-function CalibrationPanel({
-  data,
-  editorLocation,
-  editorMode,
-  editorSelectedId,
-  editorStatus,
-  isMinimized,
-  isSaving,
-  latestPoint,
-  onAddLocation,
-  onClearRoute,
-  onCopy,
-  onDeleteLocation,
-  onEditLocation,
-  onNudgeSelectedMarker,
-  onSave,
-  onSelectLocation,
-  onSetEditorMode,
-  onSetSelectedMarkerType,
-  onSetMinimized,
-  onUndoLastPoint,
-  selectedMarkerType,
-}: {
-  data: EvacuationMapData;
-  editorLocation: EvacuationLocation | null;
-  editorMode: EditorMode;
-  editorSelectedId: string;
-  editorStatus: string;
-  isMinimized: boolean;
-  isSaving: boolean;
-  latestPoint: MapPoint | null;
-  onAddLocation: (form: LocationFormState) => Promise<string>;
-  onClearRoute: () => void;
-  onCopy: (text: string, label: string) => Promise<void>;
-  onDeleteLocation: () => Promise<string>;
-  onEditLocation: (form: LocationFormState) => Promise<string>;
-  onNudgeSelectedMarker: (deltaX: number, deltaY: number) => void;
-  onSave: () => Promise<void>;
-  onSelectLocation: (locationId: string) => void;
-  onSetEditorMode: (mode: EditorMode) => void;
-  onSetSelectedMarkerType: (markerType: MarkerType) => void;
-  onSetMinimized: (value: boolean) => void;
-  onUndoLastPoint: () => void;
-  selectedMarkerType: MarkerType;
-}) {
-  const [isAddingLocation, setIsAddingLocation] = useState(false);
-  const [isEditingLocation, setIsEditingLocation] = useState(false);
-  const [locationForm, setLocationForm] = useState<LocationFormState>(
-    getLocationFormState(),
-  );
-  const [locationFormError, setLocationFormError] = useState("");
-
-  function updateLocationForm(field: keyof LocationFormState, value: string) {
-    setLocationForm((currentForm) => ({
-      ...currentForm,
-      [field]: value,
-    }));
-  }
-
-  async function handleSaveNewLocation() {
-    const error = await onAddLocation(locationForm);
-
-    if (error) {
-      setLocationFormError(error);
-      return;
-    }
-
-    setLocationForm(getLocationFormState());
-    setLocationFormError("");
-    setIsAddingLocation(false);
-  }
-
-  async function handleSaveEditedLocation() {
-    const error = await onEditLocation(locationForm);
-
-    if (error) {
-      setLocationFormError(error);
-      return;
-    }
-
-    setLocationFormError("");
-    setIsEditingLocation(false);
-  }
-
-  function handleSelectLocation(locationId: string) {
-    const nextLocation =
-      data.locations.find((location) => location.id === locationId) ?? null;
-
-    onSelectLocation(locationId);
-
-    if (isEditingLocation) {
-      setLocationForm(getLocationFormState(nextLocation));
-      setLocationFormError("");
-    }
-  }
-
-  async function handleDeleteLocation() {
-    const error = await onDeleteLocation();
-
-    if (error) {
-      setLocationFormError(error);
-    }
-  }
-
-  const activeModeMessage =
-    editorMode === "room-pin"
-      ? "Click the room/location on the map."
-      : editorMode === "exit-pin"
-        ? "Click the emergency exit location on the map."
-        : editorMode === "assembly-pin"
-          ? "Click the assembly area location on the map."
-          : editorMode === "route"
-            ? "Click route points on the map in order."
-            : "Select a pinning or route editing mode.";
-
-  if (isMinimized) {
-    return (
-      <div className="lg:sticky lg:top-24">
-        <button
-          type="button"
-          onClick={() => onSetMinimized(false)}
-          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-brand-teal shadow-sm outline-none hover:bg-brand-mint focus:ring-4 focus:ring-brand-teal/20"
-        >
-          Show calibration panel
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <aside className="rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 shadow-sm lg:sticky lg:top-24">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-teal">
-            Map Calibration Mode
-          </p>
-          <p className="mt-1 text-xs text-slate-500">
-            Save Route works only on localhost/development. After saving, run
-            build, commit, and push to publish the updated evacuation routes.
-          </p>
-          <p className="mt-2 rounded-xl bg-brand-mint px-3 py-2 text-xs font-semibold text-brand-teal">
-            Workflow: Select or add a location, set the room pin, set the
-            emergency exit pin, set the assembly area pin, edit the route
-            points, then save.
-          </p>
-        </div>
-        <span className="shrink-0 rounded-full bg-amber-100 px-2 py-1 text-[10px] font-bold text-amber-900">
-          ?calibrate=1
-        </span>
-      </div>
-
-      <label
-        htmlFor="calibration-location"
-        className="mt-4 block text-xs font-bold text-slate-700"
-      >
-        Location
-      </label>
-      <select
-        id="calibration-location"
-        value={editorSelectedId}
-        onChange={(event) => handleSelectLocation(event.target.value)}
-        className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/15"
-      >
-        {sortLocationsByLabel(data.locations).map((location) => (
-          <option key={location.id} value={location.id}>
-            {location.label}
-          </option>
-        ))}
-      </select>
-
-      <section className="mt-4 rounded-2xl border border-slate-200 bg-brand-slate p-3">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="text-sm font-bold text-slate-900">
-            Location Management
-          </h3>
-          <button
-            type="button"
-            onClick={() => {
-              setIsAddingLocation((isOpen) => !isOpen);
-              setIsEditingLocation(false);
-              setLocationForm(getLocationFormState());
-              setLocationFormError("");
-            }}
-            className="rounded-lg bg-brand-teal px-3 py-2 text-xs font-bold text-white outline-none focus:ring-4 focus:ring-brand-teal/20"
-          >
-            Add New Location
-          </button>
-        </div>
-
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            disabled={!editorLocation}
-            onClick={() => {
-              setIsEditingLocation((isOpen) => !isOpen);
-              setIsAddingLocation(false);
-              setLocationForm(getLocationFormState(editorLocation));
-              setLocationFormError("");
-            }}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-slate-300/60"
-          >
-            Edit Location Details
-          </button>
-          <button
-            type="button"
-            disabled={!editorLocation || isSaving}
-            onClick={() => void handleDeleteLocation()}
-            className="rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-bold text-red-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-red-200"
-          >
-            Delete Location
-          </button>
-        </div>
-
-        {(isAddingLocation || isEditingLocation) && (
-          <LocationDetailsForm
-            form={locationForm}
-            isSaving={isSaving}
-            submitLabel={
-              isAddingLocation ? "Save New Location" : "Save Location Details"
-            }
-            onCancel={() => {
-              setIsAddingLocation(false);
-              setIsEditingLocation(false);
-              setLocationFormError("");
-            }}
-            onChange={updateLocationForm}
-            onSubmit={() =>
-              void (isAddingLocation
-                ? handleSaveNewLocation()
-                : handleSaveEditedLocation())
-            }
-          />
-        )}
-
-        {locationFormError && (
-          <p className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-700">
-            {locationFormError}
-          </p>
-        )}
-      </section>
-
-      <div className="mt-3 rounded-xl bg-slate-100 px-3 py-2 font-mono text-xs text-slate-800">
-        {latestPoint ? formatCoordinate(latestPoint) : "No point selected"}
-      </div>
-
-      {editorLocation && (
-        <div className="mt-3 rounded-xl border border-slate-200 bg-brand-slate p-3 text-xs text-slate-700">
-          <p className="font-semibold text-brand-teal">{activeModeMessage}</p>
-          <p className="mt-2">
-            Room Pin:{" "}
-            {formatCoordinate({ x: editorLocation.x, y: editorLocation.y })}
-          </p>
-          <p className="mt-1">
-            Emergency Exit:{" "}
-            {editorLocation.emergencyExit
-              ? formatCoordinate(editorLocation.emergencyExit)
-              : "Not set"}
-          </p>
-          <p className="mt-1">
-            Assembly Area:{" "}
-            {editorLocation.assemblyAreaPoint
-              ? formatCoordinate(editorLocation.assemblyAreaPoint)
-              : "Not set"}
-          </p>
-          <p className="mt-1">Route points: {editorLocation.routePoints.length}</p>
-          <p className="mt-1 font-semibold text-brand-teal">
-            Selected marker: {selectedMarkerType}
-          </p>
-        </div>
-      )}
-
-      <div className="mt-3 grid gap-2">
-        <div className="grid gap-2">
-          <button
-            type="button"
-            disabled={!editorLocation}
-            onClick={() => {
-              onSetSelectedMarkerType("room");
-              onSetEditorMode("room-pin");
-            }}
-            className="rounded-lg bg-brand-teal px-3 py-2 text-xs font-bold text-white outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-brand-teal/20"
-          >
-            Set Room Pin
-          </button>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              disabled={!editorLocation}
-              onClick={() => {
-                onSetSelectedMarkerType("exit");
-                onSetEditorMode("exit-pin");
-              }}
-              className="rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-bold text-red-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-red-200"
-            >
-              Set Emergency Exit Pin
-            </button>
-            <button
-              type="button"
-              disabled={!editorLocation}
-              onClick={() => {
-                onSetSelectedMarkerType("assembly");
-                onSetEditorMode("assembly-pin");
-              }}
-              className="rounded-lg border border-yellow-300 bg-white px-3 py-2 text-xs font-bold text-slate-800 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-yellow-200"
-            >
-              Set Assembly Area Pin
-            </button>
-          </div>
-        </div>
-        <button
-          type="button"
-          disabled={!editorLocation}
-          onClick={() => onSetEditorMode("route")}
-          className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-bold text-white outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-slate-400/40"
-        >
-          Edit Route
-        </button>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            disabled={!editorLocation || editorLocation.routePoints.length === 0}
-            onClick={onUndoLastPoint}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-slate-300/60"
-          >
-            Undo Last Point
-          </button>
-          <button
-            type="button"
-            disabled={!editorLocation || editorLocation.routePoints.length === 0}
-            onClick={onClearRoute}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-slate-300/60"
-          >
-          Clear Route
-          </button>
-        </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-3">
-          <p className="text-xs font-bold text-slate-700">
-            Fine adjustment ({selectedMarkerType})
-          </p>
-          <div className="mt-2 grid grid-cols-3 gap-2">
-            <span />
-            <button
-              type="button"
-              disabled={!editorLocation}
-              onClick={() => onNudgeSelectedMarker(0, -0.1)}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-slate-300/60"
-            >
-              Up
-            </button>
-            <span />
-            <button
-              type="button"
-              disabled={!editorLocation}
-              onClick={() => onNudgeSelectedMarker(-0.1, 0)}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-slate-300/60"
-            >
-              Left
-            </button>
-            <button
-              type="button"
-              disabled={!editorLocation}
-              onClick={() => onNudgeSelectedMarker(0, 0.1)}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-slate-300/60"
-            >
-              Down
-            </button>
-            <button
-              type="button"
-              disabled={!editorLocation}
-              onClick={() => onNudgeSelectedMarker(0.1, 0)}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-slate-300/60"
-            >
-              Right
-            </button>
-          </div>
-        </div>
-        <button
-          type="button"
-          disabled={isSaving || data.locations.length === 0}
-          onClick={() => void onSave()}
-          className="rounded-lg bg-brand-green px-3 py-2 text-xs font-bold text-white outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-brand-green/20"
-        >
-          {isSaving ? "Saving..." : "Save Route"}
-        </button>
-        <button
-          type="button"
-          disabled={data.locations.length === 0}
-          onClick={() => void onCopy(JSON.stringify(data, null, 2), "JSON")}
-          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-slate-300/60"
-        >
-          Export JSON
-        </button>
-        <button
-          type="button"
-          onClick={() => onSetMinimized(true)}
-          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none hover:bg-slate-50 focus:ring-4 focus:ring-slate-300/60"
-        >
-          Minimize calibration panel
-        </button>
-      </div>
-
-      {editorStatus && (
-        <p className="mt-3 rounded-xl bg-brand-mint px-3 py-2 text-xs font-semibold text-brand-teal">
-          {editorStatus}
-        </p>
-      )}
-
-      {editorLocation && editorLocation.routePoints.length > 0 && (
-        <ol className="mt-3 max-h-52 space-y-1 overflow-y-auto rounded-xl border border-slate-200 bg-white p-3 font-mono text-xs text-slate-700">
-          {editorLocation.routePoints.map((point, index) => (
-            <li key={`${point.x}-${point.y}-list-${index}`}>
-              {index + 1}. {formatCoordinate(point)}
-            </li>
-          ))}
-        </ol>
-      )}
-    </aside>
-  );
-}
-
-function LocationDetailsForm({
-  form,
-  isSaving,
-  submitLabel,
-  onCancel,
-  onChange,
-  onSubmit,
-}: {
-  form: LocationFormState;
-  isSaving: boolean;
-  submitLabel: string;
-  onCancel: () => void;
-  onChange: (field: keyof LocationFormState, value: string) => void;
-  onSubmit: () => void;
-}) {
-  const fields: {
-    id: keyof LocationFormState;
-    label: string;
-    required?: boolean;
-    multiline?: boolean;
-  }[] = [
-    { id: "label", label: "Location Name / Room Name", required: true },
-    { id: "description", label: "Description", multiline: true },
-    { id: "recommendedExit", label: "Recommended Exit" },
-    { id: "assemblyArea", label: "Assembly Area" },
-    { id: "instruction", label: "Instruction", multiline: true },
-  ];
-
-  return (
-    <div className="mt-3 grid gap-3 rounded-xl border border-slate-200 bg-white p-3">
-      {fields.map((field) => (
-        <label key={field.id} className="grid gap-1 text-xs font-bold text-slate-700">
-          {field.label}
-          {field.multiline ? (
-            <textarea
-              value={form[field.id]}
-              onChange={(event) => onChange(field.id, event.target.value)}
-              rows={3}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-900 outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/15"
-            />
-          ) : (
-            <input
-              value={form[field.id]}
-              onChange={(event) => onChange(field.id, event.target.value)}
-              required={field.required}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-900 outline-none focus:border-brand-teal focus:ring-4 focus:ring-brand-teal/15"
-            />
-          )}
-        </label>
-      ))}
-
-      <div className="grid grid-cols-2 gap-2">
-        <button
-          type="button"
-          disabled={isSaving}
-          onClick={onSubmit}
-          className="rounded-lg bg-brand-green px-3 py-2 text-xs font-bold text-white outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-brand-green/20"
-        >
-          {submitLabel}
-        </button>
-        <button
-          type="button"
-          disabled={isSaving}
-          onClick={onCancel}
-          className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-bold text-slate-700 outline-none disabled:cursor-not-allowed disabled:opacity-50 focus:ring-4 focus:ring-slate-300/60"
-        >
-          Cancel
-        </button>
       </div>
     </div>
   );

@@ -58,7 +58,7 @@ export default function BrandHeader({ compact = false }: BrandHeaderProps) {
       </div>
 
       <div className="text-center">
-        <p className="text-sm font-semibold uppercase tracking-widest text-[#24313E] dark:text-stone-100">
+        <p className="text-sm font-semibold uppercase tracking-widest text-brand-navy dark:text-stone-100">
           Department of Education
         </p>
         <p

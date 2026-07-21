@@ -29,7 +29,7 @@ type Draft = {
 };
 
 const fieldClass =
-  "rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-[#24313e] focus:ring-2 focus:ring-[#24313e]/15";
+  "rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-brand-navy focus:ring-2 focus:ring-brand-navy/15";
 const labelClass = "grid gap-1.5 text-sm font-semibold text-slate-700";
 const statusStyles: Record<Status, string> = {
   draft: "bg-slate-100 text-slate-700 ring-slate-200",
@@ -240,7 +240,7 @@ export default function HighlightsManager() {
       >
         <h2
           id="upload-title"
-          className="text-2xl font-semibold tracking-tight text-[#24313e]"
+          className="text-2xl font-semibold tracking-tight text-brand-navy"
         >
           Upload new highlight
         </h2>
@@ -343,7 +343,7 @@ export default function HighlightsManager() {
               name="submitStatus"
               value="draft"
               disabled={creating}
-              className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-[#24313e] transition hover:bg-slate-50 disabled:opacity-60"
+              className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-brand-navy transition hover:bg-slate-50 disabled:opacity-60"
             >
               Save as Draft
             </button>
@@ -351,7 +351,7 @@ export default function HighlightsManager() {
               name="submitStatus"
               value="published"
               disabled={creating}
-              className="rounded-xl bg-[#ffdf20] px-5 py-3 text-sm font-semibold text-[#24313e] transition hover:bg-yellow-300 disabled:opacity-60"
+              className="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-semibold text-brand-navy transition hover:bg-yellow-300 disabled:opacity-60"
             >
               {creating ? "Saving..." : "Publish"}
             </button>
@@ -364,7 +364,7 @@ export default function HighlightsManager() {
           <div>
             <h2
               id="existing-title"
-              className="text-2xl font-semibold tracking-tight text-[#24313e]"
+              className="text-2xl font-semibold tracking-tight text-brand-navy"
             >
               Existing highlights
             </h2>

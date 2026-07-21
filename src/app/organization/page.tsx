@@ -74,7 +74,7 @@ function SectionHeading({
 }) {
   return (
     <div className={sectionIntroClass}>
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#0F4C5C] dark:text-[#ffdf20] sm:text-sm">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-teal dark:text-brand-yellow sm:text-sm">
         {eyebrow}
       </p>
 
@@ -244,15 +244,6 @@ function extractSection(record: Record<string, string>) {
   );
 }
 
-function normalizeLeadershipText(value: string) {
-  return safeText(value)
-    .toLowerCase()
-    .replace(/[–—-]/g, " ")
-    .replace(/[()]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 function isExactShsCoordinatorDesignation(value: string) {
   const text = safeText(value)
     .toLowerCase()
@@ -301,13 +292,6 @@ function isGradeLeaderDesignationText(value: string) {
   return hasGrade && hasLeaderKeyword;
 }
 
-function isGradeLeaderOrShsCoordinatorDesignation(value: string) {
-  return (
-    isExactShsCoordinatorDesignation(value) ||
-    isGradeLeaderDesignationText(value)
-  );
-}
-
 function isProgramDesignationText(value: string) {
   const text = safeText(value)
     .toLowerCase()
@@ -335,6 +319,72 @@ function isProgramDesignationText(value: string) {
     text.includes("yes o adviser") ||
     text.includes("bkd adviser")
   );
+}
+
+type CoordinatorStatus = "main" | "assistant" | "alternate";
+
+const coordinatorStatusRank: Record<CoordinatorStatus, number> = {
+  main: 0,
+  assistant: 1,
+  alternate: 2,
+};
+
+function parseCoordinatorDesignation(value: string): {
+  baseLabel: string;
+  status: CoordinatorStatus;
+} {
+  const raw = safeText(value);
+  let status: CoordinatorStatus = "main";
+  let text = raw;
+
+  if (/\(\s*alternate\s*\)/i.test(text)) {
+    status = "alternate";
+    text = text.replace(/\(\s*alternate\s*\)/i, "");
+  } else if (/\(\s*assistant\s*\)/i.test(text)) {
+    status = "assistant";
+    text = text.replace(/\(\s*assistant\s*\)/i, "");
+  } else if (/^assistant\s+/i.test(text)) {
+    status = "assistant";
+    text = text.replace(/^assistant\s+/i, "");
+  }
+
+  text = text
+    .replace(/\s+,/g, ",")
+    .replace(/,\s*$/, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+  return { baseLabel: text || raw.trim(), status };
+}
+
+function getPersonPrimaryCoordinatorDesignation(person: Personnel) {
+  const designations = person.designation || [];
+
+  return (
+    designations.find((item) => isProgramDesignationText(item)) ??
+    designations[0] ??
+    ""
+  );
+}
+
+function compareByCoordinatorStatus(a: Personnel, b: Personnel) {
+  const designationA = (a.designation || []).find((item) =>
+    isProgramDesignationText(item)
+  );
+  const designationB = (b.designation || []).find((item) =>
+    isProgramDesignationText(item)
+  );
+
+  if (!designationA || !designationB) return 0;
+
+  const { baseLabel: baseLabelA, status: statusA } =
+    parseCoordinatorDesignation(designationA);
+  const { baseLabel: baseLabelB, status: statusB } =
+    parseCoordinatorDesignation(designationB);
+
+  if (baseLabelA.toLowerCase() !== baseLabelB.toLowerCase()) return 0;
+
+  return coordinatorStatusRank[statusA] - coordinatorStatusRank[statusB];
 }
 
 function inferRoles(record: Record<string, string>): PersonnelRole[] {
@@ -974,29 +1024,6 @@ function getPersonnelFirstName(person: Personnel) {
   return displayName.split(/\s+/)[0] ?? "";
 }
 
-function getProgramCoordinatorTitle(person: Personnel) {
-  return (
-    safeText(person.designation1) ||
-    safeText(person.designation?.[1]) ||
-    safeText(person.designation?.[2]) ||
-    safeText(person.designation?.[0])
-  ).trim();
-}
-
-function isAlternateCoordinator(title?: string) {
-  return /\balternate\b/i.test(title ?? "");
-}
-
-function getCoordinatorBaseTitle(title?: string) {
-  return safeText(title)
-    .toLowerCase()
-    .replace(/\balternate\b/g, "")
-    .replace(/\(.*?\)/g, "")
-    .replace(/[-–—]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 function normalizeSubjectDepartment(value: string) {
   const normalized = safeText(value)
     .replace(/\bgrade\s*(7|8|9|10|11|12)\b/gi, "")
@@ -1445,9 +1472,25 @@ const visibleSubjectDepartments = useMemo(() => {
         return rankDifference;
       }
 
-      return getPersonnelFirstName(a).localeCompare(getPersonnelFirstName(b), "en", {
-        sensitivity: "base",
-      });
+      const { status: statusA } = parseCoordinatorDesignation(
+        getPersonPrimaryCoordinatorDesignation(a)
+      );
+      const { status: statusB } = parseCoordinatorDesignation(
+        getPersonPrimaryCoordinatorDesignation(b)
+      );
+
+      const statusDifference =
+        coordinatorStatusRank[statusA] - coordinatorStatusRank[statusB];
+
+      if (statusDifference !== 0) {
+        return statusDifference;
+      }
+
+      return getPersonnelFirstName(a).localeCompare(
+        getPersonnelFirstName(b),
+        "en",
+        { sensitivity: "base" }
+      );
     });
   }, [programImplementers]);
 
@@ -1496,15 +1539,17 @@ const visibleSubjectDepartments = useMemo(() => {
   const searchResults = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
-    return allPersonnel.filter((person) => {
-      const matchesRole =
-        selectedRole === "All" || person.roles.includes(selectedRole);
+    return allPersonnel
+      .filter((person) => {
+        const matchesRole =
+          selectedRole === "All" || person.roles.includes(selectedRole);
 
-      const matchesSearch =
-        query === "" || getSearchableText(person).includes(query);
+        const matchesSearch =
+          query === "" || getSearchableText(person).includes(query);
 
-      return matchesRole && matchesSearch;
-    });
+        return matchesRole && matchesSearch;
+      })
+      .sort(compareByCoordinatorStatus);
   }, [allPersonnel, searchTerm, selectedRole]);
 
   const positionFilterOptions = useMemo(() => {
@@ -1552,22 +1597,14 @@ const visibleSubjectDepartments = useMemo(() => {
             return a.name.localeCompare(b.name, "en", {
               sensitivity: "base",
             });
-          }),
+          })
+          .sort(compareByCoordinatorStatus),
       }))
       .filter((section) => section.personnel.length > 0);
   }, [positionFilterOptions, positionViewPersonnel]);
 
   const centeredPersonnelGridClass =
   "grid grid-cols-[repeat(auto-fit,minmax(min(100%,22rem),24rem))] justify-center gap-3 lg:grid-cols-[repeat(auto-fit,minmax(min(100%,20rem),22rem))]";
-
-  const stickyGroupHeaderClass =
-    "sticky top-[calc(9.75rem_+_env(safe-area-inset-top))] z-20 mb-3 flex min-h-11 items-center justify-center border-b border-slate-200 bg-white/90 px-4 py-2 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/90";
-
-  const advisorySubmenuClass =
-    "no-scrollbar sticky top-[calc(8.95rem_+_env(safe-area-inset-top))] z-40 mb-2 overflow-x-auto border-b border-slate-200/70 bg-[#F8FAFC]/95 px-4 py-2 backdrop-blur-md dark:border-[#292624] dark:bg-[#0a0908]/95 sm:px-6 lg:px-0";
-
-  const stickyAdvisoryGradeHeaderClass =
-    "sticky top-[calc(12.15rem_+_env(safe-area-inset-top))] z-30 mb-1 flex min-h-8 items-center justify-center border-b border-slate-100 bg-[#F8FAFC]/95 px-4 py-1 text-center backdrop-blur-md dark:border-[#292624] dark:bg-[#171614]/95";
 
   function scrollToAdvisoryGrade(grade: string) {
     setSelectedGrade(grade);
@@ -1592,7 +1629,7 @@ return (
   <>
     <Navbar autoHideOnMobileScroll />
 
-    <main className="min-h-screen w-full overflow-x-hidden bg-[#F8FAFC] text-slate-950 dark:bg-[#0a0908] dark:text-white">
+    <main className="min-h-screen w-full overflow-x-hidden bg-brand-slate text-slate-950 dark:bg-brand-black dark:text-white">
         <PageHeader
           eyebrow="Faculty and Staff Directory"
           title="School Administration, Faculty, and Staff"
@@ -1602,7 +1639,7 @@ return (
               id="directory-search"
               role="search"
               aria-label="Search personnel directory"
-              className="mx-auto w-full max-w-5xl rounded-2xl border border-slate-200/80 bg-white/90 p-4 text-left shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur dark:border-[#292624] dark:bg-[#171614]/95 dark:shadow-black/20 md:p-5"
+              className="mx-auto w-full max-w-5xl rounded-2xl border border-slate-200/80 bg-white/90 p-4 text-left shadow-[0_18px_45px_rgba(15,23,42,0.08)] backdrop-blur dark:border-brand-charcoal dark:bg-brand-dark/95 dark:shadow-black/20 md:p-5"
             >
               <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_180px_240px]">
                 <input
@@ -1611,7 +1648,7 @@ return (
                   value={searchTerm}
                   onChange={(event) => setSearchTerm(event.target.value)}
                   placeholder="Search by name, section, subject, designation, or program..."
-                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-medium text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand-teal focus:ring-4 focus:ring-brand-yellow/30 dark:border-brand-charcoal dark:bg-brand-dark dark:text-white dark:placeholder:text-slate-500"
                 />
 
                 <select
@@ -1620,7 +1657,7 @@ return (
                   onChange={(event) => {
                     setBrowseMode(event.target.value as BrowseMode);
                   }}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-medium text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-medium text-slate-900 outline-none transition focus:border-brand-teal focus:ring-4 focus:ring-brand-yellow/30 dark:border-brand-charcoal dark:bg-brand-dark dark:text-white"
                 >
                   <option value="group">Group</option>
                   <option value="position">Position</option>
@@ -1647,7 +1684,7 @@ return (
 
                     setSelectedPositionGroup(event.target.value);
                   }}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-medium text-slate-900 outline-none transition focus:border-[#0F4C5C] focus:ring-4 focus:ring-[#ffdf20]/30 dark:border-[#292624] dark:bg-[#171614] dark:text-white"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-5 py-4 text-sm font-medium text-slate-900 outline-none transition focus:border-brand-teal focus:ring-4 focus:ring-brand-yellow/30 dark:border-brand-charcoal dark:bg-brand-dark dark:text-white"
                 >
                   {browseMode === "group" ? (
                     roleFilters.map((role) => (
@@ -1687,14 +1724,14 @@ return (
                           setSearchTerm("");
                           setSelectedPositionGroup("All");
                         }}
-                        className="w-fit rounded-full bg-[#ffdf20] px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-[#0F4C5C] hover:text-white"
+                        className="w-fit rounded-full bg-brand-yellow px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-teal hover:text-white"
                       >
                         Clear Search
                       </button>
                     </div>
 
                     {positionViewPersonnel.length === 0 && (
-                      <div className="rounded-xl bg-slate-100 p-8 text-center dark:bg-[#292624]">
+                      <div className="rounded-xl bg-slate-100 p-8 text-center dark:bg-brand-charcoal">
                         <p className="font-semibold tracking-tight text-slate-700 dark:text-stone-200">
                           No matching personnel found.
                         </p>
@@ -1708,7 +1745,7 @@ return (
                 )}
 
               {isLoading && (
-                <div className="mt-6 rounded-xl bg-slate-100 p-8 text-center dark:bg-[#292624]">
+                <div className="mt-6 rounded-xl bg-slate-100 p-8 text-center dark:bg-brand-charcoal">
                   <p className="font-semibold tracking-tight text-slate-700 dark:text-stone-200">
                     Loading personnel roster...
                   </p>
@@ -1730,7 +1767,7 @@ return (
                           setSearchTerm("");
                           setSelectedRole("All");
                         }}
-                        className="w-fit rounded-full bg-[#ffdf20] px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-[#0F4C5C] hover:text-white"
+                        className="w-fit rounded-full bg-brand-yellow px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-brand-teal hover:text-white"
                       >
                         Clear Search
                       </button>
@@ -1748,7 +1785,7 @@ return (
                         ))}
                       </div>
                     ) : (
-                      <div className="rounded-xl bg-slate-100 p-8 text-center dark:bg-[#292624]">
+                      <div className="rounded-xl bg-slate-100 p-8 text-center dark:bg-brand-charcoal">
                         <p className="font-semibold tracking-tight text-slate-700 dark:text-stone-200">
                           No matching personnel found.
                         </p>
@@ -1766,7 +1803,7 @@ return (
         {browseMode === "position" && (
           <section
             id="position-directory"
-            className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+            className="bg-brand-slate px-5 py-10 text-slate-950 dark:bg-brand-black dark:text-white sm:px-6 lg:px-10"
           >
             <div className="mx-auto max-w-6xl">
               <SectionHeading
@@ -1785,12 +1822,12 @@ return (
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.45 }}
-                      className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5"
+                      className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-brand-charcoal dark:bg-brand-dark dark:shadow-black/20 md:p-5"
                     >
                       <div className="mb-5 mt-6 border-b border-slate-200 pb-3">
-                        <h3 className="flex items-center gap-3 text-base font-semibold uppercase tracking-[0.14em] text-[#24313E]">
+                        <h3 className="flex items-center gap-3 text-base font-semibold uppercase tracking-[0.14em] text-brand-navy">
                           <span
-                            className="h-5 w-1.5 rounded-full bg-[#ffdf20]"
+                            className="h-5 w-1.5 rounded-full bg-brand-yellow"
                             aria-hidden="true"
                           />
                           {positionGroup}
@@ -1812,7 +1849,7 @@ return (
                   ))}
                 </div>
               ) : !isLoading ? (
-                <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center">
+                <div className="rounded-2xl border border-slate-200 dark:border-brand-charcoal bg-white dark:bg-brand-dark p-8 text-center">
                   <p className="font-medium leading-relaxed text-slate-600 dark:text-stone-300">
                     No matching personnel found.
                   </p>
@@ -1827,7 +1864,7 @@ return (
         {/* SCHOOL HEAD */}
         <section
           id="school-head"
-          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+          className="bg-brand-slate px-5 py-10 text-slate-950 dark:bg-brand-black dark:text-white sm:px-6 lg:px-10"
         >
           <div className="mx-auto max-w-6xl">
             <SectionHeading eyebrow="School Leadership" title="School Head" />
@@ -1848,7 +1885,7 @@ return (
         {/* ADMINISTRATIVE STAFF */}
         <section
           id="administrative-staff"
-          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+          className="bg-brand-slate px-5 py-10 text-slate-950 dark:bg-brand-black dark:text-white sm:px-6 lg:px-10"
         >
           <div className="mx-auto max-w-6xl">
             <SectionHeading
@@ -1873,7 +1910,7 @@ return (
         {/* GUIDANCE PERSONNEL */}
         <section
           id="guidance-personnel"
-          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+          className="bg-brand-slate px-5 py-10 text-slate-950 dark:bg-brand-black dark:text-white sm:px-6 lg:px-10"
         >
           <div className="mx-auto max-w-6xl">
             <SectionHeading
@@ -1899,7 +1936,7 @@ return (
 
         <section
           id="program-implementers"
-          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+          className="bg-brand-slate px-5 py-10 text-slate-950 dark:bg-brand-black dark:text-white sm:px-6 lg:px-10"
         >
           <div className="mx-auto max-w-6xl">
             <SectionHeading
@@ -1921,7 +1958,7 @@ return (
                 ))}
               </div>
             ) : !isLoading ? (
-              <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center">
+              <div className="rounded-2xl border border-slate-200 dark:border-brand-charcoal bg-white dark:bg-brand-dark p-8 text-center">
                 <p className="font-medium leading-relaxed text-slate-600 dark:text-stone-300">
                   Program coordinator profiles will be added soon.
                 </p>
@@ -1932,7 +1969,7 @@ return (
 
         <section
           id="master-teachers"
-          className="bg-white px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+          className="bg-white px-5 py-10 text-slate-950 dark:bg-brand-black dark:text-white sm:px-6 lg:px-10"
         >
           <div className="mx-auto max-w-6xl">
             <SectionHeading
@@ -1956,7 +1993,7 @@ return (
 
         <section
           id="grade-leaders"
-          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+          className="bg-brand-slate px-5 py-10 text-slate-950 dark:bg-brand-black dark:text-white sm:px-6 lg:px-10"
         >
           <div className="mx-auto max-w-6xl">
             <SectionHeading
@@ -1981,7 +2018,7 @@ return (
         {visibleAdviserGroups.length > 0 && (
           <section
             id="class-advisory"
-            className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+            className="bg-brand-slate px-5 py-10 text-slate-950 dark:bg-brand-black dark:text-white sm:px-6 lg:px-10"
           >
             <div className="mx-auto max-w-6xl">
               <SectionHeading
@@ -1998,8 +2035,8 @@ return (
                     onClick={() => scrollToAdvisoryGrade(grade)}
                     className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                       selectedGrade === grade
-                        ? "bg-[#ffdf20] text-slate-950 shadow-sm"
-                        : "bg-white text-slate-700 ring-1 ring-slate-200 hover:text-[#0F4C5C] dark:bg-[#171614] dark:text-stone-200 dark:ring-[#292624] dark:hover:text-[#ffdf20]"
+                        ? "bg-brand-yellow text-slate-950 shadow-sm"
+                        : "bg-white text-slate-700 ring-1 ring-slate-200 hover:text-brand-teal dark:bg-brand-dark dark:text-stone-200 dark:ring-brand-charcoal dark:hover:text-brand-yellow"
                     }`}
                   >
                     {grade}
@@ -2018,12 +2055,12 @@ return (
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.45 }}
-                    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5"
+                    className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-brand-charcoal dark:bg-brand-dark dark:shadow-black/20 md:p-5"
                   >
                     <div className="mb-5 mt-6 border-b border-slate-200 pb-3">
-                      <h3 className="flex items-center gap-3 text-base font-semibold uppercase tracking-[0.14em] text-[#24313E]">
+                      <h3 className="flex items-center gap-3 text-base font-semibold uppercase tracking-[0.14em] text-brand-navy">
                         <span
-                          className="h-5 w-1.5 rounded-full bg-[#ffdf20]"
+                          className="h-5 w-1.5 rounded-full bg-brand-yellow"
                           aria-hidden="true"
                         />
                         {grade} Class Advisers
@@ -2050,7 +2087,7 @@ return (
 
         <section
           id="subject-teachers"
-          className="bg-white px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+          className="bg-white px-5 py-10 text-slate-950 dark:bg-brand-black dark:text-white sm:px-6 lg:px-10"
         >
           <div className="mx-auto max-w-6xl">
             <SectionHeading
@@ -2068,8 +2105,8 @@ return (
                       onClick={() => setSelectedSubjectDepartment(department)}
                       className={`rounded-full px-5 py-2 text-sm font-medium transition ${
                         selectedSubjectDepartment === department
-                          ? "bg-[#ffdf20] text-slate-950 shadow-sm"
-                          : "bg-[#F8FAFC] text-slate-700 shadow-sm ring-1 ring-slate-200 hover:text-[#0F4C5C] dark:bg-[#171614] dark:text-stone-200 dark:ring-[#292624] dark:hover:text-[#ffdf20]"
+                          ? "bg-brand-yellow text-slate-950 shadow-sm"
+                          : "bg-brand-slate text-slate-700 shadow-sm ring-1 ring-slate-200 hover:text-brand-teal dark:bg-brand-dark dark:text-stone-200 dark:ring-brand-charcoal dark:hover:text-brand-yellow"
                       }`}
                     >
                       {department}
@@ -2108,13 +2145,13 @@ return (
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.45 }}
-                        className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-sm dark:border-[#292624] dark:bg-[#171614] dark:shadow-black/20 md:p-5"
+                        className="rounded-2xl border border-slate-200 bg-brand-slate p-4 shadow-sm dark:border-brand-charcoal dark:bg-brand-dark dark:shadow-black/20 md:p-5"
                       >
                         <div className="mb-5 mt-3">
-                          <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-white/10 dark:bg-[#24313E]">
+                          <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-white/10 dark:bg-brand-navy">
                             <div className="flex items-start gap-3">
                               <span
-                                className="mt-1 h-10 w-1.5 shrink-0 rounded-full bg-[#ffdf20]"
+                                className="mt-1 h-10 w-1.5 shrink-0 rounded-full bg-brand-yellow"
                                 aria-hidden="true"
                               />
 
@@ -2123,7 +2160,7 @@ return (
                                   Subject Department
                                 </p>
 
-                                <h3 className="mt-1 text-xl font-semibold leading-snug text-[#24313E] dark:text-white md:text-2xl">
+                                <h3 className="mt-1 text-xl font-semibold leading-snug text-brand-navy dark:text-white md:text-2xl">
                                   {department}
                                 </h3>
                               </div>
@@ -2152,7 +2189,7 @@ return (
                 </div>
               </>
             ) : !isLoading ? (
-              <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-8 text-center">
+              <div className="rounded-2xl border border-slate-200 dark:border-brand-charcoal bg-brand-slate dark:bg-brand-dark p-8 text-center">
                 <p className="font-medium leading-relaxed text-slate-600 dark:text-stone-300">
                   Subject teacher profiles will be added soon.
                 </p>
@@ -2164,7 +2201,7 @@ return (
 
         <section
           id="support-staff"
-          className="bg-[#F8FAFC] px-5 py-10 text-slate-950 dark:bg-[#0a0908] dark:text-white sm:px-6 lg:px-10"
+          className="bg-brand-slate px-5 py-10 text-slate-950 dark:bg-brand-black dark:text-white sm:px-6 lg:px-10"
         >
           <div className="mx-auto max-w-6xl">
             <SectionHeading
@@ -2185,7 +2222,7 @@ return (
                 ))}
               </div>
             ) : !isLoading ? (
-              <div className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 text-center">
+              <div className="rounded-2xl border border-slate-200 dark:border-brand-charcoal bg-white dark:bg-brand-dark p-8 text-center">
                 <p className="font-medium leading-relaxed text-slate-600 dark:text-stone-300">
                   School support personnel profiles will be added soon.
                 </p>

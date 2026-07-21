@@ -4,12 +4,19 @@
  * PURPOSE: Frequently Asked Questions page for Tabunoc National High School.
  */
 
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import FaqCommunityQuestions from "@/components/FaqCommunityQuestions";
+
+export const metadata: Metadata = {
+  title: "Frequently Asked Questions | Tabunoc National High School",
+  description:
+    "Find answers to common questions about school services, enrollment, schedules, and official channels of Tabunoc National High School.",
+};
 
 const faqGroups = [
   {
@@ -242,7 +249,7 @@ export default function FAQPage() {
             <div className="mx-auto flex w-full max-w-md flex-col justify-center gap-3 sm:flex-row">
               <Link
                 href="/enrollment"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-[#146577]"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-teal px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-brand-cyan"
               >
                 Enrollment Guide
                 <ArrowIcon />
@@ -250,7 +257,7 @@ export default function FAQPage() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0F4C5C]/20 bg-white px-5 py-3 text-sm font-semibold text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-teal/20 bg-white px-5 py-3 text-sm font-semibold text-brand-teal transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
               >
                 Contact the School
               </Link>
@@ -266,7 +273,7 @@ export default function FAQPage() {
               <a
                 key={group.id}
                 href={`#${group.id}`}
-                className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-[#0F4C5C]/30 hover:bg-[#0F4C5C] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4C5C]"
+                className="shrink-0 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-brand-teal/30 hover:bg-brand-teal hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-teal"
               >
                 {group.navLabel}
               </a>
@@ -277,7 +284,7 @@ export default function FAQPage() {
         <section className="bg-[#f5f5f7] px-6 py-14 sm:py-16">
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-widest text-brand-teal">
                 Quick Links
               </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
@@ -290,11 +297,11 @@ export default function FAQPage() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="group rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] transition duration-300 hover:-translate-y-1 hover:border-[#0F4C5C]/30 hover:shadow-lg"
+                  className="group rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_10px_28px_rgba(15,23,42,0.05)] transition duration-300 hover:-translate-y-1 hover:border-brand-teal/30 hover:shadow-lg"
                 >
                   <div className="flex items-center justify-between gap-4">
                     <p className="font-semibold text-slate-950">{link.label}</p>
-                    <span className="rounded-full bg-[#0F4C5C]/10 p-2 text-[#0F4C5C] transition group-hover:bg-[#0F4C5C] group-hover:text-white">
+                    <span className="rounded-full bg-brand-teal/10 p-2 text-brand-teal transition group-hover:bg-brand-teal group-hover:text-white">
                       <ArrowIcon />
                     </span>
                   </div>
@@ -307,7 +314,7 @@ export default function FAQPage() {
         <section className="bg-[#eef2f5] px-5 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-5xl">
             <div className="mb-10 text-center">
-              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-widest text-brand-teal">
                 FAQ Directory
               </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
@@ -328,7 +335,7 @@ export default function FAQPage() {
                   className="scroll-mt-6 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_14px_40px_rgba(15,23,42,0.06)] md:p-7"
                 >
                   <div className="mb-5">
-                    <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-brand-teal">
                       {group.category}
                     </p>
                     <p className="mt-2 leading-7 text-slate-600">
@@ -344,7 +351,7 @@ export default function FAQPage() {
                       >
                         <summary className="flex cursor-pointer list-none items-start justify-between gap-4 font-semibold text-slate-950">
                           <span>{item.question}</span>
-                          <span className="mt-1 rounded-full bg-[#0F4C5C]/10 p-1 text-[#0F4C5C] transition group-open:rotate-90">
+                          <span className="mt-1 rounded-full bg-brand-teal/10 p-1 text-brand-teal transition group-open:rotate-90">
                             <ArrowIcon />
                           </span>
                         </summary>
@@ -372,7 +379,7 @@ export default function FAQPage() {
           </div>
         </section>
 
-        <section className="bg-[#0F4C5C] px-6 py-16 text-white">
+        <section className="bg-brand-teal px-6 py-16 text-white">
           <div className="mx-auto max-w-5xl text-center">
             <p className="text-sm font-semibold uppercase tracking-widest text-yellow-300">
               Need further assistance?
@@ -389,7 +396,7 @@ export default function FAQPage() {
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:bg-yellow-50"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-brand-teal transition duration-300 hover:-translate-y-1 hover:bg-yellow-50"
               >
                 Contact the School
                 <ArrowIcon />

@@ -65,7 +65,7 @@ export default function AdminLoginForm() {
           onChange={(event) => setEmail(event.target.value)}
           required
           autoComplete="email"
-          className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none ring-[#0F4C5C]/20 transition focus:border-[#0F4C5C] focus:ring-4"
+          className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none ring-brand-teal/20 transition focus:border-brand-teal focus:ring-4"
         />
       </label>
       <label className="block text-sm font-semibold text-slate-700">
@@ -76,13 +76,13 @@ export default function AdminLoginForm() {
           onChange={(event) => setPassword(event.target.value)}
           required
           autoComplete="current-password"
-          className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none ring-[#0F4C5C]/20 transition focus:border-[#0F4C5C] focus:ring-4"
+          className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none ring-brand-teal/20 transition focus:border-brand-teal focus:ring-4"
         />
       </label>
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex w-full items-center justify-center rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#146577] disabled:cursor-not-allowed disabled:opacity-60"
+        className="inline-flex w-full items-center justify-center rounded-xl bg-brand-teal px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-cyan disabled:cursor-not-allowed disabled:opacity-60"
       >
         {loading ? "Signing in..." : "Sign in to Admin Dashboard"}
       </button>

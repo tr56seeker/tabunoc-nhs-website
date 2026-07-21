@@ -619,7 +619,7 @@ export default function PersonnelModal({
                         className="h-full w-full object-cover object-[50%_20%]"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#ffdf20] via-[#f59e0b] to-[#b45309] text-4xl font-semibold text-white md:text-6xl">
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-yellow via-[#f59e0b] to-[#b45309] text-4xl font-semibold text-white md:text-6xl">
                         {getInitials(displayName)}
                       </div>
                     )}
@@ -722,7 +722,7 @@ export default function PersonnelModal({
                           href={link.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 py-3 text-sm font-medium text-[#0F4C5C] shadow-sm ring-1 ring-slate-200 transition hover:bg-[#0F4C5C] hover:text-white"
+                          className="inline-flex min-h-12 items-center justify-center gap-3 bg-white px-5 py-3 text-sm font-medium text-brand-teal shadow-sm ring-1 ring-slate-200 transition hover:bg-brand-teal hover:text-white"
                         >
                           <SocialIcon icon={link.icon} />
                           {link.label}

@@ -4,6 +4,7 @@
  * PURPOSE: Public aggregate learner population page for Tabunoc National High School.
  */
 
+import type { Metadata } from "next";
 import fs from "fs";
 import path from "path";
 
@@ -11,6 +12,12 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import PopulationCountUp from "@/components/PopulationCountUp";
+
+export const metadata: Metadata = {
+  title: "Learner Population | Tabunoc National High School",
+  description:
+    "View the current school-level enrollment summary and public school profile of Tabunoc National High School.",
+};
 
 type PopulationRow = {
   sortOrder: number;
@@ -231,7 +238,7 @@ export default function LearnerPopulationPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-[#F8FAFC] text-[#24313E]">
+      <main className="min-h-screen bg-brand-slate text-brand-navy">
         <PageHeader
           eyebrow="School Profile"
           title="Learner Population"
@@ -247,15 +254,15 @@ export default function LearnerPopulationPage() {
               {totalRow ? (
                 <div
                   key={totalRow.category}
-                  className="border border-[#ffdf20] bg-white p-7 shadow-sm md:p-8"
+                  className="border border-brand-yellow bg-white p-7 shadow-sm md:p-8"
                 >
                   <div>
                     <div className="flex items-center gap-3">
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center bg-[#ffdf20] text-[#24313E]">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center bg-brand-yellow text-brand-navy">
                         <PopulationCardIcon type="total" />
                       </span>
 
-                      <p className="text-base font-semibold uppercase tracking-[0.14em] text-[#24313E]">
+                      <p className="text-base font-semibold uppercase tracking-[0.14em] text-brand-navy">
                         Total Learners
                       </p>
                     </div>
@@ -266,7 +273,7 @@ export default function LearnerPopulationPage() {
                     value={totalRow.count}
                     delayMs={0}
                     triggerId="population-counts"
-                    className="mt-7 block text-[4.5rem] font-semibold leading-none tracking-tight text-[#24313E] md:text-[5.4rem]"
+                    className="mt-7 block text-[4.5rem] font-semibold leading-none tracking-tight text-brand-navy md:text-[5.4rem]"
                   />
 
                   {lastUpdated ? (
@@ -297,7 +304,7 @@ export default function LearnerPopulationPage() {
                     >
                       <div className="flex items-center gap-3">
                         {isJuniorHigh || isSeniorHigh ? (
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-slate-200 bg-slate-50 text-[#24313E]">
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center border border-slate-200 bg-slate-50 text-brand-navy">
                             <PopulationCardIcon
                               type={isJuniorHigh ? "junior" : "senior"}
                             />
@@ -323,7 +330,7 @@ export default function LearnerPopulationPage() {
                                   item.category
                                 )}
                                 triggerId="population-counts"
-                                className="block text-5xl font-semibold tracking-tight text-[#24313E]"
+                                className="block text-5xl font-semibold tracking-tight text-brand-navy"
                               />
                               <span className="text-sm font-bold text-slate-500">
                                 learners
@@ -352,7 +359,7 @@ export default function LearnerPopulationPage() {
                               <div
                                 className={`h-full ${
                                   isJuniorHigh
-                                    ? "bg-[#ffdf20]"
+                                    ? "bg-brand-yellow"
                                     : "bg-slate-400"
                                 }`}
                                 style={{ width: percentage }}
@@ -361,7 +368,7 @@ export default function LearnerPopulationPage() {
                           ) : null}
                         </>
                       ) : (
-                        <p className="mt-5 text-5xl font-semibold tracking-tight text-[#24313E]">
+                        <p className="mt-5 text-5xl font-semibold tracking-tight text-brand-navy">
                           {formatCount(item.count)}
                         </p>
                       )}
@@ -371,8 +378,8 @@ export default function LearnerPopulationPage() {
               </div>
             </div>
 
-            <section className="mt-8 border-t-4 border-[#ffdf20] bg-white p-6 shadow-sm md:p-8">
-              <h2 className="text-xl font-semibold text-[#24313E]">
+            <section className="mt-8 border-t-4 border-brand-yellow bg-white p-6 shadow-sm md:p-8">
+              <h2 className="text-xl font-semibold text-brand-navy">
                 Population Summary
               </h2>
 

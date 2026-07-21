@@ -387,7 +387,7 @@ function ProfileImage({
 
   return (
     <div
-      className={`relative flex flex-none items-center justify-center overflow-hidden bg-[#ECFDF5] text-[#0F4C5C] ring-1 ring-[#0F4C5C]/10 ${sizeClass}`}
+      className={`relative flex flex-none items-center justify-center overflow-hidden bg-brand-mint text-brand-teal ring-1 ring-brand-teal/10 ${sizeClass}`}
     >
       {!imageFailed && person.photoUrl ? (
         <Image
@@ -422,7 +422,7 @@ function PersonCard({ entry }: { entry: PersonnelEntry }) {
   return (
     <motion.article
       layout
-      className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:border-[#0F4C5C]/30 hover:shadow-md"
+      className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:border-brand-teal/30 hover:shadow-md"
     >
       <button
         type="button"
@@ -433,11 +433,11 @@ function PersonCard({ entry }: { entry: PersonnelEntry }) {
         <ProfileImage person={person} />
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-lg font-black text-[#071E29]">
+          <h3 className="truncate text-lg font-black text-brand-deepteal">
             {displayName}
           </h3>
 
-          <p className="mt-1 truncate text-sm font-bold text-[#0F4C5C]">
+          <p className="mt-1 truncate text-sm font-bold text-brand-teal">
             {person.position || "Position not specified"}
           </p>
 
@@ -451,14 +451,14 @@ function PersonCard({ entry }: { entry: PersonnelEntry }) {
             </span>
 
             {extraRolesCount > 0 && (
-              <span className="rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-black text-[#0F4C5C]">
+              <span className="rounded-full bg-brand-mint px-2.5 py-1 text-xs font-black text-brand-teal">
                 +{extraRolesCount} role{extraRolesCount > 1 ? "s" : ""}
               </span>
             )}
           </div>
         </div>
 
-        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-2xl bg-slate-50 text-[#0F4C5C]">
+        <div className="flex h-10 w-10 flex-none items-center justify-center rounded-2xl bg-slate-50 text-brand-teal">
           <svg
             className={`h-5 w-5 transition-transform ${
               isSelected ? "rotate-180" : ""
@@ -494,15 +494,15 @@ function PersonCard({ entry }: { entry: PersonnelEntry }) {
               </div>
 
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-brand-teal">
                   Personnel Profile
                 </p>
 
-                <h3 className="mt-2 text-3xl font-black text-[#071E29]">
+                <h3 className="mt-2 text-3xl font-black text-brand-deepteal">
                   {displayName}
                 </h3>
 
-                <p className="mt-2 text-lg font-black text-[#0F4C5C]">
+                <p className="mt-2 text-lg font-black text-brand-teal">
                   {person.position || "Position not specified"}
                 </p>
 
@@ -536,7 +536,7 @@ function PersonCard({ entry }: { entry: PersonnelEntry }) {
                       {designations.map((designation) => (
                         <span
                           key={`${person.name}-${designation}`}
-                          className="rounded-full bg-[#ECFDF5] px-3 py-1.5 text-xs font-black text-[#0F4C5C]"
+                          className="rounded-full bg-brand-mint px-3 py-1.5 text-xs font-black text-brand-teal"
                         >
                           {designation}
                         </span>
@@ -631,7 +631,7 @@ export default function PersonnelRoster() {
   if (loading) {
     return (
       <section className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-        <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+        <p className="text-sm font-black uppercase tracking-[0.22em] text-brand-teal">
           Loading Roster
         </p>
         <p className="mt-3 text-slate-700">
@@ -644,7 +644,7 @@ export default function PersonnelRoster() {
   if (personnel.length === 0) {
     return (
       <section className="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
-        <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+        <p className="text-sm font-black uppercase tracking-[0.22em] text-brand-teal">
           No Active Personnel Found
         </p>
         <p className="mt-3 text-slate-700">
@@ -675,12 +675,12 @@ export default function PersonnelRoster() {
         return (
           <div key={group}>
             <div className="mb-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-sm font-black uppercase tracking-[0.22em] text-[#0F4C5C]">
+              <p className="text-sm font-black uppercase tracking-[0.22em] text-brand-teal">
                 {group}
               </p>
               <div className="mt-3 grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
                 <div>
-                  <h2 className="text-3xl font-black tracking-tight text-[#071E29]">
+                  <h2 className="text-3xl font-black tracking-tight text-brand-deepteal">
                     {group}
                   </h2>
                   <p className="mt-3 max-w-3xl leading-7 text-slate-700">
@@ -701,7 +701,7 @@ export default function PersonnelRoster() {
                   {subGroup !== "Personnel" && (
                     <div className="mb-4 flex items-center gap-3">
                       <div className="h-px flex-1 bg-slate-200" />
-                      <p className="rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-black text-[#0F4C5C]">
+                      <p className="rounded-full bg-brand-mint px-4 py-2 text-sm font-black text-brand-teal">
                         {subGroup}
                       </p>
                       <div className="h-px flex-1 bg-slate-200" />

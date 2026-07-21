@@ -73,14 +73,14 @@ export default function FaqManager() {
   return (
     <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
       <form onSubmit={submit} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-[#24313e]">
+        <h2 className="text-lg font-semibold text-brand-navy">
           {editingId ? "Edit FAQ" : "Create FAQ"}
         </h2>
         <div className="mt-5 space-y-4">
           <Field label="Question" value={form.question} onChange={(value) => setForm((current) => ({ ...current, question: value }))} required />
           <label className="block text-sm font-semibold text-slate-700">
             Answer
-            <textarea className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#0F4C5C]" value={form.answer} onChange={(event) => setForm((current) => ({ ...current, answer: event.target.value }))} rows={5} required />
+            <textarea className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-brand-teal" value={form.answer} onChange={(event) => setForm((current) => ({ ...current, answer: event.target.value }))} rows={5} required />
           </label>
           <Field label="Category" value={form.category} onChange={(value) => setForm((current) => ({ ...current, category: value }))} />
           <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
@@ -88,22 +88,22 @@ export default function FaqManager() {
             Published
           </label>
         </div>
-        <button className="mt-5 rounded-xl bg-[#0F4C5C] px-4 py-2 text-sm font-semibold text-white">
+        <button className="mt-5 rounded-xl bg-brand-teal px-4 py-2 text-sm font-semibold text-white">
           Save FAQ
         </button>
-        {message && <p className="mt-4 text-sm text-[#0F4C5C]">{message}</p>}
+        {message && <p className="mt-4 text-sm text-brand-teal">{message}</p>}
       </form>
 
       <div className="space-y-5">
         {Object.entries(grouped).map(([category, groupItems]) => (
           <section key={category} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-lg font-semibold text-[#24313e]">{category}</h2>
+            <h2 className="text-lg font-semibold text-brand-navy">{category}</h2>
             <div className="mt-4 space-y-3">
               {groupItems.map((item) => (
                 <article key={item.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                      <h3 className="font-semibold text-[#24313e]">{item.question}</h3>
+                      <h3 className="font-semibold text-brand-navy">{item.question}</h3>
                       <p className="mt-2 text-sm leading-6 text-slate-600">{item.answer}</p>
                       <p className="mt-2 text-xs uppercase tracking-[0.12em] text-slate-500">
                         {item.is_published ? "Published" : "Unpublished"}
@@ -141,7 +141,7 @@ function Field({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         required={required}
-        className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#0F4C5C]"
+        className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-brand-teal"
       />
     </label>
   );

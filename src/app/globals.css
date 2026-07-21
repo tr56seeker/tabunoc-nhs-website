@@ -3,6 +3,27 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/*
+ * Brand color tokens. These generate `bg-brand-*`, `text-brand-*`,
+ * `border-brand-*`, `ring-brand-*`, etc. utilities (Tailwind v4 @theme
+ * convention). Introduced to replace the ~650+ raw arbitrary-value hex
+ * literals (e.g. `bg-[#0F4C5C]`, with inconsistent `#24313E`/`#24313e`
+ * casing) that were previously duplicated across the codebase.
+ */
+@theme {
+  --color-brand-teal: #0f4c5c;
+  --color-brand-yellow: #ffdf20;
+  --color-brand-navy: #24313e;
+  --color-brand-dark: #171614;
+  --color-brand-slate: #f8fafc;
+  --color-brand-charcoal: #292624;
+  --color-brand-deepteal: #071e29;
+  --color-brand-mint: #ecfdf5;
+  --color-brand-black: #0a0908;
+  --color-brand-cyan: #146577;
+  --color-brand-green: #2f6f4e;
+}
+
 :root {
   color-scheme: light;
 }

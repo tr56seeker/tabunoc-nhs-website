@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local QA/tooling scratch dirs (gitignored, not part of the site):
+    ".codex-artifacts/**",
+    ".agents/**",
+    "data-private/**",
   ]),
 ]);
 

@@ -132,7 +132,7 @@ export default function SchoolYearProgress({ status, events }: SchoolYearProgres
     <section className="bg-[#f5f5f7]">
       <div className="mx-auto w-full max-w-7xl px-4 pb-5 pt-6 sm:px-6 lg:px-8 lg:pb-6 lg:pt-8">
         <div className="mb-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#24313e]">{status.schoolYear}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-navy">{status.schoolYear}</p>
           <h2 className="mt-1.5 text-2xl font-semibold tracking-tight text-[#1d1d1f] sm:text-3xl">School Year Dashboard</h2>
           <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-[#6e6e73]">Quick status of the current school year based on encoded school calendar data.</p>
         </div>
@@ -146,11 +146,11 @@ export default function SchoolYearProgress({ status, events }: SchoolYearProgres
 
         <div className="mt-3 rounded-2xl border border-white/70 bg-white/90 p-4 shadow-[0_14px_35px_rgba(15,23,42,0.06)] backdrop-blur">
           <div className="flex items-center justify-between gap-4 text-sm">
-            <span className="font-semibold text-[#24313e]">School Year Progress</span>
+            <span className="font-semibold text-brand-navy">School Year Progress</span>
             <span className="font-medium text-[#6e6e73]">{percentage}% completed</span>
           </div>
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200" role="progressbar" aria-label="School year progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={percentage}>
-            <div className="h-full rounded-full bg-[#24313e]" style={{ width: `${percentage}%` }} />
+            <div className="h-full rounded-full bg-brand-navy" style={{ width: `${percentage}%` }} />
           </div>
           <p className="mt-2 text-xs leading-relaxed text-[#6e6e73]">{completedDays} of {status.totalSchoolDays} school days completed</p>
         </div>

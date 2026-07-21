@@ -166,12 +166,12 @@ export default function FaqCommunityQuestions({
         <div className="flex flex-wrap items-center gap-2">
           <p
             id={`${formId}-heading`}
-            className="text-sm font-semibold text-[#0F4C5C]"
+            className="text-sm font-semibold text-brand-teal"
           >
             Related Community Questions
           </p>
           {!isLoading && !loadError && questions.length > 0 && (
-            <span className="rounded-full bg-[#0F4C5C]/10 px-2.5 py-1 text-xs font-semibold text-[#0F4C5C]">
+            <span className="rounded-full bg-brand-teal/10 px-2.5 py-1 text-xs font-semibold text-brand-teal">
               {questions.length} community {questions.length === 1 ? "question" : "questions"}
             </span>
           )}
@@ -214,7 +214,7 @@ export default function FaqCommunityQuestions({
                 )}
                 {communityQuestion.answer?.trim() && (
                   <div className="mt-3 border-l-2 border-yellow-400 pl-3">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-[#0F4C5C]">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-brand-teal">
                       School response
                     </p>
                     <p className="mt-1 text-sm leading-6 text-slate-600">
@@ -236,7 +236,7 @@ export default function FaqCommunityQuestions({
         }}
         aria-expanded={isFormOpen}
         aria-controls={`${formId}-form`}
-        className="mt-4 w-full rounded-xl bg-[#0F4C5C] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#146577] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4C5C] sm:w-auto sm:py-2.5"
+        className="mt-4 w-full rounded-xl bg-brand-teal px-4 py-3 text-sm font-semibold text-white transition hover:bg-brand-cyan focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-teal sm:w-auto sm:py-2.5"
       >
         {isFormOpen ? "Close question form" : "Ask a related question"}
       </button>
@@ -260,7 +260,7 @@ export default function FaqCommunityQuestions({
                 onChange={(event) => setDisplayName(event.target.value)}
                 maxLength={80}
                 autoComplete="name"
-                className="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-slate-950 outline-none transition focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/15"
+                className="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-slate-950 outline-none transition focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
               />
             </label>
 
@@ -269,7 +269,7 @@ export default function FaqCommunityQuestions({
               <select
                 value={audienceType}
                 onChange={(event) => setAudienceType(event.target.value)}
-                className="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-slate-950 outline-none transition focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/15"
+                className="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-slate-950 outline-none transition focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
               >
                 <option value="">Prefer not to say</option>
                 {audienceOptions.map((option) => (
@@ -291,7 +291,7 @@ export default function FaqCommunityQuestions({
               maxLength={500}
               rows={4}
               aria-describedby={`${formId}-question-help`}
-              className="resize-y rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-slate-950 outline-none transition focus:border-[#0F4C5C] focus:ring-2 focus:ring-[#0F4C5C]/15"
+              className="resize-y rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-slate-950 outline-none transition focus:border-brand-teal focus:ring-2 focus:ring-brand-teal/15"
             />
             <span
               id={`${formId}-question-help`}
@@ -332,7 +332,7 @@ export default function FaqCommunityQuestions({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-xl bg-[#0F4C5C] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#146577] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0F4C5C] disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-xl bg-brand-teal px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-cyan focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-teal disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSubmitting ? "Submitting…" : "Submit for Review"}
             </button>

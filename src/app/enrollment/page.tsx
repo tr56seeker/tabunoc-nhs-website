@@ -259,7 +259,7 @@ function ArrowIcon() {
 function CheckIcon() {
   return (
     <svg
-      className="mt-0.5 h-5 w-5 flex-none text-[#0F4C5C]"
+      className="mt-0.5 h-5 w-5 flex-none text-brand-teal"
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"
@@ -360,10 +360,10 @@ function SectionHeading({
 }) {
   return (
     <motion.div {...fadeUp} className="mx-auto mb-10 max-w-3xl text-center">
-      <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#0F4C5C]">
+      <p className="text-sm font-semibold uppercase tracking-[0.22em] text-brand-teal">
         {eyebrow}
       </p>
-      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29] sm:text-4xl">
+      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-brand-deepteal sm:text-4xl">
         {title}
       </h2>
       {description && (
@@ -397,10 +397,10 @@ function CategoryDetails({
     <div>
       {showHeader && (
         <>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-teal">
             Selected Category
           </p>
-          <h3 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]">
+          <h3 className="mt-3 text-3xl font-semibold tracking-tight text-brand-deepteal">
             {category.title}
           </h3>
           <p className="mt-3 leading-7 text-slate-600">
@@ -411,7 +411,7 @@ function CategoryDetails({
 
       <div className={showHeader ? "mt-8 grid gap-8" : "grid gap-6"}>
         <div>
-          <h4 className="text-lg font-semibold text-[#071E29]">Requirements</h4>
+          <h4 className="text-lg font-semibold text-brand-deepteal">Requirements</h4>
           <p className="mt-1 text-sm leading-6 text-slate-500">
             Prepare what is available and applicable. Original documents may be
             requested for verification.
@@ -424,15 +424,15 @@ function CategoryDetails({
 
         {category.procedure && category.procedure.length > 0 && (
           <div>
-            <h4 className="text-lg font-semibold text-[#071E29]">Procedure</h4>
+            <h4 className="text-lg font-semibold text-brand-deepteal">Procedure</h4>
 
             <div className="mt-4 grid gap-3">
               {category.procedure.map((step, index) => (
                 <div
                   key={step}
-                  className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl bg-[#F8FAFC] p-4"
+                  className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl bg-brand-slate p-4"
                 >
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-teal text-xs font-semibold text-white">
                     {index + 1}
                   </div>
                   <p className="text-sm font-semibold leading-6 text-slate-700">
@@ -446,7 +446,7 @@ function CategoryDetails({
 
         {category.reminders && category.reminders.length > 0 && (
           <div className="rounded-2xl border border-yellow-200 bg-yellow-50 p-5">
-            <h4 className="text-lg font-semibold text-[#071E29]">
+            <h4 className="text-lg font-semibold text-brand-deepteal">
               Important Notes
             </h4>
 
@@ -473,20 +473,20 @@ function CategoryButton({
     <div
       className={`overflow-hidden rounded-2xl border shadow-sm transition duration-300 ${
         active
-          ? "border-[#0F4C5C] bg-white shadow-md"
-          : "border-slate-200 bg-white hover:border-[#0F4C5C]/40"
+          ? "border-brand-teal bg-white shadow-md"
+          : "border-slate-200 bg-white hover:border-brand-teal/40"
       }`}
     >
       <button
         type="button"
         onClick={onClick}
         className={`group w-full p-5 text-left transition duration-300 hover:-translate-y-0.5 ${
-          active ? "bg-[#0F4C5C] text-white" : "bg-white text-slate-950"
+          active ? "bg-brand-teal text-white" : "bg-white text-slate-950"
         }`}
       >
         <h3
           className={`text-lg font-semibold ${
-            active ? "text-white" : "text-[#071E29]"
+            active ? "text-white" : "text-brand-deepteal"
           }`}
         >
           {category.title}
@@ -502,7 +502,7 @@ function CategoryButton({
 
         <div
           className={`mt-4 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] ${
-            active ? "text-yellow-300" : "text-[#0F4C5C]"
+            active ? "text-yellow-300" : "text-brand-teal"
           }`}
         >
           {active ? "Guide opened" : "View guide"}
@@ -546,7 +546,7 @@ export default function EnrollmentPage() {
               <div className="flex flex-col justify-center gap-3 sm:flex-row">
                 <ActionLink
                   href="#learner-category"
-                  className="bg-[#0F4C5C] text-white hover:bg-[#146577]"
+                  className="bg-brand-teal text-white hover:bg-brand-cyan"
                 >
                   Choose Learner Category
                   <ArrowIcon />
@@ -554,7 +554,7 @@ export default function EnrollmentPage() {
 
                 <ActionLink
                   href="#steps"
-                  className="bg-[#ffdf20] text-[#071E29] hover:bg-yellow-300"
+                  className="bg-brand-yellow text-brand-deepteal hover:bg-yellow-300"
                 >
                   Enrollment Steps
                   <ArrowIcon />
@@ -562,7 +562,7 @@ export default function EnrollmentPage() {
 
                 <ActionLink
                   href="#help"
-                  className="border border-[#0F4C5C]/20 bg-white text-[#0F4C5C] hover:bg-slate-50"
+                  className="border border-brand-teal/20 bg-white text-brand-teal hover:bg-slate-50"
                 >
                   Contact the School
                 </ActionLink>
@@ -574,15 +574,15 @@ export default function EnrollmentPage() {
           <div className={`mx-auto w-full ${pagePadding}`}>
             <motion.div
               {...fadeUp}
-              className="rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm md:p-8"
+              className="rounded-3xl border border-slate-200 bg-brand-slate p-6 shadow-sm md:p-8"
             >
               <div className="grid gap-4 md:grid-cols-[auto_1fr] md:items-start">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0F4C5C]/10 text-[#0F4C5C]">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-teal/10 text-brand-teal">
                   <CheckIcon />
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
+                  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-teal">
                     Important Reminder
                   </p>
                   <p className="mt-2 leading-7 text-slate-700">
@@ -598,7 +598,7 @@ export default function EnrollmentPage() {
         </section>
 
         {/* LEARNER CATEGORY + REQUIREMENTS */}
-        <section id="learner-category" className="bg-[#F8FAFC] py-20">
+        <section id="learner-category" className="bg-brand-slate py-20">
           <div className={`mx-auto w-full ${pagePadding}`}>
             <SectionHeading
               eyebrow="Who May Enroll"
@@ -655,10 +655,10 @@ export default function EnrollmentPage() {
                   <CategoryDetails category={selectedCategory} showHeader />
                 ) : (
                   <div className="flex min-h-[360px] flex-col items-center justify-center text-center">
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-teal">
                       Enrollment Guide
                     </p>
-                    <h3 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]">
+                    <h3 className="mt-3 text-3xl font-semibold tracking-tight text-brand-deepteal">
                       Select a learner category
                     </h3>
                     <p className="mt-3 max-w-md leading-7 text-slate-600">
@@ -677,14 +677,14 @@ export default function EnrollmentPage() {
   <div className={`mx-auto w-full ${pagePadding}`}>
     <motion.div
       {...fadeUp}
-      className="mx-auto grid max-w-6xl gap-6 rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm md:p-8 lg:grid-cols-[0.85fr_1.15fr]"
+      className="mx-auto grid max-w-6xl gap-6 rounded-3xl border border-slate-200 bg-brand-slate p-6 shadow-sm md:p-8 lg:grid-cols-[0.85fr_1.15fr]"
     >
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-teal">
           Late Enrollment Concern
         </p>
 
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]">
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight text-brand-deepteal">
           What if late ko magpa-enroll unya nagklase na?
         </h2>
 
@@ -710,7 +710,7 @@ export default function EnrollmentPage() {
             key={step}
             className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl bg-white p-4 shadow-sm"
           >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-teal text-xs font-semibold text-white">
               {index + 1}
             </div>
 
@@ -739,10 +739,10 @@ export default function EnrollmentPage() {
                   key={step}
                   {...fadeUp}
                   transition={{ duration: 0.5, delay: index * 0.04 }}
-                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-4 shadow-sm"
+                  className="rounded-2xl border border-slate-200 bg-brand-slate p-4 shadow-sm"
                 >
                   <div className="flex items-start gap-3">
-                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
+                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-teal text-xs font-semibold text-white">
                       {index + 1}
                     </div>
 
@@ -757,18 +757,18 @@ export default function EnrollmentPage() {
         </section>
 
         {/* SHS NOTE + REMINDERS */}
-        <section className="bg-[#F8FAFC] py-20">
+        <section className="bg-brand-slate py-20">
           <div
             className={`mx-auto grid w-full gap-6 lg:grid-cols-[0.95fr_1.05fr] ${pagePadding}`}
           >
             <motion.div
               {...fadeUp}
-              className="rounded-3xl border border-slate-200 bg-[#ECFDF5] p-6 shadow-sm md:p-8"
+              className="rounded-3xl border border-slate-200 bg-brand-mint p-6 shadow-sm md:p-8"
             >
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-teal">
                 Incoming Grade 11
               </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29]">
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-brand-deepteal">
                 Review SHS offerings before enrollment.
               </h2>
               <p className="mt-4 leading-7 text-slate-700">
@@ -779,7 +779,7 @@ export default function EnrollmentPage() {
               <div className="mt-6">
                 <ActionLink
                   href="/shs-offerings"
-                  className="bg-[#0F4C5C] text-white hover:bg-[#146577]"
+                  className="bg-brand-teal text-white hover:bg-brand-cyan"
                 >
                   View SHS Offerings
                   <ArrowIcon />
@@ -791,7 +791,7 @@ export default function EnrollmentPage() {
               {...fadeUp}
               className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8"
             >
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-teal">
                 Parent and Learner Reminders
               </p>
 
@@ -823,13 +823,13 @@ export default function EnrollmentPage() {
                 <motion.details
                   key={faq.question}
                   {...fadeUp}
-                  className="group rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5 shadow-sm"
+                  className="group rounded-2xl border border-slate-200 bg-brand-slate p-5 shadow-sm"
                 >
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
-                    <span className="font-semibold text-[#071E29]">
+                    <span className="font-semibold text-brand-deepteal">
                       {faq.question}
                     </span>
-                    <span className="rounded-full bg-[#0F4C5C]/10 p-2 text-[#0F4C5C] transition group-open:rotate-90">
+                    <span className="rounded-full bg-brand-teal/10 p-2 text-brand-teal transition group-open:rotate-90">
                       <ArrowIcon />
                     </span>
                   </summary>
@@ -843,7 +843,7 @@ export default function EnrollmentPage() {
             <div className="mt-8 text-center">
               <ActionLink
                 href="/faq"
-                className="border border-[#0F4C5C]/20 bg-white text-[#0F4C5C] hover:bg-slate-50"
+                className="border border-brand-teal/20 bg-white text-brand-teal hover:bg-slate-50"
               >
                 View Full FAQ
                 <ArrowIcon />
@@ -853,7 +853,7 @@ export default function EnrollmentPage() {
         </section>
 
         {/* HELP */}
-        <section id="help" className="bg-[#0F4C5C] py-20 text-white">
+        <section id="help" className="bg-brand-teal py-20 text-white">
           <div
             className={`mx-auto grid w-full gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center ${pagePadding}`}
           >
@@ -891,7 +891,7 @@ export default function EnrollmentPage() {
                   }
                   aria-label={link.label}
                   title={link.label}
-                  className="group flex h-20 w-20 items-center justify-center rounded-3xl border border-white/20 bg-white/10 text-white shadow-sm backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-[#ffdf20] hover:bg-[#ffdf20] hover:text-[#071E29]"
+                  className="group flex h-20 w-20 items-center justify-center rounded-3xl border border-white/20 bg-white/10 text-white shadow-sm backdrop-blur transition duration-300 hover:-translate-y-1 hover:border-brand-yellow hover:bg-brand-yellow hover:text-brand-deepteal"
                 >
                   <ContactIcon icon={link.icon} />
                 </a>

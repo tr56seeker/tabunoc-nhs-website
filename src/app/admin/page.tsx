@@ -34,9 +34,9 @@ export default async function AdminDashboardPage() {
           <a
             key={module.href}
             href={module.href}
-            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-[#0F4C5C]/30 hover:shadow-lg"
+            className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-brand-teal/30 hover:shadow-lg"
           >
-            <h2 className="text-lg font-semibold text-[#24313e]">
+            <h2 className="text-lg font-semibold text-brand-navy">
               {module.title}
             </h2>
             <p className="mt-3 text-sm leading-6 text-slate-600">

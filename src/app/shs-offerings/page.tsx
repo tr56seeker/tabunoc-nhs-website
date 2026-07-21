@@ -122,7 +122,7 @@ export default function SHSOfferingsPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white dark:bg-[#0a0908] text-slate-950 dark:text-white">
+      <main className="min-h-screen bg-white dark:bg-brand-black text-slate-950 dark:text-white">
         {/* HERO */}
         <PageHeader
           eyebrow="Senior High School"
@@ -139,7 +139,7 @@ export default function SHSOfferingsPage() {
 
               <Link
                 href="/#contact"
-                className="rounded-xl border border-[#0F4C5C]/30 bg-white dark:bg-[#171614] px-8 py-3 font-semibold text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                className="rounded-xl border border-brand-teal/30 bg-white dark:bg-brand-dark px-8 py-3 font-semibold text-brand-teal dark:text-yellow-300 transition hover:-translate-y-1 hover:text-brand-teal dark:hover:text-yellow-300"
               >
                 Ask for Assistance
               </Link>
@@ -147,7 +147,7 @@ export default function SHSOfferingsPage() {
         </PageHeader>
 
         {/* QUICK GUIDE */}
-        <section className="bg-white dark:bg-[#0a0908] px-6 py-16">
+        <section className="bg-white dark:bg-brand-black px-6 py-16">
           <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-3">
             {quickGuides.map((item, index) => (
               <motion.article
@@ -156,9 +156,9 @@ export default function SHSOfferingsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.08 }}
-                className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-[#F8FAFC] dark:bg-[#171614] p-6 shadow-sm dark:shadow-black/20"
+                className="rounded-2xl border border-slate-200 dark:border-brand-charcoal bg-brand-slate dark:bg-brand-dark p-6 shadow-sm dark:shadow-black/20"
               >
-                <h2 className="text-2xl font-semibold text-[#0F4C5C] dark:text-yellow-300">
+                <h2 className="text-2xl font-semibold text-brand-teal dark:text-yellow-300">
                   {item.title}
                 </h2>
                 <p className="mt-3 leading-7 text-slate-600 dark:text-stone-300">{item.text}</p>
@@ -168,10 +168,10 @@ export default function SHSOfferingsPage() {
         </section>
 
         {/* FILTER */}
-        <section className="bg-[#F8FAFC] dark:bg-[#0a0908] px-6 py-12">
+        <section className="bg-brand-slate dark:bg-brand-black px-6 py-12">
           <div className="mx-auto max-w-7xl">
             <div className="mb-8 text-center">
-              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+              <p className="text-sm font-semibold uppercase tracking-widest text-brand-teal dark:text-yellow-300">
                 Available Offerings
               </p>
               <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
@@ -191,8 +191,8 @@ export default function SHSOfferingsPage() {
                   onClick={() => setSelectedCategory(category)}
                   className={`rounded-xl px-5 py-3 text-sm font-semibold transition ${
                     selectedCategory === category
-                      ? "bg-[#0F4C5C] text-white"
-                      : "border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] text-slate-700 dark:text-stone-200 hover:border-[#0F4C5C] hover:text-[#0F4C5C]"
+                      ? "bg-brand-teal text-white"
+                      : "border border-slate-200 dark:border-brand-charcoal bg-white dark:bg-brand-dark text-slate-700 dark:text-stone-200 hover:border-brand-teal hover:text-brand-teal"
                   }`}
                 >
                   {category}
@@ -203,7 +203,7 @@ export default function SHSOfferingsPage() {
         </section>
 
         {/* OFFERINGS LIST */}
-        <section className="bg-white dark:bg-[#0a0908] px-6 py-20">
+        <section className="bg-white dark:bg-brand-black px-6 py-20">
           <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-2">
             {visibleOfferings.map((offering, index) => (
               <motion.article
@@ -212,9 +212,9 @@ export default function SHSOfferingsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.45, delay: index * 0.06 }}
-                className="rounded-2xl border border-slate-200 dark:border-[#292624] bg-white dark:bg-[#171614] p-8 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01]"
+                className="rounded-2xl border border-slate-200 dark:border-brand-charcoal bg-white dark:bg-brand-dark p-8 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01]"
               >
-                <span className="rounded-lg bg-[#ECFDF5] dark:bg-[#171614] px-3 py-2 text-xs font-semibold uppercase tracking-widest text-[#0F4C5C] dark:text-yellow-300">
+                <span className="rounded-lg bg-brand-mint dark:bg-brand-dark px-3 py-2 text-xs font-semibold uppercase tracking-widest text-brand-teal dark:text-yellow-300">
                   {offering.category}
                 </span>
 
@@ -226,7 +226,7 @@ export default function SHSOfferingsPage() {
                   {offering.description}
                 </p>
 
-                <div className="mt-6 rounded-2xl bg-[#F8FAFC] dark:bg-[#171614] p-5">
+                <div className="mt-6 rounded-2xl bg-brand-slate dark:bg-brand-dark p-5">
                   <p className="text-sm font-semibold uppercase tracking-widest text-slate-500 dark:text-stone-400">
                     Subjects / Specializations
                   </p>
@@ -234,7 +234,7 @@ export default function SHSOfferingsPage() {
                   <ul className="mt-4 grid gap-3">
                     {offering.items.map((item) => (
                       <li key={item} className="flex gap-3 text-slate-700 dark:text-stone-200">
-                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#0F4C5C] text-xs font-semibold text-white">
+                        <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-teal text-xs font-semibold text-white">
                           ✓
                         </span>
                         <span className="font-semibold">{item}</span>
@@ -248,7 +248,7 @@ export default function SHSOfferingsPage() {
         </section>
 
         {/* NOTE */}
-        <section className="bg-[#0F4C5C] px-6 py-20 text-white">
+        <section className="bg-brand-teal px-6 py-20 text-white">
           <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[1fr_0.8fr]">
             <motion.div
               initial={{ opacity: 0, x: -32 }}
@@ -276,7 +276,7 @@ export default function SHSOfferingsPage() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="rounded-2xl border border-[#292624] bg-[#171614] p-8"
+              className="rounded-2xl border border-brand-charcoal bg-brand-dark p-8"
             >
               <h3 className="text-2xl font-semibold">Need Help Choosing?</h3>
               <p className="mt-3 leading-7 text-teal-50">
@@ -288,7 +288,7 @@ export default function SHSOfferingsPage() {
               <div className="mt-6 grid gap-4">
                 <Link
                   href="/enrollment"
-                  className="rounded-xl bg-white dark:bg-[#171614] px-5 py-4 font-semibold text-[#0F4C5C] dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-[#0F4C5C] dark:hover:text-yellow-300"
+                  className="rounded-xl bg-white dark:bg-brand-dark px-5 py-4 font-semibold text-brand-teal dark:text-yellow-300 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-brand-teal dark:hover:text-yellow-300"
                 >
                   Open Enrollment Guide
                 </Link>

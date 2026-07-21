@@ -79,7 +79,7 @@ export default function PwaInstallButton() {
       aria-label="Install Tabunoc NHS website app"
       onClick={handleClick}
       disabled={installed}
-      className="rounded-xl bg-[#ffdf20] px-5 py-3 text-center text-sm font-semibold text-[#24313E] transition-colors duration-200 hover:bg-[#f1d200] disabled:cursor-not-allowed disabled:opacity-70"
+      className="rounded-xl bg-brand-yellow px-5 py-3 text-center text-sm font-semibold text-brand-navy transition-colors duration-200 hover:bg-[#f1d200] disabled:cursor-not-allowed disabled:opacity-70"
     >
       Install App
     </button>

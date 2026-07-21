@@ -44,7 +44,7 @@ const footerGroups = [
 
 function FooterLink({ label, href }: { label: string; href: string }) {
   const className =
-    "inline-flex text-sm font-medium leading-relaxed text-white/70 transition-colors duration-200 hover:text-white focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffdf20] focus-visible:ring-offset-2 focus-visible:ring-offset-[#24313e]";
+    "inline-flex text-sm font-medium leading-relaxed text-white/70 transition-colors duration-200 hover:text-white focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-brand-navy";
 
   if (href.startsWith("http")) {
     return (
@@ -76,7 +76,7 @@ function FooterLink({ label, href }: { label: string; href: string }) {
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-[#24313e] text-white">
+    <footer className="border-t border-white/10 bg-brand-navy text-white">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-12 lg:grid-cols-[1.15fr_2fr] lg:gap-16 lg:px-8 lg:py-14">
         <div className="max-w-md">
           <div className="flex items-center gap-4">
@@ -100,7 +100,7 @@ export default function Footer() {
           <h2 className="mt-5 text-xl font-semibold tracking-tight text-white">
             Tabunoc National High School
           </h2>
-          <p className="mt-2 text-sm font-medium text-[#ffdf20]">
+          <p className="mt-2 text-sm font-medium text-brand-yellow">
             School ID: 303111
           </p>
           <p className="mt-1 text-sm text-white/65">

@@ -118,7 +118,7 @@ function ArrowIcon() {
 function CheckIcon() {
   return (
     <svg
-      className="mt-0.5 h-5 w-5 flex-none text-[#0F4C5C]"
+      className="mt-0.5 h-5 w-5 flex-none text-brand-teal"
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"
@@ -151,11 +151,11 @@ function SectionHeading({
       transition={{ duration: 0.5 }}
       className="mx-auto mb-10 max-w-3xl text-center"
     >
-      <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#0F4C5C]">
+      <p className="text-sm font-semibold uppercase tracking-[0.22em] text-brand-teal">
         {eyebrow}
       </p>
 
-      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29] sm:text-4xl md:text-5xl">
+      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-brand-deepteal sm:text-4xl md:text-5xl">
         {title}
       </h2>
 
@@ -184,7 +184,7 @@ export default function AlumniPage() {
                 href={facebookGroupUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-[#146577]"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-teal px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-brand-cyan"
               >
                 Join the Community
                 <ArrowIcon />
@@ -192,7 +192,7 @@ export default function AlumniPage() {
 
               <a
                 href="#support"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#ffdf20] px-5 py-3 text-sm font-semibold text-[#071E29] transition duration-300 hover:-translate-y-1 hover:bg-yellow-300"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-yellow px-5 py-3 text-sm font-semibold text-brand-deepteal transition duration-300 hover:-translate-y-1 hover:bg-yellow-300"
               >
                 Ways to Support
                 <ArrowIcon />
@@ -200,7 +200,7 @@ export default function AlumniPage() {
 
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0F4C5C]/20 bg-white px-5 py-3 text-sm font-semibold text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-teal/20 bg-white px-5 py-3 text-sm font-semibold text-brand-teal transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
               >
                 Contact the School
               </Link>
@@ -224,9 +224,9 @@ export default function AlumniPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
                   transition={{ duration: 0.5, delay: index * 0.06 }}
-                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg"
+                  className="rounded-2xl border border-slate-200 bg-brand-slate p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-lg"
                 >
-                  <h3 className="text-xl font-semibold text-[#071E29]">
+                  <h3 className="text-xl font-semibold text-brand-deepteal">
                     {card.title}
                   </h3>
                   <p className="mt-3 text-sm leading-6 text-slate-600">
@@ -239,7 +239,7 @@ export default function AlumniPage() {
         </section>
 
         {/* OFFICIAL LINKS */}
-        <section className="bg-[#F8FAFC] py-20">
+        <section className="bg-brand-slate py-20">
           <div className={`mx-auto w-full ${pagePadding}`}>
             <SectionHeading
               eyebrow="Official Links"
@@ -264,17 +264,17 @@ export default function AlumniPage() {
                       : "border-slate-200 bg-white"
                   }`}
                 >
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#0F4C5C]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-teal">
                     {link.label}
                   </p>
-                  <h3 className="mt-3 text-xl font-semibold text-[#071E29]">
+                  <h3 className="mt-3 text-xl font-semibold text-brand-deepteal">
                     {link.title}
                   </h3>
                   <p className="mt-3 text-sm leading-6 text-slate-600">
                     {link.description}
                   </p>
 
-                  <p className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#0F4C5C]">
+                  <p className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-teal">
                     Open Link
                     <ArrowIcon />
                   </p>
@@ -301,15 +301,15 @@ export default function AlumniPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
                   transition={{ duration: 0.5, delay: index * 0.05 }}
-                  className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm"
+                  className="rounded-2xl border border-slate-200 bg-brand-slate p-6 shadow-sm"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-[#0F4C5C] text-sm font-semibold text-white">
+                    <div className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-brand-teal text-sm font-semibold text-white">
                       {index + 1}
                     </div>
 
                     <div>
-                      <h3 className="text-xl font-semibold text-[#071E29]">
+                      <h3 className="text-xl font-semibold text-brand-deepteal">
                         {item.title}
                       </h3>
                       <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -324,7 +324,7 @@ export default function AlumniPage() {
         </section>
 
         {/* REMINDERS */}
-        <section className="bg-[#0F4C5C] py-20 text-white">
+        <section className="bg-brand-teal py-20 text-white">
           <div
             className={`mx-auto grid w-full gap-8 lg:grid-cols-[0.9fr_1.1fr] ${pagePadding}`}
           >
@@ -369,7 +369,7 @@ export default function AlumniPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 py-20">
+        <section className="bg-gradient-to-br from-brand-mint via-white to-yellow-50 py-20">
           <div className={`mx-auto w-full ${pagePadding}`}>
             <motion.div
               initial={{ opacity: 0, y: 24 }}
@@ -378,10 +378,10 @@ export default function AlumniPage() {
               transition={{ duration: 0.55 }}
               className="mx-auto max-w-5xl rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm md:p-10"
             >
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-brand-teal">
                 Alumni and Stakeholder Support
               </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-[#071E29] md:text-5xl">
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-brand-deepteal md:text-5xl">
                 Be part of a positive school-community legacy.
               </h2>
               <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600">
@@ -395,7 +395,7 @@ export default function AlumniPage() {
                   href={facebookGroupUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0F4C5C] px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-[#146577]"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-teal px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-1 hover:bg-brand-cyan"
                 >
                   Join the Facebook Group
                   <ArrowIcon />
@@ -403,7 +403,7 @@ export default function AlumniPage() {
 
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0F4C5C]/20 bg-white px-5 py-3 text-sm font-semibold text-[#0F4C5C] transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-teal/20 bg-white px-5 py-3 text-sm font-semibold text-brand-teal transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
                 >
                   Coordinate with the School
                 </Link>

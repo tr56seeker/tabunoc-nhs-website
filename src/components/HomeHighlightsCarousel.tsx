@@ -238,8 +238,8 @@ export default function HomeHighlightsCarousel() {
   return (
     <section className="overflow-hidden bg-[#f5f7f9] py-16 sm:py-20" aria-labelledby="school-highlights-title">
       <div className="mx-auto max-w-7xl px-6">
-        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#0F4C5C]">Campus life</p>
-        <h2 id="school-highlights-title" className="mt-2 text-3xl font-semibold tracking-tight text-[#24313e] sm:text-4xl">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-brand-teal">Campus life</p>
+        <h2 id="school-highlights-title" className="mt-2 text-3xl font-semibold tracking-tight text-brand-navy sm:text-4xl">
           School Highlights
         </h2>
         <p className="mt-3 max-w-2xl leading-7 text-slate-600">
@@ -291,17 +291,17 @@ export default function HomeHighlightsCarousel() {
                         setSelected(highlight);
                       }
                     }}
-                    className="group flex w-[82vw] shrink-0 flex-col self-stretch overflow-hidden rounded-2xl bg-white text-left shadow-[0_12px_35px_rgba(36,49,62,0.10)] outline-none transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(36,49,62,0.16)] focus-visible:ring-4 focus-visible:ring-[#ffdf20] sm:w-[420px] lg:w-[460px]"
+                    className="group flex w-[82vw] shrink-0 flex-col self-stretch overflow-hidden rounded-2xl bg-white text-left shadow-[0_12px_35px_rgba(36,49,62,0.10)] outline-none transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(36,49,62,0.16)] focus-visible:ring-4 focus-visible:ring-brand-yellow sm:w-[420px] lg:w-[460px]"
                     aria-label={`View ${highlight.title}`}
                   >
                     <div className="relative aspect-[16/10] w-full flex-none overflow-hidden rounded-t-2xl bg-slate-100">
                       <img src={highlight.image_url} alt={highlight.alt_text || highlight.title} loading="lazy" draggable={false} className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]" />
                     </div>
-                    <div className="flex min-h-28 flex-1 flex-col border-t-4 border-[#ffdf20] p-5">
-                      <p className="min-h-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#0F4C5C]">
+                    <div className="flex min-h-28 flex-1 flex-col border-t-4 border-brand-yellow p-5">
+                      <p className="min-h-4 text-xs font-semibold uppercase tracking-[0.14em] text-brand-teal">
                         {[highlight.category, date].filter(Boolean).join(" · ")}
                       </p>
-                      <h3 className="mt-2 line-clamp-2 text-xl font-semibold leading-snug text-[#24313e]">{highlight.title}</h3>
+                      <h3 className="mt-2 line-clamp-2 text-xl font-semibold leading-snug text-brand-navy">{highlight.title}</h3>
                     </div>
                   </button>
                 );
@@ -320,15 +320,15 @@ export default function HomeHighlightsCarousel() {
                 <img src={selected.image_url} alt={selected.alt_text || selected.title} className="h-full max-h-[70vh] w-full object-contain lg:max-h-[84vh]" />
               </div>
               <div className="flex flex-col justify-center p-6 sm:p-9">
-                {(selected.category || selected.event_date) && <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#0F4C5C]">{[selected.category, formatEventDate(selected.event_date)].filter(Boolean).join(" · ")}</p>}
-                <h3 id="highlight-modal-title" className="mt-3 text-3xl font-semibold tracking-tight text-[#24313e]">{selected.title}</h3>
+                {(selected.category || selected.event_date) && <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-teal">{[selected.category, formatEventDate(selected.event_date)].filter(Boolean).join(" · ")}</p>}
+                <h3 id="highlight-modal-title" className="mt-3 text-3xl font-semibold tracking-tight text-brand-navy">{selected.title}</h3>
                 {selected.description && <p className="mt-5 whitespace-pre-line leading-7 text-slate-600">{selected.description}</p>}
                 {selected.facebook_url && (
                   <a
                     href={selected.facebook_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-6 inline-flex w-fit items-center justify-center rounded-xl bg-[#ffdf20] px-5 py-3 text-sm font-semibold text-[#24313e] shadow-sm transition hover:-translate-y-0.5 hover:bg-yellow-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#24313e]/20"
+                    className="mt-6 inline-flex w-fit items-center justify-center rounded-xl bg-brand-yellow px-5 py-3 text-sm font-semibold text-brand-navy shadow-sm transition hover:-translate-y-0.5 hover:bg-yellow-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-navy/20"
                   >
                     View Facebook Post
                   </a>

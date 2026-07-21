@@ -171,14 +171,6 @@ function getAdvisoryText(person: Personnel) {
     .join(", ");
 }
 
-function getDesignationItems(person: Personnel) {
-  const position = safeText(person.position).toLowerCase();
-
-  return uniqueList(person.designation || []).filter(
-    (designation) => designation.toLowerCase() !== position
-  );
-}
-
 function getAllDesignationItems(person: Personnel) {
   const extendedPerson = person as ExtendedPersonnel;
   const position = safeText(person.position).toLowerCase();
@@ -477,11 +469,11 @@ export default function PersonnelCard({
       viewport={{ once: true }}
       transition={{ duration: 0.22 }}
       onClick={() => onClick?.(person)}
-      className={`group cursor-pointer overflow-hidden rounded-xl bg-white transition duration-200 hover:bg-slate-50 dark:bg-[#171614] dark:hover:bg-[#1f1d1a] ${cardSize}`}
+      className={`group cursor-pointer overflow-hidden rounded-xl bg-white transition duration-200 hover:bg-slate-50 dark:bg-brand-dark dark:hover:bg-[#1f1d1a] ${cardSize}`}
     >
       <div className="flex h-full items-center gap-4 p-4">
         <div
-          className={`relative ${photoSize} shrink-0 overflow-hidden rounded-xl bg-slate-200 dark:bg-[#292624]`}
+          className={`relative ${photoSize} shrink-0 overflow-hidden rounded-xl bg-slate-200 dark:bg-brand-charcoal`}
         >
           {showPhoto ? (
             <Image
@@ -494,7 +486,7 @@ export default function PersonnelCard({
               className="h-full w-full object-cover object-top"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-lg font-semibold text-slate-600 dark:bg-[#292624] dark:text-stone-300 sm:text-xl">
+            <div className="flex h-full w-full items-center justify-center bg-slate-200 text-lg font-semibold text-slate-600 dark:bg-brand-charcoal dark:text-stone-300 sm:text-xl">
               {initials}
             </div>
           )}
@@ -529,7 +521,7 @@ export default function PersonnelCard({
             />
           </div>
 
-          <span className="mt-2 inline-flex w-fit shrink-0 items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-medium leading-none text-slate-700 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:bg-[#24313E] group-hover:text-[#ffdf20] group-hover:shadow-md dark:bg-[#292624] dark:text-stone-200 dark:group-hover:bg-[#24313E] dark:group-hover:text-[#ffdf20]">
+          <span className="mt-2 inline-flex w-fit shrink-0 items-center rounded-full bg-slate-100 px-3 py-1.5 text-[11px] font-medium leading-none text-slate-700 transition-all duration-200 group-hover:-translate-y-0.5 group-hover:bg-brand-navy group-hover:text-brand-yellow group-hover:shadow-md dark:bg-brand-charcoal dark:text-stone-200 dark:group-hover:bg-brand-navy dark:group-hover:text-brand-yellow">
             View Details
           </span>
         </div>

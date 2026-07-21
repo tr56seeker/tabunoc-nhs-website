@@ -303,7 +303,7 @@ function SectionHeading({
 }) {
   return (
     <div className="mx-auto mb-10 max-w-3xl text-center">
-      <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
+      <p className="text-sm font-semibold uppercase tracking-widest text-brand-teal">
         {eyebrow}
       </p>
       <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight text-slate-950 md:text-5xl">
@@ -398,7 +398,7 @@ export default function Home() {
 
       <main className="min-h-screen bg-white text-slate-950">
         {/* HERO */}
-        <section className="relative overflow-hidden bg-gradient-to-br from-[#ECFDF5] via-white to-yellow-50 px-6 pb-20 pt-32">
+        <section className="relative overflow-hidden bg-gradient-to-br from-brand-mint via-white to-yellow-50 px-6 pb-20 pt-32">
           <div className="absolute left-10 top-24 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
           <div className="absolute bottom-10 right-10 h-80 w-80 rounded-full bg-yellow-200/60 blur-3xl" />
 
@@ -409,7 +409,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65 }}
-              className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]"
+              className="text-sm font-semibold uppercase tracking-widest text-brand-teal"
             >
               Official School Website
             </motion.p>
@@ -443,7 +443,7 @@ export default function Home() {
             >
               <ActionLink
                 href="/enrollment"
-                className="h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight bg-[#0F4C5C] text-white hover:bg-[#146577] sm:h-auto sm:gap-2 sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
+                className="h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight bg-brand-teal text-white hover:bg-brand-cyan sm:h-auto sm:gap-2 sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
               >
                 <span className="sm:hidden">Enrollment Guide</span>
                 <span className="hidden sm:inline">Enrollment Guide</span>
@@ -452,7 +452,7 @@ export default function Home() {
 
               <ActionLink
                 href="/shs-offerings"
-                className="h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight bg-[#ffdf20] text-[#071E29] hover:bg-yellow-300 sm:h-auto sm:gap-2 sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
+                className="h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight bg-brand-yellow text-brand-deepteal hover:bg-yellow-300 sm:h-auto sm:gap-2 sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
               >
                 <span className="sm:hidden">SHS Offerings</span>
                 <span className="hidden sm:inline">View SHS Offerings</span>
@@ -461,7 +461,7 @@ export default function Home() {
 
               <ActionLink
                 href="/contact"
-                className="col-span-2 h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight border border-[#0F4C5C]/20 bg-white text-[#0F4C5C] hover:bg-slate-50 sm:col-auto sm:h-auto sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
+                className="col-span-2 h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight border border-brand-teal/20 bg-white text-brand-teal hover:bg-slate-50 sm:col-auto sm:h-auto sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
               >
                 <span className="sm:hidden">Contact the School</span>
                 <span className="hidden sm:inline">Contact the School</span>
@@ -476,11 +476,11 @@ export default function Home() {
         <section
           id="homepage-statistics"
           aria-labelledby="homepage-statistics-title"
-          className="border-y border-slate-200 bg-[#F8FAFC] px-4 py-8 sm:px-6 sm:py-10"
+          className="border-y border-slate-200 bg-brand-slate px-4 py-8 sm:px-6 sm:py-10"
         >
           <div className="mx-auto max-w-7xl">
             <div className="mb-6 text-center">
-              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-widest text-brand-teal">
                 School at a Glance
               </p>
               <h2
@@ -495,7 +495,7 @@ export default function Home() {
               {statistics.map((statistic) => (
                 <article
                   key={statistic.label}
-                  className="flex min-h-[108px] flex-col items-center justify-center border border-slate-200 border-t-4 border-t-[#ffdf20] bg-white p-3 text-center shadow-sm sm:min-h-[136px] sm:p-5"
+                  className="flex min-h-[108px] flex-col items-center justify-center border border-slate-200 border-t-4 border-t-brand-yellow bg-white p-3 text-center shadow-sm sm:min-h-[136px] sm:p-5"
                 >
                   <PopulationCountUp
                     value={statistic.value}
@@ -503,7 +503,7 @@ export default function Home() {
                     durationMs={getCounterDuration(statistic.label)}
                     finalRevealDelayMs={getFinalRevealDelay(statistic.label)}
                     triggerId="homepage-statistics"
-                    className="block min-h-[2.1rem] text-[1.9rem] font-semibold leading-none tabular-nums tracking-tight text-[#24313E] sm:min-h-[2.5rem] sm:text-4xl md:text-5xl"
+                    className="block min-h-[2.1rem] text-[1.9rem] font-semibold leading-none tabular-nums tracking-tight text-brand-navy sm:min-h-[2.5rem] sm:text-4xl md:text-5xl"
                   />
                   <p className="mt-2 text-[10px] font-semibold uppercase leading-tight tracking-[0.08em] text-slate-500 sm:mt-3 sm:text-sm sm:tracking-[0.12em]">
                     {statistic.label}
@@ -511,8 +511,8 @@ export default function Home() {
                 </article>
               ))}
 
-              <article className="flex min-h-[108px] flex-col items-center justify-center border border-slate-200 border-t-4 border-t-[#0F4C5C] bg-white p-3 text-center shadow-sm sm:min-h-[136px] sm:p-5">
-                <p className="min-h-[2.1rem] text-[1.9rem] font-semibold leading-none tabular-nums tracking-tight text-[#24313E] sm:min-h-[2.5rem] sm:text-4xl md:text-5xl">
+              <article className="flex min-h-[108px] flex-col items-center justify-center border border-slate-200 border-t-4 border-t-brand-teal bg-white p-3 text-center shadow-sm sm:min-h-[136px] sm:p-5">
+                <p className="min-h-[2.1rem] text-[1.9rem] font-semibold leading-none tabular-nums tracking-tight text-brand-navy sm:min-h-[2.5rem] sm:text-4xl md:text-5xl">
                   303111
                 </p>
                 <p className="mt-2 text-[10px] font-semibold uppercase leading-tight tracking-[0.08em] text-slate-500 sm:mt-3 sm:text-sm sm:tracking-[0.12em]">
@@ -535,7 +535,7 @@ export default function Home() {
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {quickAccessLinks.map((item) => {
                 const cardContent = (
-                  <div className="group h-full rounded-2xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#0F4C5C]/30 hover:bg-white hover:shadow-lg">
+                  <div className="group h-full rounded-2xl border border-slate-200 bg-brand-slate p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-brand-teal/30 hover:bg-white hover:shadow-lg">
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <h3 className="text-xl font-semibold text-slate-950">
@@ -546,7 +546,7 @@ export default function Home() {
                         </p>
                       </div>
 
-                      <span className="mt-1 rounded-full bg-[#0F4C5C]/10 p-2 text-[#0F4C5C] transition group-hover:bg-[#0F4C5C] group-hover:text-white">
+                      <span className="mt-1 rounded-full bg-brand-teal/10 p-2 text-brand-teal transition group-hover:bg-brand-teal group-hover:text-white">
                         <ArrowIcon />
                       </span>
                     </div>
@@ -577,12 +577,12 @@ export default function Home() {
         </section>
 
         {/* FEATURED ADVISORY */}
-        <section className="bg-[#F8FAFC] px-6 py-12">
+        <section className="bg-brand-slate px-6 py-12">
           <div className="mx-auto max-w-7xl">
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm md:p-8">
               <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-center">
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
+                  <p className="text-sm font-semibold uppercase tracking-widest text-brand-teal">
                     Latest Advisory
                   </p>
                   <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 md:text-4xl">
@@ -597,7 +597,7 @@ export default function Home() {
                 <div>
                   <ActionLink
                     href="/memos"
-                    className="bg-[#0F4C5C] text-white hover:bg-[#146577]"
+                    className="bg-brand-teal text-white hover:bg-brand-cyan"
                   >
                     Read Latest Advisories
                     <ArrowIcon />
@@ -612,7 +612,7 @@ export default function Home() {
         <section className="bg-white px-6 py-20">
           <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
+              <p className="text-sm font-semibold uppercase tracking-widest text-brand-teal">
                 About the School
               </p>
               <h2 className="mt-3 text-3xl font-semibold leading-tight tracking-tight md:text-5xl">
@@ -620,7 +620,7 @@ export default function Home() {
               </h2>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm md:p-8">
+            <div className="rounded-3xl border border-slate-200 bg-brand-slate p-6 shadow-sm md:p-8">
               <p className="text-lg leading-8 text-slate-700">
                 Tabunoc National High School is a public secondary school under
                 the Department of Education, serving Junior High School and
@@ -630,7 +630,7 @@ export default function Home() {
               <div className="mt-6">
                 <ActionLink
                   href="/organization"
-                  className="bg-[#0F4C5C] text-white hover:bg-[#146577]"
+                  className="bg-brand-teal text-white hover:bg-brand-cyan"
                 >
                   View School Profile
                   <ArrowIcon />
@@ -641,7 +641,7 @@ export default function Home() {
         </section>
 
         {/* CONTACT */}
-        <section id="contact" className="bg-[#0F4C5C] px-6 py-14 text-white">
+        <section id="contact" className="bg-brand-teal px-6 py-14 text-white">
           <div className="mx-auto max-w-7xl">
             <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
               <div>
@@ -685,7 +685,7 @@ export default function Home() {
                     }
                     className="rounded-2xl border border-white/10 bg-white p-4 text-slate-950 shadow-sm transition duration-300 hover:bg-yellow-50"
                   >
-                    <p className="text-sm font-semibold uppercase tracking-widest text-[#0F4C5C]">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-brand-teal">
                       {channel.title}
                     </p>
                     <p className="mt-2 text-sm font-semibold leading-6 text-slate-700">

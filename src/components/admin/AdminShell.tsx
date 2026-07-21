@@ -69,7 +69,7 @@ export default function AdminShell({
   function renderSidebar({ collapsed }: { collapsed: boolean }) {
     return (
     <aside
-      className={`flex h-full flex-col bg-[#24313e] text-white transition-[width] duration-300 ease-in-out ${
+      className={`flex h-full flex-col bg-brand-navy text-white transition-[width] duration-300 ease-in-out ${
         collapsed ? "w-20" : "w-[280px]"
       }`}
     >
@@ -83,7 +83,7 @@ export default function AdminShell({
               collapsed ? "justify-center" : ""
             }`}
           >
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ffdf20] text-[#24313e]">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-yellow text-brand-navy">
             <Home className="h-5 w-5" />
           </span>
           {!collapsed && (
@@ -133,7 +133,7 @@ export default function AdminShell({
               onClick={() => setMobileOpen(false)}
               className={`flex items-center rounded-xl py-3 text-sm font-semibold transition ${
                 active
-                  ? "bg-[#ffdf20] text-[#24313e]"
+                  ? "bg-brand-yellow text-brand-navy"
                   : "text-slate-200 hover:bg-white/10 hover:text-white"
               } ${collapsed ? "justify-center px-2" : "gap-3 px-3"}`}
             >
@@ -204,10 +204,10 @@ export default function AdminShell({
         <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#0F4C5C]">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-teal">
                 School Administration
               </p>
-              <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[#24313e]">
+              <h1 className="mt-1 text-2xl font-semibold tracking-tight text-brand-navy">
                 {title}
               </h1>
             </div>
@@ -217,7 +217,7 @@ export default function AdminShell({
                 title={isSidebarCollapsed ? "Expand sidebar" : "Focus mode"}
                 aria-label={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
                 onClick={toggleSidebar}
-                className="hidden h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-[#24313e] shadow-sm transition hover:border-[#0F4C5C]/30 hover:bg-slate-50 lg:inline-flex"
+                className="hidden h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-brand-navy shadow-sm transition hover:border-brand-teal/30 hover:bg-slate-50 lg:inline-flex"
               >
                 {isSidebarCollapsed ? (
                   <PanelLeftOpen className="h-5 w-5" />
@@ -230,7 +230,7 @@ export default function AdminShell({
                 type="button"
                 aria-label="Open admin menu"
                 onClick={() => setMobileOpen(true)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-[#24313e] shadow-sm lg:hidden"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white text-brand-navy shadow-sm lg:hidden"
               >
                 {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </button>

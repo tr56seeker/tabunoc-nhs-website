@@ -544,7 +544,7 @@ export default function MapCalibrationManager() {
       <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-[#24313e]">
+            <h2 className="text-lg font-semibold text-brand-navy">
               Evacuation Map Calibration
             </h2>
             <p className="mt-1 text-sm leading-6 text-slate-600">
@@ -552,14 +552,14 @@ export default function MapCalibrationManager() {
               {routesDataPath}.
             </p>
           </div>
-          <span className="rounded-full bg-[#ECFDF5] px-3 py-1.5 text-xs font-semibold text-[#0F4C5C]">
+          <span className="rounded-full bg-brand-mint px-3 py-1.5 text-xs font-semibold text-brand-teal">
             {mapData.locations.length} locations
           </span>
         </div>
 
-        <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-[#F8FAFC] p-3 sm:flex-row sm:items-center">
+        <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-brand-slate p-3 sm:flex-row sm:items-center">
           <div className="flex items-center justify-between gap-3 sm:w-auto">
-            <span className="text-sm font-semibold text-[#24313e]">Zoom</span>
+            <span className="text-sm font-semibold text-brand-navy">Zoom</span>
             <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600">
               {Math.round(zoom * 100)}%
             </span>
@@ -569,7 +569,7 @@ export default function MapCalibrationManager() {
               type="button"
               onClick={() => updateZoom(zoom - zoomStep)}
               disabled={zoom <= minZoom}
-              className="h-9 w-9 shrink-0 rounded-xl border border-slate-200 bg-white text-lg font-semibold text-[#0F4C5C] disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-9 w-9 shrink-0 rounded-xl border border-slate-200 bg-white text-lg font-semibold text-brand-teal disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="Zoom out"
               title="Zoom out"
             >
@@ -582,14 +582,14 @@ export default function MapCalibrationManager() {
               step={zoomStep}
               value={zoom}
               onChange={(event) => updateZoom(Number(event.target.value))}
-              className="min-w-0 flex-1 accent-[#0F4C5C]"
+              className="min-w-0 flex-1 accent-brand-teal"
               aria-label="Map zoom"
             />
             <button
               type="button"
               onClick={() => updateZoom(zoom + zoomStep)}
               disabled={zoom >= maxZoom}
-              className="h-9 w-9 shrink-0 rounded-xl border border-slate-200 bg-white text-lg font-semibold text-[#0F4C5C] disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-9 w-9 shrink-0 rounded-xl border border-slate-200 bg-white text-lg font-semibold text-brand-teal disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="Zoom in"
               title="Zoom in"
             >
@@ -598,7 +598,7 @@ export default function MapCalibrationManager() {
             <button
               type="button"
               onClick={() => updateZoom(1)}
-              className="shrink-0 rounded-xl bg-[#0F4C5C] px-3 py-2 text-xs font-semibold text-white"
+              className="shrink-0 rounded-xl bg-brand-teal px-3 py-2 text-xs font-semibold text-white"
             >
               Reset
             </button>
@@ -695,7 +695,7 @@ export default function MapCalibrationManager() {
                       vectorEffect="non-scaling-stroke"
                       pointerEvents="stroke"
                       onClick={(event) => handleSegmentClick(event, index)}
-                      className="cursor-copy transition hover:stroke-[#ffdf20]/70"
+                      className="cursor-copy transition hover:stroke-brand-yellow/70"
                     />
                   );
                 })}
@@ -711,7 +711,7 @@ export default function MapCalibrationManager() {
                 onPointerMove={handleDragMove}
                 onPointerUp={endDrag}
                 onPointerCancel={endDrag}
-                className={`absolute z-20 flex h-9 w-9 touch-none -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-[#0F4C5C] text-white shadow-lg ring-4 ring-[#ffdf20]/70 ${
+                className={`absolute z-20 flex h-9 w-9 touch-none -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-brand-teal text-white shadow-lg ring-4 ring-brand-yellow/70 ${
                   dragTarget?.type === "room" ? "cursor-grabbing scale-110" : "cursor-grab"
                 }`}
                 style={{ left: `${selectedLocation.x}%`, top: `${selectedLocation.y}%` }}
@@ -781,7 +781,7 @@ export default function MapCalibrationManager() {
                   className={`absolute z-20 flex h-5 w-5 touch-none -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 text-[10px] font-bold leading-none shadow ${
                     activeRoutePointIndex === index ||
                     (dragTarget?.type === "route" && dragTarget.index === index)
-                      ? "cursor-grabbing border-[#ffdf20] bg-[#0F4C5C] text-white ring-4 ring-[#ffdf20]/60"
+                      ? "cursor-grabbing border-brand-yellow bg-brand-teal text-white ring-4 ring-brand-yellow/60"
                       : "cursor-grab border-white bg-slate-950 text-white"
                   }`}
                   style={{ left: `${point.x}%`, top: `${point.y}%` }}
@@ -792,7 +792,7 @@ export default function MapCalibrationManager() {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3 rounded-2xl border border-slate-200 bg-[#F8FAFC] p-4">
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-3 rounded-2xl border border-slate-200 bg-brand-slate p-4">
           <LegendItem swatch="pin" label="Room pin" />
           <LegendItem swatch="exit" label="Exit point" />
           <LegendItem swatch="assembly" label="Assembly area" />
@@ -804,7 +804,7 @@ export default function MapCalibrationManager() {
         <div className="shrink-0 border-b border-slate-200 bg-white p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h3 className="text-base font-semibold text-[#24313e]">
+              <h3 className="text-base font-semibold text-brand-navy">
                 Calibration Controls
               </h3>
               <p className="mt-1 text-xs leading-5 text-slate-500">
@@ -815,7 +815,7 @@ export default function MapCalibrationManager() {
               type="button"
               disabled={isSaving || mapData.locations.length === 0}
               onClick={() => void saveMapData()}
-              className="shrink-0 rounded-xl bg-[#0F4C5C] px-3 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+              className="shrink-0 rounded-xl bg-brand-teal px-3 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isSaving ? "Saving..." : "Save"}
             </button>
@@ -831,7 +831,7 @@ export default function MapCalibrationManager() {
                 setActiveRoutePointIndex(null);
                 setDragTarget(null);
               }}
-              className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-[#0F4C5C]"
+              className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-brand-teal"
             >
               <option value="">
                 {mapData.locations.length === 0
@@ -854,7 +854,7 @@ export default function MapCalibrationManager() {
                 onClick={() => setActivePanelTab(tab)}
                 className={`rounded-lg px-3 py-2 text-xs font-semibold capitalize transition ${
                   activePanelTab === tab
-                    ? "bg-[#ffdf20] text-[#24313e] shadow-sm"
+                    ? "bg-brand-yellow text-brand-navy shadow-sm"
                     : "text-slate-600 hover:bg-white"
                 }`}
               >
@@ -872,12 +872,12 @@ export default function MapCalibrationManager() {
                   value={newLocationName}
                   onChange={(event) => setNewLocationName(event.target.value)}
                   placeholder="New location name"
-                  className="min-w-0 rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#0F4C5C]"
+                  className="min-w-0 rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-teal"
                 />
                 <button
                   type="button"
                   onClick={addLocation}
-                  className="rounded-xl bg-[#0F4C5C] px-4 py-2 text-sm font-semibold text-white"
+                  className="rounded-xl bg-brand-teal px-4 py-2 text-sm font-semibold text-white"
                 >
                   Add
                 </button>
@@ -936,7 +936,7 @@ export default function MapCalibrationManager() {
                 Choose a tool, then click the actual map image to update
                 coordinates.
               </p>
-              <p className="rounded-xl bg-[#ECFDF5] px-3 py-2 text-xs font-semibold leading-5 text-[#0F4C5C]">
+              <p className="rounded-xl bg-brand-mint px-3 py-2 text-xs font-semibold leading-5 text-brand-teal">
                 Tip: Select a point or click a route segment to insert a new
                 point.
               </p>
@@ -999,7 +999,7 @@ export default function MapCalibrationManager() {
                   activeRoutePointIndex >= selectedRoutePoints.length
                 }
                 onClick={insertAfterSelectedPoint}
-                className="w-full rounded-xl border border-[#0F4C5C]/30 bg-white px-3 py-2 text-sm font-semibold text-[#0F4C5C] disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-xl border border-brand-teal/30 bg-white px-3 py-2 text-sm font-semibold text-brand-teal disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Insert After Selected Point
               </button>
@@ -1023,7 +1023,7 @@ export default function MapCalibrationManager() {
 
               <section className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                 <div className="flex items-center justify-between gap-3">
-                  <h4 className="text-sm font-semibold text-[#24313e]">
+                  <h4 className="text-sm font-semibold text-brand-navy">
                     Route Points
                   </h4>
                   <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-600">
@@ -1046,7 +1046,7 @@ export default function MapCalibrationManager() {
                           key={`${point.x}-${point.y}-tool-${index}`}
                           className={`rounded-xl border bg-white p-2 ${
                             selected
-                              ? "border-[#ffdf20] ring-2 ring-[#ffdf20]/40"
+                              ? "border-brand-yellow ring-2 ring-brand-yellow/40"
                               : "border-slate-200"
                           }`}
                         >
@@ -1054,7 +1054,7 @@ export default function MapCalibrationManager() {
                             <button
                               type="button"
                               onClick={() => setActiveRoutePointIndex(index)}
-                              className="min-w-0 flex-1 rounded-lg px-2 py-1.5 text-left text-sm font-semibold text-[#24313e] hover:bg-slate-50"
+                              className="min-w-0 flex-1 rounded-lg px-2 py-1.5 text-left text-sm font-semibold text-brand-navy hover:bg-slate-50"
                             >
                               Point {index + 1}
                               <span className="mt-0.5 block truncate font-mono text-xs font-medium text-slate-500">
@@ -1086,7 +1086,7 @@ export default function MapCalibrationManager() {
               </button>
 
               <section className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                <h4 className="text-sm font-semibold text-[#24313e]">
+                <h4 className="text-sm font-semibold text-brand-navy">
                   Calibration Transfer
                 </h4>
                 <p className="mt-1 text-xs leading-5 text-slate-500">
@@ -1099,7 +1099,7 @@ export default function MapCalibrationManager() {
                     type="button"
                     disabled={!selectedLocation}
                     onClick={copyCalibration}
-                    className="rounded-xl bg-[#0F4C5C] px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-xl bg-brand-teal px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Copy Calibration
                   </button>
@@ -1107,7 +1107,7 @@ export default function MapCalibrationManager() {
                     type="button"
                     disabled={!selectedLocation || !copiedCalibration}
                     onClick={pasteCalibration}
-                    className="rounded-xl border border-[#0F4C5C]/30 bg-white px-3 py-2 text-sm font-semibold text-[#0F4C5C] disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-xl border border-brand-teal/30 bg-white px-3 py-2 text-sm font-semibold text-brand-teal disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Paste to Selected
                   </button>
@@ -1146,7 +1146,7 @@ export default function MapCalibrationManager() {
               </div>
 
               {status && (
-                <p className="rounded-xl bg-[#ECFDF5] px-3 py-2 text-sm font-semibold text-[#0F4C5C]">
+                <p className="rounded-xl bg-brand-mint px-3 py-2 text-sm font-semibold text-brand-teal">
                   {status}
                 </p>
               )}
@@ -1185,13 +1185,13 @@ function Field({
           value={value}
           onChange={(event) => onChange(event.target.value)}
           rows={3}
-          className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#0F4C5C]"
+          className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-teal"
         />
       ) : (
         <input
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#0F4C5C]"
+          className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none focus:border-brand-teal"
         />
       )}
     </label>
@@ -1216,7 +1216,7 @@ function ToolButton({
       onClick={onClick}
       className={`rounded-xl px-3 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
         active
-          ? "bg-[#0F4C5C] text-white"
+          ? "bg-brand-teal text-white"
           : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
       }`}
     >
@@ -1235,7 +1235,7 @@ function LegendItem({
   return (
     <div className="flex items-center gap-2">
       {swatch === "pin" && (
-        <span className="h-4 w-4 rounded-full border-2 border-white bg-[#0F4C5C] shadow ring-2 ring-[#ffdf20]/70" />
+        <span className="h-4 w-4 rounded-full border-2 border-white bg-brand-teal shadow ring-2 ring-brand-yellow/70" />
       )}
       {swatch === "exit" && (
         <span className="h-4 w-4 rounded-[3px] border border-white bg-[#dc2626] shadow" />

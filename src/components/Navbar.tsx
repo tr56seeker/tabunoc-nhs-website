@@ -84,7 +84,7 @@ const navItems: NavItem[] = [
   },
   {
     label: "Services",
-    href: "/#services",
+    href: "/enrollment",
     items: [
       {
         label: "Enrollment Guide",
@@ -236,13 +236,13 @@ function DropdownLink({
     variant === "desktop"
       ? `group/dropitem flex items-center justify-between gap-4 px-5 py-4 text-left transition ${
           active
-            ? "bg-[#ffdf20] text-[#24313E]"
+            ? "bg-brand-yellow text-brand-navy"
             : "text-slate-600 hover:bg-[#2f3c48] hover:text-white"
         }`
       : `group/dropitem block rounded-2xl px-4 py-3 text-left transition ${
           active
-            ? "bg-[#ffdf20] text-[#071E29]"
-            : "text-white hover:bg-[#ffdf20] hover:text-[#071E29] active:bg-[#ffdf20] active:text-[#071E29]"
+            ? "bg-brand-yellow text-brand-deepteal"
+            : "text-white hover:bg-brand-yellow hover:text-brand-deepteal active:bg-brand-yellow active:text-brand-deepteal"
         }`;
 
   const labelClass =
@@ -254,13 +254,13 @@ function DropdownLink({
     variant === "desktop"
       ? `mt-1 block line-clamp-2 text-sm font-medium leading-snug ${
           active
-            ? "text-[#24313E]/70"
+            ? "text-brand-navy/70"
             : "text-slate-400 group-hover/dropitem:text-white/75"
         }`
       : `mt-1 block text-sm font-medium leading-snug ${
           active
-            ? "text-[#071E29]/70"
-            : "text-white/60 group-hover/dropitem:text-[#071E29]/75"
+            ? "text-brand-deepteal/70"
+            : "text-white/60 group-hover/dropitem:text-brand-deepteal/75"
         }`;
 
   const content = (
@@ -447,7 +447,7 @@ export default function Navbar({
   return (
     <>
       <header
-        className={`fixed left-0 right-0 top-0 z-[100] w-full border-b border-white/10 bg-[#24313e]/95 pt-[env(safe-area-inset-top)] text-white shadow-sm backdrop-blur-xl transition-transform duration-300 ease-out ${
+        className={`fixed left-0 right-0 top-0 z-[100] w-full border-b border-white/10 bg-brand-navy/95 pt-[env(safe-area-inset-top)] text-white shadow-sm backdrop-blur-xl transition-transform duration-300 ease-out ${
           navbarVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
@@ -505,7 +505,7 @@ export default function Navbar({
 
             const navItemClassName = `inline-flex items-center gap-1.5 px-3 text-[13px] font-medium tracking-tight transition-all duration-200 xl:px-4 xl:text-sm 2xl:gap-2 2xl:px-6 ${
               active
-                ? "relative z-20 h-20 bg-white text-[#24313E] after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-white lg:-mb-px lg:h-[calc(5rem+1px)]"
+                ? "relative z-20 h-20 bg-white text-brand-navy after:absolute after:inset-x-0 after:-bottom-px after:h-px after:bg-white lg:-mb-px lg:h-[calc(5rem+1px)]"
                 : "navbar-cloth-hover h-20 text-white/90"
             }`;
 
@@ -568,7 +568,7 @@ export default function Navbar({
                         transition={{ duration: 0.16, ease: "easeOut" }}
                         className="absolute left-1/2 top-full z-[1001] -translate-x-1/2"
                       >
-                        <div className="w-[300px] overflow-hidden border-t-4 border-[#ffdf20] bg-white py-2 text-[#24313E] shadow-2xl shadow-black/25">
+                        <div className="w-[300px] overflow-hidden border-t-4 border-brand-yellow bg-white py-2 text-brand-navy shadow-2xl shadow-black/25">
                           {item.items?.map((dropdownItem) => (
                             <DropdownLink
                               key={`${item.label}-${dropdownItem.label}`}
@@ -599,8 +599,8 @@ export default function Navbar({
               onMouseLeave={(event) => updateNavbarHoverOrigin(event)}
               className={`relative rounded-xl px-5 py-3 text-sm font-medium tracking-tight transition-all duration-200 2xl:px-7 ${
                 contactActive
-                  ? "bg-white text-[#24313E]"
-                  : "navbar-cloth-hover bg-[#0F4C5C] text-white hover:-translate-y-0.5"
+                  ? "bg-white text-brand-navy"
+                  : "navbar-cloth-hover bg-brand-teal text-white hover:-translate-y-0.5"
               }`}
             >
               <span className="relative z-10">Contact</span>
@@ -616,10 +616,10 @@ export default function Navbar({
                   transition={{ duration: 0.16, ease: "easeOut" }}
                   className="absolute right-0 top-full z-[1001]"
                 >
-                  <div className="w-[250px] overflow-hidden border-t-4 border-[#ffdf20] bg-white p-2 text-[#24313E] shadow-2xl shadow-black/25">
+                  <div className="w-[250px] overflow-hidden border-t-4 border-brand-yellow bg-white p-2 text-brand-navy shadow-2xl shadow-black/25">
                     <a
                       href={`mailto:${schoolContact.email}`}
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-brand-yellow focus-visible:bg-brand-yellow focus-visible:outline-none active:bg-brand-yellow"
                     >
                       <Mail className="h-5 w-5" aria-hidden="true" />
                       <span>Email the School</span>
@@ -627,7 +627,7 @@ export default function Navbar({
 
                     <a
                       href={`tel:${schoolContact.phone}`}
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-brand-yellow focus-visible:bg-brand-yellow focus-visible:outline-none active:bg-brand-yellow"
                     >
                       <Phone className="h-5 w-5" aria-hidden="true" />
                       <span>Call the School</span>
@@ -637,7 +637,7 @@ export default function Navbar({
                       href={schoolContact.facebook}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-brand-yellow focus-visible:bg-brand-yellow focus-visible:outline-none active:bg-brand-yellow"
                     >
                       <ExternalLink className="h-5 w-5" aria-hidden="true" />
                       <span>Facebook Page</span>
@@ -647,7 +647,7 @@ export default function Navbar({
                       href={schoolContact.messenger}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-[#ffdf20] focus-visible:bg-[#ffdf20] focus-visible:outline-none active:bg-[#ffdf20]"
+                      className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition hover:bg-brand-yellow focus-visible:bg-brand-yellow focus-visible:outline-none active:bg-brand-yellow"
                     >
                       <MessageCircle className="h-5 w-5" aria-hidden="true" />
                       <span>Messenger</span>
@@ -709,7 +709,7 @@ export default function Navbar({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.18, ease: "easeOut" }}
-          className="fixed left-0 top-[calc(5rem+env(safe-area-inset-top))] z-[1000] max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] w-full overflow-y-auto border-t border-white/10 bg-[#24313e]/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl lg:hidden"
+          className="fixed left-0 top-[calc(5rem+env(safe-area-inset-top))] z-[1000] max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] w-full overflow-y-auto border-t border-white/10 bg-brand-navy/95 px-6 pb-6 pt-4 text-white shadow-2xl shadow-black/40 backdrop-blur-xl lg:hidden"
         >
           <div className="mx-auto grid max-w-3xl gap-2">
             {navItems.map((item) => {
@@ -730,7 +730,7 @@ export default function Navbar({
                         }
                         className={`flex-1 rounded-xl px-4 py-3 text-left text-sm font-medium tracking-tight transition ${
                           active
-                            ? "bg-[#ffdf20] text-[#071E29]"
+                            ? "bg-brand-yellow text-brand-deepteal"
                             : "text-white/90 hover:bg-white/10"
                         }`}
                       >
@@ -746,7 +746,7 @@ export default function Navbar({
                         }}
                         className={`flex-1 rounded-xl px-4 py-3 text-sm font-medium tracking-tight transition ${
                           active
-                            ? "bg-[#ffdf20] text-[#071E29]"
+                            ? "bg-brand-yellow text-brand-deepteal"
                             : "text-white/90 hover:bg-white/10"
                         }`}
                       >
@@ -805,7 +805,7 @@ export default function Navbar({
                 setMenuOpen(false);
                 setMobileOpenGroup(null);
               }}
-              className="mt-2 rounded-xl bg-[#0F4C5C] px-4 py-3 text-center text-sm font-medium tracking-tight text-white transition hover:bg-[#146577]"
+              className="mt-2 rounded-xl bg-brand-teal px-4 py-3 text-center text-sm font-medium tracking-tight text-white transition hover:bg-brand-cyan"
             >
               Contact
             </Link>

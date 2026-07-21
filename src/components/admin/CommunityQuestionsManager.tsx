@@ -126,7 +126,7 @@ export default function CommunityQuestionsManager() {
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-[#24313e]">
+            <h2 className="text-lg font-semibold text-brand-navy">
               FAQ Community Questions
             </h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -145,7 +145,7 @@ export default function CommunityQuestionsManager() {
                 onClick={() => setStatus(item)}
                 className={`rounded-lg px-3 py-2 text-xs font-semibold capitalize transition ${
                   status === item
-                    ? "bg-[#0F4C5C] text-white shadow-sm"
+                    ? "bg-brand-teal text-white shadow-sm"
                     : "text-slate-600 hover:bg-white"
                 }`}
               >
@@ -161,7 +161,7 @@ export default function CommunityQuestionsManager() {
           className={`rounded-xl border px-4 py-3 text-sm ${
             message.kind === "error"
               ? "border-rose-200 bg-rose-50 text-rose-700"
-              : "border-teal-200 bg-teal-50 text-[#0F4C5C]"
+              : "border-teal-200 bg-teal-50 text-brand-teal"
           }`}
         >
           {message.text}
@@ -186,7 +186,7 @@ export default function CommunityQuestionsManager() {
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
                     {getFaqTopicTitle(item.faq_topic_id)} - {item.status}
                   </p>
-                  <h3 className="mt-2 text-lg font-semibold text-[#24313e]">
+                  <h3 className="mt-2 text-lg font-semibold text-brand-navy">
                     {item.question}
                   </h3>
                   <p className="mt-2 text-sm text-slate-500">
@@ -224,7 +224,7 @@ export default function CommunityQuestionsManager() {
                     }))
                   }
                   rows={4}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#0F4C5C]"
+                  className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-brand-teal"
                 />
               </label>
 
@@ -239,7 +239,7 @@ export default function CommunityQuestionsManager() {
                     }))
                   }
                   rows={2}
-                  className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-[#0F4C5C]"
+                  className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none focus:border-brand-teal"
                 />
               </label>
 
@@ -256,7 +256,7 @@ export default function CommunityQuestionsManager() {
                   type="button"
                   disabled={busy}
                   onClick={() => void save(item, "approved")}
-                  className="rounded-xl bg-[#0F4C5C] px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+                  className="rounded-xl bg-brand-teal px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
                 >
                   Approve and Publish
                 </button>

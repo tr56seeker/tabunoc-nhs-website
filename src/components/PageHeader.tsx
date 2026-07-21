@@ -22,13 +22,13 @@ export default function PageHeader({
   const feature = variant === "feature";
   const minimal = variant === "minimal";
   const centered = align === "center";
-  const titleClass = `${centered ? "mx-auto" : ""} max-w-5xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl ${feature ? "text-white" : "text-[#24313e]"}`;
+  const titleClass = `${centered ? "mx-auto" : ""} max-w-5xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl ${feature ? "text-white" : "text-brand-navy"}`;
 
   return (
     <section
       className={`relative overflow-hidden px-5 sm:px-8 ${
         feature
-          ? "border-b-[6px] border-[#ffdf20] bg-[#24313e] pb-14 pt-32 text-white lg:pb-16 lg:pt-36"
+          ? "border-b-[6px] border-brand-yellow bg-brand-navy pb-14 pt-32 text-white lg:pb-16 lg:pt-36"
           : minimal
             ? "border-b border-slate-200 bg-[#f5f5f7] pb-10 pt-28 sm:pb-12 sm:pt-32"
             : "border-b border-slate-200 bg-gradient-to-br from-[#f5f5f7] via-white to-slate-50 pb-14 pt-32 sm:pb-16 sm:pt-36"
@@ -50,8 +50,8 @@ export default function PageHeader({
           <p
             className={`inline-flex items-center rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] ${
               feature
-                ? "border border-white/15 bg-white/10 text-[#ffdf20]"
-                : "border border-slate-200 bg-white text-[#24313e] shadow-sm"
+                ? "border border-white/15 bg-white/10 text-brand-yellow"
+                : "border border-slate-200 bg-white text-brand-navy shadow-sm"
             }`}
           >
             {badge ?? eyebrow}

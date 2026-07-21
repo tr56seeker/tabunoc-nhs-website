@@ -15,12 +15,12 @@ export default function InstallPage() {
         title="Install Tabunoc NHS App"
         description="Add the official school website to your device for faster access to announcements, enrollment updates, and online services."
       />
-      <main className="min-h-screen bg-[#F8FAFC] px-6 py-12 text-[#24313E]">
+      <main className="min-h-screen bg-brand-slate px-6 py-12 text-brand-navy">
         <section className="mx-auto max-w-4xl">
 
-        <div className="mb-6 rounded-3xl border border-[#24313E]/10 bg-white p-6 shadow-sm">
-          <div className="mb-5 border-l-4 border-[#ffdf20] pl-4">
-            <h2 className="text-xl font-bold text-[#24313E]">
+        <div className="mb-6 rounded-3xl border border-brand-navy/10 bg-white p-6 shadow-sm">
+          <div className="mb-5 border-l-4 border-brand-yellow pl-4">
+            <h2 className="text-xl font-bold text-brand-navy">
               Install using Microsoft Edge
             </h2>
             <p className="mt-2 text-sm font-semibold text-gray-600">
@@ -51,7 +51,7 @@ export default function InstallPage() {
             </li>
           </ol>
 
-          <p className="mt-5 rounded-2xl bg-[#F8FAFC] px-4 py-3 text-sm font-semibold text-[#24313E]">
+          <p className="mt-5 rounded-2xl bg-brand-slate px-4 py-3 text-sm font-semibold text-brand-navy">
             In Microsoft Edge, installed website apps can be managed by typing
             edge://apps in the address bar.
           </p>

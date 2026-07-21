@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc *)",
+      "Bash(npx eslint *)",
+      "Bash(grep -oE \"\\\\.bg-brand-navy\\\\\\\\\\\\\\\\/90\\\\{[^}]*\\\\}\" .next/static/chunks/*.css)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill //PID 36896 //F)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\TR56_Seeker\\AppData\\Local\\Temp\\claude\\c--Projects-tabunoc-nhs-website\\4a9aac22-8d44-4a75-8d02-02c05132cb06\\scratchpad"
+    ]
+  }
+}

@@ -16,11 +16,7 @@ import {
 
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
-import {
-  getBuildingKey,
-  getBuildingOrder,
-  sortLocationsByLabel,
-} from "@/lib/mapLocationSort";
+import { sortLocationsByLabel } from "@/lib/mapLocationSort";
 
 type MapPoint = {
   x: number;
@@ -597,45 +593,22 @@ function LocationFinder({
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedBuilding, setSelectedBuilding] = useState("All");
   const containerRef = useRef<HTMLDivElement | null>(null);
   const listboxId = `${id}-listbox`;
   const selectedLabel =
     locations.find((location) => location.id === selectedId)?.label ?? "";
   const inputValue = isOpen ? query : selectedLabel;
 
-  const buildingOptions = useMemo(() => {
-    const keys = new Set<string>();
-
-    for (const location of locations) {
-      keys.add(getBuildingKey(location.label));
-    }
-
-    return Array.from(keys).sort((a, b) => {
-      const orderDifference = getBuildingOrder(a) - getBuildingOrder(b);
-
-      if (orderDifference !== 0) {
-        return orderDifference;
-      }
-
-      return a.localeCompare(b);
-    });
-  }, [locations]);
-
   const filteredLocations = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
     return sortLocationsByLabel(locations).filter((location) => {
-      const matchesBuilding =
-        selectedBuilding === "All" ||
-        getBuildingKey(location.label) === selectedBuilding;
-      const matchesQuery =
+      return (
         normalizedQuery === "" ||
-        location.label.toLowerCase().includes(normalizedQuery);
-
-      return matchesBuilding && matchesQuery;
+        location.label.toLowerCase().includes(normalizedQuery)
+      );
     });
-  }, [locations, query, selectedBuilding]);
+  }, [locations, query]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -781,36 +754,6 @@ function LocationFinder({
           </ul>
         )}
       </div>
-
-      {buildingOptions.length > 1 && (
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setSelectedBuilding("All")}
-            className={`rounded-full px-3 py-1 text-xs font-bold outline-none focus:ring-4 focus:ring-brand-teal/20 ${
-              selectedBuilding === "All"
-                ? "bg-brand-teal text-white"
-                : "border border-slate-300 bg-white text-slate-600 hover:bg-brand-mint"
-            }`}
-          >
-            All
-          </button>
-          {buildingOptions.map((building) => (
-            <button
-              key={building}
-              type="button"
-              onClick={() => setSelectedBuilding(building)}
-              className={`rounded-full px-3 py-1 text-xs font-bold outline-none focus:ring-4 focus:ring-brand-teal/20 ${
-                selectedBuilding === building
-                  ? "bg-brand-teal text-white"
-                  : "border border-slate-300 bg-white text-slate-600 hover:bg-brand-mint"
-              }`}
-            >
-              {building}
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -871,6 +814,12 @@ function FullscreenMapViewer({
 }) {
   const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
   const focusScale = 2.4;
+  const [isPanelExpanded, setIsPanelExpanded] = useState(false);
+
+  function handleSelectLocation(locationId: string) {
+    onSelectLocation(locationId);
+    setIsPanelExpanded(false);
+  }
 
   useEffect(() => {
     const context = transformRef.current;
@@ -901,7 +850,7 @@ function FullscreenMapViewer({
           locations={data.locations}
           selectedId={selectedId}
           isLoading={isLoading}
-          onSelectLocation={onSelectLocation}
+          onSelectLocation={handleSelectLocation}
         />
 
         <section className="grid gap-4 border-t border-slate-200 pt-5">
@@ -1110,29 +1059,61 @@ function FullscreenMapViewer({
         </div>
 
         <aside
-          className="max-h-[46dvh] w-full shrink-0 overflow-y-auto rounded-t-3xl border-t border-slate-200 bg-white p-5 text-brand-navy lg:h-full lg:max-h-none lg:w-[36vw] lg:min-w-[280px] lg:max-w-[360px] lg:rounded-none lg:border-l lg:border-t-0 lg:border-white/10"
+          className="w-full shrink-0 rounded-t-3xl border-t border-slate-200 bg-white text-brand-navy lg:flex lg:h-full lg:w-[36vw] lg:min-w-[280px] lg:max-w-[360px] lg:flex-col lg:rounded-none lg:border-l lg:border-t-0 lg:border-white/10"
           onPointerDown={(event) => event.stopPropagation()}
         >
-          <div className="mb-5 flex items-start justify-between gap-3">
-            <div>
+          <div className="flex items-start justify-between gap-3 p-5 lg:shrink-0">
+            <div className="min-w-0">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-green">
                 Route Details
               </p>
-              <h2 className="mt-2 text-lg font-bold leading-tight text-slate-950">
-                Evacuation Map
+              <h2 className="mt-2 truncate text-lg font-bold leading-tight text-slate-950">
+                {selectedLocation ? selectedLocation.label : "Evacuation Map"}
               </h2>
             </div>
-            <button
-              type="button"
-              aria-label="Exit fullscreen evacuation map"
-              onClick={onClose}
-              className="min-h-11 shrink-0 rounded-xl bg-brand-teal px-4 py-2 text-xs font-bold text-white outline-none focus:ring-4 focus:ring-brand-teal/20"
-            >
-              Close
-            </button>
+            <div className="flex shrink-0 items-center gap-2">
+              <button
+                type="button"
+                aria-expanded={isPanelExpanded}
+                aria-label={
+                  isPanelExpanded ? "Hide route details" : "Show route details"
+                }
+                onClick={() => setIsPanelExpanded((value) => !value)}
+                className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 text-slate-600 outline-none focus:ring-4 focus:ring-brand-teal/20 lg:hidden"
+              >
+                <svg
+                  aria-hidden="true"
+                  className={`h-5 w-5 transition-transform duration-200 ${
+                    isPanelExpanded ? "rotate-180" : ""
+                  }`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                aria-label="Exit fullscreen evacuation map"
+                onClick={onClose}
+                className="min-h-11 shrink-0 rounded-xl bg-brand-teal px-4 py-2 text-xs font-bold text-white outline-none focus:ring-4 focus:ring-brand-teal/20"
+              >
+                Close
+              </button>
+            </div>
           </div>
 
-          {renderRouteDetails()}
+          <div
+            className={`${
+              isPanelExpanded ? "block" : "hidden"
+            } max-h-[55dvh] overflow-y-auto border-t border-slate-100 p-5 pt-4 lg:block lg:max-h-none lg:flex-1 lg:border-t-0 lg:pt-0`}
+          >
+            {renderRouteDetails()}
+          </div>
         </aside>
       </div>
     </div>

@@ -527,9 +527,9 @@ function inferRoles(record: Record<string, string>): PersonnelRole[] {
 
   const isProgramImplementer =
     designationItems.some((item) => isProgramDesignationText(item)) ||
-    displayGroup.includes("program coordinator") ||
+    displayGroup.includes("coordinator") ||
     displayGroup.includes("program implementer") ||
-    subGroup.includes("program coordinator");
+    subGroup.includes("coordinator");
 
   if (isProgramImplementer) {
     roles.push("Program Implementer");

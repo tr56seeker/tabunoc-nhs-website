@@ -208,7 +208,7 @@ const quickAccessLinks = [
   {
     title: "School MIS",
     description: "Authorized access to the school management information system.",
-    href: "https://smis.tabunocnatlhs.com",
+    href: "https://smis-nextgen.tabunocnatlhs.com/login",
     external: true,
   },
   {

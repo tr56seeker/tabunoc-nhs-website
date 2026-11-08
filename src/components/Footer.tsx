@@ -23,7 +23,10 @@ const footerGroups = [
         label: "Document Request",
         href: "https://smis-nextgen.tabunocnatlhs.com/records-requests",
       },
-      { label: "School MIS", href: "https://smis.tabunocnatlhs.com" },
+      {
+        label: "School MIS",
+        href: "https://smis-nextgen.tabunocnatlhs.com/login",
+      },
       { label: "Install App", href: "/install" },
     ],
   },

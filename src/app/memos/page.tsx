@@ -109,6 +109,7 @@ export default function MemosPage() {
                 <div className="grid gap-4 lg:grid-cols-[1fr_220px_180px]">
                   <input
                     type="text"
+                    aria-label="Search public memos"
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
                     placeholder="Search by memo number, title, category, or issuing office..."
@@ -116,6 +117,7 @@ export default function MemosPage() {
                   />
 
                   <select
+                    aria-label="Filter memos by category"
                     value={selectedCategory}
                     onChange={(event) =>
                       setSelectedCategory(event.target.value as "All" | MemoCategory)
@@ -131,6 +133,7 @@ export default function MemosPage() {
                   </select>
 
                   <select
+                    aria-label="Filter memos by year"
                     value={selectedYear}
                     onChange={(event) => setSelectedYear(event.target.value)}
                     className="w-full rounded-xl border border-slate-300 dark:border-brand-charcoal bg-white dark:bg-brand-dark px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none transition focus:border-brand-teal focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/50"
@@ -293,23 +296,29 @@ export default function MemosPage() {
             ) : (
               <div className="rounded-2xl border border-slate-200 dark:border-brand-charcoal bg-brand-slate dark:bg-brand-dark p-10 text-center shadow-sm dark:shadow-black/20">
                 <h3 className="text-2xl font-semibold text-slate-950 dark:text-white">
-                  No public memo found.
+                  {publicMemos.length === 0
+                    ? "No public memos are available yet."
+                    : "No public memo matches your filters."}
                 </h3>
                 <p className="mx-auto mt-3 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-                  Try searching by memo number, title, category, date, or issuing
-                  office. You may also clear the filter to view all public memos.
+                  {publicMemos.length === 0
+                    ? "Official public memos will appear here once their verified files are ready for publication. For assistance, please use the school’s official contact channels."
+                    : "Try searching by memo number, title, category, date, or issuing office. You may also clear the filters to view all public memos."}
                 </p>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSearchTerm("");
-                    setSelectedCategory("All");
-                  }}
-                  className="mt-6 rounded-xl bg-yellow-300 px-6 py-3 font-semibold text-slate-950 transition hover:-translate-y-1 hover:bg-yellow-200"
-                >
-                  Show All Memos
-                </button>
+                {publicMemos.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchTerm("");
+                      setSelectedCategory("All");
+                      setSelectedYear("All");
+                    }}
+                    className="mt-6 rounded-xl bg-yellow-300 px-6 py-3 font-semibold text-slate-950 transition hover:-translate-y-1 hover:bg-yellow-200"
+                  >
+                    Show All Memos
+                  </button>
+                )}
               </div>
             )}
           </div>

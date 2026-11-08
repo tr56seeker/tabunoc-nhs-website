@@ -116,13 +116,19 @@ function StatusCard({ label, value, detail }: { label: string; value: string | n
 export default function SchoolYearProgress({ status, events }: SchoolYearProgressProps) {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const yearStart = parseLocalDate(status.schoolYearStart);
-  const yearEnd = parseLocalDate(status.schoolYearEnd);
-  const completedEnd = today < yearStart ? new Date(yearStart.getTime() - 86400000) : today > yearEnd ? yearEnd : today;
-  const completedDays = countSchoolDays(yearStart, completedEnd, status.nonClassDays);
-  const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
-  const remainingStart = today < yearStart ? yearStart : tomorrow;
-  const remainingDays = today > yearEnd ? 0 : countSchoolDays(remainingStart, yearEnd, status.nonClassDays);
+  const completedDays = Math.min(
+    status.totalSchoolDays,
+    status.terms.reduce((total, term) => {
+      const termStart = parseLocalDate(term.startDate);
+      const termEnd = parseLocalDate(term.endDate);
+
+      if (today < termStart) return total;
+
+      const completedEnd = today > termEnd ? termEnd : today;
+      return total + countSchoolDays(termStart, completedEnd, status.nonClassDays);
+    }, 0)
+  );
+  const remainingDays = Math.max(0, status.totalSchoolDays - completedDays);
   const currentTerm = getCurrentTerm(status, today);
   const schoolWeek = getCurrentSchoolWeek(status, today, completedDays);
   const nextActivity = getNextMajorActivity(events, today);

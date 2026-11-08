@@ -7,16 +7,16 @@
     {
       "name": "Term 1",
       "startDate": "2026-06-08",
-      "endDate": "2026-09-18"
+      "endDate": "2026-09-15"
     },
     {
       "name": "Term 2",
-      "startDate": "2026-09-29",
-      "endDate": "2027-01-16"
+      "startDate": "2026-09-16",
+      "endDate": "2026-12-18"
     },
     {
       "name": "Term 3",
-      "startDate": "2027-01-26",
+      "startDate": "2027-01-04",
       "endDate": "2027-04-08"
     }
   ],
@@ -24,7 +24,35 @@
     {
       "date": "2026-06-12",
       "label": "Independence Day"
+    },
+    {
+      "date": "2026-08-21",
+      "label": "Ninoy Aquino Day"
+    },
+    {
+      "date": "2026-08-31",
+      "label": "National Heroes Day"
+    },
+    {
+      "date": "2026-11-02",
+      "label": "All Souls' Day"
+    },
+    {
+      "date": "2026-11-30",
+      "label": "Bonifacio Day"
+    },
+    {
+      "date": "2026-12-08",
+      "label": "Feast of the Immaculate Conception of Mary"
+    },
+    {
+      "date": "2027-03-25",
+      "label": "Maundy Thursday"
+    },
+    {
+      "date": "2027-03-26",
+      "label": "Good Friday"
     }
   ],
-  "note": "School year progress is based on the encoded school calendar and may be updated following DepEd issuances, school memoranda, class suspensions, and other official announcements."
+  "note": "Term dates and 201 class days follow DepEd Order No. 009, s. 2026. Progress is based on the encoded national calendar and may be updated following local holidays, class suspensions, school memoranda, and other official announcements."
 }

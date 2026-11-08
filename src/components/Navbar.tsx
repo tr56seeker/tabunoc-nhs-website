@@ -104,7 +104,7 @@ const navItems: NavItem[] = [
       },
       {
         label: "School MIS",
-        href: "https://smis.tabunocnatlhs.com",
+        href: "https://smis-nextgen.tabunocnatlhs.com/login",
         description: "Authorized school management information system",
         external: true,
       },

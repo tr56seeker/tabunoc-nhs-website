@@ -32,7 +32,11 @@ export default function FaqManager() {
   }
 
   useEffect(() => {
-    void load();
+    const animationFrame = window.requestAnimationFrame(() => {
+      void load();
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
   }, []);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {

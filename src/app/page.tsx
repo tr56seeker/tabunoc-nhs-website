@@ -93,14 +93,6 @@ function readTotalLearnersFromCsv(csvText: string) {
   return null;
 }
 
-function includesAny(value: string, keywords: string[]) {
-  const normalized = value.toLowerCase();
-
-  return keywords.some((keyword) =>
-    normalized.includes(keyword.toLowerCase())
-  );
-}
-
 function getCounterDuration(label: string) {
   const normalizedLabel = label.toLowerCase();
 

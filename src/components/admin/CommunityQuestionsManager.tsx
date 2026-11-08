@@ -72,7 +72,11 @@ export default function CommunityQuestionsManager() {
   }
 
   useEffect(() => {
-    void load(status);
+    const animationFrame = window.requestAnimationFrame(() => {
+      void load(status);
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [status]);
 

@@ -40,8 +40,11 @@ export default function PopulationCountUp({
 
     if (reduceMotionQuery.matches) {
       hasAnimatedRef.current = true;
-      setDisplayValue(value);
-      return;
+      const animationFrameId = window.requestAnimationFrame(() => {
+        setDisplayValue(value);
+      });
+
+      return () => window.cancelAnimationFrame(animationFrameId);
     }
 
     const element = countRef.current;
@@ -53,7 +56,6 @@ export default function PopulationCountUp({
       return;
     }
 
-    setDisplayValue(0);
     let animationFrameId: number | undefined;
     let delayTimerId: number | undefined;
     let finalRevealTimerId: number | undefined;

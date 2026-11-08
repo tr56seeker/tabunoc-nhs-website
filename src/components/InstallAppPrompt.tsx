@@ -35,15 +35,13 @@ function isDismissedRecently() {
 
 export default function InstallAppPrompt() {
   const pathname = usePathname();
+  const isAdminPath = pathname.startsWith("/admin");
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [showInstall, setShowInstall] = useState(false);
 
   useEffect(() => {
-    if (pathname.startsWith("/admin")) {
-      setShowInstall(false);
-      return;
-    }
+    if (isAdminPath) return;
 
     if (isAppInstalled() || isDismissedRecently()) {
       return;
@@ -78,7 +76,7 @@ export default function InstallAppPrompt() {
       );
       window.removeEventListener("appinstalled", handleAppInstalled);
     };
-  }, [pathname]);
+  }, [isAdminPath]);
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
@@ -105,7 +103,7 @@ export default function InstallAppPrompt() {
     setDeferredPrompt(null);
   };
 
-  if (!showInstall || pathname.startsWith("/admin")) return null;
+  if (!showInstall || isAdminPath) return null;
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-xl rounded-2xl border border-yellow-300 bg-white/95 p-4 shadow-2xl backdrop-blur-md">

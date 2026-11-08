@@ -96,7 +96,11 @@ export default function HighlightsManager() {
   }, []);
 
   useEffect(() => {
-    void loadHighlights();
+    const animationFrame = window.requestAnimationFrame(() => {
+      void loadHighlights();
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
   }, [loadHighlights]);
 
   async function createHighlight(event: FormEvent<HTMLFormElement>) {
@@ -391,6 +395,8 @@ export default function HighlightsManager() {
                   className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
                 >
                   <div className="grid lg:grid-cols-[15rem_1fr]">
+                    {/* Remote admin previews intentionally bypass Next image optimization. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={highlight.image_url}
                       alt={highlight.alt_text || highlight.title}

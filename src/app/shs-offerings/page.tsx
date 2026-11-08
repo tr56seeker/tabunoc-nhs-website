@@ -129,8 +129,9 @@ export default function SHSOfferingsPage() {
           title="Senior High School Offerings"
           description="Explore the Pure Academic Track and Tech Pro Track offerings available for Senior High School learners of Tabunoc National High School."
           backgroundImage="/images/shs-offerings-hero.png"
-          backgroundImageClassName="origin-bottom object-contain object-bottom scale-[1.18] sm:scale-[1.28] lg:scale-100 lg:object-cover lg:object-center"
+          backgroundImageClassName="origin-bottom object-contain object-bottom sm:scale-[1.28] lg:scale-100 lg:object-cover lg:object-center"
           backgroundOverlayClassName="bg-gradient-to-b from-white/90 via-white/45 to-white/55 sm:from-white/80 sm:via-white/35 sm:to-white/45 lg:from-white/30 lg:via-white/5 lg:to-white/20"
+          backgroundImageMobileStrip
         >
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link

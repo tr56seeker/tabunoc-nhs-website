@@ -11,6 +11,7 @@ type PageHeaderProps = {
   backgroundImage?: string;
   backgroundImageClassName?: string;
   backgroundOverlayClassName?: string;
+  backgroundImageMobileStrip?: boolean;
   children?: ReactNode;
 };
 
@@ -24,6 +25,7 @@ export default function PageHeader({
   backgroundImage,
   backgroundImageClassName = "object-cover object-center",
   backgroundOverlayClassName,
+  backgroundImageMobileStrip = false,
   children,
 }: PageHeaderProps) {
   const feature = variant === "feature";
@@ -38,7 +40,11 @@ export default function PageHeader({
           ? "border-b-[6px] border-brand-yellow bg-brand-navy pb-14 pt-32 text-white lg:pb-16 lg:pt-36"
           : minimal
             ? "border-b border-slate-200 bg-[#f5f5f7] pb-10 pt-28 sm:pb-12 sm:pt-32"
-            : "border-b border-slate-200 bg-gradient-to-br from-[#f5f5f7] via-white to-slate-50 pb-14 pt-32 sm:pb-16 sm:pt-36"
+            : `border-b border-slate-200 bg-gradient-to-br from-[#f5f5f7] via-white to-slate-50 ${
+                backgroundImageMobileStrip
+                  ? "pb-52 pt-24 sm:pb-16 sm:pt-36"
+                  : "pb-14 pt-32 sm:pb-16 sm:pt-36"
+              }`
       }`}
     >
       {backgroundImage && (

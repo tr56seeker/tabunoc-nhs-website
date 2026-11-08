@@ -9,9 +9,13 @@ type PageHeaderProps = {
   variant?: "standard" | "feature" | "minimal";
   align?: "center" | "left";
   backgroundImage?: string;
+  backgroundImageMobile?: string;
+  backgroundImageTablet?: string;
   backgroundImageClassName?: string;
+  backgroundImageMobileClassName?: string;
+  backgroundImageTabletClassName?: string;
   backgroundOverlayClassName?: string;
-  backgroundImageMobileStrip?: boolean;
+  sectionClassName?: string;
   children?: ReactNode;
 };
 
@@ -23,14 +27,21 @@ export default function PageHeader({
   variant = "standard",
   align = "center",
   backgroundImage,
+  backgroundImageMobile,
+  backgroundImageTablet,
   backgroundImageClassName = "object-cover object-center",
+  backgroundImageMobileClassName = "object-cover object-center",
+  backgroundImageTabletClassName = "object-cover object-center",
   backgroundOverlayClassName,
-  backgroundImageMobileStrip = false,
+  sectionClassName = "",
   children,
 }: PageHeaderProps) {
   const feature = variant === "feature";
   const minimal = variant === "minimal";
   const centered = align === "center";
+  const hasResponsiveBackground = Boolean(
+    backgroundImageMobile || backgroundImageTablet,
+  );
   const titleClass = `${centered ? "mx-auto" : ""} max-w-5xl text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl ${feature ? "text-white" : "text-brand-navy"}`;
 
   return (
@@ -40,24 +51,56 @@ export default function PageHeader({
           ? "border-b-[6px] border-brand-yellow bg-brand-navy pb-14 pt-32 text-white lg:pb-16 lg:pt-36"
           : minimal
             ? "border-b border-slate-200 bg-[#f5f5f7] pb-10 pt-28 sm:pb-12 sm:pt-32"
-            : `border-b border-slate-200 bg-gradient-to-br from-[#f5f5f7] via-white to-slate-50 ${
-                backgroundImageMobileStrip
-                  ? "pb-52 pt-24 sm:pb-16 sm:pt-36"
-                  : "pb-14 pt-32 sm:pb-16 sm:pt-36"
+            : `border-b border-slate-200 bg-gradient-to-br from-[#f5f5f7] via-white to-slate-50 pb-14 ${
+                hasResponsiveBackground
+                  ? "pt-24 sm:pb-16 sm:pt-32 lg:pt-36"
+                  : "pt-32 sm:pb-16 sm:pt-36"
               }`
-      }`}
+      } ${sectionClassName}`}
     >
       {backgroundImage && (
         <>
-          <Image
-            src={backgroundImage}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className={backgroundImageClassName}
-            aria-hidden="true"
-          />
+          {hasResponsiveBackground ? (
+            <>
+              <Image
+                src={backgroundImageMobile ?? backgroundImageTablet ?? backgroundImage}
+                alt=""
+                fill
+                priority
+                sizes="100vw"
+                className={`sm:hidden ${backgroundImageMobileClassName}`}
+                aria-hidden="true"
+              />
+              <Image
+                src={backgroundImageTablet ?? backgroundImageMobile ?? backgroundImage}
+                alt=""
+                fill
+                priority
+                sizes="100vw"
+                className={`hidden sm:block lg:hidden ${backgroundImageTabletClassName}`}
+                aria-hidden="true"
+              />
+              <Image
+                src={backgroundImage}
+                alt=""
+                fill
+                priority
+                sizes="100vw"
+                className={`hidden lg:block ${backgroundImageClassName}`}
+                aria-hidden="true"
+              />
+            </>
+          ) : (
+            <Image
+              src={backgroundImage}
+              alt=""
+              fill
+              priority
+              sizes="100vw"
+              className={backgroundImageClassName}
+              aria-hidden="true"
+            />
+          )}
           {backgroundOverlayClassName && (
             <div
               className={`absolute inset-0 ${backgroundOverlayClassName}`}

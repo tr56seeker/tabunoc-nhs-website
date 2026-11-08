@@ -12,12 +12,14 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import PopulationCountUp from "@/components/PopulationCountUp";
+import { createPageMetadata } from "@/lib/siteMetadata";
 
-export const metadata: Metadata = {
-  title: "Learner Population | Tabunoc National High School",
+export const metadata: Metadata = createPageMetadata({
+  title: "Learner Population",
   description:
     "View the current school-level enrollment summary and public school profile of Tabunoc National High School.",
-};
+  path: "/learner-population",
+});
 
 type PopulationRow = {
   sortOrder: number;
@@ -238,7 +240,7 @@ export default function LearnerPopulationPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-brand-slate text-brand-navy">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-brand-slate text-brand-navy">
         <PageHeader
           eyebrow="School Profile"
           title="Learner Population"

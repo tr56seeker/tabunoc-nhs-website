@@ -11,12 +11,14 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import FaqCommunityQuestions from "@/components/FaqCommunityQuestions";
+import { createPageMetadata } from "@/lib/siteMetadata";
 
-export const metadata: Metadata = {
-  title: "Frequently Asked Questions | Tabunoc National High School",
+export const metadata: Metadata = createPageMetadata({
+  title: "Frequently Asked Questions",
   description:
     "Find answers to common questions about school services, enrollment, schedules, and official channels of Tabunoc National High School.",
-};
+  path: "/faq",
+});
 
 const faqGroups = [
   {
@@ -216,7 +218,7 @@ const quickLinks = [
   },
   {
     label: "Contact the School",
-    href: "/contact",
+    href: "/#contact",
   },
 ];
 
@@ -244,7 +246,7 @@ export default function FAQPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-[#f5f5f7] text-slate-950">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-[#f5f5f7] text-slate-950">
         <PageHeader
           eyebrow="Help and Information"
           title="Frequently Asked Questions"
@@ -260,7 +262,7 @@ export default function FAQPage() {
               </Link>
 
               <Link
-                href="/contact"
+                href="/#contact"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-teal/20 bg-white px-5 py-3 text-sm font-semibold text-brand-teal transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
               >
                 Contact the School
@@ -401,7 +403,7 @@ export default function FAQPage() {
 
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
-                href="/contact"
+                href="/#contact"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-brand-teal transition duration-300 hover:-translate-y-1 hover:bg-yellow-50"
               >
                 Contact the School

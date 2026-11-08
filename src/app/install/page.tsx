@@ -1,21 +1,29 @@
 ﻿import PageHeader from "@/components/PageHeader";
 
-export const metadata = {
-  title: "Install Tabunoc NHS App | Tabunoc National High School",
+import type { Metadata } from "next";
+
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import { createPageMetadata } from "@/lib/siteMetadata";
+
+export const metadata: Metadata = createPageMetadata({
+  title: "Install Tabunoc NHS App",
   description:
     "Guide for installing the Tabunoc National High School website as a mobile app.",
-};
+  path: "/install",
+});
 
 export default function InstallPage() {
   return (
     <>
+      <Navbar />
       <PageHeader
         variant="minimal"
         eyebrow="Website App"
         title="Install Tabunoc NHS App"
         description="Add the official school website to your device for faster access to announcements, enrollment updates, and online services."
       />
-      <main className="min-h-screen bg-brand-slate px-6 py-12 text-brand-navy">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-brand-slate px-6 py-12 text-brand-navy">
         <section className="mx-auto max-w-4xl">
 
         <div className="mb-6 rounded-3xl border border-brand-navy/10 bg-white p-6 shadow-sm">
@@ -31,7 +39,7 @@ export default function InstallPage() {
 
           <ol className="space-y-3 text-sm text-gray-700">
             <li>1. Open Microsoft Edge.</li>
-            <li>2. Go to https://www.tabunocnatlhs.com.</li>
+            <li>2. Go to https://tabunocnatlhs.com.</li>
             <li>
               3. Look at the right side of the address bar for the app install
               icon.
@@ -91,6 +99,7 @@ export default function InstallPage() {
         </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

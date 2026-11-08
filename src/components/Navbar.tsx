@@ -806,7 +806,7 @@ export default function Navbar({
             })}
 
             <Link
-              href="/contact"
+              href="/#contact"
               onClick={() => {
                 setMenuOpen(false);
                 setMobileOpenGroup(null);

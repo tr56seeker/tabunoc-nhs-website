@@ -173,7 +173,7 @@ export default function AlumniPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white text-slate-950">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-white text-slate-950">
         <PageHeader
           eyebrow="Alumni Community"
           title="Tabunoc NHS Alumni and Community"
@@ -199,7 +199,7 @@ export default function AlumniPage() {
               </a>
 
               <Link
-                href="/contact"
+                href="/#contact"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-teal/20 bg-white px-5 py-3 text-sm font-semibold text-brand-teal transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
               >
                 Contact the School
@@ -402,7 +402,7 @@ export default function AlumniPage() {
                 </a>
 
                 <Link
-                  href="/contact"
+                  href="/#contact"
                   className="inline-flex items-center justify-center gap-2 rounded-xl border border-brand-teal/20 bg-white px-5 py-3 text-sm font-semibold text-brand-teal transition duration-300 hover:-translate-y-1 hover:bg-slate-50"
                 >
                   Coordinate with the School

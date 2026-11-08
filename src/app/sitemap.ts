@@ -1,8 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://tabunocnatlhs.com"
-).replace(/\/+$/, "");
+import { SITE_URL } from "@/lib/siteMetadata";
 
 const routes = [
   { path: "/", priority: 1 },
@@ -16,7 +13,6 @@ const routes = [
   { path: "/memos", priority: 0.6 },
   { path: "/school-calendar", priority: 0.6 },
   { path: "/faq", priority: 0.6 },
-  { path: "/contact", priority: 0.7 },
   { path: "/install", priority: 0.3 },
 ];
 
@@ -24,7 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 
   return routes.map(({ path, priority }) => ({
-    url: `${siteUrl}${path}`,
+    url: `${SITE_URL}${path}`,
     lastModified,
     priority,
   }));

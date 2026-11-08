@@ -223,7 +223,7 @@ export default function SchoolCalendar({ events }: { events: CalendarEvent[] }) 
   };
 
   return (
-    <main className="min-h-screen bg-[#f5f5f7] text-slate-900">
+    <div className="min-h-screen bg-[#f5f5f7] text-slate-900">
       <section className="mx-auto max-w-7xl px-3 pb-8 pt-4 sm:px-6 lg:px-8 lg:pb-10 lg:pt-5">
         <div className="mb-4">
           <p className="mb-3 px-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Filter by category</p>
@@ -266,7 +266,7 @@ export default function SchoolCalendar({ events }: { events: CalendarEvent[] }) 
       </section>
 
       {selectedEvent && <EventModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />}
-    </main>
+    </div>
   );
 }
 

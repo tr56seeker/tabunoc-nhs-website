@@ -537,7 +537,7 @@ export default function EnrollmentPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white text-slate-950">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-white text-slate-950">
         <PageHeader
           eyebrow="Enrollment Guide"
           title="Enrollment Information"

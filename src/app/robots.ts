@@ -1,8 +1,5 @@
 import type { MetadataRoute } from "next";
-
-const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://tabunocnatlhs.com"
-).replace(/\/+$/, "");
+import { SITE_URL } from "@/lib/siteMetadata";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -11,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/admin/", "/api/"],
     },
-    sitemap: `${siteUrl}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

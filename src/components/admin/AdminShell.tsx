@@ -48,8 +48,12 @@ export default function AdminShell({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   useEffect(() => {
-    const savedValue = window.localStorage.getItem(sidebarPreferenceKey);
-    setIsSidebarCollapsed(savedValue === "true");
+    const animationFrame = window.requestAnimationFrame(() => {
+      const savedValue = window.localStorage.getItem(sidebarPreferenceKey);
+      setIsSidebarCollapsed(savedValue === "true");
+    });
+
+    return () => window.cancelAnimationFrame(animationFrame);
   }, []);
 
   function toggleSidebar() {
@@ -238,7 +242,7 @@ export default function AdminShell({
           </div>
         </header>
 
-        <main className="px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+        <main id="main-content" tabIndex={-1} className="px-4 py-6 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>
   );

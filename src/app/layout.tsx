@@ -5,6 +5,12 @@ import ClientParallaxBackground from "@/components/ClientParallaxBackground";
 import InstallAppPrompt from "@/components/InstallAppPrompt";
 import MotionProvider from "@/components/MotionProvider";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
+import {
+  createPageMetadata,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/siteMetadata";
 import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
@@ -17,18 +23,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const siteUrl = (
-  process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://tabunocnatlhs.com"
-).replace(/\/+$/, "");
-
-const siteTitle = "Tabunoc National High School";
-const siteDescription =
-  "Official website and mobile web app of Tabunoc National High School, Sangi Road, Tabunok, Talisay City, Cebu.";
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: siteTitle,
-  description: siteDescription,
+  metadataBase: new URL(SITE_URL),
+  ...createPageMetadata({
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    path: "/",
+  }),
   applicationName: "Tabunoc NHS",
   manifest: "/manifest.webmanifest",
   icons: {
@@ -40,28 +41,6 @@ export const metadata: Metadata = {
     title: "Tabunoc NHS",
     statusBarStyle: "default",
   },
-  openGraph: {
-    type: "website",
-    locale: "en_PH",
-    url: siteUrl,
-    siteName: siteTitle,
-    title: siteTitle,
-    description: siteDescription,
-    images: [
-      {
-        url: "/images/tabunoc-nhs-logo-512.png",
-        width: 512,
-        height: 512,
-        alt: "Tabunoc National High School logo",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary",
-    title: siteTitle,
-    description: siteDescription,
-    images: ["/images/tabunoc-nhs-logo-512.png"],
-  },
 };
 
 export const viewport: Viewport = {
@@ -71,12 +50,12 @@ export const viewport: Viewport = {
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "EducationalOrganization",
-  name: siteTitle,
+  name: SITE_NAME,
   alternateName: "Tabunoc NHS",
-  description: siteDescription,
-  url: siteUrl,
-  logo: `${siteUrl}/images/tabunoc-nhs-logo-512.png`,
-  image: `${siteUrl}/images/tabunoc-nhs-logo-512.png`,
+  description: SITE_DESCRIPTION,
+  url: SITE_URL,
+  logo: `${SITE_URL}/images/tabunoc-nhs-logo-512.png`,
+  image: `${SITE_URL}/images/tabunoc-nhs-logo-512.png`,
   email: "303111@deped.gov.ph",
   sameAs: [
     "https://facebook.com/tabunocnatlhs",
@@ -103,6 +82,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} light h-full bg-white text-slate-950 antialiased`}
     >
       <body className="min-h-full flex flex-col overflow-x-hidden bg-white text-slate-950">
+        <a
+          href="#main-content"
+          className="fixed left-4 top-4 z-[2000] -translate-y-24 rounded-lg bg-brand-yellow px-4 py-3 font-semibold text-brand-navy shadow-lg transition-transform focus:translate-y-0 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-navy"
+        >
+          Skip to main content
+        </a>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

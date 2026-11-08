@@ -214,7 +214,7 @@ const quickAccessLinks = [
   {
     title: "Contact Us",
     description: "Reach the school through official communication channels.",
-    href: "/contact",
+    href: "/#contact",
   },
 ];
 
@@ -387,7 +387,7 @@ export default function Home() {
     <>
       <Navbar brandMode="afterScroll" />
 
-      <main className="min-h-screen bg-white text-slate-950">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-white text-slate-950">
         {/* HERO */}
         <section className="relative overflow-hidden bg-gradient-to-br from-brand-mint via-white to-yellow-50 px-6 pb-20 pt-32">
           <div className="absolute left-10 top-24 h-72 w-72 rounded-full bg-teal-200/40 blur-3xl" />
@@ -451,7 +451,7 @@ export default function Home() {
               </ActionLink>
 
               <ActionLink
-                href="/contact"
+                href="/#contact"
                 className="col-span-2 h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight border border-brand-teal/20 bg-white text-brand-teal hover:bg-slate-50 sm:col-auto sm:h-auto sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
               >
                 <span className="sm:hidden">Contact the School</span>

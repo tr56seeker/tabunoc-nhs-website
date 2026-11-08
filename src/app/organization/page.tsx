@@ -1629,7 +1629,7 @@ return (
   <>
     <Navbar autoHideOnMobileScroll />
 
-    <main className="min-h-screen w-full overflow-x-hidden bg-brand-slate text-slate-950 dark:bg-brand-black dark:text-white">
+    <main id="main-content" tabIndex={-1} className="min-h-screen w-full overflow-x-hidden bg-brand-slate text-slate-950 dark:bg-brand-black dark:text-white">
         <PageHeader
           eyebrow="Faculty and Staff Directory"
           title="School Administration, Faculty, and Staff"

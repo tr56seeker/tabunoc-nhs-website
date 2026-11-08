@@ -293,7 +293,7 @@ export default function EvacuationMapPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#f7f8f5] px-5 py-24 text-[#1f2933]">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-[#f7f8f5] px-5 py-24 text-[#1f2933]">
       <section className="mx-auto max-w-5xl">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-brand-green">
           School DRRM

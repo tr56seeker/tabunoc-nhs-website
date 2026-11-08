@@ -98,7 +98,7 @@ export default function MemosPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-white dark:bg-brand-black text-slate-950 dark:text-white">
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-white dark:bg-brand-black text-slate-950 dark:text-white">
         {/* HERO */}
           <PageHeader
             eyebrow="Official School Repository"

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/siteMetadata";
 
-export const metadata: Metadata = {
-  title: "Enrollment Guide | Tabunoc National High School",
+export const metadata: Metadata = createPageMetadata({
+  title: "Enrollment Guide",
   description:
     "Enrollment reminders, requirements, and step-by-step guidance for incoming and returning learners of Tabunoc National High School.",
-};
+  path: "/enrollment",
+});
 
 export default function EnrollmentLayout({
   children,

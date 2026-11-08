@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function AdminLoginPage() {
   return (
-    <main className="min-h-screen bg-[#f5f7fa] px-4 py-12 text-slate-950 sm:px-6">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-[#f5f7fa] px-4 py-12 text-slate-950 sm:px-6">
       <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-6xl items-center justify-center">
         <section className="grid w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,35,36,0.14)] lg:grid-cols-[1fr_440px]">
           <div className="bg-brand-navy p-8 text-white sm:p-10">

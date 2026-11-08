@@ -97,6 +97,12 @@ const navItems: NavItem[] = [
         description: "Senior High School programs and learning pathways",
       },
       {
+        label: "Document Request",
+        href: "https://smis-nextgen.tabunocnatlhs.com/records-requests",
+        description: "Requirements and steps for requesting school records",
+        external: true,
+      },
+      {
         label: "School MIS",
         href: "https://smis.tabunocnatlhs.com",
         description: "Authorized school management information system",

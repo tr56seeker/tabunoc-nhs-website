@@ -180,6 +180,10 @@ const reminders = [
 
 const quickLinks = [
   {
+    label: "Document Request",
+    href: "https://smis-nextgen.tabunocnatlhs.com/records-requests",
+  },
+  {
     label: "Enrollment Guide",
     href: "/enrollment",
   },
@@ -210,6 +214,8 @@ export default function CitizenCharterPage() {
                 <a
                   key={item.label}
                   href={item.href}
+                  target={item.href.startsWith("http") ? "_blank" : undefined}
+                  rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   className="rounded-xl bg-white dark:bg-brand-dark px-6 py-3 font-semibold text-brand-teal dark:text-yellow-300 shadow-sm dark:shadow-black/20 transition hover:-translate-y-1 hover:scale-[1.01] hover:text-brand-teal dark:hover:text-yellow-300"
                 >
                   {item.label}

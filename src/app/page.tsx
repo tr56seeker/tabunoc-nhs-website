@@ -200,6 +200,12 @@ const quickAccessLinks = [
     href: "/citizen-charter",
   },
   {
+    title: "Document Request",
+    description: "Requirements and steps for requesting school records and certifications.",
+    href: "https://smis-nextgen.tabunocnatlhs.com/records-requests",
+    external: true,
+  },
+  {
     title: "School MIS",
     description: "Authorized access to the school management information system.",
     href: "https://smis.tabunocnatlhs.com",

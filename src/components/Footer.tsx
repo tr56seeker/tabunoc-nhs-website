@@ -19,6 +19,10 @@ const footerGroups = [
     links: [
       { label: "Enrollment Guide", href: "/enrollment" },
       { label: "SHS Offerings", href: "/shs-offerings" },
+      {
+        label: "Document Request",
+        href: "https://smis-nextgen.tabunocnatlhs.com/records-requests",
+      },
       { label: "School MIS", href: "https://smis.tabunocnatlhs.com" },
       { label: "Install App", href: "/install" },
     ],

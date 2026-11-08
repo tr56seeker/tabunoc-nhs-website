@@ -249,6 +249,13 @@ textarea {
   will-change: transform;
 }
 
+/* Keep the SHS hero proportional in narrow, extra-tall split-screen panes. */
+@media (max-width: 520px) and (max-aspect-ratio: 4/9) {
+  .shs-offerings-hero {
+    min-height: 560px !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-home-highlights-marquee {
     animation: none;

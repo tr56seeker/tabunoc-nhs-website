@@ -610,7 +610,7 @@ export const personnel: Personnel[] = [
     email: "richieryan.mabunay@deped.gov.ph",
     messenger: "https://m.me/tr56seeker",
     consultationSchedule: "By appointment through official school channels",
-    photo: "/teachers/richie-ryan-mabunay.jpg",
+    photo: "/personnel/richie-ryan-mabunay.jpg",
   },
   {
     id: "benerando-erediano",

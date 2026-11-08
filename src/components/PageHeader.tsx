@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { ReactNode } from "react";
 
 type PageHeaderProps = {
@@ -7,6 +8,9 @@ type PageHeaderProps = {
   badge?: string;
   variant?: "standard" | "feature" | "minimal";
   align?: "center" | "left";
+  backgroundImage?: string;
+  backgroundImageClassName?: string;
+  backgroundOverlayClassName?: string;
   children?: ReactNode;
 };
 
@@ -17,6 +21,9 @@ export default function PageHeader({
   badge,
   variant = "standard",
   align = "center",
+  backgroundImage,
+  backgroundImageClassName = "object-cover object-center",
+  backgroundOverlayClassName,
   children,
 }: PageHeaderProps) {
   const feature = variant === "feature";
@@ -34,6 +41,26 @@ export default function PageHeader({
             : "border-b border-slate-200 bg-gradient-to-br from-[#f5f5f7] via-white to-slate-50 pb-14 pt-32 sm:pb-16 sm:pt-36"
       }`}
     >
+      {backgroundImage && (
+        <>
+          <Image
+            src={backgroundImage}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className={backgroundImageClassName}
+            aria-hidden="true"
+          />
+          {backgroundOverlayClassName && (
+            <div
+              className={`absolute inset-0 ${backgroundOverlayClassName}`}
+              aria-hidden="true"
+            />
+          )}
+        </>
+      )}
+
       {feature && (
         <div
           className="absolute -right-24 -top-24 h-80 w-80 rounded-full border-[56px] border-white/[0.04]"

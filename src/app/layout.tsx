@@ -4,6 +4,7 @@ import "./globals.css";
 import ClientParallaxBackground from "@/components/ClientParallaxBackground";
 import InstallAppPrompt from "@/components/InstallAppPrompt";
 import MotionProvider from "@/components/MotionProvider";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import {
   createPageMetadata,
@@ -94,6 +95,7 @@ export default function RootLayout({
         />
         <MotionProvider>
           <SmoothScrollProvider />
+          <ServiceWorkerRegistration />
           <ClientParallaxBackground />
           {children}
           <Analytics />

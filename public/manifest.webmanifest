@@ -1,15 +1,18 @@
 {
   "name": "Tabunoc National High School",
   "short_name": "Tabunoc NHS",
+  "id": "/",
   "description": "Official mobile web app of Tabunoc National High School, Tabunok, Talisay City, Cebu.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
+  "display_override": ["standalone", "minimal-ui"],
   "background_color": "#ffffff",
   "theme_color": "#ffdf20",
   "categories": ["education", "productivity"],
   "lang": "en-PH",
+  "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -34,6 +37,29 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Enrollment Guide",
+      "short_name": "Enrollment",
+      "description": "Open school enrollment requirements and steps.",
+      "url": "/enrollment",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "School Calendar",
+      "short_name": "Calendar",
+      "description": "View public school activities and important dates.",
+      "url": "/school-calendar",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Frequently Asked Questions",
+      "short_name": "FAQs",
+      "description": "Open common school questions and official answers.",
+      "url": "/faq",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
     }
   ]
 }

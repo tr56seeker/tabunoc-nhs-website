@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffdf20" />
+    <meta name="robots" content="noindex" />
+    <title>Offline | Tabunoc National High School</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f8fafc;
+        color: #24313e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: linear-gradient(145deg, #ecfdf5, #ffffff 55%, #fff9c4);
+      }
+
+      main {
+        width: min(100%, 560px);
+        border: 1px solid #dbe5e8;
+        border-top: 6px solid #ffdf20;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.96);
+        padding: clamp(28px, 7vw, 48px);
+        text-align: center;
+        box-shadow: 0 24px 70px rgba(36, 49, 62, 0.12);
+      }
+
+      img {
+        width: 76px;
+        height: 76px;
+        object-fit: contain;
+      }
+
+      h1 {
+        margin: 22px 0 0;
+        font-size: clamp(1.75rem, 7vw, 2.5rem);
+        line-height: 1.1;
+      }
+
+      p {
+        margin: 16px auto 0;
+        max-width: 440px;
+        color: #52606d;
+        line-height: 1.7;
+      }
+
+      .actions {
+        display: grid;
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      a {
+        min-height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        padding: 12px 18px;
+        background: #0f4c5c;
+        color: #ffffff;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      a.secondary {
+        border: 1px solid #ccd6db;
+        background: #ffffff;
+        color: #0f4c5c;
+      }
+
+      a:focus-visible {
+        outline: 3px solid #ffdf20;
+        outline-offset: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img
+        src="/images/tabunoc-nhs-logo-512.png"
+        alt="Tabunoc National High School logo"
+        width="76"
+        height="76"
+      />
+      <h1>You&apos;re currently offline</h1>
+      <p>
+        Reconnect to the internet to load the latest school announcements,
+        calendar updates, and online services. Previously visited public pages
+        may still be available from your browser cache.
+      </p>
+      <div class="actions">
+        <a href="/">Try the school website again</a>
+        <a class="secondary" href="mailto:303111@deped.gov.ph">
+          Email the school
+        </a>
+      </div>
+    </main>
+  </body>
+</html>

@@ -8,7 +8,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { motion } from "motion/react";
 
 import Navbar from "@/components/Navbar";
 import BrandHeader from "@/components/BrandHeader";
@@ -388,42 +387,23 @@ export default function Home() {
           <div className="relative mx-auto max-w-7xl text-center">
             <BrandHeader />
 
-            <motion.p
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65 }}
-              className="text-sm font-semibold uppercase tracking-widest text-brand-teal"
-            >
+            <p className="text-sm font-semibold uppercase tracking-widest text-brand-teal">
               Official School Website
-            </motion.p>
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.1 }}
-            >
+            <div>
               <h1 className="mx-auto mt-4 max-w-5xl text-4xl font-semibold leading-tight tracking-tight md:text-6xl">
                 Tabunoc National High School
               </h1>
-            </motion.div>
+            </div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 32 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.2 }}
-              className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-700"
-            >
+            <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-700">
               A learner-centered public secondary school serving Junior High
               School and Senior High School learners in Tabunok, Talisay City,
               Cebu.
-            </motion.p>
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.3 }}
-              className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:flex sm:flex-row sm:justify-center"
-            >
+            <div className="mt-7 grid grid-cols-2 gap-3 sm:mt-8 sm:flex sm:flex-row sm:justify-center">
               <ActionLink
                 href="/enrollment"
                 className="h-12 rounded-lg px-3 py-0 text-center text-[13px] leading-tight bg-brand-teal text-white hover:bg-brand-cyan sm:h-auto sm:gap-2 sm:rounded-xl sm:px-5 sm:py-3 sm:text-sm"
@@ -449,7 +429,7 @@ export default function Home() {
                 <span className="sm:hidden">Contact the School</span>
                 <span className="hidden sm:inline">Contact the School</span>
               </ActionLink>
-            </motion.div>
+            </div>
           </div>
         </section>
 

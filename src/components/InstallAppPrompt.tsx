@@ -106,19 +106,25 @@ export default function InstallAppPrompt() {
   if (!showInstall || isAdminPath) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-xl rounded-2xl border border-yellow-300 bg-white/95 p-4 shadow-2xl backdrop-blur-md">
+    <aside
+      aria-labelledby="install-app-prompt-title"
+      className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-[max(1rem,env(safe-area-inset-left))] right-[max(1rem,env(safe-area-inset-right))] z-50 mx-auto max-w-xl rounded-2xl border border-yellow-300 bg-white/95 p-4 shadow-2xl backdrop-blur-md"
+    >
       <button
         type="button"
         onClick={handleDismiss}
         aria-label="Close install app prompt"
-        className="absolute right-3 top-3 rounded-full px-2 text-lg font-bold text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+        className="absolute right-2 top-2 inline-flex h-11 w-11 items-center justify-center rounded-full text-lg font-bold text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-teal"
       >
         ×
       </button>
 
       <div className="flex flex-col gap-3 pr-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-bold text-gray-900">
+          <p
+            id="install-app-prompt-title"
+            className="text-sm font-bold text-gray-900"
+          >
             Install Tabunoc NHS App
           </p>
           <p className="text-xs text-gray-600">
@@ -130,11 +136,11 @@ export default function InstallAppPrompt() {
         <button
           type="button"
           onClick={handleInstallClick}
-          className="rounded-full bg-yellow-400 px-5 py-2 text-sm font-bold text-gray-900 shadow hover:bg-yellow-300"
+          className="min-h-11 rounded-full bg-yellow-400 px-5 py-2 text-sm font-bold text-gray-900 shadow hover:bg-yellow-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-teal"
         >
           Install
         </button>
       </div>
-    </div>
+    </aside>
   );
 }

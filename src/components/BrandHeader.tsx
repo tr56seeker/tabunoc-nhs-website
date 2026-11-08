@@ -1,7 +1,6 @@
 ﻿"use client";
 
 import Image from "next/image";
-import { motion } from "motion/react";
 
 const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
 
@@ -13,10 +12,7 @@ type BrandHeaderProps = {
 
 export default function BrandHeader({ compact = false }: BrandHeaderProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7 }}
+    <div
       className={`flex flex-col items-center justify-center ${
         compact ? "mb-5 gap-2.5" : "mb-8 gap-4"
       }`}
@@ -69,6 +65,6 @@ export default function BrandHeader({ compact = false }: BrandHeaderProps) {
           Tabunoc National High School - School ID: 303111
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -24,6 +25,7 @@ function isAppInstalled() {
 }
 
 export default function PwaInstallButton() {
+  const router = useRouter();
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
   const [installed, setInstalled] = useState(() => isAppInstalled());
@@ -57,7 +59,7 @@ export default function PwaInstallButton() {
     if (installed) return;
 
     if (!deferredPrompt) {
-      window.location.href = "/install";
+      router.push("/install");
       return;
     }
 
@@ -76,12 +78,14 @@ export default function PwaInstallButton() {
   return (
     <button
       type="button"
-      aria-label="Install Tabunoc NHS website app"
+      aria-label={
+        installed ? "Tabunoc NHS App installed" : "Install App: Tabunoc NHS"
+      }
       onClick={handleClick}
       disabled={installed}
       className="rounded-xl bg-brand-yellow px-5 py-3 text-center text-sm font-semibold text-brand-navy transition-colors duration-200 hover:bg-[#f1d200] disabled:cursor-not-allowed disabled:opacity-70"
     >
-      Install App
+      {installed ? "Installed" : "Install App"}
     </button>
   );
 }

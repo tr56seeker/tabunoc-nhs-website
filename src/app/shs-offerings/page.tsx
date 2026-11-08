@@ -135,7 +135,7 @@ export default function SHSOfferingsPage() {
           backgroundImageMobileClassName="object-cover object-bottom"
           backgroundImageTabletClassName="object-cover object-bottom landscape:object-contain landscape:object-center"
           backgroundOverlayClassName="bg-gradient-to-b from-white/95 via-white/75 to-white/10 sm:from-white/88 sm:via-white/55 sm:to-white/20 lg:from-white/30 lg:via-white/5 lg:to-white/20"
-          sectionClassName="min-h-[calc(100svh-5rem)] sm:min-h-[640px] lg:min-h-0"
+          sectionClassName="min-h-[calc(100svh-5rem)] sm:min-h-[540px] sm:landscape:min-h-[640px] lg:min-h-0"
         >
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link

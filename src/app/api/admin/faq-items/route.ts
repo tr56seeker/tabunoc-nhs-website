@@ -18,7 +18,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { response } = await requireAdminApi();
+  const { response } = await requireAdminApi(request);
   if (response) return response;
 
   const body = await request.json();

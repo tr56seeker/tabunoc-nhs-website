@@ -13,6 +13,7 @@ const routes = [
   { path: "/memos", priority: 0.6 },
   { path: "/school-calendar", priority: 0.6 },
   { path: "/faq", priority: 0.6 },
+  { path: "/privacy", priority: 0.4 },
   { path: "/install", priority: 0.3 },
 ];
 

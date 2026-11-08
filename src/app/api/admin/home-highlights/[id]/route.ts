@@ -29,7 +29,7 @@ function validFacebookUrl(value: string) {
 }
 
 export async function PATCH(request: Request, context: RouteContext) {
-  const { response } = await requireAdminApi();
+  const { response } = await requireAdminApi(request);
   if (response) return response;
 
   const { id } = await context.params;
@@ -129,8 +129,8 @@ export async function PATCH(request: Request, context: RouteContext) {
   }
 }
 
-export async function DELETE(_request: Request, context: RouteContext) {
-  const { response } = await requireAdminApi();
+export async function DELETE(request: Request, context: RouteContext) {
+  const { response } = await requireAdminApi(request);
   if (response) return response;
   const { id } = await context.params;
   try {

@@ -2,9 +2,13 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextResponse } from "next/server";
 
+import { rejectCrossSiteMutation } from "@/lib/requestSecurity";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
-export const ADMIN_SESSION_COOKIE = "tnhs_admin_session";
+export const ADMIN_SESSION_COOKIE =
+  process.env.NODE_ENV === "production"
+    ? "__Host-tnhs_admin_session"
+    : "tnhs_admin_session";
 const ADMIN_ROLES = new Set(["admin", "super_admin"]);
 
 export type AdminUser = {
@@ -59,7 +63,14 @@ export async function requireAdminUser() {
   return adminUser;
 }
 
-export async function requireAdminApi() {
+export async function requireAdminApi(request?: Request) {
+  if (request) {
+    const crossSiteResponse = rejectCrossSiteMutation(request);
+    if (crossSiteResponse) {
+      return { adminUser: null, response: crossSiteResponse };
+    }
+  }
+
   const adminUser = await getCurrentAdminUser();
 
   if (!adminUser) {

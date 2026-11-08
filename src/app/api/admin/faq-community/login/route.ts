@@ -6,8 +6,16 @@ import {
   FAQ_ADMIN_COOKIE_MAX_AGE,
   FAQ_ADMIN_COOKIE_NAME,
 } from "@/lib/faqAdminAuth";
+import {
+  rejectCrossSiteMutation,
+  rejectInvalidJsonRequest,
+} from "@/lib/requestSecurity";
 
 export async function POST(request: Request) {
+  const rejectedRequest =
+    rejectCrossSiteMutation(request) ?? rejectInvalidJsonRequest(request);
+  if (rejectedRequest) return rejectedRequest;
+
   let body: { passcode?: unknown };
 
   try {
@@ -32,10 +40,11 @@ export async function POST(request: Request) {
     const response = NextResponse.json({ success: true });
     response.cookies.set(FAQ_ADMIN_COOKIE_NAME, createFaqAdminSessionToken(), {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "strict",
       secure: process.env.NODE_ENV === "production",
       maxAge: FAQ_ADMIN_COOKIE_MAX_AGE,
       path: "/",
+      priority: "high",
     });
 
     return response;

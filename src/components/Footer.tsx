@@ -36,6 +36,7 @@ const footerGroups = [
       { label: "School Calendar", href: "/school-calendar" },
       { label: "School Memos", href: "/memos" },
       { label: "Frequently Asked Questions", href: "/faq" },
+      { label: "Website Privacy Notice", href: "/privacy" },
     ],
   },
   {

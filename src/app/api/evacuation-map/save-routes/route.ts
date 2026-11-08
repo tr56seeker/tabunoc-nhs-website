@@ -2,6 +2,11 @@ import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 
+import {
+  rejectCrossSiteMutation,
+  rejectInvalidJsonRequest,
+} from "@/lib/requestSecurity";
+
 export async function POST(request: Request) {
   if (process.env.NODE_ENV === "production") {
     return NextResponse.json(
@@ -9,6 +14,11 @@ export async function POST(request: Request) {
       { status: 403 },
     );
   }
+
+  const rejectedRequest =
+    rejectCrossSiteMutation(request) ??
+    rejectInvalidJsonRequest(request, 1_000_000);
+  if (rejectedRequest) return rejectedRequest;
 
   const data = await request.json();
 

@@ -1,7 +1,10 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies } from "next/headers";
 
-export const FAQ_ADMIN_COOKIE_NAME = "tnhs_faq_admin";
+export const FAQ_ADMIN_COOKIE_NAME =
+  process.env.NODE_ENV === "production"
+    ? "__Host-tnhs_faq_admin"
+    : "tnhs_faq_admin";
 export const FAQ_ADMIN_COOKIE_MAX_AGE = 60 * 60 * 8;
 
 function getAdminSecret() {

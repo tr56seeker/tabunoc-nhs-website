@@ -1,6 +1,10 @@
 import { after, NextRequest, NextResponse } from "next/server";
 
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import {
+  rejectCrossSiteMutation,
+  rejectInvalidJsonRequest,
+} from "@/lib/requestSecurity";
 import { resend } from "@/lib/resend";
 
 /*
@@ -148,6 +152,10 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const rejectedRequest =
+    rejectCrossSiteMutation(request) ?? rejectInvalidJsonRequest(request);
+  if (rejectedRequest) return rejectedRequest;
+
   let body: Record<string, unknown>;
 
   try {

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useId, useRef, useState } from "react";
+import Link from "next/link";
 
 type FaqCommunityQuestionsProps = {
   faqTopicId: string;
@@ -324,7 +325,15 @@ export default function FaqCommunityQuestions({
             </p>
             <p className="mt-2 text-xs text-slate-600">
               Submitted questions are reviewed before posting. The school may
-              edit questions for clarity, privacy, and appropriateness.
+              edit questions for clarity, privacy, and appropriateness. Read
+              the{" "}
+              <Link
+                href="/privacy"
+                className="font-semibold text-brand-teal underline decoration-brand-teal/30 underline-offset-2 hover:text-brand-cyan"
+              >
+                Website Privacy Notice
+              </Link>
+              .
             </p>
           </div>
 

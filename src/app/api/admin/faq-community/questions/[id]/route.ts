@@ -13,7 +13,7 @@ type RouteContext = {
 
 export async function PATCH(request: Request, context: RouteContext) {
   try {
-    const { adminUser, response } = await requireAdminApi();
+    const { adminUser, response } = await requireAdminApi(request);
     if (response) return response;
 
     const { id } = await context.params;

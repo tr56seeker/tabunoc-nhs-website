@@ -6,7 +6,7 @@ import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 type Params = { params: Promise<{ id: string }> };
 
 export async function PATCH(request: Request, { params }: Params) {
-  const { response } = await requireAdminApi();
+  const { response } = await requireAdminApi(request);
   if (response) return response;
 
   const { id } = await params;
@@ -34,8 +34,8 @@ export async function PATCH(request: Request, { params }: Params) {
   return NextResponse.json({ ok: true });
 }
 
-export async function DELETE(_request: Request, { params }: Params) {
-  const { response } = await requireAdminApi();
+export async function DELETE(request: Request, { params }: Params) {
+  const { response } = await requireAdminApi(request);
   if (response) return response;
 
   const { id } = await params;

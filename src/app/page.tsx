@@ -21,8 +21,8 @@ const mapsHref =
 
 const homepageStatistics = [
   { label: "Learners", value: 1247, delayMs: 0 },
-  { label: "Teaching Personnel", value: 59, delayMs: 150 },
-  { label: "Non-Teaching Personnel", value: 5, delayMs: 300 },
+  { label: "Teaching Personnel", value: 60, delayMs: 150 },
+  { label: "Non-Teaching Personnel", value: 8, delayMs: 300 },
 ] as const;
 
 const COUNTER_DURATIONS = {
@@ -101,25 +101,6 @@ function includesAny(value: string, keywords: string[]) {
   );
 }
 
-function isNonDepEdPaidPersonnel(row: PersonnelRow) {
-  const combined = [
-    row.position,
-    row.category,
-    row.displayGroup,
-    row.subGroup,
-    row.designation1,
-    row.designation2,
-    row.designation3,
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  return (
-    includesAny(combined, ["job order", "utility", "guard"]) ||
-    /\bJO\b/i.test(combined)
-  );
-}
-
 function getCounterDuration(label: string) {
   const normalizedLabel = label.toLowerCase();
 
@@ -181,11 +162,15 @@ function readPersonnelStatsFromCsv(csvText: string): PersonnelStats {
       category === "non-teaching personnel" ||
       category === "administrative staff" ||
       category === "administrative personnel" ||
-      category === "administration";
+      category === "administration" ||
+      category === "job order/support personnel" ||
+      category === "security";
 
-    if (category === "teaching personnel") {
+    const isPrincipal = /^school principal\b/i.test((record.position || "").trim());
+
+    if (category === "teaching personnel" || isPrincipal) {
       stats.teaching += 1;
-    } else if (isNonTeachingCategory && !isNonDepEdPaidPersonnel(record)) {
+    } else if (isNonTeachingCategory) {
       stats.nonTeaching += 1;
     }
   }

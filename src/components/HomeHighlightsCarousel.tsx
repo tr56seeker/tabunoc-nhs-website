@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const AUTO_SCROLL_SPEED = 0.28;
 const DRAG_THRESHOLD = 8;
+const MINIMUM_CARDS_PER_SET = 4;
 
 type PauseReason = "hover" | "pointer" | "focus" | "modal";
 
@@ -33,9 +35,16 @@ export default function HomeHighlightsCarousel() {
   const [isDragging, setIsDragging] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
+  const carouselRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const setRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const startAnimationRef = useRef<() => void>(() => undefined);
+  const stopAnimationRef = useRef<() => void>(() => undefined);
+  const isInViewRef = useRef(false);
+  const isDocumentVisibleRef = useRef(true);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const selectedTriggerRef = useRef<HTMLButtonElement | null>(null);
   const offsetRef = useRef(0);
   const setWidthRef = useRef(0);
   const pauseReasonsRef = useRef<Set<PauseReason>>(new Set());
@@ -62,24 +71,55 @@ export default function HomeHighlightsCarousel() {
   }, []);
 
   useEffect(() => {
-    if (!selected) return;
+    if (!selected) {
+      const trigger = selectedTriggerRef.current;
+      selectedTriggerRef.current = null;
+      if (trigger?.isConnected) {
+        window.requestAnimationFrame(() => trigger.focus());
+      }
+      return;
+    }
+
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelected(null);
+    const handleModalKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSelected(null);
+        return;
+      }
+
+      if (event.key !== "Tab" || !modalRef.current) return;
+      const focusable = Array.from(
+        modalRef.current.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
-    window.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("keydown", handleModalKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("keydown", handleModalKeyDown);
     };
   }, [selected]);
 
   useEffect(() => {
     if (selected) {
       pauseReasonsRef.current.add("modal");
+      stopAnimationRef.current();
     } else {
       pauseReasonsRef.current.delete("modal");
+      startAnimationRef.current();
     }
   }, [selected]);
 
@@ -92,9 +132,10 @@ export default function HomeHighlightsCarousel() {
   }, []);
 
   useEffect(() => {
+    const carousel = carouselRef.current;
     const track = trackRef.current;
     const repeatedSet = setRef.current;
-    if (!track || !repeatedSet || highlights.length === 0) return;
+    if (!carousel || !track || !repeatedSet || highlights.length === 0) return;
 
     const updateSetWidth = () => {
       setWidthRef.current = repeatedSet.getBoundingClientRect().width;
@@ -105,32 +146,84 @@ export default function HomeHighlightsCarousel() {
     const resizeObserver = new ResizeObserver(updateSetWidth);
     resizeObserver.observe(repeatedSet);
 
+    let disposed = false;
     let previousTime: number | null = null;
     const frameDuration = 1000 / 60;
+    const shouldAnimate = () =>
+      !prefersReducedMotion &&
+      isInViewRef.current &&
+      isDocumentVisibleRef.current &&
+      !isDraggingRef.current &&
+      pauseReasonsRef.current.size === 0;
+
+    const stopAnimation = () => {
+      if (animationFrameRef.current !== null) {
+        window.cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+      previousTime = null;
+    };
+
     const animate = (time: number) => {
+      animationFrameRef.current = null;
+      if (!shouldAnimate()) {
+        previousTime = null;
+        return;
+      }
+
       const elapsed = previousTime === null ? frameDuration : Math.min(time - previousTime, 50);
       previousTime = time;
 
-      if (
-        !prefersReducedMotion &&
-        !isDraggingRef.current &&
-        pauseReasonsRef.current.size === 0
-      ) {
-        offsetRef.current -= AUTO_SCROLL_SPEED * (elapsed / frameDuration);
-      }
+      offsetRef.current -= AUTO_SCROLL_SPEED * (elapsed / frameDuration);
 
       offsetRef.current = normalizeOffset(offsetRef.current, setWidthRef.current);
       track.style.transform = `translate3d(${offsetRef.current}px, 0, 0)`;
       animationFrameRef.current = window.requestAnimationFrame(animate);
     };
 
-    animationFrameRef.current = window.requestAnimationFrame(animate);
-    return () => {
-      resizeObserver.disconnect();
-      if (animationFrameRef.current !== null) {
-        window.cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
+    const startAnimation = () => {
+      if (disposed || animationFrameRef.current !== null || !shouldAnimate()) return;
+      animationFrameRef.current = window.requestAnimationFrame(animate);
+    };
+
+    startAnimationRef.current = startAnimation;
+    stopAnimationRef.current = stopAnimation;
+    isDocumentVisibleRef.current = document.visibilityState === "visible";
+
+    const handleVisibilityChange = () => {
+      isDocumentVisibleRef.current = document.visibilityState === "visible";
+      if (isDocumentVisibleRef.current) {
+        startAnimation();
+      } else {
+        stopAnimation();
       }
+    };
+
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        isInViewRef.current = entry.isIntersecting;
+        track.style.willChange = entry.isIntersecting ? "transform" : "auto";
+        if (entry.isIntersecting) {
+          startAnimation();
+        } else {
+          stopAnimation();
+        }
+      },
+      { rootMargin: "200px 0px" },
+    );
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    intersectionObserver.observe(carousel);
+
+    return () => {
+      disposed = true;
+      resizeObserver.disconnect();
+      intersectionObserver.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      stopAnimation();
+      startAnimationRef.current = () => undefined;
+      stopAnimationRef.current = () => undefined;
+      track.style.willChange = "auto";
     };
   }, [highlights.length, prefersReducedMotion]);
 
@@ -144,7 +237,10 @@ export default function HomeHighlightsCarousel() {
 
   if (highlights.length === 0) return null;
 
-  const repetitionCount = Math.max(4, Math.ceil(10 / highlights.length));
+  const repetitionCount = Math.max(
+    1,
+    Math.ceil(MINIMUM_CARDS_PER_SET / highlights.length),
+  );
   const repeatedHighlights = Array.from({ length: repetitionCount }).flatMap(
     () => highlights,
   );
@@ -159,10 +255,12 @@ export default function HomeHighlightsCarousel() {
 
   function pauseMarquee(reason: PauseReason) {
     pauseReasonsRef.current.add(reason);
+    stopAnimationRef.current();
   }
 
   function resumeMarquee(reason: PauseReason) {
     pauseReasonsRef.current.delete(reason);
+    startAnimationRef.current();
   }
 
   function handlePointerDown(event: React.PointerEvent<HTMLDivElement>) {
@@ -248,6 +346,7 @@ export default function HomeHighlightsCarousel() {
       </div>
 
       <div
+        ref={carouselRef}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={endDrag}
@@ -270,7 +369,7 @@ export default function HomeHighlightsCarousel() {
         }}
         className={`mx-auto mt-9 max-w-[100rem] touch-pan-y overflow-hidden px-6 pb-7 select-none sm:px-[max(1.5rem,calc((100vw-80rem)/2))] ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
       >
-        <div ref={trackRef} className="flex w-max will-change-transform">
+        <div ref={trackRef} className="flex w-max">
           {[0, 1].map((groupIndex) => (
             <div
               key={groupIndex}
@@ -286,8 +385,12 @@ export default function HomeHighlightsCarousel() {
                     key={`${groupIndex}-${highlight.id}-${index}`}
                     type="button"
                     tabIndex={isKeyboardDuplicate ? -1 : undefined}
+                    aria-hidden={isKeyboardDuplicate ? true : undefined}
                     onClick={(event) => {
                       if (event.detail === 0 || !hasDraggedRef.current) {
+                        selectedTriggerRef.current = isKeyboardDuplicate
+                          ? null
+                          : event.currentTarget;
                         setSelected(highlight);
                       }
                     }}
@@ -295,7 +398,14 @@ export default function HomeHighlightsCarousel() {
                     aria-label={`View ${highlight.title}`}
                   >
                     <div className="relative aspect-[16/10] w-full flex-none overflow-hidden rounded-t-2xl bg-slate-100">
-                      <img src={highlight.image_url} alt={highlight.alt_text || highlight.title} loading="lazy" draggable={false} className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]" />
+                      <Image
+                        src={highlight.image_url}
+                        alt={highlight.alt_text || highlight.title}
+                        fill
+                        sizes="(max-width: 639px) 82vw, (max-width: 1023px) 420px, 460px"
+                        draggable={false}
+                        className="object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
+                      />
                     </div>
                     <div className="flex min-h-28 flex-1 flex-col border-t-4 border-brand-yellow p-5">
                       <p className="min-h-4 text-xs font-semibold uppercase tracking-[0.14em] text-brand-teal">
@@ -313,11 +423,17 @@ export default function HomeHighlightsCarousel() {
 
       {selected && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/75 p-4 backdrop-blur-sm sm:p-8" role="dialog" aria-modal="true" aria-labelledby="highlight-modal-title" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelected(null); }}>
-          <div className="relative max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
+          <div ref={modalRef} className="relative max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
             <button type="button" onClick={() => setSelected(null)} autoFocus aria-label="Close highlight" className="absolute right-3 top-3 z-10 grid h-11 w-11 place-items-center rounded-full bg-slate-950/70 text-2xl leading-none text-white backdrop-blur transition hover:bg-slate-950">×</button>
             <div className="grid lg:grid-cols-[1.35fr_0.85fr]">
-              <div className="min-h-64 bg-slate-100 lg:min-h-[34rem]">
-                <img src={selected.image_url} alt={selected.alt_text || selected.title} className="h-full max-h-[70vh] w-full object-contain lg:max-h-[84vh]" />
+              <div className="relative min-h-64 bg-slate-100 lg:min-h-[34rem]">
+                <Image
+                  src={selected.image_url}
+                  alt={selected.alt_text || selected.title}
+                  fill
+                  sizes="(max-width: 1023px) calc(100vw - 2rem), 58vw"
+                  className="object-contain"
+                />
               </div>
               <div className="flex flex-col justify-center p-6 sm:p-9">
                 {(selected.category || selected.event_date) && <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-teal">{[selected.category, formatEventDate(selected.event_date)].filter(Boolean).join(" · ")}</p>}

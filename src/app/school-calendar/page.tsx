@@ -4,9 +4,12 @@ import path from "path";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import PageHeader from "@/components/PageHeader";
-import SchoolCalendar, { type CalendarEvent } from "@/components/SchoolCalendar";
+import SchoolCalendar from "@/components/SchoolCalendar";
 import SchoolYearProgress, { type SchoolYearStatus } from "@/components/SchoolYearProgress";
+import { loadPublishedCalendarEvents } from "@/lib/calendarEvents";
 import { createPageMetadata } from "@/lib/siteMetadata";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = createPageMetadata({
   title: "School Calendar",
@@ -15,10 +18,8 @@ export const metadata: Metadata = createPageMetadata({
   path: "/school-calendar",
 });
 
-export default function SchoolCalendarPage() {
-  const events = JSON.parse(
-    fs.readFileSync(path.join(process.cwd(), "public/data/school-calendar-events.json"), "utf8")
-  ) as CalendarEvent[];
+export default async function SchoolCalendarPage() {
+  const events = await loadPublishedCalendarEvents();
   const schoolYearStatus = JSON.parse(
     fs.readFileSync(path.join(process.cwd(), "public/data/school-year-status.json"), "utf8")
   ) as SchoolYearStatus;

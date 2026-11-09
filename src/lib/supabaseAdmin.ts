@@ -69,6 +69,78 @@ type Database = {
         Update: Partial<Database["public"]["Tables"]["homepage_highlights"]["Row"]>;
         Relationships: [];
       };
+      school_memos: {
+        Row: {
+          id: string;
+          memo_number: string;
+          title: string;
+          date_issued: string;
+          category: string;
+          issuing_office: string;
+          description: string;
+          file_path: string;
+          file_url: string;
+          status: string;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          memo_number: string;
+          title: string;
+          date_issued: string;
+          category: string;
+          issuing_office: string;
+          description?: string;
+          file_path: string;
+          file_url: string;
+          status?: string;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["school_memos"]["Row"]>;
+        Relationships: [];
+      };
+      school_calendar_events: {
+        Row: {
+          id: string;
+          title: string;
+          start_date: string;
+          end_date: string;
+          start_time: string | null;
+          end_time: string | null;
+          category: string;
+          audience: string;
+          event_status: string;
+          location: string | null;
+          description: string;
+          publication_status: string;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id: string;
+          title: string;
+          start_date: string;
+          end_date: string;
+          start_time?: string | null;
+          end_time?: string | null;
+          category: string;
+          audience: string;
+          event_status: string;
+          location?: string | null;
+          description?: string;
+          publication_status?: string;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["school_calendar_events"]["Row"]>;
+        Relationships: [];
+      };
       profiles: {
         Row: {
           id: string;

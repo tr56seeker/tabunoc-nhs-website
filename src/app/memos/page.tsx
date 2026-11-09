@@ -1,15 +1,15 @@
 ﻿"use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
-import { memoCategories, memos, type MemoCategory } from "@/data/memos";
+import { memoCategories, memos as fallbackMemos, type Memo, type MemoCategory } from "@/data/memos";
 
-type MemoItem = (typeof memos)[number];
+type MemoItem = Memo;
 
 function formatDate(dateString: string) {
   const date = new Date(dateString);
@@ -44,19 +44,43 @@ function getMemoFileLink(memo: MemoItem) {
 }
 
 export default function MemosPage() {
+  const [memoItems, setMemoItems] = useState<MemoItem[]>(fallbackMemos);
+  const [loadingMemos, setLoadingMemos] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] =
     useState<"All" | MemoCategory>("All");
   const [selectedYear, setSelectedYear] = useState("All");
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function loadMemos() {
+      try {
+        const response = await fetch("/api/memos", { signal: controller.signal });
+        if (!response.ok) return;
+        const payload = (await response.json()) as { memos?: MemoItem[] };
+        if (payload.memos) setMemoItems(payload.memos);
+      } catch (error) {
+        if (!(error instanceof DOMException && error.name === "AbortError")) {
+          console.error("Unable to load public memos:", error);
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoadingMemos(false);
+      }
+    }
+
+    void loadMemos();
+    return () => controller.abort();
+  }, []);
+
   const publicMemos = useMemo(() => {
-    return memos
+    return memoItems
       .filter((memo) => memo.isPublic)
       .sort(
         (a, b) =>
           new Date(b.dateIssued).getTime() - new Date(a.dateIssued).getTime()
       );
-  }, []);
+  }, [memoItems]);
 
   const availableYears = useMemo(() => {
   const years = publicMemos
@@ -125,7 +149,7 @@ export default function MemosPage() {
                     className="w-full rounded-xl border border-slate-300 dark:border-brand-charcoal bg-white dark:bg-brand-dark px-5 py-4 text-sm font-bold text-slate-900 dark:text-white outline-none transition focus:border-brand-teal focus:ring-4 focus:ring-teal-100 dark:focus:ring-teal-900/50"
                   >
                     <option value="All">All Categories</option>
-                    {memoCategories.map((category) => (
+                    {memoCategories.filter((category) => category !== "All").map((category) => (
                       <option key={category} value={category}>
                         {category}
                       </option>
@@ -176,7 +200,11 @@ export default function MemosPage() {
         {/* MEMO LIST */}
         <section className="bg-white dark:bg-brand-black px-6 py-20">
           <div className="mx-auto max-w-7xl">
-            {visibleMemos.length > 0 ? (
+            {loadingMemos ? (
+              <div className="rounded-2xl border border-slate-200 bg-brand-slate p-10 text-center shadow-sm dark:border-brand-charcoal dark:bg-brand-dark">
+                <h3 className="text-xl font-semibold text-slate-950 dark:text-white">Loading public memos...</h3>
+              </div>
+            ) : visibleMemos.length > 0 ? (
               <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-brand-charcoal bg-white dark:bg-brand-dark shadow-sm dark:shadow-black/20">
                 <div className="border-b border-slate-200 dark:border-brand-charcoal bg-brand-slate dark:bg-brand-dark px-5 py-4">
                   <h3 className="text-xl font-semibold text-slate-950 dark:text-white">

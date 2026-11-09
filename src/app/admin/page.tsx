@@ -8,6 +8,16 @@ const modules = [
     href: "/admin/highlights",
   },
   {
+    title: "Memo Manager",
+    description: "Upload official memo PDFs, review drafts, publish, and archive records.",
+    href: "/admin/memos",
+  },
+  {
+    title: "Calendar Events",
+    description: "Add, update, publish, and archive events on the public school calendar.",
+    href: "/admin/calendar-events",
+  },
+  {
     title: "FAQ Manager",
     description: "Maintain published frequently asked questions by category.",
     href: "/admin/faq",
@@ -29,7 +39,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <AdminShell adminUser={adminUser} title="Dashboard">
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {modules.map((module) => (
           <a
             key={module.href}

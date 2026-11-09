@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  CalendarDays,
+  FileText,
   HelpCircle,
   Home,
   Images,
@@ -22,6 +24,8 @@ import type { AdminUser } from "@/lib/adminAuth";
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/highlights", label: "Homepage Highlights", icon: Images },
+  { href: "/admin/memos", label: "Memo Manager", icon: FileText },
+  { href: "/admin/calendar-events", label: "Calendar Events", icon: CalendarDays },
   { href: "/admin/faq", label: "FAQ Manager", icon: HelpCircle },
   {
     href: "/admin/community-questions",

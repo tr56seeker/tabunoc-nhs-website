@@ -19,8 +19,9 @@ export default function AdminLoginPage() {
               Unified school website dashboard
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-slate-200">
-              Authorized school personnel can manage homepage highlights, FAQ
-              content, community questions, and evacuation map calibration.
+              Authorized school personnel can manage homepage highlights,
+              school memos, calendar events, FAQ content, community questions,
+              and evacuation map calibration.
             </p>
           </div>
 

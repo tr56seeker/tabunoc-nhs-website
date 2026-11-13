@@ -53,3 +53,4 @@ public/data/*.xlsx
 
 # Local QA/tooling scratch dirs
 .codex-artifacts/
+.impeccable/

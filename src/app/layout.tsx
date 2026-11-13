@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientParallaxBackground from "@/components/ClientParallaxBackground";
+import CsmSurveyPrompt from "@/components/CsmSurveyPrompt";
 import InstallAppPrompt from "@/components/InstallAppPrompt";
 import MotionProvider from "@/components/MotionProvider";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
@@ -100,6 +101,7 @@ export default function RootLayout({
           {children}
           <Analytics />
           <InstallAppPrompt />
+          <CsmSurveyPrompt />
         </MotionProvider>
       </body>
     </html>

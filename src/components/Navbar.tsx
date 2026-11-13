@@ -21,6 +21,7 @@ import {
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { ExternalLink, Mail, MessageCircle, Phone } from "lucide-react";
+import { CSM_SURVEY_URL } from "@/lib/csm";
 
 type NavbarProps = {
   brandMode?: "always" | "afterScroll";
@@ -100,6 +101,12 @@ const navItems: NavItem[] = [
         label: "Document Request",
         href: "https://smis-nextgen.tabunocnatlhs.com/records-requests",
         description: "Requirements and steps for requesting school records",
+        external: true,
+      },
+      {
+        label: "Client Satisfaction Survey",
+        href: CSM_SURVEY_URL,
+        description: "Share feedback after receiving a school service",
         external: true,
       },
       {

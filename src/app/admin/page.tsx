@@ -1,5 +1,6 @@
 import AdminShell from "@/components/admin/AdminShell";
 import { requireAdminUser } from "@/lib/adminAuth";
+import { CSM_MONITORING_URL } from "@/lib/csm";
 
 const modules = [
   {
@@ -32,6 +33,12 @@ const modules = [
     description: "Edit evacuation map pins and route calibration data.",
     href: "/admin/map-calibration",
   },
+  {
+    title: "SDO CSM Monitoring",
+    description: "Open the unified SDO ICTO dashboard for authorized CSM monitoring.",
+    href: CSM_MONITORING_URL,
+    external: true,
+  },
 ];
 
 export default async function AdminDashboardPage() {
@@ -44,6 +51,8 @@ export default async function AdminDashboardPage() {
           <a
             key={module.href}
             href={module.href}
+            target={module.external ? "_blank" : undefined}
+            rel={module.external ? "noopener noreferrer" : undefined}
             className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-brand-teal/30 hover:shadow-lg"
           >
             <h2 className="text-lg font-semibold text-brand-navy">

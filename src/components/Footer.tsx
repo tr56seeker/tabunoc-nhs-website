@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { CSM_SURVEY_URL } from "@/lib/csm";
 
 const schoolLogo = "/images/tabunoc-nhs-logo-512.png";
 const depedLogo = "/images/deped-logo.png";
@@ -23,6 +24,7 @@ const footerGroups = [
         label: "Document Request",
         href: "https://smis-nextgen.tabunocnatlhs.com/records-requests",
       },
+      { label: "Client Satisfaction Survey", href: CSM_SURVEY_URL },
       {
         label: "School MIS",
         href: "https://smis-nextgen.tabunocnatlhs.com/login",
@@ -84,7 +86,10 @@ function FooterLink({ label, href }: { label: string; href: string }) {
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-brand-navy text-white">
+    <footer
+      id="site-footer"
+      className="border-t border-white/10 bg-brand-navy text-white"
+    >
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-12 lg:grid-cols-[1.15fr_2fr] lg:gap-16 lg:px-8 lg:py-14">
         <div className="max-w-md">
           <div className="flex items-center gap-4">

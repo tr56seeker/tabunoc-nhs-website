@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
+import { CSM_SURVEY_URL } from "@/lib/csm";
 
 const frontlineServices = [
   {
@@ -182,6 +183,10 @@ const quickLinks = [
   {
     label: "Document Request",
     href: "https://smis-nextgen.tabunocnatlhs.com/records-requests",
+  },
+  {
+    label: "Rate a School Service",
+    href: CSM_SURVEY_URL,
   },
   {
     label: "Enrollment Guide",
@@ -454,31 +459,35 @@ export default function CitizenCharterPage() {
               Feedback and Assistance
             </p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight text-slate-950 dark:text-white">
-              Need help with a school service?
+              Finished a school transaction?
             </h2>
             <p className="mx-auto mt-4 max-w-2xl leading-7 text-slate-600 dark:text-stone-300">
-              For questions, clarifications, records concerns, or service
-              feedback, please coordinate through the official communication
-              channels of Tabunoc National High School.
+              Tell us about the service you received through the official DepEd
+              Client Satisfaction Measurement Survey. For questions or records
+              concerns, contact the school through our official channels.
             </p>
 
             <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+              <a
+                href={CSM_SURVEY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-xl bg-brand-yellow px-6 py-3 font-semibold text-brand-navy shadow-[0_8px_24px_rgba(255,223,32,0.22)] transition hover:-translate-y-1 hover:bg-yellow-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-teal focus-visible:ring-offset-2"
+              >
+                Answer the Client Survey
+              </a>
+
               <Link
                 href="/#contact"
-                className="rounded-xl bg-brand-teal px-6 py-3 font-semibold text-white transition hover:-translate-y-1 hover:scale-[1.01]"
+                className="rounded-xl border border-brand-teal/30 bg-white dark:bg-brand-dark px-6 py-3 font-semibold text-brand-teal dark:text-stone-100 transition hover:-translate-y-1 hover:text-brand-teal dark:hover:text-yellow-300"
               >
                 Contact the School
               </Link>
-
-              <a
-                href="https://m.me/tabunocnatlhs"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-xl border border-brand-teal/30 bg-white dark:bg-brand-dark px-6 py-3 font-semibold text-brand-teal dark:text-stone-100 transition hover:-translate-y-1 hover:text-brand-teal dark:hover:text-yellow-300"
-              >
-                Chat on Messenger
-              </a>
             </div>
+            <p className="mx-auto mt-5 max-w-xl text-sm leading-6 text-slate-500 dark:text-stone-400">
+              Please answer the survey only after receiving a service from the
+              school. The form opens in the official DepEd CSM portal.
+            </p>
           </div>
         </section>
 
